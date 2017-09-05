@@ -1,0 +1,35 @@
+{
+  "name": "markocupic/calendar-event-booking-bundle",
+  "type": "contao-bundle",
+  "description": "Contao 4 Calendar Event Booking Bundle",
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Marko Cupic",
+      "homepage": "https://github.com/markocupic"
+    }
+  ],
+  "require": {
+    "contao/core-bundle": ">=4.3",
+    "markocupic/export_table": ">=1.1.2",
+    "codefog/contao-haste": "^4.17"
+  },
+  "autoload": {
+    "psr-4": {
+      "Markocupic\\CalendarEventBookingBundle\\": "src/"
+    },
+    "classmap": [
+      "src/Resources/contao"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/assets",
+      "src/Resources/contao/config",
+      "src/Resources/contao/dca",
+      "src/Resources/contao/languages",
+      "src/Resources/contao/templates"
+    ]
+  },
+  "extra": {
+    "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
+  }
+ }
