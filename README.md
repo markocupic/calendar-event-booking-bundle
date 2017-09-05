@@ -42,7 +42,10 @@ class ContaoManagerPlugin implements BundlePluginInterface
         return [
             // 1. lokales Plugin in ROOT  src/markocupic/calendar-event-booking-bundle
             BundleConfig::create('Markocupic\CalendarEventBookingBundle\MarkocupicCalendarEventBookingBundle')
-                ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle']),
+                ->setLoadAfter([
+                  'Contao\CoreBundle\ContaoCoreBundle',
+                  'Contao\CalendarBundle\ContaoCalendarBundle'
+                ]),
             // 2. lokales Plugin in ROOT  src/markocupic/employee-bundle
             BundleConfig::create('Markocupic\EmployeeBundle\MarkocupicEmployeeBundle')
                 ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle'])
