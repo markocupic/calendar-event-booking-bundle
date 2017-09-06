@@ -113,8 +113,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
 
     // Subpalettes
     'subpalettes' => array
-    (
-        //
+    (//
     ),
 
 
@@ -145,18 +144,18 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
             'sql' => "varchar(10) NOT NULL default ''"
         ),
-/**
-        'status' => array
-        (
-            'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['status'],
-            'filter' => true,
-            'inputType' => 'select',
-            'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events_member'],
-            'options' => array('accepted', 'refused', 'waitlisted'),
-            'eval' => array('doNotShow' => true, 'readonly' => false, 'includeBlankOption' => true, 'blankOptionLabel' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['notConfirmed'], 'maxlength' => 255, 'tl_class' => 'w50'),
-            'sql' => "varchar(255) NOT NULL default ''"
-        ),
- **/
+        /**
+         * 'status' => array
+         * (
+         * 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['status'],
+         * 'filter' => true,
+         * 'inputType' => 'select',
+         * 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events_member'],
+         * 'options' => array('accepted', 'refused', 'waitlisted'),
+         * 'eval' => array('doNotShow' => true, 'readonly' => false, 'includeBlankOption' => true, 'blankOptionLabel' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['notConfirmed'], 'maxlength' => 255, 'tl_class' => 'w50'),
+         * 'sql' => "varchar(255) NOT NULL default ''"
+         * ),
+         **/
 
         'notes' => array
         (
@@ -296,7 +295,8 @@ class tl_calendar_events_member extends Backend
     public function onloadCallback()
     {
         // Download the registration list as a csv spreadsheet
-        if (Input::get('act') == 'downloadRegistrationList') {
+        if (Input::get('act') == 'downloadRegistrationList')
+        {
             $opt = array();
             $opt['arrSelectedFields'] = array('pid', 'addedOn', 'firstname', 'lastname', 'gender', 'street', 'postal', 'city', 'phone', 'email');
             $opt['exportType'] = 'csv';

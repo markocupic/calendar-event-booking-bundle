@@ -84,4 +84,9 @@ $ bin/console cache:clear --env=prod
 und die Erweiterung sollte nun laufen.
 
 Anmerkung: vendor/bin/contao-console.
-Eine Symfony Applikation enthält normalerweise ein Consolen-Script `bin/console`. In der Contao Managed Edition ist das Konsolenskript Teil des contao/manager-bundle und in `vendor/bin/contao-console` installiert.
+Eine Symfony Applikation enthält normalerweise ein Consolen-Script `bin/console`. In der Contao Managed Edition ist das Konsolenskript Teil des contao/manager-bundle und in `vendor/bin/contao-console` installiert. Deshalb mit `cd vendor/bin` ins entsprechende Verzeichnis wechseln und dann das Konsolenscript ausführen.
+
+```sh
+$ cd bin/console
+$ php contao-console cache:clear --env=prod
+```

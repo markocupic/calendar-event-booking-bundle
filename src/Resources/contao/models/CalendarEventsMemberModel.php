@@ -54,6 +54,7 @@ class CalendarEventsMemberModel extends \Model
         return false;
     }
 
+
     /**
      * @param $memberId
      * @return array
@@ -69,10 +70,10 @@ class CalendarEventsMemberModel extends \Model
         }
 
         $objEvents = \Database::getInstance()->prepare('SELECT * FROM tl_calendar_events WHERE endDate>? ORDER BY startDate')->execute(time());
-        while($objEvents->next())
+        while ($objEvents->next())
         {
             $objJoinedEvents = \Database::getInstance()->prepare('SELECT * FROM tl_calendar_events_member WHERE sacMemberId=? AND pid=?')->limit(1)->execute($objMember->sacMemberId, $objEvents->id);
-            if($objJoinedEvents->numRows)
+            if ($objJoinedEvents->numRows)
             {
                 $arr['id'] = $objEvents->id;
                 $arr['dateSpan'] = ($objEvents->startDate != $objEvents->endDate) ? \Date::parse('d.m.', $objEvents->startDate) . ' - ' . \Date::parse('d.m.Y', $objEvents->endDate) : \Date::parse('d.m.Y', $objEvents->startDate);
@@ -86,7 +87,6 @@ class CalendarEventsMemberModel extends \Model
 
         return $arrEvents;
     }
-
 
 
     /**
@@ -104,10 +104,10 @@ class CalendarEventsMemberModel extends \Model
         }
 
         $objEvents = \Database::getInstance()->prepare('SELECT * FROM tl_calendar_events WHERE endDate<? ORDER BY startDate')->execute(time());
-        while($objEvents->next())
+        while ($objEvents->next())
         {
             $objJoinedEvents = \Database::getInstance()->prepare('SELECT * FROM tl_calendar_events_member WHERE sacMemberId=? AND pid=?')->limit(1)->execute($objMember->sacMemberId, $objEvents->id);
-            if($objJoinedEvents->numRows)
+            if ($objJoinedEvents->numRows)
             {
                 $arr['id'] = $objEvents->id;
                 $arr['dateSpan'] = ($objEvents->startDate != $objEvents->endDate) ? \Date::parse('d.m.', $objEvents->startDate) . ' - ' . \Date::parse('d.m.Y', $objEvents->endDate) : \Date::parse('d.m.Y', $objEvents->startDate);
