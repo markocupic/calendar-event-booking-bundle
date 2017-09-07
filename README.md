@@ -16,7 +16,7 @@ Erstellen der globale ContaoManagerPlugin Klasse, welche in einem Symfony App nu
 /**
  * @copyright  Marko Cupic 2017 <m.cupic@gmx.ch>
  * @author     Marko Cupic
- * @package    Calendar Extended Bundle
+ * @package    Calendar Event Booking Bundle
  * @license    LGPL-3.0+
  * @see        https://github.com/markocupic/calendar-event-booking-bundle
  * @see        https://github.com/markocupic/employee-bundle
@@ -66,7 +66,7 @@ Damit die Plugin Klasse und die Erweiterung auch vom Composer Class Autoloader g
         "app/ContaoManagerPlugin.php"
     ],
     "psr-4": {
-        "Markocupic\\CalendarExtendedBundle\\": "src/"
+        "Markocupic\\CalendarEventBookingBundle\\": "src/"
     }
 }
 ```
