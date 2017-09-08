@@ -56,7 +56,7 @@ class ContaoManagerPlugin implements BundlePluginInterface
 ```
 Dieser Schritt ersetzt den Eintrag in der `app/AppKernel.php` bei einer `contao/standard-edition` Installation.
 
-!!! Wichtig - Wichtig!!!
+#### !!! Wichtig - Wichtig!!!
 Falls im lokalen Bundle unter ```src/vendorname/bundlename/src/ContaoManager``` eine Klasse  ```Plugin``` abgelegt ist, sollte diese gelöscht oder (etwas weniger brachial) das übergeordnete Verzeichnis ```src/vendorname/bundlename/src/ContaoManager``` umbenannt werden, damit der ContaoManager nicht dazwischenschiest und Laden des Bundles berhindert.
 
 ### Anpassen der composer.json im ROOT
