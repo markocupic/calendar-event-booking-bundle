@@ -10,6 +10,7 @@
 
 namespace Markocupic\CalendarEventBookingBundle;
 
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Email;
 use Contao\PageModel;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -21,10 +22,11 @@ use Contao\StringUtil;
 use Contao\CalendarEventsModel;
 use Contao\CalendarEventsMemberModel;
 use Contao\Controller;
-
 use Contao\BackendTemplate;
+use Contao\System;
 use Patchwork\Utf8;
 use Haste\Form\Form;
+use Psr\Log\LogLevel;
 
 /**
  * Class ModuleEventBooking
@@ -298,6 +300,11 @@ class ModuleEventBooking extends Module
 
                 $this->sendEmail($objModel, $objEvent);
 
+                // Log new insert
+                $level = LogLevel::INFO;
+                $logger = System::getContainer()->get('monolog.logger.contao');
+                $strText = 'New booking for event with title "' . $objEvent->title . '"';
+                $logger->log($level, $strText, array('contao' => new ContaoContext(__METHOD__, $level)));
 
                 $objPageModel = PageModel::findByPk($this->jumpTo);
                 if ($objPageModel === null)
@@ -322,7 +329,7 @@ class ModuleEventBooking extends Module
     {
 
         $objEmail = new Email();
-        $strBody = html_entity_decode ($objEvent->bookingConfirmationEmailBody);
+        $strBody = html_entity_decode($objEvent->bookingConfirmationEmailBody);
 
         // Set arrData for Simple Tokens replacing
         $arrData['gender'] = $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender];
