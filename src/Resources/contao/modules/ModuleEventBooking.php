@@ -244,20 +244,19 @@ class ModuleEventBooking extends Module
         }
 
 
-        // Need a checkbox?
+        // Add term of use
         $objForm->addFormField('termsOfUse', array(
             'label' => array('Nutzungsbedingungen', 'Ich bin mit den Nutzungsbedingungen einverstanden.'),
             'inputType' => 'checkbox',
             'eval' => array('mandatory' => true)
         ));
 
-        // Need a checkbox?
+        // Add a captcha
         $objForm->addFormField('captcha', array(
-            'label' => array('Nutzungsbedingungen', 'Ich bin mit den Nutzungsbedingungen einverstanden.'),
+            'label' => array('Sicherheitsfrage', 'Bitte beantworten Sie die Sicherheitsfrage..'),
             'inputType' => 'captcha',
             'eval' => array('mandatory' => true)
         ));
-
 
         // Let's add  a submit button
         $objForm->addFormField('submit', array(
@@ -266,6 +265,7 @@ class ModuleEventBooking extends Module
         ));
 
 
+        // Save to database and send email
         $objModel = new CalendarEventsMemberModel();
         $objForm->bindModel($objModel);
         $blnHasError = false;
@@ -296,6 +296,7 @@ class ModuleEventBooking extends Module
                 $objModel->email = strtolower($objModel->email);
                 $objModel->addedOn = time();
                 $objModel->tstamp = time();
+                $objModel->bookingToken = md5(microtime()) . $objModel->id;
                 $objModel->save();
 
                 $this->sendEmail($objModel, $objEvent);

@@ -244,7 +244,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'sorting' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => array('maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'feEditable' => true, 'feViewable' => true, 'feGroup' => 'contact', 'tl_class' => 'w50'),
+            'eval' => array('maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(64) NOT NULL default ''"
         ),
         'email' => array
@@ -254,7 +254,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'sorting' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => array('mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'unique' => false, 'decodeEntities' => true, 'feEditable' => true, 'feViewable' => true, 'feGroup' => 'contact', 'tl_class' => 'w50'),
+            'eval' => array('mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'unique' => false, 'decodeEntities' => true, 'tl_class' => 'w50'),
             'sql' => "varchar(255) NOT NULL default ''"
         ),
         'escorts' => array
@@ -267,6 +267,16 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'eval' => array('maxlength' => 3, 'tl_class' => 'w50'),
             'sql' => "int(3) unsigned NULL"
         ),
+        'bookingToken' => array
+        (
+            'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingToken'],
+            'filter' => true,
+            'sorting' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => array('maxlength' => 255, 'tl_class' => 'w50'),
+            'sql' => "varchar(255) NOT NULL default ''"
+        )
     )
 );
 
