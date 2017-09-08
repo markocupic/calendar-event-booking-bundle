@@ -298,9 +298,11 @@ class ModuleEventBooking extends Module
                 $objModel->addedOn = time();
                 $objModel->tstamp = time();
                 $objModel->save();
-                $objModel->bookingToken = md5(microtime()) . $objModel->id;
+
+                // Add a booking token
+                $objModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objModel->email)) . $objModel->id;
                 $objModel->save();
-                
+
                 // Send email
                 $this->sendEmail($objModel, $objEvent);
 
