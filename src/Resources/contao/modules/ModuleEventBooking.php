@@ -24,6 +24,7 @@ use Contao\CalendarEventsMemberModel;
 use Contao\Controller;
 use Contao\BackendTemplate;
 use Contao\System;
+use Haste\Util\Url;
 use Patchwork\Utf8;
 use Haste\Form\Form;
 use Psr\Log\LogLevel;
@@ -312,9 +313,10 @@ class ModuleEventBooking extends Module
                 {
                     Controller::reload();
                 }
-                Controller::redirect($objPageModel->getFrontendUrl());
 
-
+                // Redirect to the jumpTo page
+                $strRedirectUrl = Url::addQueryString('bookingToken=' . $objModel->bookingToken, $objPageModel->getFrontendUrl());
+                Controller::redirect($strRedirectUrl);
             }
 
         }
