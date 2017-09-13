@@ -15,9 +15,9 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callba
 $defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('{date_legend', '{booking_options_legend:hide},addBookingForm;{date_legend', $defaultPalette);
 
-// Palettes (add city and street)
+// Palettes (add postal, city and street)
 $defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
-$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('location', 'location,street,city', $defaultPalette);
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('location', 'location,street,postal,city', $defaultPalette);
 
 
 // Subpalettes & __selector__
@@ -35,7 +35,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] 
 );
 
 
-
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['street'],
     'exclude' => true,
@@ -43,8 +42,17 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
     'sorting' => true,
     'flag' => 1,
     'inputType' => 'text',
-    'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'eval' => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''",
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['postal'],
+    'exclude' => true,
+    'search' => true,
+    'inputType' => 'text',
+    'eval' => array('maxlength' => 32, 'tl_class' => 'w50'),
+    'sql' => "varchar(32) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
@@ -54,7 +62,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
     'sorting' => true,
     'flag' => 1,
     'inputType' => 'text',
-    'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'eval' => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
     'sql' => "varchar(255) NOT NULL default ''",
 );
 
