@@ -12,6 +12,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['confirmation_legend'] = "Benachrichti
 
 
 // Fields
+$GLOBALS['TL_LANG']['tl_calendar_events']['street'] = array("Strasse", "Geben Sie bitte eine Strasse an.");
+$GLOBALS['TL_LANG']['tl_calendar_events']['city'] = array("Ort", "Geben Sie bitte einen Ort an.");
 $GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'] = array("Buchungsoptionen öffnen", 'Öffnen Sie die Buchungsoptionen.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'] = array("Maximale Anzahl Begleitpersonen pro Teilnehmer", "Legen Sie die maximal mögliche Anzahl an Begleitpersonen pro Teilnehmer fest.");
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'] = array("Buchung möglich ab:", "Legen Sie fest, ab welchem Zeitpunkt eine Buchung möglich ist.");

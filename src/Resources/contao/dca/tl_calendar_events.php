@@ -15,6 +15,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callba
 $defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('{date_legend', '{booking_options_legend:hide},addBookingForm;{date_legend', $defaultPalette);
 
+// Palettes (add city and street)
+$defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('location', 'location,street,city', $defaultPalette);
+
+
 // Subpalettes & __selector__
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,emailFromName,emailFrom,bookingConfirmationEmailBody;';
@@ -30,6 +35,29 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] 
 );
 
 
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['street'],
+    'exclude' => true,
+    'search' => true,
+    'sorting' => true,
+    'flag' => 1,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''",
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['city'],
+    'exclude' => true,
+    'search' => true,
+    'sorting' => true,
+    'flag' => 1,
+    'inputType' => 'text',
+    'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql' => "varchar(255) NOT NULL default ''",
+);
+
 // Enable booking options
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'],
@@ -38,7 +66,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
     'eval' => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
     'sql' => "char(1) NOT NULL default ''"
 );
-
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'],
