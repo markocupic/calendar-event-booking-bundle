@@ -157,6 +157,10 @@ class ModuleEventBooking extends Module
         switch ($case)
         {
             case 'bookingPossible':
+                if ($this->form > 0)
+                {
+                    $this->Template->form = $this->form;
+                }
                 break;
             case 'bookingNotYetPossible':
                 break;
