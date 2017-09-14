@@ -43,6 +43,20 @@ class ValidateForms
      */
     public function compileFormFields($arrFields, $formId, $objForm)
     {
+        // Do not list input fields on certain conditions
+        if ($formId == 'auto_event-booking-form')
+        {
+            $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
+            if ($objEvent !== null)
+            {
+                $maxEscorts = $objEvent->maxEscortsPerMember;
+                if ($maxEscorts < 1)
+                {
+                    unset($arrFields['escorts']);
+                }
+            }
+        }
+
         return $arrFields;
     }
 
@@ -168,6 +182,7 @@ class ValidateForms
             {
                 $objModel = new CalendarEventsMemberModel();
                 $objModel->setRow($arrSubmitted);
+                $objModel->escorts = $objModel->escorts > 0 ? $objModel->escorts : 0;
                 $objModel->pid = $objEvent->id;
                 $objModel->email = strtolower($arrSubmitted['email']);
                 $objModel->addedOn = time();
