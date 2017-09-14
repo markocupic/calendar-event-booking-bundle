@@ -43,7 +43,7 @@ class ValidateForms
      */
     public function compileFormFields($arrFields, $formId, $objForm)
     {
-        // Do not list input fields on certain conditions
+        // Do not list input fields under certain conditions
         if ($formId == 'auto_event-booking-form')
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
