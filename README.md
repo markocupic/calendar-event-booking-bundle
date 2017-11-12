@@ -65,7 +65,7 @@ Damit die Plugin Klasse und die Erweiterung auch vom Composer Class Autoloader g
 ```json
 "autoload": {
     "classmap": [
-        "src/,
+        "src/",
         "app/ContaoManagerPlugin.php"
     ],
     "psr-4": {
