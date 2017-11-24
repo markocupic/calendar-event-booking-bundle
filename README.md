@@ -4,7 +4,11 @@ Mit dieser Contao 4 Erweiterung werden Events buchbar. Die Extension erweitert d
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Anmeldeformular einblenden.
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id muss deshalb zwingender Bestandteil der Url sein.
 
-Zu jedem Event lassen sich zusätzlich im Backend die Event Teilnehmer einsehen und als csv-Datei downloaden.
+Erstellen Sie mit dem Contao Formulargenerato die nötigen Felder. Das Formular sollte die ID "event-booking-form" bergeben bekommen, damit der validateForm Hook beim Absenden des Formulars aktiviert wird. Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
+firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
+(Weitere Felder müssen zuvor in tl_calendar_events_member angelegt werden.)
+Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern eines CSV-Exporta aus dem Backend zu machen.
+
 
 ## Contao Bundle lokal und nicht von packagist oder einem anderen Repository laden
 Möchte man das Bundle aus einer lokalen Quelle laden und dann unter `contao/managed-edition` laufen lassen, sind folgende Schritte notwendig:
