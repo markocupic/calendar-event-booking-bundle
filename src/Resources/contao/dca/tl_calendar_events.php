@@ -1,5 +1,8 @@
 <?php
+
 use Contao\Message;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
 
 /**
  * Table tl_calendar_events
@@ -8,21 +11,24 @@ use Contao\Message;
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
 
+
 // Overwrite child record callback callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = array('tl_calendar_event_booking', 'listEvents');
 
+
 // Palettes
-$defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
-$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('{date_legend', '{booking_options_legend:hide},addBookingForm;{date_legend', $defaultPalette);
+PaletteManipulator::create()
+    ->addLegend('booking_options_legend', 'details_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField(array('addBookingForm'), 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField(array('street', 'postal', 'city'), 'location', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->applyToPalette('default', 'tl_calendar_events');
 
-// Palettes (add postal, city and street)
-$defaultPalette = $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'];
-$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace('location', 'location,street,postal,city', $defaultPalette);
 
-
-// Subpalettes & __selector__
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,emailFromName,emailFrom,bookingConfirmationEmailBody;';
+
+
+
 
 // Onsubmit callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_event_booking', 'adjustBookingDate');
