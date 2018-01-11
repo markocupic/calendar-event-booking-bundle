@@ -13,7 +13,7 @@
     "php": "^5.6|^7.0",
     "symfony/framework-bundle": "^3.3",
     "contao/core-bundle": "^4.4",
-    "markocupic/export_table": "^1.1",
+    "markocupic/export_table": "^2.0",
     "codefog/contao-haste": "^4.17"
   },
   "autoload": {
