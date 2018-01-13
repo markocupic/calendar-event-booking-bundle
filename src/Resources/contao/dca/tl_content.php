@@ -1,9 +1,10 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Marko
- * Date: 18.10.2016
- * Time: 14:07
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
 if (Input::get('do') == 'calendar_sac')

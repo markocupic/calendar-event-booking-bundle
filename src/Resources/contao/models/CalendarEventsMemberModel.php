@@ -1,26 +1,18 @@
 <?php
 
 /**
- * Contao Open Source CMS
- * Copyright (C) 2005-2012 Leo Feyer
- * @package import_from_csv
- * @author Marko Cupic 2014, extension sponsered by Rainer-Maria Fritsch - Fast-Doc UG, Berlin
- * @link https://github.com/markocupic/import_from_csv
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 
 namespace Contao;
 
 /**
  * Class CalendarEventsMemberModel
- * Reads and writes tl_calendar_events_member
- * Copyright: 2016 Marko Cupic
- * @author Marko Cupic <m.cupic@gmx.ch>
- * @package sacpilatus-bundle
+ * @package Contao
  */
 class CalendarEventsMemberModel extends \Model
 {

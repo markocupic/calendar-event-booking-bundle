@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2016 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
 use Markocupic\ExportTable\ExportTable;

@@ -1,23 +1,24 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Lenovo
- * Date: 13.09.2017
- * Time: 15:34
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
 namespace Markocupic\CalendarEventBookingBundle;
 
-use Contao\Widget;
+use Contao\CalendarEventsMemberModel;
+use Contao\CalendarEventsModel;
+use Contao\Controller;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Email;
-use Contao\PageModel;
 use Contao\Input;
+use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\CalendarEventsModel;
-use Contao\CalendarEventsMemberModel;
-use Contao\Controller;
 use Contao\System;
+use Contao\Widget;
 use Haste\Util\Url;
 use Psr\Log\LogLevel;
 
@@ -44,7 +45,7 @@ class ValidateForms
     public function compileFormFields($arrFields, $formId, $objForm)
     {
         // Do not list input fields under certain conditions
-        if ($formId == 'auto_event-booking-form')
+        if ($formId === 'auto_event-booking-form')
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)
@@ -70,9 +71,9 @@ class ValidateForms
      */
     public function loadFormField(Widget $objWidget, $strForm, $arrForm, $objForm)
     {
-        if ($arrForm['formID'] == 'event-booking-form')
+        if ($arrForm['formID'] === 'event-booking-form')
         {
-            if ($objWidget->name == 'escorts')
+            if ($objWidget->name === 'escorts')
             {
                 $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
                 if ($objEvent !== null)
@@ -85,7 +86,7 @@ class ValidateForms
                         {
                             $opt[] = array(
                                 'value' => $i,
-                                'label' => $i
+                                'label' => $i,
                             );
                         }
                         $objWidget->options = serialize($opt);
@@ -108,14 +109,15 @@ class ValidateForms
      */
     public function validateFormField(Widget $objWidget, $formId, $arrForm, $objForm)
     {
-        if ($arrForm['formID'] == 'event-booking-form')
+        if ($arrForm['formID'] === 'event-booking-form')
         {
             // Do not auto save anything to the database, this will be done manualy in the processFormData method
             $objForm->storeValues = '';
 
-            if ($objWidget->name == 'email')
+
+            // Check if user is already registered
+            if ($objWidget->name === 'email')
             {
-                // Check if user is already registered
                 if ($objWidget->value != '')
                 {
 
@@ -124,12 +126,29 @@ class ValidateForms
                     {
                         $arrOptions = array(
                             'column' => array('tl_calendar_events_member.email=?', 'tl_calendar_events_member.pid=?'),
-                            'value' => array(strtolower($objWidget->value), $objEvent->id)
+                            'value'  => array(strtolower($objWidget->value), $objEvent->id),
                         );
                         $objMember = CalendarEventsMemberModel::findAll($arrOptions);
                         if ($objMember !== null)
                         {
-                            $errorMsg = sprintf('Eine Anmeldung mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.', strtolower(Input::post('email')));
+                            $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'], strtolower(Input::post('email')));
+                            $objWidget->addError($errorMsg);
+                        }
+                    }
+                }
+            }
+
+            // Check maxEscortsPerMember
+            if ($objWidget->name === 'escorts')
+            {
+                if ($objWidget->value > 0)
+                {
+                    $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
+                    if ($objEvent !== null)
+                    {
+                        if ($objWidget->value > $objEvent->maxEscortsPerMember)
+                        {
+                            $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'], $objEvent->maxEscortsPerMember);
                             $objWidget->addError($errorMsg);
                         }
                     }
@@ -175,7 +194,7 @@ class ValidateForms
     public function processFormData($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm)
     {
 
-        if ($arrForm['formID'] == 'event-booking-form')
+        if ($arrForm['formID'] === 'event-booking-form')
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)

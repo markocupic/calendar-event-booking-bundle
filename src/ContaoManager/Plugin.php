@@ -1,12 +1,12 @@
 <?php
+
 /**
- * @copyright  Marko Cupic 2017 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    Calendar Event Booking Bundle
- * @license    LGPL-3.0+
- * @see	       https://github.com/markocupic/calendar-event-booking-bundle
- *
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
+
 namespace Markocupic\CalendarEventBookingBundle\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;

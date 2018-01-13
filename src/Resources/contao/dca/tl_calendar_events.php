@@ -1,7 +1,14 @@
 <?php
 
-use Contao\Message;
+/**
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
+ */
+
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\Message;
 
 
 /**
@@ -28,124 +35,122 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBoo
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,emailFromName,emailFrom,bookingConfirmationEmailBody;';
 
 
-
-
 // Onsubmit callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_event_booking', 'adjustBookingDate');
 
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = array(
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
-    'href' => 'do=calendar&table=tl_calendar_events_member',
-    'icon' => 'bundles/markocupiccalendareventbooking/icons/group.png'
+    'href'  => 'do=calendar&table=tl_calendar_events_member',
+    'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
 );
 
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['street'],
-    'exclude' => true,
-    'search' => true,
-    'sorting' => true,
-    'flag' => 1,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['street'],
+    'exclude'   => true,
+    'search'    => true,
+    'sorting'   => true,
+    'flag'      => 1,
     'inputType' => 'text',
-    'eval' => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
-    'sql' => "varchar(255) NOT NULL default ''",
+    'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql'       => "varchar(255) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['postal'],
-    'exclude' => true,
-    'search' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['postal'],
+    'exclude'   => true,
+    'search'    => true,
     'inputType' => 'text',
-    'eval' => array('maxlength' => 32, 'tl_class' => 'w50'),
-    'sql' => "varchar(32) NOT NULL default ''"
+    'eval'      => array('maxlength' => 32, 'tl_class' => 'w50'),
+    'sql'       => "varchar(32) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['city'],
-    'exclude' => true,
-    'search' => true,
-    'sorting' => true,
-    'flag' => 1,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['city'],
+    'exclude'   => true,
+    'search'    => true,
+    'sorting'   => true,
+    'flag'      => 1,
     'inputType' => 'text',
-    'eval' => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
-    'sql' => "varchar(255) NOT NULL default ''",
+    'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql'       => "varchar(255) NOT NULL default ''",
 );
 
 // Enable booking options
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'],
-    'exclude' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'],
+    'exclude'   => true,
     'inputType' => 'checkbox',
-    'eval' => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
-    'sql' => "char(1) NOT NULL default ''"
+    'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+    'sql'       => "char(1) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'],
-    'exclude' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'],
+    'exclude'   => true,
     'inputType' => 'text',
-    'eval' => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-    'sql' => "int(10) unsigned NULL"
+    'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+    'sql'       => "int(10) unsigned NULL",
 );
 
 // bookingStartDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'],
-    'exclude' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'],
+    'exclude'   => true,
     'inputType' => 'text',
-    'eval' => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-    'sql' => "int(10) unsigned NULL"
+    'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+    'sql'       => "int(10) unsigned NULL",
 );
 
 // maxMembers
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxMembers'],
-    'exclude' => true,
-    'search' => true,
-    'default' => 0,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxMembers'],
+    'exclude'   => true,
+    'search'    => true,
+    'default'   => 0,
     'inputType' => 'text',
-    'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
-    'sql' => "smallint(5) unsigned NOT NULL default '0'"
+    'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
 // guestsPerMember
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'],
-    'exclude' => true,
-    'search' => true,
-    'default' => 0,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'],
+    'exclude'   => true,
+    'search'    => true,
+    'default'   => 0,
     'inputType' => 'text',
-    'eval' => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
-    'sql' => "smallint(5) unsigned NOT NULL default '0'"
+    'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
 // Email from name
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['emailFromName'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFromName'],
-    'exclude' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFromName'],
+    'exclude'   => true,
     'inputType' => 'text',
-    'eval' => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
-    'sql' => "varchar(255) NOT NULL default ''"
+    'eval'      => array('mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'),
+    'sql'       => "varchar(255) NOT NULL default ''",
 );
 
 // Email from address
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['emailFrom'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFrom'],
-    'exclude' => true,
-    'search' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFrom'],
+    'exclude'   => true,
+    'search'    => true,
     'inputType' => 'text',
-    'eval' => array('mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'),
-    'sql' => "varchar(255) NOT NULL default ''"
+    'eval'      => array('mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'),
+    'sql'       => "varchar(255) NOT NULL default ''",
 );
 
 // bookingConfirmationEmailBody
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingConfirmationEmailBody'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingConfirmationEmailBody'],
-    'exclude' => true,
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingConfirmationEmailBody'],
+    'exclude'   => true,
     'inputType' => 'textarea',
-    'eval' => array('tl_class' => 'm12 clr', 'mandatory' => true),
-    'sql' => "text NULL"
+    'eval'      => array('tl_class' => 'm12 clr', 'mandatory' => true),
+    'sql'       => "text NULL",
 );
 
 

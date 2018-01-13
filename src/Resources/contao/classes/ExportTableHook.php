@@ -1,11 +1,10 @@
 <?php
 
 /**
- * SAC Pilatus web plugin
- * Copyright (c) 2008-2017 Marko Cupic
- * @package sacpilatus-bundle
- * @author Marko Cupic m.cupic@gmx.ch, 2017
- * @link    https://sac-kurse.kletterkader.com
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
 namespace Markocupic\CalendarEventBookingBundle;

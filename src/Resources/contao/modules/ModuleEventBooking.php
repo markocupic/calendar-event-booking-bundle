@@ -1,33 +1,26 @@
 <?php
 
 /**
- * Contao Open Source CMS
- *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
  */
 
 namespace Markocupic\CalendarEventBookingBundle;
 
-use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\Email;
-use Contao\PageModel;
-use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\Module;
-use Contao\Input;
-use Contao\Environment;
-use Contao\Config;
-use Contao\StringUtil;
-use Contao\CalendarEventsModel;
-use Contao\CalendarEventsMemberModel;
-use Contao\Controller;
 use Contao\BackendTemplate;
-use Contao\System;
-use Haste\Util\Url;
+use Contao\CalendarEventsMemberModel;
+use Contao\CalendarEventsModel;
+use Contao\Config;
+use Contao\Controller;
+use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\Environment;
+use Contao\Input;
+use Contao\Module;
+use Contao\PageModel;
+use Contao\StringUtil;
 use Patchwork\Utf8;
-use Haste\Form\Form;
-use Psr\Log\LogLevel;
 
 /**
  * Class ModuleEventBooking
@@ -126,8 +119,9 @@ class ModuleEventBooking extends Module
         $this->Template->setData($objEvent->row());
         $this->Template->id = $this->id;
 
+        // Count bookings if event is not fully booked
+        $countBookings = CalendarEventsMemberModel::countBy('pid', $objEvent->id);
 
-        $case = 'bookingPossible';
         if ($objEvent->bookingStartDate > 0 && $objEvent->bookingStartDate > time())
         {
             // User has to wait. Booking is not possible yet
@@ -138,17 +132,14 @@ class ModuleEventBooking extends Module
             // User is to late the sign in deadline has proceeded
             $case = 'bookingNoLongerPossible';
         }
+        elseif ($countBookings > 0 && $objEvent->maxMembers > 0 && $countBookings >= $objEvent->maxMembers)
+        {
+            // Check if event is  fully booked
+            $case = 'eventFullyBooked';
+        }
         else
         {
-            // Check if event is not fully booked
-            $countBookings = CalendarEventsMemberModel::countBy('pid', $objEvent->id);
-            if ($countBookings > 0)
-            {
-                if ($objEvent->maxMembers > 0 && $countBookings >= $objEvent->maxMembers)
-                {
-                    $case = 'eventFullyBooked';
-                }
-            }
+            $case = 'bookingPossible';
         }
 
         $this->Template->case = $case;
