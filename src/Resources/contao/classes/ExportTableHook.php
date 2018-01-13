@@ -33,9 +33,9 @@ class ExportTableHook extends System
      */
     public function exportBookingListHook($field, $value, $strTable, $dataRecord, $dca)
     {
-        if ($strTable == 'tl_calendar_events_member')
+        if ($strTable === 'tl_calendar_events_member')
         {
-            if ($field == 'addedOn')
+            if ($field === 'addedOn')
             {
                 if (intval($value))
                 {
@@ -43,7 +43,7 @@ class ExportTableHook extends System
                 }
             }
 
-            if ($field == 'pid')
+            if ($field === 'pid')
             {
                 $objModel = CalendarEventsModel::findByPk($value);
                 if ($objModel !== null)

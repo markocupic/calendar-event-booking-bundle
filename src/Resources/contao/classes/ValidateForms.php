@@ -141,7 +141,12 @@ class ValidateForms
             // Check maxEscortsPerMember
             if ($objWidget->name === 'escorts')
             {
-                if ($objWidget->value > 0)
+                if($objWidget->value < 0)
+                {
+                    $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['enterPosIntVal']);
+                    $objWidget->addError($errorMsg);
+                }
+                elseif ($objWidget->value > 0)
                 {
                     $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
                     if ($objEvent !== null)

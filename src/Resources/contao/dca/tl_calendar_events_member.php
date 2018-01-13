@@ -27,7 +27,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
         ),
         'onload_callback' => array
         (
-            //array('tl_calendar_events_member', 'setStatus'),
             array('tl_calendar_events_member', 'onloadCallback'),
         ),
         'ondelete_callback' => array
@@ -143,19 +142,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'eval' => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
             'sql' => "varchar(10) NOT NULL default ''"
         ),
-        /**
-         * 'status' => array
-         * (
-         * 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['status'],
-         * 'filter' => true,
-         * 'inputType' => 'select',
-         * 'reference' => &$GLOBALS['TL_LANG']['tl_calendar_events_member'],
-         * 'options' => array('accepted', 'refused', 'waitlisted'),
-         * 'eval' => array('doNotShow' => true, 'readonly' => false, 'includeBlankOption' => true, 'blankOptionLabel' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['notConfirmed'], 'maxlength' => 255, 'tl_class' => 'w50'),
-         * 'sql' => "varchar(255) NOT NULL default ''"
-         * ),
-         **/
-
         'notes' => array
         (
             'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'],
@@ -307,7 +293,18 @@ class tl_calendar_events_member extends Backend
         if (Input::get('act') == 'downloadRegistrationList')
         {
             $opt = array();
-            $opt['arrSelectedFields'] = array('pid', 'addedOn', 'firstname', 'lastname', 'gender', 'street', 'postal', 'city', 'phone', 'email');
+
+            // Add fields
+            $arrSkip = array('bookingToken');
+            $opt['arrSelectedFields'] = array();
+            foreach($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'] as $k => $v)
+            {
+                if(!in_array($k, $arrSkip))
+                {
+                    $opt['arrSelectedFields'][] = $k;
+                }
+            }
+
             $opt['exportType'] = 'csv';
             $opt['arrFilter'][] = array('pid=?', Input::get('id'));
             $opt['strDestinationCharset'] = 'windows-1252';
@@ -315,8 +312,5 @@ class tl_calendar_events_member extends Backend
             ExportTable::exportTable('tl_calendar_events_member', $opt);
             exit;
         }
-
     }
-
-
 }
