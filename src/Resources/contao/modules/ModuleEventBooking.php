@@ -75,11 +75,11 @@ class ModuleEventBooking extends Module
             return '';
         }
 
-        // Get the current event && return empty string if addBookingForm isn't set
+        // Get the current event && return empty string if addBookingForm isn't set or event is not published
         $objEvent = CalendarEventsModel::findByIdOrAlias(\Input::get('events'));
         if ($objEvent !== null)
         {
-            if (!$objEvent->addBookingForm)
+            if (!$objEvent->addBookingForm || !$objEvent->published)
             {
                 return '';
             }
