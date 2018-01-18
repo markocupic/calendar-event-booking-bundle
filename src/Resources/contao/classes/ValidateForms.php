@@ -16,6 +16,7 @@ use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Email;
 use Contao\Input;
 use Contao\Date;
+use Contao\Config;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
