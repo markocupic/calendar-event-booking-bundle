@@ -15,6 +15,7 @@ use Contao\Controller;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Email;
 use Contao\Input;
+use Contao\Date;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -262,6 +263,8 @@ class ValidateForms
         $arrData['phone'] = $objEventMember->phone;
         $arrData['email'] = $objEventMember->email;
         $arrData['street'] = $objEventMember->street;
+        $arrData['startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
+        $arrData['endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
         $arrData['eventname'] = $objEvent->title;
         $arrData['title'] = $objEvent->title;
         $arrData['escorts'] = $objEventMember->escorts;
@@ -278,5 +281,3 @@ class ValidateForms
 
     }
 }
-
-
