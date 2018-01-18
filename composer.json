@@ -2,7 +2,7 @@
   "name": "markocupic/calendar-event-booking-bundle",
   "type": "contao-bundle",
   "description": "Contao 4 Calendar Event Booking Bundle",
-  "license": "LGPL-3.0+",
+  "license": "MIT",
   "authors": [
     {
       "name": "Marko Cupic",
@@ -35,6 +35,3 @@
     "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
   }
 }
-
-
-
