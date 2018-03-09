@@ -26,13 +26,19 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callba
 // Palettes
 PaletteManipulator::create()
     ->addLegend('booking_options_legend', 'details_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addLegend('notification_center_legend', 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField(array('addBookingForm'), 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField(array('enableNotificationCenter'), 'notification_center_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField(array('street', 'postal', 'city'), 'location', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('default', 'tl_calendar_events');
 
-
+// Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,emailFromName,emailFrom,bookingConfirmationEmailBody;';
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableNotificationCenter';
+
+// Subpalettes
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate;';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 
 
 // Onsubmit callback
@@ -153,6 +159,38 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingConfirmationEmailBody
     'sql'       => "text NULL",
 );
 
+// enableNotificationCenter
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = array(
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'],
+    'exclude'   => true,
+    'inputType' => 'checkbox',
+    'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+    'sql'       => "char(1) NOT NULL default ''",
+);
+
+// eventBookingNotificationCenterIds
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = array(
+    'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationCenterIds'],
+    'exclude'    => true,
+    'search'     => true,
+    'inputType'  => 'select',
+    'foreignKey' => 'tl_nc_notification.title',
+    'eval'       => array('mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
+    'sql'        => "blob NULL",
+    'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+);
+
+// eventBookingNotificationSender
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = array(
+    'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationSender'],
+    'exclude'    => true,
+    'search'     => true,
+    'inputType'  => 'select',
+    'foreignKey' => 'tl_user.name',
+    'eval'       => array('mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'clr'),
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
+    'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+);
 
 /**
  * Class tl_calendar_event_booking
@@ -227,7 +265,7 @@ class tl_calendar_event_booking extends tl_calendar_events
 
             return '<div class="tl_content_left">' . $arrRow['title'] . ' <span style="color:#999;padding-left:3px">[' . $date . ']</span><span style="color:#999;padding-left:3px">[' . $GLOBALS['TL_LANG']['MSC']['bookings'] . ': ' . $countBookings . 'x]</span></div>';
         }
-        else 
+        else
         {
             return parent::listEvents($arrRow);
         }

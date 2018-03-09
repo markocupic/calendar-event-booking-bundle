@@ -7,7 +7,15 @@ Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias o
 Erstellen Sie mit dem Contao Formulargenerator die nötigen Felder. Dem Formular sollte die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiviert wird. Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 (Zusätliche gewünschte Felder müssen zuvor in tl_calendar_events_member angelegt werden.)
+
+## E-Mail Buchungsbestätigung mit dem Notification Center
+Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center und versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder Eventorganisator.
+
 Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export aus dem Backend heraus zu machen.
+![Notification Center](doc/notification_center.jpg?raw=true)
+
+
+
 
 
 ## Anderes Thema: Contao Bundle lokal und nicht von packagist oder einem anderen Repository laden

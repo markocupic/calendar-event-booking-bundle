@@ -11,17 +11,18 @@ namespace Markocupic\CalendarEventBookingBundle;
 
 use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
+use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\Email;
-use Contao\Input;
 use Contao\Date;
-use Contao\Config;
+use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\UserModel;
 use Contao\Widget;
 use Haste\Util\Url;
+use NotificationCenter\Model\Notification;
 use Psr\Log\LogLevel;
 
 
@@ -34,7 +35,7 @@ class ValidateForms
      */
     public function postUpload($arrTarget)
     {
-
+        // empty
     }
 
 
@@ -143,7 +144,7 @@ class ValidateForms
             // Check maxEscortsPerMember
             if ($objWidget->name === 'escorts')
             {
-                if($objWidget->value < 0)
+                if ($objWidget->value < 0)
                 {
                     $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['enterPosIntVal']);
                     $objWidget->addError($errorMsg);
@@ -187,6 +188,7 @@ class ValidateForms
      */
     public function storeFormData($arrSet, $objForm)
     {
+        // empty
         return $arrSet;
     }
 
@@ -219,8 +221,8 @@ class ValidateForms
                 $objModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objModel->email)) . $objModel->id;
                 $objModel->save();
 
-                // Send email
-                $this->sendEmail($objModel, $objEvent);
+                // Send notification
+                $this->notify($objModel, $objEvent);
 
                 // Log new insert
                 $level = LogLevel::INFO;
@@ -237,7 +239,6 @@ class ValidateForms
                         // Redirect to the jumpTo page
                         $strRedirectUrl = Url::addQueryString('bookingToken=' . $objModel->bookingToken, $objPageModel->getFrontendUrl());
                         Controller::redirect($strRedirectUrl);
-
                     }
                 }
             }
@@ -248,37 +249,64 @@ class ValidateForms
      * @param $objEventMember
      * @param $objEvent
      */
-    protected function sendEmail($objEventMember, $objEvent)
+    protected function notify($objEventMember, $objEvent)
     {
 
-        $objEmail = new Email();
-        $strBody = html_entity_decode($objEvent->bookingConfirmationEmailBody);
+        global $objPage;
+        if ($objEvent->enableNotificationCenter)
+        {
+            // Multiple notifications possible
+            $arrNotifications = StringUtil::deserialize($objEvent->eventBookingNotificationCenterIds);
+            if (!empty($arrNotifications) && is_array($arrNotifications))
+            {
+                // Prepare tokens
+                $arrTokens = array();
 
-        // Set arrData for Simple Tokens replacing
-        $arrData['gender'] = $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender];
-        $arrData['firstname'] = $objEventMember->firstname;
-        $arrData['lastname'] = $objEventMember->lastname;
-        $arrData['street'] = $objEventMember->street;
-        $arrData['postal'] = $objEventMember->postal;
-        $arrData['city'] = $objEventMember->city;
-        $arrData['phone'] = $objEventMember->phone;
-        $arrData['email'] = $objEventMember->email;
-        $arrData['street'] = $objEventMember->street;
-        $arrData['startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
-        $arrData['endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
-        $arrData['eventname'] = $objEvent->title;
-        $arrData['title'] = $objEvent->title;
-        $arrData['escorts'] = $objEventMember->escorts;
+                $row = $objEventMember->row();
+                foreach ($row as $k => $v)
+                {
+                    $arrTokens[$k] = html_entity_decode($v);
+                }
 
-        // Replace Simple Tokens
-        $strBody = StringUtil::parseSimpleTokens($strBody, $arrData);
+                $row = $objEvent->row();
+                foreach ($row as $k => $v)
+                {
+                    $arrTokens[$k] = html_entity_decode($v);
+                }
 
-        // Send E-Mail
-        $objEmail->subject = 'Ihre Anmeldung für ' . $objEvent->title;
-        $objEmail->text = $strBody;
-        $objEmail->from = $objEvent->emailFrom;
-        $objEmail->fromName = $objEvent->emailFromName;
-        $objEmail->sendTo($objEventMember->email);
+                $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
+                if ($objUser !== null)
+                {
+                    $arrTokens['senderName'] = $objUser->name;
+                    $arrTokens['senderEmail'] = $objUser->email;
+                }
 
+                $arrTokens['gender'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+                $arrTokens['eventtitle'] = html_entity_decode($objEvent->title);
+                if ($objEvent->addTime)
+                {
+                    $arrTokens['startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
+                    $arrTokens['endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
+                }
+                else
+                {
+                    $arrTokens['startTime'] = '';
+                    $arrTokens['endTime'] = '';
+                }
+                $arrTokens['startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
+                $arrTokens['endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
+                $arrTokens['dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
+
+                // Send notification (multiple notifications possible)
+                foreach ($arrNotifications as $notificationId)
+                {
+                    $objNotification = Notification::findByPk($notificationId);
+                    if ($objNotification !== null)
+                    {
+                        $objNotification->send($arrTokens, $objPage->language);
+                    }
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,8 @@
     "symfony/framework-bundle": "^3.3",
     "contao/core-bundle": "^4.4",
     "markocupic/export_table": "^2.0",
-    "codefog/contao-haste": "^4.17"
+    "codefog/contao-haste": "^4.17",
+    "terminal42/notification_center": "^1.4"
   },
   "autoload": {
     "psr-4": {
