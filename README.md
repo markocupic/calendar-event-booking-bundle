@@ -11,8 +11,12 @@ firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,not
 ## E-Mail Buchungsbestätigung mit dem Notification Center
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center und versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder Eventorganisator.
 
-Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export aus dem Backend heraus zu machen.
 ![Notification Center](doc/notification_center.jpg?raw=true)
+
+
+Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export aus dem Backend heraus zu machen.
+
+
 
 
 
