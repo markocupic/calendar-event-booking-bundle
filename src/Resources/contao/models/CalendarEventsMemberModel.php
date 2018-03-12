@@ -73,9 +73,7 @@ class CalendarEventsMemberModel extends \Model
                 $arr['registrationId'] = $objJoinedEvents->id;
                 $arrEvents[] = $arr;
             }
-
         }
-
 
         return $arrEvents;
     }
@@ -109,7 +107,6 @@ class CalendarEventsMemberModel extends \Model
             }
 
         }
-
 
         return $arrEvents;
     }

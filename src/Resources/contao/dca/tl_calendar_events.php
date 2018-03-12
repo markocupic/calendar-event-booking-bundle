@@ -7,9 +7,6 @@
  * @license    GNU/LGPL
  */
 
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\Message;
-
 
 /**
  * Table tl_calendar_events
@@ -24,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callba
 
 
 // Palettes
-PaletteManipulator::create()
+Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('booking_options_legend', 'details_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addLegend('notification_center_legend', 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField(array('addBookingForm'), 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
@@ -32,17 +29,20 @@ PaletteManipulator::create()
     ->addField(array('street', 'postal', 'city'), 'location', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('default', 'tl_calendar_events');
 
+
 // Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableNotificationCenter';
 
+
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate;';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 
 
 // Onsubmit callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array('tl_calendar_event_booking', 'adjustBookingDate');
+
 
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = array(
@@ -52,6 +52,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] 
 );
 
 
+// Street
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
     'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['street'],
     'exclude'   => true,
@@ -63,6 +64,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
     'sql'       => "varchar(255) NOT NULL default ''",
 );
 
+// postal
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
     'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['postal'],
     'exclude'   => true,
@@ -72,6 +74,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
     'sql'       => "varchar(32) NOT NULL default ''",
 );
 
+// city
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
     'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['city'],
     'exclude'   => true,
@@ -92,6 +95,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
     'sql'       => "char(1) NOT NULL default ''",
 );
 
+// bookingEndDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
     'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'],
     'exclude'   => true,
@@ -191,83 +195,3 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
     'sql'        => "int(10) unsigned NOT NULL default '0'",
     'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
 );
-
-/**
- * Class tl_calendar_event_booking
- */
-class tl_calendar_event_booking extends tl_calendar_events
-{
-
-    /**
-     * Import the back end user object
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Adjust bookingStartDate and  bookingStartDate
-     *
-     * @param DataContainer $dc
-     */
-    public function adjustBookingDate(DataContainer $dc)
-    {
-        // Return if there is no active record (override all)
-        if (!$dc->activeRecord)
-        {
-            return;
-        }
-
-        $arrSet['bookingStartDate'] = $dc->activeRecord->bookingStartDate;
-        $arrSet['bookingEndDate'] = $dc->activeRecord->bookingEndDate;
-
-        // Set end date
-        if (strlen($dc->activeRecord->bookingEndDate))
-        {
-            if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate)
-            {
-                $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                Message::addInfo('Das Enddatum für den Buchungszeitraum wurde angepasst.', TL_MODE);
-            }
-        }
-
-
-        $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
-    }
-
-    /**
-     * Add the type of input field
-     *
-     * @param array $arrRow
-     *
-     * @return string
-     */
-    public function listEvents($arrRow)
-    {
-        if ($arrRow['addBookingForm'])
-        {
-            $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
-            $span = Calendar::calculateSpan($arrRow['startTime'], $arrRow['endTime']);
-
-            if ($span > 0)
-            {
-                $date = Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
-            }
-            elseif ($arrRow['startTime'] == $arrRow['endTime'])
-            {
-                $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']) . ($arrRow['addTime'] ? ' ' . Date::parse(Config::get('timeFormat'), $arrRow['startTime']) : '');
-            }
-            else
-            {
-                $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']) . ($arrRow['addTime'] ? ' ' . Date::parse(Config::get('timeFormat'), $arrRow['startTime']) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . Date::parse(Config::get('timeFormat'), $arrRow['endTime']) : '');
-            }
-
-            return '<div class="tl_content_left">' . $arrRow['title'] . ' <span style="color:#999;padding-left:3px">[' . $date . ']</span><span style="color:#999;padding-left:3px">[' . $GLOBALS['TL_LANG']['MSC']['bookings'] . ': ' . $countBookings . 'x]</span></div>';
-        }
-        else
-        {
-            return parent::listEvents($arrRow);
-        }
-    }
-}
