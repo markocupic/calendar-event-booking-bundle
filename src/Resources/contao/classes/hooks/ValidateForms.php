@@ -281,7 +281,7 @@ class ValidateForms
                     $arrTokens['senderEmail'] = $objUser->email;
                 }
 
-                $arrTokens['member_gender'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+                $arrTokens['member_salution'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
                 $arrTokens['event_title'] = html_entity_decode($objEvent->title);
                 if ($objEvent->addTime)
                 {
