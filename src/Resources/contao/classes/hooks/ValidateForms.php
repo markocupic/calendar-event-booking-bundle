@@ -296,8 +296,8 @@ class ValidateForms
                 $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
                 if ($objUser !== null)
                 {
-                    $arrTokens['senderName'] = $objUser->name;
-                    $arrTokens['senderEmail'] = $objUser->email;
+                    $arrTokens['organizer_senderName'] = $objUser->name;
+                    $arrTokens['organizer_senderEmail'] = $objUser->email;
                 }
 
                 // Send notification (multiple notifications possible)

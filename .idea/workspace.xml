@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4fbf9bed-a3eb-487b-a588-88c424c48a96" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/classes/dca/tl_calendar_events_member.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/contao/classes/dca/tl_calendar_events_member.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/contao/config/config.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/contao/config/config.php" afterDir="false" />
     </list>
@@ -38,26 +37,26 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="md" value="4" />
-          <entry key="php" value="168" />
+          <entry key="md" value="786" />
+          <entry key="php" value="208" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Markdown" value="4" />
-          <entry key="PHP" value="168" />
+          <entry key="Markdown" value="786" />
+          <entry key="PHP" value="208" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="102">
-                <caret line="6" column="193" selection-start-line="6" selection-start-column="193" selection-end-line="6" selection-end-column="193" />
+              <first_editor relative-caret-position="357">
+                <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
                 <folding>
                   <element signature="e#346#398#0" expanded="true" />
                 </folding>
@@ -70,8 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resources/contao/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+            <state relative-caret-position="867">
+              <caret line="51" column="98" selection-start-line="51" selection-start-column="98" selection-end-line="51" selection-end-column="98" />
               <folding>
                 <element signature="e#7#204#0#PHP" expanded="true" />
               </folding>
@@ -84,10 +83,10 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2397" />
+            <state relative-caret-position="-765" />
           </provider>
         </entry>
       </file>
@@ -102,7 +101,9 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events_member.php">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1020" />
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -113,8 +114,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1071">
-              <caret line="291" selection-start-line="291" selection-end-line="291" />
+            <state relative-caret-position="595">
+              <caret line="299" column="74" lean-forward="true" selection-start-line="299" selection-start-column="74" selection-end-line="299" selection-end-column="74" />
               <folding>
                 <element signature="e#7#204#0#PHP" expanded="true" />
                 <element signature="e#256#293#0#PHP" expanded="true" />
@@ -132,9 +133,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Resources/contao/classes/dca/tl_calendar_events_member.php" />
-        <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/Resources/contao/config/config.php" />
         <option value="$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php" />
+        <option value="$PROJECT_DIR$/src/Resources/contao/config/config.php" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -213,6 +214,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Resources" type="462c0819:PsiDirectoryNode" />
               <item name="contao" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="calendar-event-booking-bundle" type="b2602c69:ProjectViewProjectNode" />
+              <item name="calendar-event-booking-bundle" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Resources" type="462c0819:PsiDirectoryNode" />
+              <item name="contao" type="462c0819:PsiDirectoryNode" />
               <item name="dca" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -266,12 +275,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1534275654558</updated>
-      <workItem from="1534275655965" duration="1984000" />
+      <workItem from="1534275655965" duration="3389000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1984000" />
+    <option name="totallyTimeSpent" value="3389000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1924" height="1176" extended-state="0" />
@@ -312,10 +321,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Resources/contao/languages/de/tl_calendar_events_member.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Resources/contao/classes/dca/tl_calendar_events.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events_member.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-765" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="299" column="74" lean-forward="true" selection-start-line="299" selection-start-column="74" selection-end-line="299" selection-end-column="74" />
+          <folding>
+            <element signature="e#7#204#0#PHP" expanded="true" />
+            <element signature="e#256#293#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Resources/contao/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="3" selection-start-line="7" selection-start-column="3" selection-end-line="7" selection-end-column="3" />
+        <state relative-caret-position="867">
+          <caret line="51" column="98" selection-start-line="51" selection-start-column="98" selection-end-line="51" selection-end-column="98" />
           <folding>
             <element signature="e#7#204#0#PHP" expanded="true" />
           </folding>
@@ -325,39 +361,14 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="102">
-            <caret line="6" column="193" selection-start-line="6" selection-start-column="193" selection-end-line="6" selection-end-column="193" />
+          <first_editor relative-caret-position="357">
+            <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
             <folding>
               <element signature="e#346#398#0" expanded="true" />
             </folding>
           </first_editor>
           <second_editor />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events_member.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resources/contao/languages/de/tl_calendar_events_member.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resources/contao/classes/hooks/ValidateForms.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="291" selection-start-line="291" selection-end-line="291" />
-          <folding>
-            <element signature="e#7#204#0#PHP" expanded="true" />
-            <element signature="e#256#293#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resources/contao/classes/dca/tl_calendar_events.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resources/contao/dca/tl_calendar_events.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2397" />
       </provider>
     </entry>
   </component>

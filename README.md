@@ -1,4 +1,6 @@
 # calendar-event-booking-bundle
+!!! Achtung: Version 3.x ist nicht mehr zu 100% kompatibel zu Version 2.x. In Version >=3.x müssen die Simple Tokens im Notification-Center neu gesetzt werden. Für Eigenschaften die den Event betreffen, braucht es nun das prefix "event_" und für Eigenschaften, die den Teilnehmer betreffen das Präfix "member_".
+
 Mit dieser Contao 4 Erweiterung werden Events buchbar. Die Extension erweitert die Tabelle tl_calendar_events um weitere Felder und erstellt eine zusätzliche Kindtabelle zu tl_calendar_events um die Anmeldungen der gebuchten Events zu speichern.
 
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Anmeldeformular einblenden. 
@@ -13,14 +15,13 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center u
 
 ![Notification Center](doc/notification_center.jpg?raw=true)
 
+### Gebrauch der Simple Tokens im Notification Center
+Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc.
+Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc.
+Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##
 
+## CSV-Export der Teilnehmer
 Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export aus dem Backend heraus zu machen.
-
-
-
-
-
-
 
 ## Anderes Thema: Contao Bundle lokal und nicht von packagist oder einem anderen Repository laden
 Möchte man das Bundle aus einer lokalen Quelle laden und dann unter `contao/managed-edition` laufen lassen, sind folgende Schritte notwendig:
