@@ -34,14 +34,14 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
     'booking-notification' => array
     (
         // Field in tl_nc_language
-        'email_sender_name'    => array('senderName', 'lastname', 'firstname'),
-        'email_sender_address' => array('senderEmail', 'email'),
-        'recipients'           => array('senderEmail', 'email'),
-        'email_recipient_cc'   => array('senderEmail', 'email'),
-        'email_recipient_bcc'  => array('senderEmail', 'email'),
+        'email_sender_name'    => array('senderName', 'member_lastname', 'member_firstname'),
+        'email_sender_address' => array('senderEmail', 'member_email'),
+        'recipients'           => array('senderEmail', 'member_email'),
+        'email_recipient_cc'   => array('senderEmail', 'member_email'),
+        'email_recipient_bcc'  => array('senderEmail', 'member_email'),
         'email_replyTo'        => array('senderEmail'),
-        'email_subject'        => array('gender', 'firstname', 'lastname', 'street', 'postal', 'city', 'phone', 'email', 'street', 'startDate', 'endDate', 'eventtitle', 'escorts', 'senderName', 'senderEmail'),
-        'email_text'           => array('gender', 'firstname', 'lastname', 'street', 'postal', 'city', 'phone', 'email', 'street', 'startDate', 'endDate', 'eventtitle', 'escorts', 'senderName', 'senderEmail'),
-        'email_html'           => array('gender', 'firstname', 'lastname', 'street', 'postal', 'city', 'phone', 'email', 'street', 'startDate', 'endDate', 'eventtitle', 'escorts', 'senderName', 'senderEmail'),
+        'email_subject'        => array('event_*', 'member_*', 'senderName', 'senderEmail'),
+        'email_text'           => array('event_*', 'member_*', 'senderName', 'senderEmail'),
+        'email_html'           => array('event_*', 'member_*', 'senderName', 'senderEmail'),
     ),
 );

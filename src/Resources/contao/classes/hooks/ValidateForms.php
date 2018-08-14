@@ -265,13 +265,13 @@ class ValidateForms
                 $row = $objEventMember->row();
                 foreach ($row as $k => $v)
                 {
-                    $arrTokens[$k] = html_entity_decode($v);
+                    $arrTokens['member_' . $k] = html_entity_decode($v);
                 }
 
                 $row = $objEvent->row();
                 foreach ($row as $k => $v)
                 {
-                    $arrTokens[$k] = html_entity_decode($v);
+                    $arrTokens['event_' . $k] = html_entity_decode($v);
                 }
 
                 $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
@@ -281,21 +281,21 @@ class ValidateForms
                     $arrTokens['senderEmail'] = $objUser->email;
                 }
 
-                $arrTokens['gender'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
-                $arrTokens['eventtitle'] = html_entity_decode($objEvent->title);
+                $arrTokens['member_gender'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+                $arrTokens['event_title'] = html_entity_decode($objEvent->title);
                 if ($objEvent->addTime)
                 {
-                    $arrTokens['startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
-                    $arrTokens['endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
+                    $arrTokens['event_startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
+                    $arrTokens['event_endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
                 }
                 else
                 {
-                    $arrTokens['startTime'] = '';
-                    $arrTokens['endTime'] = '';
+                    $arrTokens['event_startTime'] = '';
+                    $arrTokens['event_endTime'] = '';
                 }
-                $arrTokens['startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
-                $arrTokens['endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
-                $arrTokens['dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
+                $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
+                $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
+                $arrTokens['member_dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId)
