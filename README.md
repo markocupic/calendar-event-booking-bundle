@@ -17,7 +17,9 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center u
 
 ### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc.
+
 Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc.
+
 Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##
 
 ## CSV-Export der Teilnehmer
