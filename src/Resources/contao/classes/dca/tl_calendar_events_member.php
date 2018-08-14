@@ -9,9 +9,7 @@
 use Markocupic\ExportTable\ExportTable;
 
 /**
- * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * Class tl_calendar_events_member
  */
 class tl_calendar_events_member extends Backend
 {

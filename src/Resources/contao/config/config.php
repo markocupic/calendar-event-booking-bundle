@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @copyright  Marko Cupic 2018
+ * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
+ * @package    markocupic/calendar-event-booking-bundle
+ * @license    GNU/LGPL
+ */
+
 // Add child table tl_calendar_events_member to tl_calendar_events
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_member';
 

@@ -4,7 +4,7 @@ Mit dieser Contao 4 Erweiterung werden Events buchbar. Die Extension erweitert d
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Anmeldeformular einblenden. 
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id muss deshalb zwingender Bestandteil der Url sein.
 
-Erstellen Sie mit dem Contao Formulargenerator die nötigen Felder. Dem Formular sollte die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiviert wird. Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
+Erstellen Sie mit dem Contao Formulargenerator die nötigen Felder. Dem Formular sollte die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiv wird. Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 (Zusätliche gewünschte Felder müssen zuvor in tl_calendar_events_member angelegt werden.)
 
