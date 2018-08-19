@@ -25,7 +25,10 @@ use Haste\Util\Url;
 use NotificationCenter\Model\Notification;
 use Psr\Log\LogLevel;
 
-
+/**
+ * Class ValidateForms
+ * @package Markocupic\CalendarEventBookingBundle
+ */
 class ValidateForms
 {
 
@@ -123,7 +126,6 @@ class ValidateForms
             {
                 if ($objWidget->value != '')
                 {
-
                     $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
                     if ($objEvent !== null)
                     {
@@ -176,8 +178,7 @@ class ValidateForms
      */
     public function prepareFormData($arrSubmitted, $arrLabels, $arrFields, $objForm)
     {
-
-
+        // empty
     }
 
 
@@ -259,43 +260,45 @@ class ValidateForms
             $arrNotifications = StringUtil::deserialize($objEvent->eventBookingNotificationCenterIds);
             if (!empty($arrNotifications) && is_array($arrNotifications))
             {
-                // Prepare tokens
                 $arrTokens = array();
 
+                // Prepare tokens for event member and use "member_" as prefix
                 $row = $objEventMember->row();
                 foreach ($row as $k => $v)
                 {
-                    $arrTokens[$k] = html_entity_decode($v);
+                    $arrTokens['member_' . $k] = html_entity_decode($v);
                 }
+                $arrTokens['member_salution'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+                $arrTokens['member_dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
 
+                // Prepare tokens for event and use "event_" as prefix
                 $row = $objEvent->row();
                 foreach ($row as $k => $v)
                 {
-                    $arrTokens[$k] = html_entity_decode($v);
+                    $arrTokens['event_' . $k] = html_entity_decode($v);
                 }
 
-                $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
-                if ($objUser !== null)
-                {
-                    $arrTokens['senderName'] = $objUser->name;
-                    $arrTokens['senderEmail'] = $objUser->email;
-                }
-
-                $arrTokens['gender'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
-                $arrTokens['eventtitle'] = html_entity_decode($objEvent->title);
                 if ($objEvent->addTime)
                 {
-                    $arrTokens['startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
-                    $arrTokens['endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
+                    $arrTokens['event_startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
+                    $arrTokens['event_endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
                 }
                 else
                 {
-                    $arrTokens['startTime'] = '';
-                    $arrTokens['endTime'] = '';
+                    $arrTokens['event_startTime'] = '';
+                    $arrTokens['event_endTime'] = '';
                 }
-                $arrTokens['startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
-                $arrTokens['endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
-                $arrTokens['dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
+                $arrTokens['event_title'] = html_entity_decode($objEvent->title);
+                $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
+                $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
+
+                // Prepare tokens for sender
+                $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
+                if ($objUser !== null)
+                {
+                    $arrTokens['organizer_senderName'] = $objUser->name;
+                    $arrTokens['organizer_senderEmail'] = $objUser->email;
+                }
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId)
