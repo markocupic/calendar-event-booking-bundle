@@ -140,7 +140,7 @@ class ModuleEventBooking extends Module
         // Count bookings if event is not fully booked
         $countBookings = CalendarEventsMemberModel::countBy('pid', $objEvent->id);
 
-        // countBookings for module
+        // countBookings for template
         $arrTemplateData = array_merge($objEvent->row(), array('countBookings' => $countBookings));
         $this->Template->setData($arrTemplateData);
 
