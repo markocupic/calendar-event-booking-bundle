@@ -134,11 +134,15 @@ class ModuleEventBooking extends Module
             $objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($objEvent->title));
         }
 
-        $this->Template->setData($objEvent->row());
         $this->Template->id = $this->id;
+        $arrTemplateData = array();
 
         // Count bookings if event is not fully booked
         $countBookings = CalendarEventsMemberModel::countBy('pid', $objEvent->id);
+
+        // countBookings for template
+        $arrTemplateData = array_merge($objEvent->row(), array('countBookings' => $countBookings));
+        $this->Template->setData($arrTemplateData);
 
         if ($objEvent->bookingStartDate > 0 && $objEvent->bookingStartDate > time())
         {
