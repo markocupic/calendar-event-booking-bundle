@@ -1,12 +1,11 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2018
+ * @copyright  Marko Cupic 2019
  * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
  * @package    markocupic/calendar-event-booking-bundle
  * @license    GNU/LGPL
  */
-
 
 /**
  * Table tl_calendar_events_member
@@ -183,7 +182,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array
             'search'    => true,
             'inputType' => 'text',
             'eval'      => array('rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-            'sql'       => "varchar(10) NOT NULL default ''",
+            'sql'       => "varchar(11) NOT NULL default ''"
         ),
         'street'       => array
         (

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2018
+ * @copyright  Marko Cupic 2019
  * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
  * @package    markocupic/calendar-event-booking-bundle
  * @license    GNU/LGPL
@@ -32,7 +32,6 @@ use Psr\Log\LogLevel;
 class ValidateForms
 {
 
-
     /**
      * @param $arrTarget
      */
@@ -40,7 +39,6 @@ class ValidateForms
     {
         // empty
     }
-
 
     /**
      * @param $arrFields
@@ -51,7 +49,7 @@ class ValidateForms
     public function compileFormFields($arrFields, $formId, $objForm)
     {
         // Do not list input fields under certain conditions
-        if ($formId === 'auto_event-booking-form')
+        if ($objForm->formID === 'event-booking-form')
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)
@@ -67,7 +65,6 @@ class ValidateForms
         return $arrFields;
     }
 
-
     /**
      * @param Widget $objWidget
      * @param $strForm
@@ -77,8 +74,18 @@ class ValidateForms
      */
     public function loadFormField(Widget $objWidget, $strForm, $arrForm, $objForm)
     {
-        if ($arrForm['formID'] === 'event-booking-form')
+        if ($objForm->formID === 'event-booking-form')
         {
+            // Convert tstamps to formated date
+            if ($objWidget->name === 'dateOfBirth' && $objWidget->value != '')
+            {
+                if (is_numeric($objWidget->value))
+                {
+                    $objWidget->value = Date::parse(Config::get('dateFormat'), $objWidget->value);
+                    $objWidget->value = Date::parse(Config::get('dateFormat'));
+                }
+            }
+
             if ($objWidget->name === 'escorts')
             {
                 $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
@@ -101,10 +108,8 @@ class ValidateForms
             }
         }
 
-
         return $objWidget;
     }
-
 
     /**
      * @param Widget $objWidget
@@ -115,13 +120,12 @@ class ValidateForms
      */
     public function validateFormField(Widget $objWidget, $formId, $arrForm, $objForm)
     {
-        if ($arrForm['formID'] === 'event-booking-form')
+        if ($objForm->formID === 'event-booking-form')
         {
             // Do not auto save anything to the database, this will be done manualy in the processFormData method
             $objForm->storeValues = '';
 
-
-            // Check if user is already registered
+            // Check if user with submitted email has already booked
             if ($objWidget->name === 'email')
             {
                 if ($objWidget->value != '')
@@ -169,18 +173,26 @@ class ValidateForms
         return $objWidget;
     }
 
-
     /**
      * @param $arrSubmitted
      * @param $arrLabels
      * @param $arrFields
      * @param $objForm
      */
-    public function prepareFormData($arrSubmitted, $arrLabels, $arrFields, $objForm)
+    public function prepareFormData(&$arrSubmitted, $arrLabels, $arrFields, $objForm)
     {
-        // empty
+        if ($objForm->formID === 'event-booking-form')
+        {
+            if ($arrSubmitted['dateOfBirth'] != '')
+            {
+                $tstamp = strtotime($arrSubmitted['dateOfBirth']);
+                if ($tstamp !== false)
+                {
+                    $arrSubmitted['dateOfBirth'] = $tstamp;
+                }
+            }
+        }
     }
-
 
     /**
      * @param $arrSet
@@ -193,7 +205,6 @@ class ValidateForms
         return $arrSet;
     }
 
-
     /**
      * @param $arrSubmitted
      * @param $arrForm
@@ -203,27 +214,26 @@ class ValidateForms
      */
     public function processFormData($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm)
     {
-
         if ($arrForm['formID'] === 'event-booking-form')
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)
             {
-                $objModel = new CalendarEventsMemberModel();
-                $objModel->setRow($arrSubmitted);
-                $objModel->escorts = $objModel->escorts > 0 ? $objModel->escorts : 0;
-                $objModel->pid = $objEvent->id;
-                $objModel->email = strtolower($arrSubmitted['email']);
-                $objModel->addedOn = time();
-                $objModel->tstamp = time();
-                $objModel->save();
+                $objCalendarEventsMemberModel = new CalendarEventsMemberModel();
+                $objCalendarEventsMemberModel->setRow($arrSubmitted);
+                $objCalendarEventsMemberModel->escorts = $objCalendarEventsMemberModel->escorts > 0 ? $objCalendarEventsMemberModel->escorts : 0;
+                $objCalendarEventsMemberModel->pid = $objEvent->id;
+                $objCalendarEventsMemberModel->email = strtolower($arrSubmitted['email']);
+                $objCalendarEventsMemberModel->addedOn = time();
+                $objCalendarEventsMemberModel->tstamp = time();
+                $objCalendarEventsMemberModel->save();
 
                 // Add a booking token
-                $objModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objModel->email)) . $objModel->id;
-                $objModel->save();
+                $objCalendarEventsMemberModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objCalendarEventsMemberModel->email)) . $objCalendarEventsMemberModel->id;
+                $objCalendarEventsMemberModel->save();
 
                 // Send notification
-                $this->notify($objModel, $objEvent);
+                $this->notify($objCalendarEventsMemberModel, $objEvent);
 
                 // Log new insert
                 $level = LogLevel::INFO;
@@ -238,7 +248,7 @@ class ValidateForms
                     if ($objPageModel !== null)
                     {
                         // Redirect to the jumpTo page
-                        $strRedirectUrl = Url::addQueryString('bookingToken=' . $objModel->bookingToken, $objPageModel->getFrontendUrl());
+                        $strRedirectUrl = Url::addQueryString('bookingToken=' . $objCalendarEventsMemberModel->bookingToken, $objPageModel->getFrontendUrl());
                         Controller::redirect($strRedirectUrl);
                     }
                 }
@@ -252,7 +262,6 @@ class ValidateForms
      */
     protected function notify($objEventMember, $objEvent)
     {
-
         global $objPage;
         if ($objEvent->enableNotificationCenter)
         {
@@ -268,8 +277,8 @@ class ValidateForms
                 {
                     $arrTokens['member_' . $k] = html_entity_decode($v);
                 }
-                $arrTokens['member_salution'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
-                $arrTokens['member_dateOfBirth'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
+                $arrTokens['member_salutation'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+                $arrTokens['member_dateOfBirthFormated'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
 
                 // Prepare tokens for event and use "event_" as prefix
                 $row = $objEvent->row();
@@ -292,12 +301,22 @@ class ValidateForms
                 $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
                 $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
 
-                // Prepare tokens for sender
-                $objUser = UserModel::findByPk($objEvent->eventBookingNotificationSender);
-                if ($objUser !== null)
+                // Prepare tokens for organizer_* (sender)
+                $objOrganizer = UserModel::findByPk($objEvent->eventBookingNotificationSender);
+                if ($objOrganizer !== null)
                 {
-                    $arrTokens['organizer_senderName'] = $objUser->name;
-                    $arrTokens['organizer_senderEmail'] = $objUser->email;
+                    $arrTokens['organizer_senderName'] = $objOrganizer->name;
+                    $arrTokens['organizer_senderEmail'] = $objOrganizer->email;
+
+                    $row = $objOrganizer->row();
+                    foreach ($row as $k => $v)
+                    {
+                        if ($k === 'password')
+                        {
+                            continue;
+                        }
+                        $arrTokens['organizer_' . $k] = html_entity_decode($v);
+                    }
                 }
 
                 // Send notification (multiple notifications possible)

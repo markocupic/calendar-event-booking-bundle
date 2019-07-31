@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2018
+ * @copyright  Marko Cupic 2019
  * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
  * @package    markocupic/calendar-event-booking-bundle
  * @license    GNU/LGPL
@@ -41,14 +41,14 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
     'booking-notification' => array
     (
         // Field in tl_nc_language
-        'email_sender_name'    => array('organizer_senderName', 'member_lastname', 'member_firstname'),
-        'email_sender_address' => array('organizer_senderEmail', 'member_email'),
+        'email_sender_name'    => array('organizer_senderName'),
+        'email_sender_address' => array('organizer_senderEmail'),
         'recipients'           => array('organizer_senderEmail', 'member_email'),
         'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
         'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
         'email_replyTo'        => array('organizer_senderEmail'),
-        'email_subject'        => array('event_*', 'member_*', 'organizer_senderName', 'organizer_senderEmail'),
-        'email_text'           => array('event_*', 'member_*', 'organizer_senderName', 'organizer_senderEmail'),
-        'email_html'           => array('event_*', 'member_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_subject'        => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_text'           => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_html'           => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
     ),
 );

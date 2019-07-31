@@ -6,7 +6,7 @@ Mit dieser Contao 4 Erweiterung werden Events buchbar. Die Extension erweitert d
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Anmeldeformular einblenden. 
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id muss deshalb zwingender Bestandteil der Url sein.
 
-Erstellen Sie mit dem Contao Formulargenerator die nötigen Felder. Dem Formular sollte die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiv wird. Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
+Erstellen Sie mit dem Contao Formulargenerator die nötigen Felder. **Wichtig!!! Dem Formular muss die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiv wird.** Folgende Felder werden im Formular berücksichtigt und sollten mit dem Formular Generator angelegt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 (Zusätliche gewünschte Felder müssen zuvor in tl_calendar_events_member angelegt werden.)
 
@@ -16,11 +16,11 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center u
 ![Notification Center](doc/notification_center.jpg?raw=true)
 
 ### Gebrauch der Simple Tokens im Notification Center
-Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc.
+Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
 
-Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc.
+Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc. (Feldnamen aus tl_calendar_events)
 
-Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##
+Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
 ## CSV-Export der Teilnehmer
 Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export aus dem Backend heraus zu machen.
