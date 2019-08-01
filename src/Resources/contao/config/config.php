@@ -30,9 +30,12 @@ $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = array('Mar
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'validateFormField');
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['storeFormData'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'storeFormData');
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'prepareFormData');
+
 // Send notification
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'processFormData');
 
+// Auto generate booking form
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'autoGenerateBookingForm');
 
 // Notification center
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = array
