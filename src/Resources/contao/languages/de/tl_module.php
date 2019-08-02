@@ -9,5 +9,5 @@
 
 
 // Legends
-$GLOBALS['TL_LANG']['tl_module']['form_legend'] = 'Anmeldeformular Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['form_legend'] = 'Event-Buchungsformular Einstellungen';
 

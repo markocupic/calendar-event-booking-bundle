@@ -9,6 +9,7 @@
 
 namespace Markocupic\CalendarEventBookingBundle;
 
+use Contao\Controller;
 use Contao\Database;
 use Contao\System;
 use Psr\Log\LogLevel;
@@ -30,7 +31,7 @@ class InitializeSystemHook
         if ($objForm->numRows)
         {
             // Return if form already exists
-            return;
+            // return;
         }
 
         $sqlTlForm = file_get_contents(TL_ROOT . '/vendor/markocupic/calendar-event-booking-bundle/src/Resources/sql/tl_form.sql');
@@ -43,9 +44,14 @@ class InitializeSystemHook
         $objInsertStmt1 = Database::getInstance()->query($sqlTlForm);
         if (($intInsertId = $objInsertStmt1->insertId) > 0)
         {
+            // Load dca tl_form_field
+            Controller::loadDataContainer('tl_form_field');
+            $strExtensions = $GLOBALS['TL_DCA']['tl_form_field']['fields']['extensions']['default'];
+
             // Set pid & tstamp
             $sqlTlFormField = str_replace('##pid##', $intInsertId, $sqlTlFormField);
             $sqlTlFormField = str_replace('##tstamp##', time(), $sqlTlFormField);
+            $sqlTlFormField = str_replace('##extensions##', $strExtensions, $sqlTlFormField);
 
             // Insert into tl_form_field
             $objInsertStmt2 = Database::getInstance()->query($sqlTlFormField);
@@ -53,6 +59,7 @@ class InitializeSystemHook
             // Log form insert
             if ($objInsertStmt2->insertId > 0)
             {
+                // Import logger object
                 $logger = System::getContainer()->get('monolog.logger.contao');
                 $strLog = 'Auto generated calendar event booking form.';
                 $logger->log(LogLevel::INFO, $strLog, array('contao' => new ContaoContext(__METHOD__, 'INFO')));
