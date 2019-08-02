@@ -31,7 +31,7 @@ class InitializeSystemHook
         if ($objForm->numRows)
         {
             // Return if form already exists
-            // return;
+            return;
         }
 
         $sqlTlForm = file_get_contents(TL_ROOT . '/vendor/markocupic/calendar-event-booking-bundle/src/Resources/sql/tl_form.sql');
