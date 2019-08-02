@@ -49,7 +49,7 @@ class ValidateForms
     public function compileFormFields($arrFields, $formId, $objForm)
     {
         // Do not list input fields under certain conditions
-        if ($objForm->formID === 'event-booking-form')
+        if ($objForm->isCalendarEventBookingForm)
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)
@@ -74,7 +74,7 @@ class ValidateForms
      */
     public function loadFormField(Widget $objWidget, $strForm, $arrForm, $objForm)
     {
-        if ($objForm->formID === 'event-booking-form')
+        if ($objForm->isCalendarEventBookingForm)
         {
             // Convert tstamps to formated date
             if ($objWidget->name === 'dateOfBirth' && $objWidget->value != '')
@@ -120,7 +120,7 @@ class ValidateForms
      */
     public function validateFormField(Widget $objWidget, $formId, $arrForm, $objForm)
     {
-        if ($objForm->formID === 'event-booking-form')
+        if ($objForm->isCalendarEventBookingForm)
         {
             // Do not auto save anything to the database, this will be done manualy in the processFormData method
             $objForm->storeValues = '';
@@ -181,7 +181,7 @@ class ValidateForms
      */
     public function prepareFormData(&$arrSubmitted, $arrLabels, $arrFields, $objForm)
     {
-        if ($objForm->formID === 'event-booking-form')
+        if ($objForm->isCalendarEventBookingForm)
         {
             if ($arrSubmitted['dateOfBirth'] != '')
             {
@@ -214,7 +214,7 @@ class ValidateForms
      */
     public function processFormData($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm)
     {
-        if ($arrForm['formID'] === 'event-booking-form')
+        if ($objForm->isCalendarEventBookingForm)
         {
             $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)

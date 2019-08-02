@@ -34,6 +34,9 @@ $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = array('M
 // Send notification
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'processFormData');
 
+// On update (keep running older settings)
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'onUpdate');
+
 // Auto generate booking form
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'autoGenerateBookingForm');
 

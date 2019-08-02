@@ -30,9 +30,10 @@ Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##,
 
 
 ## Punkt 5: Event-Buchungsformular erstellen
-Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird automatisch ein Beispielformular generiert. Passen Sie dieses an.  
-**Wichtig!!! Dem Formular muss die ID "event-booking-form" vergeben werden, damit der validateForm Hook beim Absenden des Formulars aktiv wird.** 
-Folgende Felder werden im Formular erstellt:
+Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular generiert. Passen Sie dieses an.  
+**Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert werden.**
+![Benachrichtigung im Event aktivieren](doc/form_generator.jpg?raw=true) 
+Folgende Felder können im Formular erstellt:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 (Zusätliche gewünschte Felder können erstellt werden, müssen aber zuvor in tl_calendar_events_member angelegt werden.)
 
