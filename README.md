@@ -30,10 +30,10 @@ Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##,
 
 
 ## Punkt 5: Event-Buchungsformular erstellen
-Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular generiert. Passen Sie dieses an.  
-**Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert werden.**
+Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert. 
+**Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
 ![Formulargenerator-Einstellung](doc/form_generator.jpg?raw=true) 
-Folgende Felder können im Formular erstellt:
+Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 (Zusätliche gewünschte Felder können erstellt werden, müssen aber zuvor in tl_calendar_events_member angelegt werden.)
 
