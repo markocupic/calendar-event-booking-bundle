@@ -29,8 +29,11 @@ class InitializeSystemHook
     {
         if (TL_MODE === 'BE')
         {
-            // In versions < 3.2 the form hooks where triggered if tl_form.formID was 'event-booking-form'
-            Database::getInstance()->prepare("UPDATE tl_form SET isCalendarEventBookingForm='1' WHERE formID=? AND isCalendarEventBookingForm=?")->execute('event-booking-form', '');
+            if (Database::getInstance()->fieldExists('isCalendarEventBookingForm', 'tl_form'))
+            {
+                // In versions < 3.2 the form hooks where triggered if tl_form.formID was 'event-booking-form'
+                Database::getInstance()->prepare("UPDATE tl_form SET isCalendarEventBookingForm='1' WHERE formID=? AND isCalendarEventBookingForm=?")->execute('event-booking-form', '');
+            }
         }
     }
 
