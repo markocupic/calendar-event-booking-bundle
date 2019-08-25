@@ -42,7 +42,7 @@ class InitializeSystemHook
      */
     public function autoGenerateBookingForm()
     {
-        $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE formID=?')->execute('event-booking-form');
+        $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE formID=? OR isCalendarEventBookingForm=?')->execute('event-booking-form' , '1');
         if ($objForm->numRows)
         {
             // Return if form already exists
