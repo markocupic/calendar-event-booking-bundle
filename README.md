@@ -1,11 +1,14 @@
 # calendar-event-booking-bundle
 !!! Achtung: Version 3.x ist nicht mehr zu 100% kompatibel zu Version 2.x. In Version >=3.x müssen die Simple Tokens im Notification-Center neu gesetzt werden. Für Eigenschaften die den Event betreffen, braucht es nun das prefix "event_" und für Eigenschaften, die den Teilnehmer betreffen das Präfix "member_" und die Eigenschaften des des Event-Organisators werden über "organizer_" erreicht.
 
+## Events buchen
 Mit dieser Contao 4 Erweiterung werden Events über ein Anmeldeformular buchbar. Event-Organisator und Teilnehmer können über das Notification Center benachrichtigt werden. Bei der Installation wird die Tabelle tl_calendar_events um weitere Felder erweitert. Zusätzlich wird eine Kindtabelle (tl_calendar_events_member) erstellt, um die Event-Buchungen abzulegen.
 
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anmeldeformular einblenden. 
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
 
+## Von Event abmelden
+Seit Version 3.3 kann auch eine Event Abmeldemöglichkeit im Event eingestellt werden. Dazu muss das passende Modul in der Seitenstruktur angelegt werden. Die Abmeldung erfolgt über einen Token gesicherten Link, welcher mit dem Bestätigungs-E-Mail dem Benutzer mitgesandt werden kann.
 
 ## Einrichtung (Ablauf)
 1. Events anlegen
