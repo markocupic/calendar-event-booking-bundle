@@ -14,11 +14,14 @@ Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias o
 4. Benachrichtigung des Typs "Event Buchungsbestätigung" anlegen (Notification Center)
 5. "Event-Buchungsformular" Frontend-Modul anlegen und mit der bei Punkt 4 erstellten Benachrichtigung verknüpfen.
 6. Die 3 erstellten Module in der Contao Seitenstruktur einbinden (Wichtig! Buchungsformular und Eventreader gehören auf die gleiche Seite). 
-7. Bei den Events die Buchungs- und Benachrichtigungsoptionen konfigurieren
+7. Evtl. das Frontend Module "Event Abmeldeformular" erstellen und in extra dafür erstellten Seite einbinden.
+9. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren
 
 
 ## Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
 Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator und nutzen Sie dabei die **Simple Tokens**.
+
+Mit dem ##event_unsubscribeHref## Token kann der Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden. Auch sollte das nötige Frontend Modul "Event Abmeldeformular" erstellt und in einer Seite eingebunden wordsen sein. 
 ![Notification Center](doc/notification_center.jpg?raw=true)
 
 #### Gebrauch der Simple Tokens im Notification Center
@@ -38,7 +41,7 @@ firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,not
 (Zusätliche gewünschte Felder können erstellt werden, müssen aber zuvor in tl_calendar_events_member angelegt werden.)
 
 
-## Punkt 7: E-Mail Buchungsbestätigung im Event aktivieren
+## Punkt 9: E-Mail Buchungsbestätigung im Event aktivieren
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
 ![Benachrichtigung im Event aktivieren](doc/benachrichtigung-aktivieren.jpg?raw=true)
 

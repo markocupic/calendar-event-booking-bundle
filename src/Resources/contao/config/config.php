@@ -14,6 +14,7 @@ $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_memb
  * Front end modules
  */
 $GLOBALS['FE_MOD']['events']['eventbooking'] = 'Markocupic\CalendarEventBookingBundle\ModuleEventBooking';
+$GLOBALS['FE_MOD']['events']['unsubscribefromevent'] = 'Markocupic\CalendarEventBookingBundle\ModuleUnsubscribeFromEvent';
 
 if (TL_MODE == 'BE')
 {
@@ -53,8 +54,22 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
         'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
         'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
         'email_replyTo'        => array('organizer_senderEmail'),
-        'email_subject'        => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-        'email_text'           => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-        'email_html'           => array('event_*', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_subject'        => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_text'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_html'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+    ),
+    // Type
+    'event-unsubscribe-notification' => array
+    (
+        // Field in tl_nc_language
+        'email_sender_name'    => array('organizer_senderName'),
+        'email_sender_address' => array('organizer_senderEmail'),
+        'recipients'           => array('organizer_senderEmail', 'member_email'),
+        'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
+        'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
+        'email_replyTo'        => array('organizer_senderEmail'),
+        'email_subject'        => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_text'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+        'email_html'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
     ),
 );

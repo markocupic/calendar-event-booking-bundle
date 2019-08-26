@@ -10,3 +10,4 @@
 
 // Frontend modules
 $GLOBALS['TL_LANG']['FMD']['eventbooking'] = array('Event Anmeldeformular');
+$GLOBALS['TL_LANG']['FMD']['unsubscribefromevent'] = array('Event unsubscription form');

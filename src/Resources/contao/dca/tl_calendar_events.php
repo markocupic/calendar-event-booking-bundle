@@ -24,8 +24,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callba
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('booking_options_legend', 'details_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addLegend('notification_center_legend', 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addLegend('event_unsubscribe_legend', 'notification_center_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField(array('addBookingForm'), 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField(array('enableNotificationCenter'), 'notification_center_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField(array('enableDeregistration'), 'event_unsubscribe_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField(array('street', 'postal', 'city'), 'location', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('default', 'tl_calendar_events');
 
@@ -33,11 +35,13 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 // Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableNotificationCenter';
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableDeregistration';
 
 
 // Subpalettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,eventUnsubscribePage';
 
 
 // Onsubmit callback
@@ -195,3 +199,35 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
     'sql'        => "int(10) unsigned NOT NULL default '0'",
     'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
 );
+
+// enableDeregistration
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = array(
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['enableDeregistration'],
+    'exclude'   => true,
+    'inputType' => 'checkbox',
+    'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+    'sql'       => "char(1) NOT NULL default ''",
+);
+
+// unsubscribeLimit
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
+    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'select',
+    'options'   => range(1, 720),
+    'eval'      => array('rgxp' => 'natural', 'nospace' => true, 'tl_class' => 'w50'),
+    'sql'       => "int(10) unsigned NOT NULL default '0'",
+);
+
+// eventUnsubscribePage
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribePage'] = array(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['eventUnsubscribePage'],
+    'exclude'                 => true,
+    'inputType'               => 'pageTree',
+    'foreignKey'              => 'tl_page.title',
+    'eval'                    => array('mandatory' => true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'",
+    'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
+);
+

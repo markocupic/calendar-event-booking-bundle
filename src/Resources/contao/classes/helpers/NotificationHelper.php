@@ -79,14 +79,14 @@ class NotificationHelper
             }
         }
 
-        // Generate cancel url
-        if ($objEvent->enableBookingCanceling)
+        // Generate unsubscribe href
+        if ($objEvent->enableDeregistration)
         {
-            $objPage = PageModel::findByPk($objEvent->bookingCancelingPage);
+            $objPage = PageModel::findByPk($objEvent->eventUnsubscribePage);
             if ($objPage !== null)
             {
                 $url = $objPage->getFrontendUrl() . '?bookingToken=' . $objEventMember->bookingToken;
-                $arrTokens['event_cancelUrl'] = Controller::replaceInsertTags('{{env::url}}/') . $url;
+                $arrTokens['event_unsubscribeHref'] = Controller::replaceInsertTags('{{env::url}}/') . $url;
             }
         }
 

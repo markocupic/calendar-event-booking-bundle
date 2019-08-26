@@ -1,0 +1,36 @@
+<!-- indexer::stop -->
+<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+
+    <?php if ($this->headline): ?>
+    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+    <?php endif; ?>
+
+    <?php if ($this->blnHasUnsubscribed): ?>
+        <p class="unsubscribe_info">You've been successfully unsubscribed from event "<?= $this->event['title'] ?>".</p>
+    <?php else: ?>
+
+        <?php if ($this->errorMsg): ?>
+            <?php foreach($this->errorMsg as $error): ?>
+            <p class="error"><?= $error ?></p>
+            <?php endforeach; ?>
+        <?php else: ?>
+        <form action="{{env::request}}" id="<?= $this->formId ?>" method="post">
+            <div class="formbody">
+                <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+
+                <p>Dear <?= $this->member['firstname'] ?> <?= $this->member['lastname'] ?></p>
+                <p> Are you sure you want to unsubscribe from event "<?= $this->event['title'] ?>"?</p>
+
+                <div class="widget widget-submit">
+                    <button type="submit" class="submit"><?= $this->slabelUnsubscribeFromEvent ?></button>
+                </div>
+                <p><a href="{{env::url}}"><?= $this->slabelCancel ?></a></p>
+            </div>
+        </form>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+</div>
+<!-- indexer::continue -->

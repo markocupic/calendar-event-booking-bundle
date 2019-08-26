@@ -10,6 +10,7 @@
 // Legends
 $GLOBALS['TL_LANG']['tl_calendar_events']['booking_options_legend'] = "Buchungseinstellungen";
 $GLOBALS['TL_LANG']['tl_calendar_events']['notification_center_legend'] = "Benachrichtigungs-Einstellungen";
+$GLOBALS['TL_LANG']['tl_calendar_events']['event_unsubscribe_legend'] = "Event Abmelde-Einstellungen";
 
 
 // Fields
@@ -25,6 +26,9 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['emailFrom'] = array("E-Mail Adresse d
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingConfirmationEmailBody'] = array("E-Mail-Text für Anmeldebestätigung an Teilnehmer", "Personalisieren Sie die E-Mail mit Tags: ##firstname## ##eventname## ##gender## ##firstname## ##lastname## ##street## ##postal## ##city## ##phone## ##email## ##escorts##");
 $GLOBALS['TL_LANG']['tl_calendar_events']['minMembers'] = array("Minimale Teilnehmerzahl", "Geben Sie bitte eine Teilnehmerzahl ein.");
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxMembers'] = array("Maximale Teilnehmerzahl", "Geben Sie bitte eine Teilnehmerzahl ein.");
-$GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'] = array('Notification Center f&uuml;r die Anmeldebest&auml;tigung nutzen','Notification Center zur Anmeldebst&auml;tigung nutzen.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationCenterIds'] = array('Eine oder mehrere Benachrichtigungen ausw&auml;hlen','W&auml;hlen Sie hier eine oder mehrere Benachrichtigungen aus.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationSender'] = array('Absender der Buchungsbest&auml;tigung ausw&auml;hlen','W&auml;hlen Sie hier einen Absender f&uuml;r die Benachrichtigung aus.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'] = array('Notification Center f&uuml;r die Anmeldebest&auml;tigung nutzen', 'Notification Center zur Anmeldebst&auml;tigung nutzen.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationCenterIds'] = array('Eine oder mehrere Benachrichtigungen ausw&auml;hlen', 'W&auml;hlen Sie hier eine oder mehrere Benachrichtigungen aus.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationSender'] = array('Absender der Buchungsbest&auml;tigung ausw&auml;hlen', 'W&auml;hlen Sie hier einen Absender f&uuml;r die Benachrichtigung aus.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableDeregistration'] = array('Abmeldung von Event erlauben', 'W&auml;hlen Sie hier, ob eine Event-Abmeldung erlaubt werden soll.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['eventUnsubscribePage'] = array('Seite mit dem Event-Abmeldeformular-Modul wählen', 'Wählen Sie die Seite mit dem Event-Abmeldeformular-Modul aus.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'] = array('Abmeldefrist in Tagen', 'Geben Sie an wie viele Tage bis zum Event-Anfang Abmeldungen ermöglicht werden sollen.');

@@ -269,55 +269,8 @@ class ValidateForms
             $arrNotifications = StringUtil::deserialize($objEvent->eventBookingNotificationCenterIds);
             if (!empty($arrNotifications) && is_array($arrNotifications))
             {
-                $arrTokens = array();
-
-                // Prepare tokens for event member and use "member_" as prefix
-                $row = $objEventMember->row();
-                foreach ($row as $k => $v)
-                {
-                    $arrTokens['member_' . $k] = html_entity_decode($v);
-                }
-                $arrTokens['member_salutation'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
-                $arrTokens['member_dateOfBirthFormated'] = Date::parse(Config::get('dateFormat'), $objEventMember->dateOfBirth);
-
-                // Prepare tokens for event and use "event_" as prefix
-                $row = $objEvent->row();
-                foreach ($row as $k => $v)
-                {
-                    $arrTokens['event_' . $k] = html_entity_decode($v);
-                }
-
-                if ($objEvent->addTime)
-                {
-                    $arrTokens['event_startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
-                    $arrTokens['event_endTime'] = Date::parse(Config::get('timeFormat'), $objEvent->endTime);
-                }
-                else
-                {
-                    $arrTokens['event_startTime'] = '';
-                    $arrTokens['event_endTime'] = '';
-                }
-                $arrTokens['event_title'] = html_entity_decode($objEvent->title);
-                $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
-                $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
-
-                // Prepare tokens for organizer_* (sender)
-                $objOrganizer = UserModel::findByPk($objEvent->eventBookingNotificationSender);
-                if ($objOrganizer !== null)
-                {
-                    $arrTokens['organizer_senderName'] = $objOrganizer->name;
-                    $arrTokens['organizer_senderEmail'] = $objOrganizer->email;
-
-                    $row = $objOrganizer->row();
-                    foreach ($row as $k => $v)
-                    {
-                        if ($k === 'password')
-                        {
-                            continue;
-                        }
-                        $arrTokens['organizer_' . $k] = html_entity_decode($v);
-                    }
-                }
+                // Get $arrToken from helper
+                $arrTokens = NotificationHelper::getNotificationTokens($objEventMember, $objEvent);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId)
