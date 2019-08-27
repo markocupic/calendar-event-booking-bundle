@@ -83,11 +83,14 @@ class NotificationHelper
         $arrTokens['event_unsubscribeHref'] = '';
         if ($objEvent->enableDeregistration)
         {
-            $objPage = PageModel::findByPk($objEvent->eventUnsubscribePage);
-            if ($objPage !== null)
-            {
-                $url = $objPage->getFrontendUrl() . '?bookingToken=' . $objEventMember->bookingToken;
-                $arrTokens['event_unsubscribeHref'] = Controller::replaceInsertTags('{{env::url}}/') . $url;
+            $objCalendar = $objEvent->getRelated('pid');
+            if($objCalendar !== null){
+                $objPage = PageModel::findByPk($objCalendar->eventUnsubscribePage);
+                if ($objPage !== null)
+                {
+                    $url = $objPage->getFrontendUrl() . '?bookingToken=' . $objEventMember->bookingToken;
+                    $arrTokens['event_unsubscribeHref'] = Controller::replaceInsertTags('{{env::url}}/') . $url;
+                }
             }
         }
 

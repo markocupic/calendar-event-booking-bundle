@@ -41,7 +41,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enable
 // Subpalettes
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,eventUnsubscribePage';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit';
 
 
 // Onsubmit callback
@@ -220,14 +220,4 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
     'sql'       => "int(10) unsigned NOT NULL default '0'",
 );
 
-// eventUnsubscribePage
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribePage'] = array(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['eventUnsubscribePage'],
-    'exclude'                 => true,
-    'inputType'               => 'pageTree',
-    'foreignKey'              => 'tl_page.title',
-    'eval'                    => array('mandatory' => true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
-    'sql'                     => "int(10) unsigned NOT NULL default '0'",
-    'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
-);
 

@@ -30,5 +30,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'] = array('N
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationCenterIds'] = array('Eine oder mehrere Benachrichtigungen ausw&auml;hlen','W&auml;hlen Sie hier eine oder mehrere Benachrichtigungen aus.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationSender'] = array('Absender der Buchungsbest&auml;tigung ausw&auml;hlen','W&auml;hlen Sie hier einen Absender f&uuml;r die Benachrichtigung aus.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['enableDeregistration'] = array('Enable event unsubscription', 'Please choose if event unsubscription should be allowed.');
-$GLOBALS['TL_LANG']['tl_calendar_events']['eventUnsubscribePage'] = array('Page containing the event unsubscription module', 'Please choose the page to which users are redirected when clicking the unsubscription link');
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'] = array('Unsubscription limit in days', 'Please set the number of days you allow users to unsubscribe from day of the event.');

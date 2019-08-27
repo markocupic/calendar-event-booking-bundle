@@ -17,8 +17,9 @@ Seit Version 3.3 kann auch eine Event Abmeldemöglichkeit im Event eingestellt w
 4. Benachrichtigung des Typs "Event Buchungsbestätigung" anlegen (Notification Center)
 5. "Event-Buchungsformular" Frontend-Modul anlegen und mit der bei Punkt 4 erstellten Benachrichtigung verknüpfen.
 6. Die 3 erstellten Module in der Contao Seitenstruktur einbinden (Wichtig! Buchungsformular und Eventreader gehören auf die gleiche Seite). 
-7. Evtl. das Frontend Module "Event Abmeldeformular" erstellen und in extra dafür erstellten Seite einbinden.
-9. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren
+7. Evtl. das Frontend Module "Event Abmeldeformular" erstellen und dieses in extra dafür erstellten Seite einbinden. 
+9. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren. 
+10. In der Kalendereinstellung die Abmeldeseite festlegen. "tl_calendar.eventUnsubscribePage"
 
 
 ## Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
