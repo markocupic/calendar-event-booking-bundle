@@ -80,6 +80,7 @@ class NotificationHelper
         }
 
         // Generate unsubscribe href
+        $arrTokens['event_unsubscribeHref'] = '';
         if ($objEvent->enableDeregistration)
         {
             $objPage = PageModel::findByPk($objEvent->eventUnsubscribePage);

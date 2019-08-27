@@ -23,3 +23,4 @@ $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Abbrechen';
 $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'Die Abmeldefrist für Event "%s" ist leider abgelaufen.';
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.';
 $GLOBALS['TL_LANG']['ERR']['invalidBookingToken'] = 'Ungültiges Buchungs-Token.';
+$GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'] = 'Die Abmeldung vom Event "%s" ist nicht möglich.';

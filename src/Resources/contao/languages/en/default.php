@@ -23,3 +23,4 @@ $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Cancel';
 $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'The unsubscription limit for event "%s" has expired.';
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Invalid booking token or could not find assigned event.';
 $GLOBALS['TL_LANG']['ERR']['invalidBookingToken'] = 'Invalid booking token.';
+$GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'] = 'You\'re not allowed to unsubscribe from event "%s".';

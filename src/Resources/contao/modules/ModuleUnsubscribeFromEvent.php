@@ -102,6 +102,14 @@ class ModuleUnsubscribeFromEvent extends Module
 
             if (!$this->hasError)
             {
+                if (!$objEvent->enableDeregistration)
+                {
+                    $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'], $this->objEvent->title));
+                }
+            }
+
+            if (!$this->hasError)
+            {
                 $limit = $this->objEvent->unsubscribeLimit === '' ? 0 : $this->objEvent->unsubscribeLimit;
                 if (time() + $limit * 3600 * 24 > $this->objEvent->startDate)
                 {

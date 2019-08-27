@@ -8,7 +8,7 @@ Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anme
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
 
 ## Von Event abmelden
-Seit Version 3.3 kann auch eine Event Abmeldemöglichkeit im Event eingestellt werden. Dazu muss das passende Modul in der Seitenstruktur angelegt werden. Die Abmeldung erfolgt über einen Token gesicherten Link, welcher mit dem Bestätigungs-E-Mail dem Benutzer mitgesandt werden kann.
+Seit Version 3.3 kann auch eine Event Abmeldemöglichkeit im Event eingestellt werden. Dazu muss das passende Modul in der Seitenstruktur angelegt werden. Die Abmeldung erfolgt über einen Token gesicherten Link (##event_unsubscribeHref## Token), welcher mit dem Bestätigungs-E-Mail dem Benutzer mitgesandt werden kann.
 
 ## Einrichtung (Ablauf)
 1. Events anlegen
