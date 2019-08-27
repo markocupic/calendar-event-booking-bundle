@@ -110,7 +110,7 @@ class ModuleUnsubscribeFromEvent extends Module
 
             if (!$this->hasError)
             {
-                $limit = $this->objEvent->unsubscribeLimit === '' ? 0 : $this->objEvent->unsubscribeLimit;
+                $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
                 if (time() + $limit * 3600 * 24 > $this->objEvent->startDate)
                 {
                     $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'], $this->objEvent->title));
@@ -171,15 +171,6 @@ class ModuleUnsubscribeFromEvent extends Module
     }
 
     /**
-     * @param $strMsg
-     */
-    protected function addError($strMsg)
-    {
-        $this->hasError = true;
-        $this->errorMsg[] = $strMsg;
-    }
-
-    /**
      * @param $objEventMember
      * @param $objEvent
      */
@@ -206,5 +197,14 @@ class ModuleUnsubscribeFromEvent extends Module
                 }
             }
         }
+    }
+
+    /**
+     * @param $strMsg
+     */
+    protected function addError($strMsg)
+    {
+        $this->hasError = true;
+        $this->errorMsg[] = $strMsg;
     }
 }

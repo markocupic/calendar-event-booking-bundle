@@ -16,6 +16,8 @@ $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'Eine Anmeldung mit der E-M
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Bitte geben Sie eine positive natürliche Zahl ein.';
 
 // Unsubscribe from event
+$GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'You\'ve been successfully unsubscribed from event "%s".';
+$GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?';
 $GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Unsubscribe from event';
 $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Cancel';
 

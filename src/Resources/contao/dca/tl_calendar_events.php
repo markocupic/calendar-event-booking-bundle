@@ -215,7 +215,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
-    'options'   => range(1, 720),
+    'options'   => range(0, 720),
     'eval'      => array('rgxp' => 'natural', 'nospace' => true, 'tl_class' => 'w50'),
     'sql'       => "int(10) unsigned NOT NULL default '0'",
 );

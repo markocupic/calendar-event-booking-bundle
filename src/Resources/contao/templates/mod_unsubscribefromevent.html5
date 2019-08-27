@@ -6,7 +6,7 @@
     <?php endif; ?>
 
     <?php if ($this->blnHasUnsubscribed): ?>
-        <p class="unsubscribe_info">You've been successfully unsubscribed from event "<?= $this->event['title'] ?>".</p>
+        <p class="unsubscribe_info"><?= sprintf($GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'], $this->event['title']) ?></p>
     <?php else: ?>
 
         <?php if ($this->errorMsg): ?>
@@ -19,8 +19,9 @@
                 <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 
-                <p>Dear <?= $this->member['firstname'] ?> <?= $this->member['lastname'] ?></p>
-                <p> Are you sure you want to unsubscribe from event "<?= $this->event['title'] ?>"?</p>
+                <p class="unsubscribe_confirm">
+                    <?= sprintf($GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'], $this->member['firstname'], $this->member['lastname'], $this->event['title']) ?>
+                </p>
 
                 <div class="widget widget-submit">
                     <button type="submit" class="submit"><?= $this->slabelUnsubscribeFromEvent ?></button>
