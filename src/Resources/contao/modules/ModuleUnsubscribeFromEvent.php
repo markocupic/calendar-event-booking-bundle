@@ -102,7 +102,7 @@ class ModuleUnsubscribeFromEvent extends Module
 
             if (!$this->hasError)
             {
-                if (!$objEvent->enableDeregistration)
+                if (!$this->objEvent->enableDeregistration)
                 {
                     $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'], $this->objEvent->title));
                 }
