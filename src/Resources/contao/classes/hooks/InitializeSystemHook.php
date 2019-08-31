@@ -42,11 +42,24 @@ class InitializeSystemHook
      */
     public function autoGenerateBookingForm()
     {
-        $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE formID=? OR isCalendarEventBookingForm=?')->execute('event-booking-form' , '1');
-        if ($objForm->numRows)
+        if (Database::getInstance()->fieldExists('formID', 'tl_form'))
         {
-            // Return if form already exists
-            return;
+            $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE formID=?')->execute('event-booking-form');
+            if ($objForm->numRows)
+            {
+                // Return if form already exists
+                return;
+            }
+        }
+
+        if (Database::getInstance()->fieldExists('isCalendarEventBookingForm', 'tl_form'))
+        {
+            $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=?')->execute('1');
+            if ($objForm->numRows)
+            {
+                // Return if form already exists
+                return;
+            }
         }
 
         $sqlTlForm = file_get_contents(TL_ROOT . '/vendor/markocupic/calendar-event-booking-bundle/src/Resources/sql/tl_form.sql');
