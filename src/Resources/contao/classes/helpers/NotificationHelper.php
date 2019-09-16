@@ -62,7 +62,7 @@ class NotificationHelper
         // event title
         $arrTokens['event_title'] = html_entity_decode($objEvent->title);
 
-        // event startDte & endDate
+        // event startDate & endDate
         $arrTokens['event_startDate'] = '';
         $arrTokens['event_endDate'] = '';
         if (is_numeric($objEvent->startDate))
