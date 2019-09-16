@@ -47,6 +47,7 @@ class NotificationHelper
             $arrTokens['event_' . $k] = html_entity_decode($v);
         }
 
+        // event startTime & endTime
         if ($objEvent->addTime)
         {
             $arrTokens['event_startTime'] = Date::parse(Config::get('timeFormat'), $objEvent->startTime);
@@ -57,9 +58,21 @@ class NotificationHelper
             $arrTokens['event_startTime'] = '';
             $arrTokens['event_endTime'] = '';
         }
+
+        // event title
         $arrTokens['event_title'] = html_entity_decode($objEvent->title);
-        $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
-        $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
+
+        // event startDte & endDate
+        $arrTokens['event_startDate'] = '';
+        $arrTokens['event_endDate'] = '';
+        if (is_numeric($objEvent->startDate))
+        {
+            $arrTokens['event_startDate'] = Date::parse(Config::get('dateFormat'), $objEvent->startDate);
+        }
+        if (is_numeric($objEvent->endDate))
+        {
+            $arrTokens['event_endDate'] = Date::parse(Config::get('dateFormat'), $objEvent->endDate);
+        }
 
         // Prepare tokens for organizer_* (sender)
         $objOrganizer = UserModel::findByPk($objEvent->eventBookingNotificationSender);
@@ -84,7 +97,8 @@ class NotificationHelper
         if ($objEvent->enableDeregistration)
         {
             $objCalendar = $objEvent->getRelated('pid');
-            if($objCalendar !== null){
+            if ($objCalendar !== null)
+            {
                 $objPage = PageModel::findByPk($objCalendar->eventUnsubscribePage);
                 if ($objPage !== null)
                 {
