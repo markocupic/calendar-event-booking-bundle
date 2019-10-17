@@ -35,7 +35,6 @@ class ModuleEventBooking extends Module
      */
     protected $strTemplate = 'mod_eventbooking';
 
-
     /**
      * Display a wildcard in the back end
      *
@@ -85,28 +84,8 @@ class ModuleEventBooking extends Module
             }
         }
 
-
-        // Register hook && enable hook overriding in a custom module
-        // $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] is set in config.php
-
-        if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']) && is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']))
-        {
-            foreach ($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] as $key => $arrHook)
-            {
-                if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key]) && is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key]))
-                {
-                    if (count($arrHook) === 2)
-                    {
-                        $GLOBALS['TL_HOOKS'][$key][] = $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key];
-                    }
-                }
-            }
-        }
-
-
         return parent::generate();
     }
-
 
     /**
      * Generate the module
@@ -164,7 +143,6 @@ class ModuleEventBooking extends Module
         }
 
         $this->Template->case = $case;
-
 
         switch ($case)
         {

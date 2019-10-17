@@ -35,6 +35,9 @@ $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = array('M
 // Send notification
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'processFormData');
 
+// Register $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'registerHooks');
+
 // On update (keep running older settings)
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'onUpdate');
 
@@ -45,7 +48,7 @@ $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Markocupic\CalendarEventBook
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = array
 (
     // Type
-    'booking-notification' => array
+    'booking-notification'           => array
     (
         // Field in tl_nc_language
         'email_sender_name'    => array('organizer_senderName'),
