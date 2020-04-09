@@ -1,10 +1,11 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2019
- * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
- * @package    markocupic/calendar-event-booking-bundle
- * @license    GNU/LGPL
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2020 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
 namespace Markocupic\CalendarEventBookingBundle\ContaoManager;
@@ -14,9 +15,8 @@ use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 
 /**
- * Plugin for the Contao Manager.
- *
- * @author Marko Cupic
+ * Class Plugin
+ * @package Markocupic\CalendarEventBookingBundle\ContaoManager
  */
 class Plugin implements BundlePluginInterface
 {
@@ -28,8 +28,8 @@ class Plugin implements BundlePluginInterface
         return [
             BundleConfig::create('Markocupic\CalendarEventBookingBundle\MarkocupicCalendarEventBookingBundle')
                 ->setLoadAfter([
-                  'Contao\CoreBundle\ContaoCoreBundle',
-                  'Contao\CalendarBundle\ContaoCalendarBundle'
+                    'Contao\CoreBundle\ContaoCoreBundle',
+                    'Contao\CalendarBundle\ContaoCalendarBundle'
                 ])
         ];
     }

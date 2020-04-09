@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2019
- * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
- * @package    markocupic/calendar-event-booking-bundle
- * @license    GNU/LGPL
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2020 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
-
 
 namespace Contao;
 
@@ -46,14 +46,13 @@ class CalendarEventsMemberModel extends \Model
         return false;
     }
 
-
     /**
      * @param $memberId
      * @return array
      */
     public function findUpcomingEventsByMemberId($memberId)
     {
-        $arrEvents = array();
+        $arrEvents = [];
         $objMember = \MemberModel::findByPk($memberId);
 
         if ($objMember === null)
@@ -78,14 +77,13 @@ class CalendarEventsMemberModel extends \Model
         return $arrEvents;
     }
 
-
     /**
      * @param $memberId
      * @return array
      */
     public function findPastEventsByMemberId($memberId)
     {
-        $arrEvents = array();
+        $arrEvents = [];
         $objMember = \MemberModel::findByPk($memberId);
 
         if ($objMember === null)
@@ -105,7 +103,6 @@ class CalendarEventsMemberModel extends \Model
                 $arr['registrationId'] = $objJoinedEvents->id;
                 $arrEvents[] = $arr;
             }
-
         }
 
         return $arrEvents;

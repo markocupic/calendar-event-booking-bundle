@@ -1,30 +1,27 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2019
- * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
- * @package    markocupic/calendar-event-booking-bundle
- * @license    GNU/LGPL
- */
-
-/**
- * Table tl_calendar_events
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2020 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
 // Palettes
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('event_unsubscribe_legend', 'title_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField(array('eventUnsubscribePage'), 'event_unsubscribe_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField(['eventUnsubscribePage'], 'event_unsubscribe_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar');
 
 // eventUnsubscribePage
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = array(
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_calendar']['eventUnsubscribePage'],
     'exclude'    => true,
     'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
-    'eval'       => array('mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'),
+    'eval'       => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
-    'relation'   => array('type' => 'hasOne', 'load' => 'lazy')
-);
+    'relation'   => ['type' => 'hasOne', 'load' => 'lazy']
+];
 

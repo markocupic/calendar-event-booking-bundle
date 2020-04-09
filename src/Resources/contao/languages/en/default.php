@@ -1,18 +1,18 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2019
- * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
- * @package    markocupic/calendar-event-booking-bundle
- * @license    GNU/LGPL
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2020 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-
-$GLOBALS['TL_LANG']['MSC']['bookings'] = 'Buchungen';
+$GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';
 
 // Form validation
-$GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Es sind maximal %s Begleitpersonen pro Teilnehmer möglich.';
-$GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'Eine Anmeldung mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.';
+$GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Maximum %s escorts per participant possible.';
+$GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'We have already found a booking with the email address "%s". Booking process aborted.';
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Bitte geben Sie eine positive natürliche Zahl ein.';
 
 // Unsubscribe from event

@@ -1,10 +1,11 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2019
- * @author     Marko Cupic, Oberkirch, Switzerland ->  mailto: m.cupic@gmx.ch
- * @package    markocupic/calendar-event-booking-bundle
- * @license    GNU/LGPL
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2020 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
 namespace Markocupic\CalendarEventBookingBundle;
@@ -94,13 +95,13 @@ class ValidateForms
                     $maxEscorts = $objEvent->maxEscortsPerMember;
                     if ($maxEscorts > 0)
                     {
-                        $opt = array();
+                        $opt = [];
                         for ($i = 0; $i <= $maxEscorts; $i++)
                         {
-                            $opt[] = array(
+                            $opt[] = [
                                 'value' => $i,
                                 'label' => $i,
-                            );
+                            ];
                         }
                         $objWidget->options = serialize($opt);
                     }
@@ -133,15 +134,18 @@ class ValidateForms
                     $objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events'));
                     if ($objEvent !== null)
                     {
-                        $arrOptions = array(
-                            'column' => array('tl_calendar_events_member.email=?', 'tl_calendar_events_member.pid=?'),
-                            'value'  => array(strtolower($objWidget->value), $objEvent->id),
-                        );
-                        $objMember = CalendarEventsMemberModel::findAll($arrOptions);
-                        if ($objMember !== null)
+                        if (!$objEvent->enableMultiBookingWithSameAddress)
                         {
-                            $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'], strtolower(Input::post('email')));
-                            $objWidget->addError($errorMsg);
+                            $arrOptions = [
+                                'column' => ['tl_calendar_events_member.email=?', 'tl_calendar_events_member.pid=?'],
+                                'value'  => [strtolower($objWidget->value), $objEvent->id],
+                            ];
+                            $objMember = CalendarEventsMemberModel::findAll($arrOptions);
+                            if ($objMember !== null)
+                            {
+                                $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'], strtolower(Input::post('email')));
+                                $objWidget->addError($errorMsg);
+                            }
                         }
                     }
                 }
@@ -239,7 +243,7 @@ class ValidateForms
                 $level = LogLevel::INFO;
                 $logger = System::getContainer()->get('monolog.logger.contao');
                 $strText = 'New booking for event with title "' . $objEvent->title . '"';
-                $logger->log($level, $strText, array('contao' => new ContaoContext(__METHOD__, $level)));
+                $logger->log($level, $strText, ['contao' => new ContaoContext(__METHOD__, $level)]);
 
                 if ($objForm->jumpTo)
                 {
