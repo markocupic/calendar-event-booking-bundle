@@ -10,19 +10,16 @@
 
 namespace Markocupic\CalendarEventBookingBundle;
 
-
 use Contao\CalendarEventsModel;
 use Contao\Date;
 use Contao\System;
 
-
 /**
- * Class CalendarKurse
- * @package Markocupic\Sacpilatus
+ * Class ExportTableHook
+ * @package Markocupic\CalendarEventBookingBundle
  */
 class ExportTableHook extends System
 {
-
 
     /**
      * @param $field
@@ -51,9 +48,9 @@ class ExportTableHook extends System
                 {
                     $value = $objModel->title;
                 }
-
             }
         }
+
         return $value;
     }
 }

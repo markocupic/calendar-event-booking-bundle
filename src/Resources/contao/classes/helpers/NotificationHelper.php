@@ -10,6 +10,8 @@
 
 namespace Markocupic\CalendarEventBookingBundle;
 
+use Contao\CalendarEventsMemberModel;
+use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\Date;
 use Contao\Config;
@@ -24,13 +26,14 @@ class NotificationHelper
 {
 
     /**
-     * @param $objEventMember
-     * @param $objEvent
+     * @param CalendarEventsMemberModel $objEventMember
+     * @param CalendarEventsModel $objEvent
      * @return array
+     * @throws \Exception
      */
-    public static function getNotificationTokens($objEventMember, $objEvent)
+    public static function getNotificationTokens(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): array
     {
-        $arrTokens = array();
+        $arrTokens = [];
 
         // Prepare tokens for event member and use "member_" as prefix
         $row = $objEventMember->row();

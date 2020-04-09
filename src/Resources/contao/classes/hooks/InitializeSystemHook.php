@@ -117,7 +117,7 @@ class InitializeSystemHook
                 // Import logger object
                 $logger = System::getContainer()->get('monolog.logger.contao');
                 $strLog = 'Auto generated calendar event booking form.';
-                $logger->log(LogLevel::INFO, $strLog, array('contao' => new ContaoContext(__METHOD__, 'INFO')));
+                $logger->log(LogLevel::INFO, $strLog, ['contao' => new ContaoContext(__METHOD__, 'INFO')]);
             }
         }
     }

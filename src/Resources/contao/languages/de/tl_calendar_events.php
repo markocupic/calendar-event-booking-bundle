@@ -32,5 +32,5 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationSender'] = ['
 $GLOBALS['TL_LANG']['tl_calendar_events']['enableDeregistration'] = ['Abmeldung von Event erlauben', 'Wählen Sie hier, ob eine Event-Abmeldung erlaubt werden soll.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventUnsubscribePage'] = ['Seite mit dem Event-Abmeldeformular-Modul wählen', 'Wählen Sie die Seite mit dem Event-Abmeldeformular-Modul aus.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'] = ['Abmeldefrist in Tagen', 'Geben Sie an wie viele Tage bis zum Event-Anfang Abmeldungen ermöglicht werden sollen.'];
-$GLOBALS['TL_LANG']['tl_calendar_events']['enableMultiBookingWithSameAddress'] = ['Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen', 'Geben Sie an ob Merhfachbuchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollen.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableMultiBookingWithSameAddress'] = ['Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen', 'Geben Sie an, ob Merhfachbuchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollen.'];
 
