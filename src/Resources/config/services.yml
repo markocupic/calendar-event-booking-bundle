@@ -3,6 +3,11 @@ services:
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
+    arguments:
+    - '@contao.framework'
+    - '@request_stack'
+    - '@contao.routing.scope_matcher'
+    - '@database_connection'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list }
     - { name: container.service_subscriber }
