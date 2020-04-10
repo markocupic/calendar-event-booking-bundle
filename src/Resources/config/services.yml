@@ -4,24 +4,45 @@ services:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
     arguments:
-    - '@contao.framework'
     - '@request_stack'
-    - '@contao.routing.scope_matcher'
     - '@database_connection'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list }
     - { name: container.service_subscriber }
     public: true
 
+  # Contao frontend module "eventbooking"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingController:
+    calls:
+    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+    arguments:
+    - '@request_stack'
+    tags:
+    - { name: contao.frontend_module, category: events, type: eventbooking }
+    - { name: container.service_subscriber }
+    public: true
 
-  # Contao dca class
+    # Contao frontend module "unsubscribefromevent"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\UnsubscribeFromEventController:
+    calls:
+    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+    arguments:
+    - '@request_stack'
+    - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
+    tags:
+    - { name: contao.frontend_module, category: events, type: unsubscribefromevent }
+    - { name: container.service_subscriber }
+    public: true
+
+  # Contao dca class tl_module
   Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule:
     arguments:
     - '@contao.framework'
-    - '@database_connection'
-    - '%kernel.project_dir%'
-    - '@security.helper'
-    - '@request_stack'
-    - '@contao.routing.scope_matcher'
+    public: true
+
+  # Notification helper class
+  Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper:
+    arguments:
+    - '@contao.framework'
     public: true
 

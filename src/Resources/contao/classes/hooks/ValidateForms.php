@@ -20,7 +20,6 @@ use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use Contao\UserModel;
 use Contao\Widget;
 use Haste\Util\Url;
 use NotificationCenter\Model\Notification;
@@ -274,7 +273,7 @@ class ValidateForms
             if (!empty($arrNotifications) && is_array($arrNotifications))
             {
                 // Get $arrToken from helper
-                $arrTokens = NotificationHelper::getNotificationTokens($objEventMember, $objEvent);
+                $arrTokens = System::getContainer()->get('Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper')->getNotificationTokens($objEventMember, $objEvent);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId)
