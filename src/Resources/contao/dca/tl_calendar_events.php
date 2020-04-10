@@ -137,34 +137,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
     'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 ];
 
-// Email from name
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['emailFromName'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFromName'],
-    'exclude'   => true,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-
-// Email from address
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['emailFrom'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['emailFrom'],
-    'exclude'   => true,
-    'search'    => true,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-
-// bookingConfirmationEmailBody
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingConfirmationEmailBody'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['bookingConfirmationEmailBody'],
-    'exclude'   => true,
-    'inputType' => 'textarea',
-    'eval'      => ['tl_class' => 'm12 clr', 'mandatory' => true],
-    'sql'       => "text NULL",
-];
-
 // enableNotificationCenter
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'],

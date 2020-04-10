@@ -18,7 +18,7 @@ use Contao\System;
  * Class ExportTableHook
  * @package Markocupic\CalendarEventBookingBundle
  */
-class ExportTableHook extends System
+class ExportTableHook
 {
 
     /**

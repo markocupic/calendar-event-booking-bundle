@@ -23,7 +23,7 @@ if (TL_MODE == 'BE')
     $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
 }
 
-// Form HOOKS (Kursanmeldung)
+// Form HOOKS (event booking)
 // Hooks will be registered in ModuleEventBooking::generate()
 // Override these globals if you want to use custom form validation
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['postUpload'] = array('Markocupic\CalendarEventBookingBundle\ValidateForms', 'postUpload');

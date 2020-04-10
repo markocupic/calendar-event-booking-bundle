@@ -28,7 +28,7 @@ class CalendarEventsMemberModel extends \Model
      * @param $eventId
      * @return bool
      */
-    public function isRegistered($memberId, $eventId)
+    public function isRegistered($memberId, $eventId): bool
     {
         $objMember = \MemberModel::findByPk($memberId);
         if ($objMember !== null)
@@ -50,7 +50,7 @@ class CalendarEventsMemberModel extends \Model
      * @param $memberId
      * @return array
      */
-    public function findUpcomingEventsByMemberId($memberId)
+    public function findUpcomingEventsByMemberId($memberId): array
     {
         $arrEvents = [];
         $objMember = \MemberModel::findByPk($memberId);
@@ -81,7 +81,7 @@ class CalendarEventsMemberModel extends \Model
      * @param $memberId
      * @return array
      */
-    public function findPastEventsByMemberId($memberId)
+    public function findPastEventsByMemberId($memberId): array
     {
         $arrEvents = [];
         $objMember = \MemberModel::findByPk($memberId);

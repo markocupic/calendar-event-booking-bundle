@@ -66,7 +66,7 @@ class ModuleUnsubscribeFromEvent extends Module
      */
     public function generate()
     {
-        if (TL_MODE == 'BE')
+        if (TL_MODE === 'BE')
         {
             /** @var BackendTemplate|object $objTemplate */
             $objTemplate = new BackendTemplate('be_wildcard');

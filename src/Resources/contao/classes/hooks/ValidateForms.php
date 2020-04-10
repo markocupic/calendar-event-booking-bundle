@@ -119,7 +119,7 @@ class ValidateForms
      * @param $objForm
      * @return Widget
      */
-    public function validateFormField(Widget $objWidget, $formId, $arrForm, $objForm)
+    public function validateFormField(Widget $objWidget, $formId, $arrForm, $objForm): Widget
     {
         if ($objForm->isCalendarEventBookingForm)
         {
@@ -199,11 +199,11 @@ class ValidateForms
     }
 
     /**
-     * @param $arrSet
+     * @param array $arrSet
      * @param $objForm
-     * @return mixed
+     * @return array
      */
-    public function storeFormData($arrSet, $objForm)
+    public function storeFormData(array $arrSet, $objForm): array
     {
         // empty
         return $arrSet;
