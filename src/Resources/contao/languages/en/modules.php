@@ -11,3 +11,4 @@
 // Frontend modules
 $GLOBALS['TL_LANG']['FMD']['eventbooking'] = ['Event booking form'];
 $GLOBALS['TL_LANG']['FMD']['unsubscribefromevent'] = ['Event unsubscription form'];
+$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_member_list'] = ['Event member listing', 'List subscribed members of a certain event.'];

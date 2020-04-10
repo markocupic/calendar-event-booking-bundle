@@ -1,0 +1,25 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if($this->members != ''): ?>
+<div class="ce_table">
+    <table class="all_records sortable">
+        <thead>
+        <tr>
+            <th class="head col_first"><?= $this->trans('tl_calendar_events_member.firstname') ?></th>
+            <th class="head"><?= $this->trans('tl_calendar_events_member.lastname') ?></th>
+            <th class="head col_last"><?= $this->trans('tl_calendar_events_member.city') ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?= $this->members ?>
+    </table>
+</div>
+<?php else: ?>
+<!--
+<p class="no-event-subscriptions-found">NO registration found for this event.</p>
+-->
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

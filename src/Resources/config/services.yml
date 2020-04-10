@@ -1,1 +1,21 @@
+services:
+  # Contao frontend module "calendar_event_booking_member_list_module"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController:
+    calls:
+    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+    tags:
+    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
+    public: true
+
+
+  # Contao dca class
+  Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule:
+    arguments:
+    - '@contao.framework'
+    - '@database_connection'
+    - '%kernel.project_dir%'
+    - '@security.helper'
+    - '@request_stack'
+    - '@contao.routing.scope_matcher'
+    public: true
 
