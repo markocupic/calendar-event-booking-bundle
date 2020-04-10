@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class CalendarEventBookingMemberListController
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
- * @FrontendModule(category="events", type="calendar_event_booking_member_list_module")
+ * @FrontendModule(category="events", type="calendar_event_booking_member_list")
  */
 class CalendarEventBookingMemberListController extends AbstractFrontendModuleController
 {

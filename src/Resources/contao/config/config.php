@@ -17,7 +17,7 @@ $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_memb
 $GLOBALS['FE_MOD']['events']['eventbooking'] = 'Markocupic\CalendarEventBookingBundle\ModuleEventBooking';
 $GLOBALS['FE_MOD']['events']['unsubscribefromevent'] = 'Markocupic\CalendarEventBookingBundle\ModuleUnsubscribeFromEvent';
 // Refactored modules
-//$GLOBALS['FE_MOD']['events']['calendar_event_booking_member_list_module'] = 'Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController';
+//$GLOBALS['FE_MOD']['events']['calendar_event_booking_member_list'] = 'Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController';
 
 if (TL_MODE == 'BE')
 {

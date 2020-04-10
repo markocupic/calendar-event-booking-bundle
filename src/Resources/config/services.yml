@@ -1,10 +1,11 @@
 services:
-  # Contao frontend module "calendar_event_booking_member_list_module"
+  # Contao frontend module "calendar_event_booking_member_list"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
     tags:
-    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
+    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list }
+    - { name: container.service_subscriber }
     public: true
 
 
