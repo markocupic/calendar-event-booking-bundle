@@ -9,6 +9,8 @@
         <tr>
             <th class="head col_first"><?= $this->trans('tl_calendar_events_member.firstname.0') ?></th>
             <th class="head"><?= $this->trans('tl_calendar_events_member.lastname.0') ?></th>
+            <th class="head"><?= $this->trans('tl_calendar_events_member.street.0') ?></th>
+            <th class="head"><?= $this->trans('tl_calendar_events_member.postal.0') ?></th>
             <th class="head col_last"><?= $this->trans('tl_calendar_events_member.city.0') ?></th>
         </tr>
         </thead>
