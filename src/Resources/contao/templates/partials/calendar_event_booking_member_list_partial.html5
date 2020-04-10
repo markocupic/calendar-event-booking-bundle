@@ -1,5 +1,7 @@
 <tr class="<?= $this->rowClass ?>">
   <td class="body col_0 col_first"><?= $this->model->firstname ?></td>
   <td class="body col_1"><?= $this->model->lastname ?></td>
-  <td class="body col_2 col_last"><?= $this->model->city ?></td>
+  <td class="body col_2 col_last"><?= $this->model->street ?></td>
+  <td class="body col_3 col_last"><?= $this->model->postal ?></td>
+  <td class="body col_4 col_last"><?= $this->model->city ?></td>
 </tr>
