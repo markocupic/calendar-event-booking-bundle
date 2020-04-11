@@ -5,3 +5,11 @@ services:
     - '@contao.routing.scope_matcher'
     tags:
     - { name: contao.hook, hook: initializeSystem, method: registerCalendarEventBookingHooks, priority: 0 }
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData:
+    arguments:
+    - '@contao.framework'
+    - '@monolog.logger.contao'
+    - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
+    public: true

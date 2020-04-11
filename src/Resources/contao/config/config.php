@@ -24,12 +24,10 @@ $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['postUpload'] = ['Markocupic\
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'compileFormFields'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'loadFormField'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'validateFormField'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['storeFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'storeFormData'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'prepareFormData'];
 
 // Send notification
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'processFormData'];
-
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData', 'processFormData'];
 
 // Notification center
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = [
