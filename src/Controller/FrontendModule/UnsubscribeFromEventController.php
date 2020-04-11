@@ -40,11 +40,6 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
 {
 
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
      * @var NotificationHelper
      */
     protected $notificationHelper;
@@ -81,12 +76,10 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
 
     /**
      * UnsubscribeFromEventController constructor.
-     * @param RequestStack $requestStack
      * @param NotificationHelper $notificationHelper
      */
-    public function __construct(RequestStack $requestStack, NotificationHelper $notificationHelper)
+    public function __construct(NotificationHelper $notificationHelper)
     {
-        $this->requestStack = $requestStack;
         $this->notificationHelper = $notificationHelper;
     }
 
@@ -100,8 +93,8 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Return empty string, if user is not logged in as a frontend user
-        if ($this->isFrontend())
+        // Is frontend
+        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
         {
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
@@ -273,12 +266,4 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
         $this->errorMsg[] = $strMsg;
     }
 
-    /**
-     * Identify the Contao scope (TL_MODE) of the current request
-     * @return bool
-     */
-    protected function isFrontend(): bool
-    {
-        return $this->get('contao.routing.scope_matcher')->isFrontendRequest($this->requestStack->getCurrentRequest());
-    }
 }

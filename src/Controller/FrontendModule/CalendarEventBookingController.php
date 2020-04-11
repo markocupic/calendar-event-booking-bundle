@@ -27,7 +27,6 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
@@ -41,11 +40,6 @@ class CalendarEventBookingController extends AbstractFrontendModuleController
 {
 
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
      * @var CalendarEventsModel
      */
     protected $objEvent;
@@ -54,15 +48,6 @@ class CalendarEventBookingController extends AbstractFrontendModuleController
      * @var PageModel
      */
     protected $objPage;
-
-    /**
-     * CalendarEventBookingController constructor.
-     * @param RequestStack $requestStack
-     */
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
-    }
 
     /**
      * @param Request $request
@@ -74,8 +59,8 @@ class CalendarEventBookingController extends AbstractFrontendModuleController
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Return empty string, if user is not logged in as a frontend user
-        if ($this->isFrontend())
+        // Is frontend
+        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
         {
             /** @var Config $configAdapter */
             $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
@@ -225,12 +210,4 @@ class CalendarEventBookingController extends AbstractFrontendModuleController
         return $template->getResponse();
     }
 
-    /**
-     * Identify the Contao scope (TL_MODE) of the current request
-     * @return bool
-     */
-    protected function isFrontend(): bool
-    {
-        return $this->get('contao.routing.scope_matcher')->isFrontendRequest($this->requestStack->getCurrentRequest());
-    }
 }

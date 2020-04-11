@@ -4,7 +4,6 @@ services:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
     arguments:
-    - '@request_stack'
     - '@database_connection'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list }
@@ -15,8 +14,6 @@ services:
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingController:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
-    arguments:
-    - '@request_stack'
     tags:
     - { name: contao.frontend_module, category: events, type: eventbooking }
     - { name: container.service_subscriber }
@@ -27,7 +24,6 @@ services:
     calls:
     - ['setContainer', ['@Psr\Container\ContainerInterface']]
     arguments:
-    - '@request_stack'
     - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
     tags:
     - { name: contao.frontend_module, category: events, type: unsubscribefromevent }

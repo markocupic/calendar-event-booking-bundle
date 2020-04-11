@@ -26,7 +26,6 @@ use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
@@ -37,11 +36,6 @@ use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
  */
 class CalendarEventBookingMemberListController extends AbstractFrontendModuleController
 {
-
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
 
     /**
      * @var Connection
@@ -55,12 +49,10 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
 
     /**
      * CalendarEventBookingMemberListController constructor.
-     * @param RequestStack $requestStack
      * @param Connection $connection
      */
-    public function __construct(RequestStack $requestStack, Connection $connection)
+    public function __construct(Connection $connection)
     {
-        $this->requestStack = $requestStack;
         $this->connection = $connection;
     }
 
@@ -74,8 +66,8 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Return empty string, if user is not logged in as a frontend user
-        if ($this->isFrontend())
+        // Is frontend
+        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
         {
             // Set adapters
             $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
@@ -202,12 +194,4 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
         return sprintf('row_%s%s%s%s', $i, $rowFirst, $rowLast, $evenOrOdd);
     }
 
-    /**
-     * Identify the Contao scope (TL_MODE) of the current request
-     * @return bool
-     */
-    protected function isFrontend(): bool
-    {
-        return $this->get('contao.routing.scope_matcher')->isFrontendRequest($this->requestStack->getCurrentRequest());
-    }
 }
