@@ -109,7 +109,7 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
             /** @var Input $configAdapter */
             $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
 
-            /** @var  CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
+            /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
             $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
 
             /** @var Controller $controllerAdapter */
@@ -195,7 +195,7 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var  CalendarEventsModel $calendarEventsModelAdapter */
+        /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
 
         /** @var Input $inputAdapter */
@@ -239,7 +239,7 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
 
-        /** @var  Notification $notificationAdapter */
+        /** @var Notification $notificationAdapter */
         $notificationAdapter = $this->get('contao.framework')->getAdapter(Notification::class);
 
         if ($objEvent->enableDeregistration)
@@ -249,7 +249,7 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
             if (!empty($arrNotifications) && is_array($arrNotifications))
             {
                 // Get $arrToken from helper
-                $arrTokens =  $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
+                $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId)

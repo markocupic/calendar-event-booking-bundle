@@ -49,19 +49,19 @@ class NotificationHelper
      */
     public function getNotificationTokens(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): array
     {
-        /** @var  Config $configAdapter */
+        /** @var Config $configAdapter */
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-        /** @var  Date $dateAdapter */
+        /** @var Date $dateAdapter */
         $dateAdapter = $this->framework->getAdapter(Date::class);
 
-        /** @var  Controller $controllerAdapter */
+        /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-        /** @var  UserModel $userModelAdapter */
+        /** @var UserModel $userModelAdapter */
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
 
-        /** @var  PageModel $pageModelAdapter */
+        /** @var PageModel $pageModelAdapter */
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
 
         $arrTokens = [];

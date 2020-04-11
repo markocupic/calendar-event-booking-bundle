@@ -32,9 +32,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
-
 /**
- * Class CalendarEventBookingMemberListController
+ * Class CalendarEventBookingController
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
  * @FrontendModule(category="events", type="eventbooking")
  */
@@ -78,7 +77,6 @@ class CalendarEventBookingController extends AbstractFrontendModuleController
         // Return empty string, if user is not logged in as a frontend user
         if ($this->isFrontend())
         {
-
             /** @var Config $configAdapter */
             $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
 

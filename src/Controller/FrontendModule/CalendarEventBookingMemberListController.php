@@ -130,7 +130,7 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var  CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
+        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
         $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
 
         /** @var Controller $controllerAdapter */
@@ -139,7 +139,7 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
         // Load language
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
 
-        /** @var  Doctrine\DBAL\Driver\PDOStatement $results */
+        /** @var Doctrine\DBAL\Driver\PDOStatement $results */
         $results = $this->getSignedUpMembers(intval($this->objEvent->id));
         $intRowCount = $results->rowCount();
 
@@ -147,7 +147,7 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
         $strRows = '';
         while (false !== ($arrEventMember = $results->fetch()))
         {
-            /** @var  FrontendTemplate $partial */
+            /** @var FrontendTemplate $partial */
             $partial = new FrontendTemplate($model->calendar_event_booking_member_list_partial_template);
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
@@ -177,7 +177,7 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
      */
     protected function getSignedUpMembers(int $id): \Doctrine\DBAL\Driver\PDOStatement
     {
-        /** @var  Doctrine\DBAL\Query\QueryBuilder $qb */
+        /** @var Doctrine\DBAL\Query\QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
             ->from('tl_calendar_events_member', 't')
