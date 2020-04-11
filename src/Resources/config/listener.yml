@@ -1,1 +1,7 @@
-
+services:
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem:
+    arguments:
+    - '@request_stack'
+    - '@contao.routing.scope_matcher'
+    tags:
+    - { name: contao.hook, hook: initializeSystem, method: registerCalendarEventBookingHooks, priority: 0 }
