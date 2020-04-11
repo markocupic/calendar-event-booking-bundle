@@ -16,7 +16,6 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 
 // eventUnsubscribePage
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_calendar']['eventUnsubscribePage'],
     'exclude'    => true,
     'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
