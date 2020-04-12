@@ -84,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{booking_date_legend},addedOn;{notes_legend}, notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '{booking_date_legend},addedOn;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
     ],
 
     // Fields
