@@ -17,18 +17,27 @@ if (TL_MODE === 'BE')
     $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
 }
 
-// Form HOOKS (event booking)
-// Hooks will be registered in ModuleEventBooking::generate()
-// Override these globals if you want to use custom form validation
+/**
+ * Form HOOKS (event booking)
+ * Hooks will be registered on the fly in the initializeSystem listener in
+ * Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem::registerCalendarEventBookingHooks().
+ *
+ * !!!!Override these globals, if you want to use custom form validation!!!
+ */
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields', 'compileFormFields'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField', 'loadFormField'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField', 'validateFormField'];
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData', 'prepareFormData'];
-
-// Send notification
 $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData', 'processFormData'];
 
-// Notification center
+// These hooks are registered via Resources/config/listener.yml
+//$GLOBALS['TL_HOOKS']['initializeSystem'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem', 'registerCalendarEventBookingHooks'];
+//$GLOBALS['TL_HOOKS']['exportTable'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ExportTable', 'exportBookingList'];
+
+
+/**
+ * Notification center
+ */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = [
     // Type
     'booking-notification'           => [

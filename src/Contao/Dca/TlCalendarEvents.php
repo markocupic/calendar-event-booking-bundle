@@ -27,7 +27,7 @@ class TlCalendarEvents extends \tl_calendar_events
 {
 
     /**
-     * Adjust bookingStartDate and  bookingStartDate
+     * Adjust bookingStartDate and bookingStartDate
      *
      * @param DataContainer $dc
      */

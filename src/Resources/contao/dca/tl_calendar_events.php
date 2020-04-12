@@ -11,7 +11,7 @@
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
 
-// Overwrite child record callback callback
+// Overwrite child record callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = ['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'listEvents'];
 
 // Palettes
