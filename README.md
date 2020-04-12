@@ -1,4 +1,4 @@
-# calendar-event-booking-bundle
+# Events buchen mit Contao
 
 ## Events buchen
 Mit dieser Contao 4 Erweiterung werden Events über ein Anmeldeformular buchbar. 
