@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
@@ -8,27 +10,24 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+
+use Contao\Config;
+use Contao\Database;
+use Contao\DataContainer;
 use Contao\Message;
 use Contao\CalendarEventsMemberModel;
 use Contao\Calendar;
 use Contao\Date;
 
 /**
- * Class tl_calendar_event_booking
+ * Class TlCalendarEvents
  */
-class tl_calendar_event_booking extends tl_calendar_events
+class TlCalendarEvents extends \tl_calendar_events
 {
 
     /**
-     * Import the back end user object
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Adjust bookingStartDate and  bookingStartDate
+     * Adjust bookingStartDate and bookingStartDate
      *
      * @param DataContainer $dc
      */
@@ -44,7 +43,7 @@ class tl_calendar_event_booking extends tl_calendar_events
         $arrSet['bookingEndDate'] = $dc->activeRecord->bookingEndDate;
 
         // Set end date
-        if (strlen($dc->activeRecord->bookingEndDate))
+        if (!empty($dc->activeRecord->bookingEndDate))
         {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate)
             {
@@ -53,29 +52,26 @@ class tl_calendar_event_booking extends tl_calendar_events
             }
         }
 
-
-        $this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
+        Database::getInstance()->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
     }
 
     /**
-     * Add the type of input field
-     *
      * @param array $arrRow
-     *
      * @return string
      */
     public function listEvents($arrRow)
     {
-        if ($arrRow['addBookingForm'])
+        if ($arrRow['addBookingForm'] === '1')
         {
             $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
+
             $span = Calendar::calculateSpan($arrRow['startTime'], $arrRow['endTime']);
 
             if ($span > 0)
             {
                 $date = Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']) . $GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'] . Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
             }
-            elseif ($arrRow['startTime'] == $arrRow['endTime'])
+            elseif ($arrRow['startTime'] === $arrRow['endTime'])
             {
                 $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']) . ($arrRow['addTime'] ? ' ' . Date::parse(Config::get('timeFormat'), $arrRow['startTime']) : '');
             }

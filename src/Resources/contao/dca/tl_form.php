@@ -15,7 +15,6 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->applyToPalette('default', 'tl_form');
 
 $GLOBALS['TL_DCA']['tl_form']['fields']['isCalendarEventBookingForm'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_form']['isCalendarEventBookingForm'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',

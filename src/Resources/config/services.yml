@@ -42,3 +42,11 @@ services:
     - '@contao.framework'
     public: true
 
+  # Migration class: Autogenerate booking form
+  Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm\AutogenerateBookingForm:
+    arguments:
+    - '%kernel.project_dir%'
+    - '@database_connection'
+    tags:
+    - { name: contao.migration, priority: 0 }
+    public: true

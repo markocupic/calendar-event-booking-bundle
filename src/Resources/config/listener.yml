@@ -1,1 +1,47 @@
+services:
+  # Export table hook
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ExportTable:
+    arguments:
+    - '@contao.framework'
+    tags:
+    - { name: contao.hook, hook: exportTable, method: exportBookingList, priority: 0 }
 
+  # Register Calendar Event Booking Hooks
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem:
+    arguments:
+    - '@request_stack'
+    - '@contao.routing.scope_matcher'
+    tags:
+    - { name: contao.hook, hook: initializeSystem, method: registerCalendarEventBookingHooks, priority: 0 }
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData:
+    arguments:
+    - '@contao.framework'
+    - '@monolog.logger.contao'
+    - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
+    public: true
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields:
+    arguments:
+    - '@contao.framework'
+    public: true
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField:
+    arguments:
+    - '@contao.framework'
+    public: true
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField:
+    arguments:
+    - '@contao.framework'
+    public: true
+
+  # Do not tag this hook because it will be registered dynamically in Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem
+  Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData:
+    arguments:
+    - '@contao.framework'
+    public: true
