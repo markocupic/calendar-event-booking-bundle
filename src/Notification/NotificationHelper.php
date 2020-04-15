@@ -66,20 +66,24 @@ class NotificationHelper
 
         $arrTokens = [];
 
+        // Load language file
+        Controller::loadLanguageFile('tl_calendar_events_member');
+
         // Prepare tokens for event member and use "member_" as prefix
         $row = $objEventMember->row();
         foreach ($row as $k => $v)
         {
-            $arrTokens['member_' . $k] = html_entity_decode((string) $v);
+            $arrTokens['member_' . $k] = !empty($v) ? html_entity_decode((string) $v) : '';
         }
-        $arrTokens['member_salutation'] = html_entity_decode($GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+
+        $arrTokens['member_salutation'] = !empty($objEventMember->gender) ? html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]) : '';
         $arrTokens['member_dateOfBirthFormated'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEventMember->dateOfBirth);
 
         // Prepare tokens for event and use "event_" as prefix
         $row = $objEvent->row();
         foreach ($row as $k => $v)
         {
-            $arrTokens['event_' . $k] = html_entity_decode((string) $v);
+            $arrTokens['event_' . $k] = !empty($v) ? html_entity_decode((string) $v) : '';
         }
 
         // event startTime & endTime
@@ -95,7 +99,7 @@ class NotificationHelper
         }
 
         // event title
-        $arrTokens['event_title'] = html_entity_decode($objEvent->title);
+        $arrTokens['event_title'] = !empty($objEvent->title) ? html_entity_decode((string) $objEvent->title) : '';
 
         // event startDate & endDate
         $arrTokens['event_startDate'] = '';
@@ -123,7 +127,7 @@ class NotificationHelper
                 {
                     continue;
                 }
-                $arrTokens['organizer_' . $k] = html_entity_decode((string) $v);
+                $arrTokens['organizer_' . $k] = !empty($v) ? html_entity_decode((string) $v) : '';
             }
         }
 
