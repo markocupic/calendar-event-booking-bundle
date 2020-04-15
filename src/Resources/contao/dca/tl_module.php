@@ -17,6 +17,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['calendar_event_booking_member_list'
 
 // unsubscribeFromEventNotificationIds
 $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_module']['unsubscribeFromEventNotificationIds'],
     'exclude'    => true,
     'search'     => true,
     'inputType'  => 'select',
@@ -28,6 +29,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds']
 
 // Member list template
 $GLOBALS['TL_DCA']['tl_module']['fields']['calendar_event_booking_member_list_template'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_member_list_template'],
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => ['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule', 'getCalendarEventBookingMemberListTemplate'],
@@ -37,6 +39,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['calendar_event_booking_member_list_te
 
 // Member list partial template
 $GLOBALS['TL_DCA']['tl_module']['fields']['calendar_event_booking_member_list_partial_template'] = [
+    'label'            => &$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_member_list_partial_template'],
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => ['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule', 'getCalendarEventBookingMemberListPartialTemplate'],

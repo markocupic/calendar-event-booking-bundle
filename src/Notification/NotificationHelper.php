@@ -75,7 +75,6 @@ class NotificationHelper
         {
             $arrTokens['member_' . $k] = html_entity_decode((string) $v);
         }
-
         $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
         $arrTokens['member_dateOfBirthFormated'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEventMember->dateOfBirth);
 

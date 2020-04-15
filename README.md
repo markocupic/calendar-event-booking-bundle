@@ -1,58 +1,37 @@
-# Events buchen mit Contao
+# calendar-event-booking-bundle
+!!! Achtung: Version 3.x ist nicht mehr zu 100% kompatibel zu Version 2.x. In Version >=3.x müssen die Simple Tokens im Notification-Center neu gesetzt werden. Für Eigenschaften die den Event betreffen, braucht es nun das prefix "event_" und für Eigenschaften, die den Teilnehmer betreffen das Präfix "member_" und die Eigenschaften des des Event-Organisators werden über "organizer_" erreicht.
 
 ## Events buchen
-Mit dieser Contao 4 Erweiterung werden Events über ein Anmeldeformular buchbar. 
-Das Anmeldeformular kann im Contao Formulargenerator erstellt werden. 
-Die Erweiterung stellt während des Installationsprozesses ein Sample Anmeldeformular bereit, welches Grundansprüchen genügen sollte. 
-Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abgelegt 
-und sind im Backend einsehbar und über eine CSV-Datei exportierbar.
+Mit dieser Contao 4 Erweiterung werden Events über ein Anmeldeformular buchbar. Event-Organisator und Teilnehmer können über das Notification Center benachrichtigt werden. Bei der Installation wird die Tabelle tl_calendar_events um weitere Felder erweitert. Zusätzlich wird eine Kindtabelle (tl_calendar_events_member) erstellt, um die Event-Buchungen abzulegen.
 
-## Benachrichtigung
-Event-Organisator und Teilnehmer können bei Event-Anmeldung und Event-Abmeldung über das Notification Center benachrichtigt werden. 
-
-## Frontend Module
-#### Event Anmeldeformular
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anmeldeformular einblenden. 
-Verlinken Sie in den Moduleinstellungen mit dem entsprechenden Formular aus dem Contao Formulargenerator.
-Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. 
-Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein. 
-Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader_Modul ein.
+Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url. Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
 
-#### Angemeldete Mitglieder im Frontend auflisten
-Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen sichtbar/aufgelistet werden. 
-Wichtig! Das Auflistungsmodul zieht den Eventnamen aus der Url. 
-Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein. 
-Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader_Modul ein.
+## Angemeldete Mitglieder im Frontend sichtbar machen
+Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen sichtbar/aufgelistet werden. Dieses Modul muss zusammen mit einem Event-Reader Modul auf der selben Seite placiert werden.
 
-#### Von Event abmelden
-Die Erweiterung stellt auch eine Möglichkeit sich von einem Event wieder abzumelden. 
-Via Notification Center kann dem Teilnehmer ein Abmeldelink (##event_unsubscribeHref##) zugeschickt werden.
-Erstellen Sie das entsprechende Modul und binden Sie es auf einer neuen Seite in der Seitenstruktur ein. 
-Diese Seite sollten Sie sinnvollerweise in der Navigation nicht anzeigen lassen.
-In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das Event-Abmeldeformular liegt.
+## Von Event abmelden
+Seit Version 3.3 kann auch eine Event Abmeldemöglichkeit im Event eingestellt werden. Dazu muss das passende Modul in der Seitenstruktur angelegt werden. Die Abmeldung erfolgt über einen Token gesicherten Link (##event_unsubscribeHref## Token), welcher mit dem Bestätigungs-E-Mail dem Benutzer mitgesandt werden kann.
 
 ## Einrichtung (Ablauf)
-1. Kalender und Events anlegen.
-2. "Eventliste" und "Eventleser" Frontend-Module anlegen.
-3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen.
-4. Benachrichtigung des Typs "Event-Buchungsbestätigung" anlegen (Notification Center)
-5. Im Contao Formulargenerator die benötigten Felder bereitstellen. 
-6. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 5 erstellte Formular auswählen. Danach noch die bei Punkt 4 erstellte Benachrichtigung auswählen.
-7. Die 3 erstellten Module (Eventliste, Eventleser und Event-Buchungsformular) in der Contao Seitenstruktur einbinden (Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite). 
-8. Optional das Frontend Modul "Event-Abmeldeformular" mit dazugehörender Benachrichtigung "Event-Abmeldung" erstellen und dieses in einer extra dafür erstellten Seite einbinden. 
-9. Optional das Frontend Modul "Event-Mitglieder-Auflistung" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
-10. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren. 
-11. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
+1. Events anlegen
+2. Event-Listing und Event-Reader Frontend-Module anlegen.
+3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen
+4. Benachrichtigung des Typs "Event Buchungsbestätigung" anlegen (Notification Center)
+5. "Event-Buchungsformular" Frontend-Modul anlegen und mit der bei Punkt 4 erstellten Benachrichtigung verknüpfen.
+6. Die 3 erstellten Module in der Contao Seitenstruktur einbinden (Wichtig! Buchungsformular und Eventreader gehören auf die gleiche Seite). 
+7. Evtl. das Frontend Module "Event Abmeldeformular" erstellen und dieses in extra dafür erstellten Seite einbinden. 
+9. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren. 
+10. In der Kalendereinstellung die Abmeldeseite festlegen. "tl_calendar.eventUnsubscribePage"
 
-#### Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
-Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator 
-und nutzen Sie dabei die **Simple Tokens**.
 
-Mit ##event_unsubscribeHref## kann ein tokengesicherter Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden. 
-Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt und in einer Seite eingebunden worden sein. 
+## Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
+Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator und nutzen Sie dabei die **Simple Tokens**.
+
+Mit dem ##event_unsubscribeHref## Token kann der Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden. Auch sollte das nötige Frontend Modul "Event Abmeldeformular" erstellt und in einer Seite eingebunden wordsen sein. 
 ![Notification Center](doc/notification_center.jpg?raw=true)
 
-##### Gebrauch der Simple Tokens im Notification Center
+#### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
 
 Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc. (Feldnamen aus tl_calendar_events)
@@ -60,38 +39,19 @@ Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc.
 Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
 
-#### Punkt 5: Event-Buchungsformular erstellen
+## Punkt 5: Event-Buchungsformular erstellen
 Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert. 
 **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
 ![Formulargenerator-Einstellung](doc/form_generator.jpg?raw=true) 
 Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
+(Zusätliche gewünschte Felder können erstellt werden, müssen aber zuvor in tl_calendar_events_member angelegt werden.)
 
 
-Werden weitere Felder gewünscht, so müssen diese in app/Resources/contao/dca/tl_calendar_events_member.php definiert werden.
-```php
-<?php
-//app/Resources/contao/dca/tl_calendar_events_member.php
-
-$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'sorting'   => true,
-    'inputType' => 'select',
-    'options'   => ['vegetarian', 'vegan'],
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-// Add field to palette
-Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('food_legend', 'personal_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField(['foodHabilities'], 'food_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_calendar_events_member');
-
-```
-
-
-#### Punkt 10: E-Mail Buchungsbestätigung im Event aktivieren
+## Punkt 9: E-Mail Buchungsbestätigung im Event aktivieren
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
 ![Benachrichtigung im Event aktivieren](doc/benachrichtigung-aktivieren.jpg?raw=true)
 
+
+## CSV-Export der Teilnehmer
+Nach dem Anmeldeprozess sind die angemeldeten Event Mitglieder im Backend einsehbar. Auch ist es möglich von den Teilnehmern einen CSV-Export (Teilnehmerliste) aus dem Backend heraus zu machen.

@@ -17,27 +17,29 @@ if (TL_MODE === 'BE')
     $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
 }
 
-/**
- * Form HOOKS (event booking)
- * Hooks will be registered on the fly in the initializeSystem listener in
- * Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem::registerCalendarEventBookingHooks().
- *
- * !!!!Override these globals, if you want to use custom form validation!!!
- */
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields', 'compileFormFields'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField', 'loadFormField'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField', 'validateFormField'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData', 'prepareFormData'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData', 'processFormData'];
+// Form HOOKS (event booking)
+// Hooks will be registered in ModuleEventBooking::generate()
+// Override these globals if you want to use custom form validation
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['postUpload'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'postUpload'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'compileFormFields'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'loadFormField'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'validateFormField'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['storeFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'storeFormData'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'prepareFormData'];
 
-// These hooks are registered via Resources/config/listener.yml
-//$GLOBALS['TL_HOOKS']['initializeSystem'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem', 'registerCalendarEventBookingHooks'];
-//$GLOBALS['TL_HOOKS']['exportTable'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ExportTable', 'exportBookingList'];
+// Send notification
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\ValidateForms', 'processFormData'];
 
+// Register $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = ['Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'registerHooks'];
 
-/**
- * Notification center
- */
+// On update (keep running older settings)
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = ['Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'onUpdate'];
+
+// Auto generate booking form
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = ['Markocupic\CalendarEventBookingBundle\InitializeSystemHook', 'autoGenerateBookingForm'];
+
+// Notification center
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = [
     // Type
     'booking-notification'           => [

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
@@ -10,31 +8,37 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
-
-use Contao\Input;
 use Markocupic\ExportTable\ExportTable;
 
 /**
- * Class TlCalendarEventsMember
- * @package Markocupic\CalendarEventBookingBundle\Contao\Dca
+ * Class tl_calendar_events_member
  */
-class TlCalendarEventsMember
+class tl_calendar_events_member extends Backend
 {
 
     /**
-     * @throws \Exception
+     * Import the back end user object
      */
-    public function downloadRegistrationList()
+    public function __construct()
+    {
+        parent::__construct();
+
+    }
+
+    /**
+     *
+     * OnLoad Callback
+     */
+    public function onloadCallback()
     {
         // Download the registration list as a csv spreadsheet
-        if (Input::get('act') === 'downloadRegistrationList')
+        if (Input::get('act') == 'downloadRegistrationList')
         {
-            $opt = [];
+            $opt = array();
 
             // Add fields
-            $arrSkip = ['bookingToken'];
-            $opt['arrSelectedFields'] = [];
+            $arrSkip = array('bookingToken');
+            $opt['arrSelectedFields'] = array();
             foreach ($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'] as $k => $v)
             {
                 if (!\in_array($k, $arrSkip))
@@ -44,7 +48,9 @@ class TlCalendarEventsMember
             }
 
             $opt['exportType'] = 'csv';
-            $opt['arrFilter'][] = ['pid=?', Input::get('id')];
+            $opt['arrFilter'][] = array('pid=?', Input::get('id'));
+            $opt['strDestinationCharset'] = 'windows-1252';
+            $GLOBALS['TL_HOOKS']['exportTable'][] = array('Markocupic\CalendarEventBookingBundle\ExportTableHook', 'exportBookingListHook');
             ExportTable::exportTable('tl_calendar_events_member', $opt);
             exit;
         }
