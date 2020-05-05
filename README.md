@@ -70,7 +70,7 @@ firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,not
 
 Werden weitere Felder gewünscht, so müssen diese in app/Resources/contao/dca/tl_calendar_events_member.php definiert werden.
 ```php
-
+<?php
 //app/Resources/contao/dca/tl_calendar_events_member.php
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
