@@ -44,7 +44,7 @@ class TlCalendarEventsMember
             }
 
             $opt['exportType'] = 'csv';
-            $opt['arrFilter'][] = ['pid=?', Input::get('id')];
+            $opt['arrFilter'] = [['tl_calendar_events_member.pid=?'], [Input::get('id')]];
             ExportTable::exportTable('tl_calendar_events_member', $opt);
             exit;
         }
