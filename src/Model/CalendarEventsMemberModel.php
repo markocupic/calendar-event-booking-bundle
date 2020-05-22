@@ -10,10 +10,6 @@
 
 namespace Markocupic\CalendarEventBookingBundle\Model;
 
-use Contao\CalendarEventsModel;
-use Contao\Database;
-use Contao\Date;
-use Contao\MemberModel;
 use Contao\Model;
 
 /**
