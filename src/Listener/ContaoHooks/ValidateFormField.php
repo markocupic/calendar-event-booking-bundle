@@ -10,12 +10,12 @@
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 use Contao\Input;
 use Contao\Widget;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * Class ValidateFormField

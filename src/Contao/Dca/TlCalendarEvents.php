@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 
+use Contao\Calendar;
 use Contao\Config;
 use Contao\Database;
 use Contao\DataContainer;
-use Contao\Message;
-use Contao\CalendarEventsMemberModel;
-use Contao\Calendar;
 use Contao\Date;
+use Contao\Message;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * Class TlCalendarEvents

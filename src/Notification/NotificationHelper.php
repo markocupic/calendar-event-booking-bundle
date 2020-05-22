@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Notification;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
+use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
-use Contao\Config;
 use Contao\PageModel;
 use Contao\System;
 use Contao\UserModel;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * Class NotificationHelper

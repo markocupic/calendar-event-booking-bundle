@@ -10,7 +10,6 @@
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -21,6 +20,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Haste\Util\Url;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
 use Psr\Log\LoggerInterface;

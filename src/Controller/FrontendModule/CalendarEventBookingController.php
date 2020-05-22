@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
@@ -26,10 +25,10 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
  * Class CalendarEventBookingController

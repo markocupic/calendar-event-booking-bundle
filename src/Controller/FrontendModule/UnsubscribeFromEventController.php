@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
@@ -23,13 +22,12 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
  * Class UnsubscribeFromEventController
