@@ -26,3 +26,5 @@ $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'The unsubscription l
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Invalid booking token or could not find assigned event.';
 $GLOBALS['TL_LANG']['ERR']['invalidBookingToken'] = 'Invalid booking token.';
 $GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'] = 'You\'re not allowed to unsubscribe from event "%s".';
+$GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit'] = 'This unsubscription limit is too late (see event start and end date and time).';
+$GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits'] = 'You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.';

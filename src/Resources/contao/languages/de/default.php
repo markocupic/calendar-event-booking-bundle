@@ -26,3 +26,5 @@ $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'Die Abmeldefrist fü
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.';
 $GLOBALS['TL_LANG']['ERR']['invalidBookingToken'] = 'Ungültiges Buchungs-Token.';
 $GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'] = 'Die Abmeldung vom Event "%s" ist nicht möglich.';
+$GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit'] = 'Diese Abmeldezeit ist zu spät (siehe Eventstart und -ende).';
+$GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits'] = 'Sie können nicht gleichzeitig eine Abmeldefrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Abmeldefrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.';

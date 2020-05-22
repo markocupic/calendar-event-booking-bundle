@@ -136,8 +136,27 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
 
                 if (!$this->hasError)
                 {
-                    $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
-                    if (time() + $limit * 3600 * 24 > $this->objEvent->startDate)
+                    $blnLimitExpired = false;
+
+                    // User has set a specific unsubscription limit timestamp, this has precedence
+                    if (!empty($this->objEvent->unsubscribeLimitTstamp))
+                    {
+                        if (time() > $this->objEvent->unsubscribeLimitTstamp)
+                        {
+                            $blnLimitExpired = true;
+                        }
+                    }
+                    // We only have a unsubscription limit expressed in days before event start date
+                    else
+                    {
+                        $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
+                        if (time() + $limit * 3600 * 24 > $this->objEvent->startDate)
+                        {
+                            $blnLimitExpired = true;
+                        }
+                    }
+
+                    if ($blnLimitExpired)
                     {
                         $this->addError($translator->trans('ERR.unsubscriptionLimitExpired', [$this->objEvent->title], 'contao_default'));
                     }
