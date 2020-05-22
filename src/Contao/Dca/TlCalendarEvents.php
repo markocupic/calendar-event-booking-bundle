@@ -22,6 +22,7 @@ use Contao\Date;
 
 /**
  * Class TlCalendarEvents
+ * @package Markocupic\CalendarEventBookingBundle\Contao\Dca
  */
 class TlCalendarEvents extends \tl_calendar_events
 {
@@ -31,7 +32,7 @@ class TlCalendarEvents extends \tl_calendar_events
      *
      * @param DataContainer $dc
      */
-    public function adjustBookingDate(DataContainer $dc)
+    public function adjustBookingDate(DataContainer $dc): void
     {
         // Return if there is no active record (override all)
         if (!$dc->activeRecord)
@@ -59,7 +60,7 @@ class TlCalendarEvents extends \tl_calendar_events
      * @param array $arrRow
      * @return string
      */
-    public function listEvents($arrRow)
+    public function listEvents(array $arrRow): string
     {
         if ($arrRow['addBookingForm'] === '1')
         {
@@ -86,5 +87,43 @@ class TlCalendarEvents extends \tl_calendar_events
         {
             return parent::listEvents($arrRow);
         }
+    }
+
+    /**
+     * @param int|null $intValue
+     * @param DataContainer $dc
+     * @return int|null
+     */
+    public function saveUnsubscribeLimitTstamp(int $intValue = null, DataContainer $dc): ?int
+    {
+        if (!empty($intValue))
+        {
+            // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
+            // have both
+            if ($dc->activeRecord->unsubscribeLimit > 0)
+            {
+                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits']);
+            }
+
+            // Check whether the timestamp entered makes sense in relation to the event start and end times
+            $intMaxValue = null;
+
+            // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
+            if ($dc->activeRecord->endDate)
+            {
+                $intMaxValue = (int) $dc->activeRecord->endDate + (int) $dc->activeRecord->endTime;
+            }
+            else
+            {
+                $intMaxValue = (int) $dc->activeRecord->startDate + (int) $dc->activeRecord->startTime;
+            }
+
+            if ($intValue > $intMaxValue)
+            {
+                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit']);
+            }
+        }
+
+        return $intValue;
     }
 }

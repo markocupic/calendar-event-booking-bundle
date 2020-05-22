@@ -178,45 +178,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
 
 // unsubscribeLimitTstamp
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
-    'exclude'   => true,
-    'inputType' => 'text',
-    'eval'      => ['rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-    'sql'       => "int(10) unsigned NULL",
-    'save_callback' => [['tl_calendar_events_booking_bundle', 'saveUnsubscribeLimitTstamp']]
+    'exclude'       => true,
+    'inputType'     => 'text',
+    'eval'          => ['rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+    'sql'           => "int(10) unsigned NULL",
+    'save_callback' => [['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'saveUnsubscribeLimitTstamp']]
 ];
 
-class tl_calendar_events_booking_bundle extends tl_calendar_events
-{
-    public function saveUnsubscribeLimitTstamp(int $intValue = null, \Contao\DataContainer $dc)
-    {
-        if (!empty($intValue))
-        {
-            // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
-            // have both
-            if ($dc->activeRecord->unsubscribeLimit > 0)
-            {
-                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits']);
-            }
-
-            // Check whether the timestamp entered makes sense in relation to the event start and end times
-            $intMaxValue = null;
-
-            // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
-            if ($dc->activeRecord->endDate)
-            {
-                $intMaxValue = (int) $dc->activeRecord->endDate + (int) $dc->activeRecord->endTime;
-            }
-            else
-            {
-                $intMaxValue = (int) $dc->activeRecord->startDate + (int) $dc->activeRecord->startTime;
-            }
-
-            if ($intValue > $intMaxValue)
-            {
-                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit']);
-            }
-        }
-
-        return $intValue;
-    }
-}

@@ -19,6 +19,7 @@ use Contao\Form;
 use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Contao\System;
 use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
@@ -82,6 +83,9 @@ class ProcessFormData
             /** @var Url $urlAdapter */
             $urlAdapter = $this->framework->getAdapter(Url::class);
 
+            /** @var System $systemAdapter */
+            $systemAdapter = $this->framework->getAdapter(System::class);
+
             $objEvent = $calendarEventsModelAdapter->findByIdOrAlias(Input::get('events'));
             if ($objEvent !== null)
             {
@@ -97,6 +101,15 @@ class ProcessFormData
                 // Add a booking token
                 $objCalendarEventsMemberModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objCalendarEventsMemberModel->email)) . $objCalendarEventsMemberModel->id;
                 $objCalendarEventsMemberModel->save();
+
+                // Trigger calEvtBookingPostBooking hook
+                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']))
+                {
+                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback)
+                    {
+                        $systemAdapter->importStatic($callback[0])->{$callback[1]}($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm, $objEvent, $objCalendarEventsMemberModel);
+                    }
+                }
 
                 // Send notification
                 $this->notify($objCalendarEventsMemberModel, $objEvent);

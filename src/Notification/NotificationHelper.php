@@ -19,6 +19,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\Config;
 use Contao\PageModel;
+use Contao\System;
 use Contao\UserModel;
 
 /**
@@ -63,6 +64,9 @@ class NotificationHelper
 
         /** @var PageModel $pageModelAdapter */
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
+
+        /** @var System $systemAdapter */
+        $systemAdapter = $this->framework->getAdapter(System::class);
 
         $arrTokens = [];
 
@@ -144,6 +148,15 @@ class NotificationHelper
                     $url = $objPage->getFrontendUrl() . '?bookingToken=' . $objEventMember->bookingToken;
                     $arrTokens['event_unsubscribeHref'] = $controllerAdapter->replaceInsertTags('{{env::url}}/') . $url;
                 }
+            }
+        }
+
+        // Trigger calEvtBookingPostBooking hook
+        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']))
+        {
+            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback)
+            {
+                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
             }
         }
 
