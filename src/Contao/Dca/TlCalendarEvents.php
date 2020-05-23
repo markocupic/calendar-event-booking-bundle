@@ -60,7 +60,7 @@ class TlCalendarEvents extends \tl_calendar_events
      * @param array $arrRow
      * @return string
      */
-    public function listEvents(array $arrRow): string
+    public function listEvents($arrRow)
     {
         if ($arrRow['addBookingForm'] === '1')
         {
@@ -94,7 +94,7 @@ class TlCalendarEvents extends \tl_calendar_events
      * @param DataContainer $dc
      * @return int|null
      */
-    public function saveUnsubscribeLimitTstamp(int $intValue = null, DataContainer $dc): ?int
+    public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
     {
         if (!empty($intValue))
         {
