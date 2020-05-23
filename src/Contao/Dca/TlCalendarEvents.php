@@ -113,7 +113,7 @@ class TlCalendarEvents extends \tl_calendar_events
             {
                 if ($dc->activeRecord->addTime)
                 {
-                    $intMaxValue = (int) $dc->activeRecord->endDate + (int) $dc->activeRecord->endTime;
+                    $intMaxValue = (int) strtotime(date('Y-m-d', (int) $dc->activeRecord->endDate) . ' ' . date('H:i:s', (int) $dc->activeRecord->endTime));
                 }
                 else
                 {
@@ -124,7 +124,7 @@ class TlCalendarEvents extends \tl_calendar_events
             {
                 if ($dc->activeRecord->addTime)
                 {
-                    $intMaxValue = (int) $dc->activeRecord->startDate + (int) $dc->activeRecord->startTime;
+                    $intMaxValue = (int) strtotime(date('Y-m-d', (int) $dc->activeRecord->startDate) . ' ' . date('H:i:s', (int) $dc->activeRecord->startTime));
                 }
                 else
                 {
