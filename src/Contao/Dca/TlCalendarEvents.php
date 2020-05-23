@@ -111,11 +111,25 @@ class TlCalendarEvents extends \tl_calendar_events
             // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
             if ($dc->activeRecord->endDate)
             {
-                $intMaxValue = (int) $dc->activeRecord->endDate + (int) $dc->activeRecord->endTime;
+                if ($dc->activeRecord->addTime)
+                {
+                    $intMaxValue = (int) $dc->activeRecord->endDate + (int) $dc->activeRecord->endTime;
+                }
+                else
+                {
+                    $intMaxValue = (int) $dc->activeRecord->endDate;
+                }
             }
             else
             {
-                $intMaxValue = (int) $dc->activeRecord->startDate + (int) $dc->activeRecord->startTime;
+                if ($dc->activeRecord->addTime)
+                {
+                    $intMaxValue = (int) $dc->activeRecord->startDate + (int) $dc->activeRecord->startTime;
+                }
+                else
+                {
+                    $intMaxValue = (int) $dc->activeRecord->startDate;
+                }
             }
 
             if ($intValue > $intMaxValue)
