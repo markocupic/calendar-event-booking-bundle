@@ -3,6 +3,7 @@
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
+ *
  * @package Markocupic\CalendarEventBookingBundle
  * @author Marko Cupic m.cupic@gmx.ch, 2020
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -29,16 +30,11 @@ $GLOBALS['TL_MODELS']['tl_calendar_events_member'] = CalendarEventsMemberModel::
  *
  * !!!!Override these globals, if you want to use custom form validation!!!
  */
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields', 'compileFormFields'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField', 'loadFormField'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField', 'validateFormField'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData', 'prepareFormData'];
-$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData', 'processFormData'];
-
-// These hooks are registered via Resources/config/listener.yml
-//$GLOBALS['TL_HOOKS']['initializeSystem'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\InitializeSystem', 'registerCalendarEventBookingHooks'];
-//$GLOBALS['TL_HOOKS']['exportTable'] = ['Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ExportTable', 'exportBookingList'];
-
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['compileFormFields'] = [\Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields::class, 'compileFormFields'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['loadFormField'] = [\Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField::class, 'loadFormField'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['validateFormField'] = [\Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField::class, 'validateFormField'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['prepareFormData'] = [\Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData::class, 'prepareFormData'];
+$GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = [\Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData::class, 'processFormData'];
 
 /**
  * Notification center
