@@ -1,10 +1,5 @@
 services:
 
-  # Run Migration
-  Markocupic\CalendarEventBookingBundle\Migration\Migration:
-    tags:
-      - { name: contao.migration, priority: 0 }
-      -
   # Contao frontend module "calendar_event_booking_member_list_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController:
     arguments:
