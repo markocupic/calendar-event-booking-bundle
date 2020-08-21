@@ -1,32 +1,32 @@
 services:
-  # Contao frontend module "calendar_event_booking_member_list"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListController:
-    calls:
-    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+
+  # Run Migration
+  Markocupic\CalendarEventBookingBundle\Migration\Migration:
+    tags:
+      - { name: contao.migration, priority: 0 }
+      -
+  # Contao frontend module "calendar_event_booking_member_list_module"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController:
     arguments:
     - '@database_connection'
     tags:
-    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list }
+    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
     - { name: container.service_subscriber }
     public: true
 
-  # Contao frontend module "eventbooking"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingController:
-    calls:
-    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+  # Contao frontend module "calendar_event_booking_event_booking_module"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
     tags:
-    - { name: contao.frontend_module, category: events, type: eventbooking }
+    - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
     - { name: container.service_subscriber }
     public: true
 
-    # Contao frontend module "unsubscribefromevent"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\UnsubscribeFromEventController:
-    calls:
-    - ['setContainer', ['@Psr\Container\ContainerInterface']]
+    # Contao frontend module "calendar_event_booking_unsubscribe_from_event_module"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController:
     arguments:
     - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
     tags:
-    - { name: contao.frontend_module, category: events, type: unsubscribefromevent }
+    - { name: contao.frontend_module, category: events, type: calendar_event_booking_unsubscribe_from_event_module }
     - { name: container.service_subscriber }
     public: true
 
@@ -42,11 +42,17 @@ services:
     - '@contao.framework'
     public: true
 
+  # Run Migrations
+  Markocupic\CalendarEventBookingBundle\Migration\Migrations:
+    arguments:
+    - '@database_connection'
+    tags:
+    - { name: contao.migration, priority: 0 }
+
   # Migration class: Autogenerate booking form
-  Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm\AutogenerateBookingForm:
+  Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm:
     arguments:
     - '%kernel.project_dir%'
     - '@database_connection'
     tags:
-    - { name: contao.migration, priority: 0 }
-    public: true
+    - { name: contao.migration, priority: 1 }

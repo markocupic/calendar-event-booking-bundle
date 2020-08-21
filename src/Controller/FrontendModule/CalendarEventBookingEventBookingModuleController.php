@@ -29,13 +29,15 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+
 
 /**
- * Class CalendarEventBookingController
+ * Class CalendarEventBookingEventBookingModuleController
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
- * @FrontendModule(category="events", type="eventbooking")
+ * @FrontendModule(category="events", type="calendar_event_booking_event_booking_module")
  */
-class CalendarEventBookingController extends AbstractFrontendModuleController
+class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
 {
 
     /**

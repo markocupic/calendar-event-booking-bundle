@@ -27,13 +27,14 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
- * Class CalendarEventBookingMemberListController
+ * Class CalendarEventBookingMemberListModuleController
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
- * @FrontendModule(category="events", type="calendar_event_booking_member_list")
+ * @FrontendModule(category="events", type="calendar_event_booking_member_list_module")
  */
-class CalendarEventBookingMemberListController extends AbstractFrontendModuleController
+class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
 
     /**
@@ -47,7 +48,7 @@ class CalendarEventBookingMemberListController extends AbstractFrontendModuleCon
     protected $objEvent;
 
     /**
-     * CalendarEventBookingMemberListController constructor.
+     * CalendarEventBookingMemberListModuleController constructor.
      * @param Connection $connection
      */
     public function __construct(Connection $connection)

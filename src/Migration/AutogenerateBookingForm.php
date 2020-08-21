@@ -5,12 +5,13 @@ declare(strict_types=1);
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
+ *
  * @package Markocupic\CalendarEventBookingBundle
  * @author Marko Cupic m.cupic@gmx.ch, 2020
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm;
+namespace Markocupic\CalendarEventBookingBundle\Migration;
 
 use Contao\Controller;
 use Contao\CoreBundle\Migration\AbstractMigration;
@@ -20,7 +21,8 @@ use Doctrine\DBAL\Connection;
 
 /**
  * Class AutogenerateBookingForm
- * @package Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm
+ *
+ * @package Markocupic\CalendarEventBookingBundle\Migration
  */
 class AutogenerateBookingForm extends AbstractMigration
 {
@@ -35,11 +37,13 @@ class AutogenerateBookingForm extends AbstractMigration
 
     /**
      * AutogenerateBookingForm constructor.
+     *
      * @param string $projectDir
      * @param Connection $connection
      */
     public function __construct(string $projectDir, Connection $connection)
     {
+
         $this->projectDir = $projectDir;
         $this->connection = $connection;
     }
@@ -49,6 +53,7 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     public function shouldRun(): bool
     {
+
         $schemaManager = $this->connection->getSchemaManager();
 
         // If the database table itself does not exist we should do nothing
@@ -76,6 +81,7 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     public function run(): MigrationResult
     {
+
         // Auto generate event booking form, if it doesn't exists
         $this->autoGenerateBookingForm();
 
@@ -90,8 +96,9 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     private function autoGenerateBookingForm(): void
     {
-        $sqlTlForm = file_get_contents($this->projectDir . '/vendor/markocupic/calendar-event-booking-bundle/src/Migration/AutogenerateBookingForm/sql/tl_form.sql');
-        $sqlTlFormField = file_get_contents($this->projectDir . '/vendor/markocupic/calendar-event-booking-bundle/src/Migration/AutogenerateBookingForm/sql/tl_form_field.sql');
+
+        $sqlTlForm = file_get_contents($this->projectDir . '/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form.sql');
+        $sqlTlFormField = file_get_contents($this->projectDir . '/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
 
         // Set tstamp
         $sqlTlForm = str_replace('##tstamp##', time(), $sqlTlForm);

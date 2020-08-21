@@ -28,13 +28,14 @@ use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
- * Class UnsubscribeFromEventController
+ * Class CalendarEventBookingUnsubscribeFromEventModuleController
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
- * @FrontendModule(category="events", type="unsubscribefromevent")
+ * @FrontendModule(category="events", type="calendar_event_booking_unsubscribe_from_event_module")
  */
-class UnsubscribeFromEventController extends AbstractFrontendModuleController
+class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
 
     /**
@@ -73,7 +74,7 @@ class UnsubscribeFromEventController extends AbstractFrontendModuleController
     protected $blnHasUnsubscribed = false;
 
     /**
-     * UnsubscribeFromEventController constructor.
+     * CalendarEventBookingUnsubscribeFromEventModuleController constructor.
      * @param NotificationHelper $notificationHelper
      */
     public function __construct(NotificationHelper $notificationHelper)
