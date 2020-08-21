@@ -56,7 +56,7 @@ class Migrations extends AbstractMigration
             return false;
         }
 
-        $columns = $schemaManager->listTableColumns('tl_form');
+        $columns = $schemaManager->listTableColumns('tl_module');
 
         if (isset($columns['type']))
         {
