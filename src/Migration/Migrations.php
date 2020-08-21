@@ -99,7 +99,7 @@ class Migrations extends AbstractMigration
         $arrMessage[] = 'Renamed frontend module type "calendar_event_booking_member_list" to "calendar_event_booking_member_list_module". Please rename your custom templates from "mod_calendar_event_booking_member_list.html5" to "mod_calendar_event_booking_member_list_module.html5".';
 
         Database::getInstance()->prepare('UPDATE tl_module SET type=? WHERE type=?')->execute('calendar_event_booking_unsubscribe_from_event_module', 'unsubscribefromevent');
-        $arrMessage[] = 'Renamed frontend module type "unsubscribefromevent" to "calendar_event_booking_unsubscribe_from_event_module". Please rename your custom templates from "mod_unsubscribefromevent" to "mod_calendar_event_booking_unsubscribe_from_event_module".';
+        $arrMessage[] = 'Renamed frontend module type "unsubscribefromevent" to "calendar_event_booking_unsubscribe_from_event_module". Please rename your custom templates from "mod_unsubscribefromevent.html5" to "mod_calendar_event_booking_unsubscribe_from_event_module.html5".';
 
         Database::getInstance()->prepare('UPDATE tl_module SET type=? WHERE type=?')->execute('calendar_event_booking_event_booking_module', 'eventbooking');
         $arrMessage[] = 'Renamed frontend module type "eventbooking" to "calendar_event_booking_event_booking_module". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
