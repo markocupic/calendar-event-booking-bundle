@@ -5,6 +5,7 @@ declare(strict_types=1);
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
+ *
  * @package Markocupic\CalendarEventBookingBundle
  * @author Marko Cupic m.cupic@gmx.ch, 2020
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -14,7 +15,6 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
 use Contao\Config;
-use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -24,6 +24,7 @@ use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Contao\System;
 use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,9 +32,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
-
 /**
  * Class CalendarEventBookingEventBookingModuleController
+ *
  * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
  * @FrontendModule(category="events", type="calendar_event_booking_event_booking_module")
  */
@@ -60,6 +61,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
+
         // Is frontend
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
         {
@@ -116,6 +118,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     public static function getSubscribedServices(): array
     {
+
         $services = parent::getSubscribedServices();
         $services['contao.framework'] = ContaoFramework::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
@@ -132,8 +135,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var Controller $controllerAdapter */
-        $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
+
+        /** @var System $systemAdapter */
+        $systemAdapter = $this->get('contao.framework')->getAdapter(System::class);
 
         /** @var Environment $environmentAdapter */
         $environmentAdapter = $this->get('contao.framework')->getAdapter(Environment::class);
@@ -144,12 +148,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdaper */
         $calendarEventsMemberModelAdaper = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
 
-        // Load language
-        $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
-
-        $template->event = '';
-        $template->referer = 'javascript:history.go(-1)';
-        $template->back = $GLOBALS['TL_LANG']['MSC']['goBack'];
+        // Load language file
+        $systemAdapter->loadLanguageFile('tl_calendar_events_member');
 
         if (null === $this->objEvent)
         {
@@ -162,14 +162,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
-        $template->id = $model->id;
-
         // Count bookings if event is not fully booked
         $countBookings = $calendarEventsMemberModelAdaper->countBy('pid', $this->objEvent->id);
+        $template->countBookings = $countBookings;
 
-        // countBookings for template
-        $arrTemplateData = array_merge($this->objEvent->row(), ['countBookings' => $countBookings]);
-        $template->setData($arrTemplateData);
+        // Add event model to template
+        $template->event = $this->objEvent;
 
         if ($this->objEvent->bookingStartDate > 0 && $this->objEvent->bookingStartDate > time())
         {
@@ -208,6 +206,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             case 'eventFullyBooked':
                 break;
         }
+
         return $template->getResponse();
     }
 

@@ -3,6 +3,7 @@
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
  * Copyright (c) 2008-2020 Marko Cupic
+ *
  * @package Markocupic\CalendarEventBookingBundle
  * @author Marko Cupic m.cupic@gmx.ch, 2020
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -14,6 +15,9 @@ $GLOBALS['TL_LANG']['MSC']['bookings'] = 'Buchungen';
 $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Es sind maximal %s Begleitpersonen pro Teilnehmer möglich.';
 $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'Eine Buchungsanfrage mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.';
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Bitte geben Sie eine positive natürliche Zahl ein.';
+$GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Die Anmeldung für diesen Anlass ist erst ab %s möglich.';
+$GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.';
+$GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
 
 // Unsubscribe from event
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'Sie wurden erfolgreich vom Event "%s" abgemeldet.';

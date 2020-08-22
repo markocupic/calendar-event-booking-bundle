@@ -217,7 +217,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $template->blnHasUnsubscribed = true;
             if (($objEvent = $calendarEventsModelAdapter->findByPk($inputAdaper->get('eid'))) !== null)
             {
-                $template->event = $objEvent->row();
+                $template->event = $objEvent;
             }
         }
         else
@@ -228,11 +228,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             }
             else
             {
-                $translator = $this->get('translator');
                 $template->formId = 'tl_unsubscribe_from_event';
-                $template->event = $this->objEvent->row();
-                $template->member = $this->objEventMember->row();
-                $template->slabelUnsubscribeFromEvent = $translator->trans('BTN.slabelUnsubscribeFromEvent', [], 'contao_default');
+                $template->event = $this->objEvent;
+                $template->member = $this->objEventMember;
             }
         }
 

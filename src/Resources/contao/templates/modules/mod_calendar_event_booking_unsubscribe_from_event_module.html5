@@ -1,32 +1,33 @@
-<!-- indexer::stop -->
-<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+<?php $this->extend('block_unsearchable'); ?>
 
-    <?php if ($this->headline): ?>
-    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
-    <?php endif; ?>
+<?php $this->block('content'); ?>
 
     <?php if ($this->blnHasUnsubscribed): ?>
-        <p class="unsubscribe_info"><?= sprintf($GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'], $this->event['title']) ?></p>
+        <p class="unsubscribe_info"><?= $this->trans('MSC.unsubscribeInfo', [$this->event->title]) ?></p>
     <?php else: ?>
 
         <?php if ($this->errorMsg): ?>
             <?php foreach($this->errorMsg as $error): ?>
-            <p class="error"><?= $error ?></p>
+            <p class="error">
+                <?= $error ?>
+            </p>
             <?php endforeach; ?>
+
         <?php else: ?>
+
         <form action="{{env::request}}" id="<?= $this->formId ?>" method="post">
             <div class="formbody">
                 <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 
                 <p class="unsubscribe_confirm">
-                    <?= sprintf($GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'], $this->member['firstname'], $this->member['lastname'], $this->event['title']) ?>
+                    <?= $this->trans('MSC.unsubscribeConfirm', [$this->member->firstname, $this->member->lastname, $this->event->title]) ?>
                 </p>
 
                 <div class="widget widget-submit">
-                    <button type="submit" class="submit"><?= $this->slabelUnsubscribeFromEvent ?></button>
+                    <button type="submit" class="submit"><?= $this->trans('BTN.slabelUnsubscribeFromEvent') ?></button>
                 </div>
-                <p><a href="{{env::url}}"><?= $this->slabelCancel ?></a></p>
+                <p><a href="{{env::url}}"><?= $this->trans('MSC.cancelBT') ?></a></p>
             </div>
         </form>
         <?php endif; ?>
@@ -34,4 +35,6 @@
     <?php endif; ?>
 
 </div>
-<!-- indexer::continue -->
+
+<?php $this->endblock(); ?>
+

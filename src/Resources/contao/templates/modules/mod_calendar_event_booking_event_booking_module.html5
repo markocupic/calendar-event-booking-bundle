@@ -1,8 +1,6 @@
-<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+<?php $this->extend('block_unsearchable'); ?>
 
-    <?php if ($this->headline): ?>
-    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
-    <?php endif; ?>
+<?php $this->block('content'); ?>
 
     <?php if($this->case === 'bookingPossible'): ?>
         <?php if($this->form > 0): ?>
@@ -10,27 +8,26 @@
         <?php endif; ?>
     <?php endif; ?>
 
-
     <?php if($this->case === 'bookingNotYetPossible'): ?>
     <div class="alert alert-info" role="alert">
-        Die Anmeldung für diesen Anlass ist erst ab <?= \Contao\Date::parse('d.m.Y', $this->bookingStartDate) ?> möglich.
+        <?= $this->trans('MSC.bookingNotYetPossible', [\Contao\Date::parse('d.m.Y', $this->event->bookingStartDate)]) ?>
     </div>
     <?php endif; ?>
-
 
     <?php if($this->case === 'bookingNoLongerPossible'): ?>
     <div class="alert alert-danger" role="alert">
-        Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.
+        <?= $this->trans('MSC.bookingNoLongerPossible') ?>
     </div>
     <?php endif; ?>
-
 
     <?php if($this->case === 'eventFullyBooked'): ?>
     <div class="event-fully-booked">
         <div class="alert alert-danger" role="alert">
-            Der Anlass ist leider bereits ausgebucht.
+            <?= $this->trans('MSC.eventFullyBooked') ?>
         </div>
     </div>
     <?php endif; ?>
 
 </div>
+
+<?php $this->endblock(); ?>
