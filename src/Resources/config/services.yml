@@ -1,18 +1,18 @@
 services:
 
+  # Contao frontend module "calendar_event_booking_event_booking_module"
+  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
+    tags:
+      - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
+      - { name: container.service_subscriber }
+    public: true
+
   # Contao frontend module "calendar_event_booking_member_list_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController:
     arguments:
     - '@database_connection'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
-    - { name: container.service_subscriber }
-    public: true
-
-  # Contao frontend module "calendar_event_booking_event_booking_module"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
-    tags:
-    - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
     - { name: container.service_subscriber }
     public: true
 
