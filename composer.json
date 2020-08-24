@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "contao/core-bundle": "~4.9",
+    "contao/core-bundle": "^4.9",
     "markocupic/export_table": "^3.1",
     "codefog/contao-haste": "^4.23",
     "terminal42/notification_center": "^1.5"
