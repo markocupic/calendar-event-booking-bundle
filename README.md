@@ -23,7 +23,7 @@ Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader
 Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen sichtbar/aufgelistet werden.
 Wichtig! Das Auflistungsmodul zieht den Eventnamen aus der Url.
 Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
-Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader_Modul ein.
+Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader-Modul ein.
 
 #### Von Event abmelden
 Die Erweiterung stellt auch eine Möglichkeit sich von einem Event wieder abzumelden.
@@ -69,7 +69,7 @@ Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 
 
-Werden weitere Felder gewünscht, so müssen diese in app/Resources/contao/dca/tl_calendar_events_member.php definiert werden.
+Werden weitere Felder gewünscht, so müssen diese in app/Resources/contao/dca/tl_calendar_events_member.php definiert werden und danach via das Installtool in der Datenbank angelegt werden.
 ```php
 <?php
 //app/Resources/contao/dca/tl_calendar_events_member.php
@@ -83,7 +83,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
     'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
-// Add field to palette
+// Add custom fields to palette and make fields visible in the Contao backend.
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('food_legend', 'personal_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField(['foodHabilities'], 'food_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
