@@ -31,9 +31,6 @@ class MarkocupicCalendarEventBookingExtension extends Extension
             new FileLocator(__DIR__ . '/../Resources/config')
         );
 
-        // Load Sensitive outsourced data
-        //require_once (__DIR__.'/../../../../../constants.php');
-
         $loader->load('parameters.yml');
         $loader->load('listener.yml');
         $loader->load('services.yml');
