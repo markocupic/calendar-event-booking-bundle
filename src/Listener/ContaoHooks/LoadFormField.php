@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -19,8 +23,7 @@ use Contao\Input;
 use Contao\Widget;
 
 /**
- * Class LoadFormField
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class LoadFormField.
  */
 class LoadFormField
 {
@@ -31,24 +34,15 @@ class LoadFormField
 
     /**
      * LoadFormField constructor.
-     * @param ContaoFramework $framework
      */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
 
-    /**
-     * @param Widget $objWidget
-     * @param string $strForm
-     * @param array $arrForm
-     * @param Form $objForm
-     * @return Widget
-     */
     public function loadFormField(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
     {
-        if ($objForm->isCalendarEventBookingForm)
-        {
+        if ($objForm->isCalendarEventBookingForm) {
             /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
 
@@ -62,26 +56,23 @@ class LoadFormField
             $inputAdapter = $this->framework->getAdapter(Input::class);
 
             // Convert tstamps to formated date
-            if ($objWidget->name === 'dateOfBirth' && $objWidget->value != '')
-            {
-                if (is_numeric($objWidget->value))
-                {
+            if ('dateOfBirth' === $objWidget->name && '' !== $objWidget->value) {
+                if (is_numeric($objWidget->value)) {
                     $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'), $objWidget->value);
                     $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'));
                 }
             }
 
-            if ($objWidget->name === 'escorts')
-            {
+            if ('escorts' === $objWidget->name) {
                 $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
-                if ($objEvent !== null)
-                {
+
+                if (null !== $objEvent) {
                     $maxEscorts = $objEvent->maxEscortsPerMember;
-                    if ($maxEscorts > 0)
-                    {
+
+                    if ($maxEscorts > 0) {
                         $opt = [];
-                        for ($i = 0; $i <= $maxEscorts; $i++)
-                        {
+
+                        for ($i = 0; $i <= $maxEscorts; ++$i) {
                             $opt[] = [
                                 'value' => $i,
                                 'label' => $i,
@@ -95,5 +86,4 @@ class LoadFormField
 
         return $objWidget;
     }
-
 }

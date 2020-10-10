@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -16,8 +20,7 @@ use Contao\Form;
 use Contao\Input;
 
 /**
- * Class CompileFormFields
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class CompileFormFields.
  */
 class CompileFormFields
 {
@@ -28,7 +31,6 @@ class CompileFormFields
 
     /**
      * CompileFormFields constructor.
-     * @param ContaoFramework $framework
      */
     public function __construct(ContaoFramework $framework)
     {
@@ -36,28 +38,24 @@ class CompileFormFields
     }
 
     /**
-     * @param array $arrFields
      * @param $formId
-     * @param Form $objForm
-     * @return array
      */
     public function compileFormFields(array $arrFields, $formId, Form $objForm): array
     {
-        /** @var  CalendarEventsModel $calendarEventsModelAdapter */
+        /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         /** @var Input $inputAdapter */
         $inputAdapter = $this->framework->getAdapter(Input::class);
 
         // Do not list input fields under certain conditions
-        if ($objForm->isCalendarEventBookingForm)
-        {
+        if ($objForm->isCalendarEventBookingForm) {
             $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
-            if ($objEvent !== null)
-            {
+
+            if (null !== $objEvent) {
                 $maxEscorts = $objEvent->maxEscortsPerMember;
-                if ($maxEscorts < 1)
-                {
+
+                if ($maxEscorts < 1) {
                     unset($arrFields['escorts']);
                 }
             }
@@ -65,5 +63,4 @@ class CompileFormFields
 
         return $arrFields;
     }
-
 }

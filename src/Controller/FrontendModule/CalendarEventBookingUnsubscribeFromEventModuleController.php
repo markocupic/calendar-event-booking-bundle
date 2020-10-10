@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -17,6 +19,7 @@ use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
@@ -28,16 +31,14 @@ use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
- * Class CalendarEventBookingUnsubscribeFromEventModuleController
- * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
+ * Class CalendarEventBookingUnsubscribeFromEventModuleController.
+ *
  * @FrontendModule(category="events", type="calendar_event_booking_unsubscribe_from_event_module")
  */
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
-
     /**
      * @var NotificationHelper
      */
@@ -75,26 +76,16 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
     /**
      * CalendarEventBookingUnsubscribeFromEventModuleController constructor.
-     * @param NotificationHelper $notificationHelper
      */
     public function __construct(NotificationHelper $notificationHelper)
     {
         $this->notificationHelper = $notificationHelper;
     }
 
-    /**
-     * @param Request $request
-     * @param ModuleModel $model
-     * @param string $section
-     * @param array|null $classes
-     * @param PageModel|null $page
-     * @return Response
-     */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
-        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
-        {
+        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
 
@@ -107,76 +98,63 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
 
-            if ($inputAdapter->get('unsubscribedFromEvent') !== 'true')
-            {
+            if ('true' !== $inputAdapter->get('unsubscribedFromEvent')) {
                 $translator = $this->get('translator');
 
                 $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($inputAdapter->get('bookingToken'));
-                if ($this->objEventMember === null)
-                {
+
+                if (null === $this->objEventMember) {
                     $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
                 }
 
-                if (!$this->hasError)
-                {
-                    if (($this->objEvent = $this->objEventMember->getRelated('pid')) === null)
-                    {
+                if (!$this->hasError) {
+                    if (null === ($this->objEvent = $this->objEventMember->getRelated('pid'))) {
                         $this->addError($translator->trans('ERR.eventNotFound', [], 'contao_default'));
                     }
                 }
 
-                if (!$this->hasError)
-                {
-                    if (!$this->objEvent->enableDeregistration)
-                    {
+                if (!$this->hasError) {
+                    if (!$this->objEvent->enableDeregistration) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
-                if (!$this->hasError)
-                {
+                if (!$this->hasError) {
                     $blnLimitExpired = false;
 
                     // User has set a specific unsubscription limit timestamp, this has precedence
-                    if (!empty($this->objEvent->unsubscribeLimitTstamp))
-                    {
-                        if (time() > $this->objEvent->unsubscribeLimitTstamp)
-                        {
+                    if (!empty($this->objEvent->unsubscribeLimitTstamp)) {
+                        if (time() > $this->objEvent->unsubscribeLimitTstamp) {
                             $blnLimitExpired = true;
                         }
                     }
                     // We only have a unsubscription limit expressed in days before event start date
-                    else
-                    {
+                    else {
                         $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
-                        if (time() + $limit * 3600 * 24 > $this->objEvent->startDate)
-                        {
+
+                        if (time() + $limit * 3600 * 24 > $this->objEvent->startDate) {
                             $blnLimitExpired = true;
                         }
                     }
 
-                    if ($blnLimitExpired)
-                    {
+                    if ($blnLimitExpired) {
                         $this->addError($translator->trans('ERR.unsubscriptionLimitExpired', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
-                if (!$this->hasError)
-                {
+                if (!$this->hasError) {
                     // Delete entry and redirect
-                    if ($inputAdapter->post('FORM_SUBMIT') === 'tl_unsubscribe_from_event')
-                    {
+                    if ('tl_unsubscribe_from_event' === $inputAdapter->post('FORM_SUBMIT')) {
                         $this->notify($this->objEventMember, $this->objEvent, $model);
                         $this->objEventMember->delete();
 
-                        $href = $page->getFrontendUrl() . '?unsubscribedFromEvent=true&eid=' . $this->objEvent->id;
+                        $href = $page->getFrontendUrl().'?unsubscribedFromEvent=true&eid='.$this->objEvent->id;
                         $controllerAdapter->redirect($href);
                     }
                 }
             }
 
-            if ($inputAdapter->get('unsubscribedFromEvent') === 'true')
-            {
+            if ('true' === $inputAdapter->get('unsubscribedFromEvent')) {
                 $this->blnHasUnsubscribed = true;
             }
         }
@@ -185,9 +163,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
@@ -198,12 +173,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         return $services;
     }
 
-    /**
-     * @param Template $template
-     * @param ModuleModel $model
-     * @param Request $request
-     * @return null|Response
-     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         /** @var CalendarEventsModel $calendarEventsModelAdapter */
@@ -212,22 +181,16 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         /** @var Input $inputAdapter */
         $inputAdaper = $this->get('contao.framework')->getAdapter(Input::class);
 
-        if ($this->blnHasUnsubscribed)
-        {
+        if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;
-            if (($objEvent = $calendarEventsModelAdapter->findByPk($inputAdaper->get('eid'))) !== null)
-            {
+
+            if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($inputAdaper->get('eid')))) {
                 $template->event = $objEvent;
             }
-        }
-        else
-        {
-            if ($this->hasError)
-            {
+        } else {
+            if ($this->hasError) {
                 $template->errorMsg = $this->errorMsg;
-            }
-            else
-            {
+            } else {
                 $template->formId = 'tl_unsubscribe_from_event';
                 $template->event = $this->objEvent;
                 $template->member = $this->objEventMember;
@@ -238,9 +201,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     }
 
     /**
-     * @param CalendarEventsMemberModel $objEventMember
-     * @param CalendarEventsModel $objEvent
-     * @param ModuleModel $model
      * @throws \Exception
      */
     protected function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent, ModuleModel $model): void
@@ -251,21 +211,19 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         /** @var Notification $notificationAdapter */
         $notificationAdapter = $this->get('contao.framework')->getAdapter(Notification::class);
 
-        if ($objEvent->enableDeregistration)
-        {
+        if ($objEvent->enableDeregistration) {
             // Multiple notifications possible
             $arrNotifications = $stringUtilAdapter->deserialize($model->unsubscribeFromEventNotificationIds);
-            if (!empty($arrNotifications) && is_array($arrNotifications))
-            {
+
+            if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
                 $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
 
                 // Send notification (multiple notifications possible)
-                foreach ($arrNotifications as $notificationId)
-                {
+                foreach ($arrNotifications as $notificationId) {
                     $objNotification = $notificationAdapter->findByPk($notificationId);
-                    if ($objNotification !== null)
-                    {
+
+                    if (null !== $objNotification) {
                         $objNotification->send($arrTokens, $this->objPage->language);
                     }
                 }
@@ -273,13 +231,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         }
     }
 
-    /**
-     * @param string $strMsg
-     */
     protected function addError(string $strMsg): void
     {
         $this->hasError = true;
         $this->errorMsg[] = $strMsg;
     }
-
 }

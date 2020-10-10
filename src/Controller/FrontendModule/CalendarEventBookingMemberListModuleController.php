@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -18,25 +20,26 @@ use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
 use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\PDOStatement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 
 /**
- * Class CalendarEventBookingMemberListModuleController
- * @package Markocupic\CalendarEventBookingBundle\Controller\FrontendModule
+ * Class CalendarEventBookingMemberListModuleController.
+ *
  * @FrontendModule(category="events", type="calendar_event_booking_member_list_module")
  */
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
-
     /**
      * @var Connection
      */
@@ -49,26 +52,16 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
-     * @param Connection $connection
      */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
-    /**
-     * @param Request $request
-     * @param ModuleModel $model
-     * @param string $section
-     * @param array|null $classes
-     * @param PageModel|null $page
-     * @return Response
-     */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
-        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
-        {
+        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
             // Set adapters
             $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
             $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
@@ -77,23 +70,18 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             $showEmpty = false;
 
             // Set the item from the auto_item parameter
-            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item']))
-            {
+            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
                 $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
             }
 
             // Return an empty string if "events" is not set
-            if (!$inputAdapter->get('events'))
-            {
+            if (!$inputAdapter->get('events')) {
                 $showEmpty = true;
-            }
-            elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'))))
-            {
+            } elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events')))) {
                 $showEmpty = true;
             }
 
-            if ($showEmpty)
-            {
+            if ($showEmpty) {
                 return new Response('', Response::HTTP_NO_CONTENT);
             }
         }
@@ -102,9 +90,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    /**
-     * @return array
-     */
     public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
@@ -114,12 +99,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return $services;
     }
 
-    /**
-     * @param Template $template
-     * @param ModuleModel $model
-     * @param Request $request
-     * @return null|Response
-     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
@@ -131,14 +110,14 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
 
-        /** @var Doctrine\DBAL\Driver\PDOStatement $results */
-        $results = $this->getSignedUpMembers(intval($this->objEvent->id));
+        /** @var PDOStatement $results */
+        $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
         $intRowCount = $results->rowCount();
 
         $i = 0;
         $strRows = '';
-        while (false !== ($arrEventMember = $results->fetch()))
-        {
+
+        while (false !== ($arrEventMember = $results->fetch())) {
             /** @var FrontendTemplate $partial */
             $partial = new FrontendTemplate($model->calendar_event_booking_member_list_partial_template);
 
@@ -150,7 +129,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             $partial->rowClass = $this->getRowClass($i, $intRowCount);
 
             $strRows .= $partial->parse();
-            $i++;
+            ++$i;
         }
 
         // Add partial html to the parent template
@@ -163,13 +142,11 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     }
 
     /**
-     * Get signed up members of current event
-     * @param int $id
-     * @return \Doctrine\DBAL\Driver\PDOStatement
+     * Get signed up members of current event.
      */
-    protected function getSignedUpMembers(int $id): \Doctrine\DBAL\Driver\PDOStatement
+    protected function getSignedUpMembers(int $id): PDOStatement
     {
-        /** @var Doctrine\DBAL\Query\QueryBuilder $qb */
+        /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
             ->from('tl_calendar_events_member', 't')
@@ -177,21 +154,18 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             ->orderBy('t.lastname', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
             ->addOrderBy('t.city', 'ASC')
-            ->setParameter('pid', $id);
+            ->setParameter('pid', $id)
+        ;
+
         return $qb->execute();
     }
 
-    /**
-     * @param int $i
-     * @param int $intRowsTotal
-     * @return string
-     */
     protected function getRowClass(int $i, int $intRowsTotal): string
     {
-        $rowFirst = ($i === 0) ? ' row_first' : '';
-        $rowLast = ($i === $intRowsTotal - 1) ? ' row_last' : '';
-        $evenOrOdd = ($i % 2) ? ' odd' : ' even';
+        $rowFirst = 0 === $i ? ' row_first' : '';
+        $rowLast = $i === $intRowsTotal - 1 ? ' row_last' : '';
+        $evenOrOdd = $i % 2 ? ' odd' : ' even';
+
         return sprintf('row_%s%s%s%s', $i, $rowFirst, $rowLast, $evenOrOdd);
     }
-
 }

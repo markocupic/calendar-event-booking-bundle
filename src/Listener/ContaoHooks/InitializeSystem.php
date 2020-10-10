@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -14,22 +18,22 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class InitializeSystem
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class InitializeSystem.
  */
 class InitializeSystem
 {
-
-    /** @var RequestStack  */
+    /**
+     * @var RequestStack
+     */
     private $requestStack;
 
-    /** @var ScopeMatcher  */
+    /**
+     * @var ScopeMatcher
+     */
     private $scopeMatcher;
 
     /**
      * InitializeSystem constructor.
-     * @param RequestStack $requestStack
-     * @param ScopeMatcher $scopeMatcher
      */
     public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher)
     {
@@ -39,25 +43,19 @@ class InitializeSystem
 
     /**
      * Register hooks && enable hook overriding in a custom module
-     * $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] is set in config.php
+     * $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] is set in config.php.
      */
-    public function registerCalendarEventBookingHooks()
+    public function registerCalendarEventBookingHooks(): void
     {
         // If is frontend mode
-        if($this->requestStack->getCurrentRequest() !== null)
-        {
-            if (!$this->scopeMatcher->isBackendRequest($this->requestStack->getCurrentRequest()))
-            {
+        if (null !== $this->requestStack->getCurrentRequest()) {
+            if (!$this->scopeMatcher->isBackendRequest($this->requestStack->getCurrentRequest())) {
                 // Register hook && enable hook overriding in a custom module
                 // $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] is set in config.php
-                if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']) && is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']))
-                {
-                    foreach ($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] as $key => $arrHook)
-                    {
-                        if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key]) && is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key]))
-                        {
-                            if (count($arrHook) === 2)
-                            {
+                if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']) && \is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'])) {
+                    foreach ($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] as $key => $arrHook) {
+                        if (!empty($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key]) && \is_array($GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key])) {
+                            if (2 === \count($arrHook)) {
                                 $GLOBALS['TL_HOOKS'][$key][] = $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'][$key];
                             }
                         }
@@ -66,5 +64,4 @@ class InitializeSystem
             }
         }
     }
-
 }

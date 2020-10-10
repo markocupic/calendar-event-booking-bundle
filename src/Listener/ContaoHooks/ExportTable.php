@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -16,12 +20,10 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 
 /**
- * Class ExportTable
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class ExportTable.
  */
 class ExportTable
 {
-
     /**
      * @var ContaoFramework
      */
@@ -29,7 +31,6 @@ class ExportTable
 
     /**
      * ExportTable constructor.
-     * @param ContaoFramework $framework
      */
     public function __construct(ContaoFramework $framework)
     {
@@ -37,17 +38,15 @@ class ExportTable
     }
 
     /**
-     * @param string $field
      * @param $value
-     * @param string $strTable
      * @param $dataRecord
      * @param $dca
+     *
      * @return string
      */
     public function exportBookingList(string $field, $value, string $strTable, $dataRecord, $dca)
     {
-        if ($strTable === 'tl_calendar_events_member')
-        {
+        if ('tl_calendar_events_member' === $strTable) {
             /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
 
@@ -57,19 +56,16 @@ class ExportTable
             /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
 
-            if ($field === 'addedOn' || $field === 'dateOfBirth')
-            {
-                if (intval($value))
-                {
+            if ('addedOn' === $field || 'dateOfBirth' === $field) {
+                if ((int) $value) {
                     $value = $dateAdapter->parse($configAdapter->get('dateFormat'), $value);
                 }
             }
 
-            if ($field === 'pid')
-            {
+            if ('pid' === $field) {
                 $objModel = $calendarEventsModelAdapter->findByPk($value);
-                if ($objModel !== null)
-                {
+
+                if (null !== $objModel) {
                     $value = $objModel->title;
                 }
             }

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
  *
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -19,13 +20,10 @@ use Contao\Database;
 use Doctrine\DBAL\Connection;
 
 /**
- * Class Migrations
- *
- * @package Markocupic\CalendarEventBookingBundle\Migration
+ * Class Migrations.
  */
 class Migrations extends AbstractMigration
 {
-
     /**
      * @var Connection
      */
@@ -33,78 +31,69 @@ class Migrations extends AbstractMigration
 
     /**
      * Migration constructor.
-     *
-     * @param Connection $connection
      */
     public function __construct(Connection $connection)
     {
-
         $this->connection = $connection;
     }
 
-    /**
-     * @return bool
-     */
     public function shouldRun(): bool
     {
-
         $schemaManager = $this->connection->getSchemaManager();
 
         // If the database table itself does not exist we should do nothing
-        if (!$schemaManager->tablesExist(['tl_module']))
-        {
+        if (!$schemaManager->tablesExist(['tl_module'])) {
             return false;
         }
 
         $columns = $schemaManager->listTableColumns('tl_module');
 
-        if (isset($columns['type']))
-        {
+        if (isset($columns['type'])) {
             $doMigration = false;
             $objDb = Database::getInstance()->prepare('SELECT * FROM tl_module WHERE type=?')->execute('calendar_event_booking_member_list');
-            if ($objDb->numRows)
-            {
+
+            if ($objDb->numRows) {
                 $doMigration = true;
             }
 
             $objDb = Database::getInstance()->prepare('SELECT * FROM tl_module WHERE type=?')->execute('unsubscribefromevent');
-            if ($objDb->numRows)
-            {
+
+            if ($objDb->numRows) {
                 $doMigration = true;
             }
 
             $objDb = Database::getInstance()->prepare('SELECT * FROM tl_module WHERE type=?')->execute('eventbooking');
-            if ($objDb->numRows)
-            {
+
+            if ($objDb->numRows) {
                 $doMigration = true;
             }
 
-            if ($doMigration)
-            {
+            if ($doMigration) {
                 // Run migration script
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * @return MigrationResult
-     */
     public function run(): MigrationResult
     {
         $arrMessage = [];
 
         Database::getInstance()->prepare('UPDATE tl_module SET type=? WHERE type=?')
-            ->execute('calendar_event_booking_member_list_module', 'calendar_event_booking_member_list');
+            ->execute('calendar_event_booking_member_list_module', 'calendar_event_booking_member_list')
+        ;
         $arrMessage[] = 'Renamed frontend module type "calendar_event_booking_member_list" to "calendar_event_booking_member_list_module". Please rename your custom templates from "mod_calendar_event_booking_member_list.html5" to "mod_calendar_event_booking_member_list_module.html5".';
 
         Database::getInstance()->prepare('UPDATE tl_module SET type=? WHERE type=?')
-            ->execute('calendar_event_booking_unsubscribe_from_event_module', 'unsubscribefromevent');
+            ->execute('calendar_event_booking_unsubscribe_from_event_module', 'unsubscribefromevent')
+        ;
         $arrMessage[] = 'Renamed frontend module type "unsubscribefromevent" to "calendar_event_booking_unsubscribe_from_event_module". Please rename your custom templates from "mod_unsubscribefromevent.html5" to "mod_calendar_event_booking_unsubscribe_from_event_module.html5".';
 
         Database::getInstance()->prepare('UPDATE tl_module SET type=? WHERE type=?')
-            ->execute('calendar_event_booking_event_booking_module', 'eventbooking');
+            ->execute('calendar_event_booking_event_booking_module', 'eventbooking')
+        ;
         $arrMessage[] = 'Renamed frontend module type "eventbooking" to "calendar_event_booking_event_booking_module". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
 
         return new MigrationResult(
@@ -112,5 +101,4 @@ class Migrations extends AbstractMigration
             implode(' ', $arrMessage)
         );
     }
-
 }

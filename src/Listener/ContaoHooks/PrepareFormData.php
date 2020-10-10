@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -14,8 +18,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 
 /**
- * Class PrepareFormData
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class PrepareFormData.
  */
 class PrepareFormData
 {
@@ -26,34 +29,22 @@ class PrepareFormData
 
     /**
      * PrepareFormData constructor.
-     * @param ContaoFramework $framework
      */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
 
-    /**
-     * @param array $arrSubmitted
-     * @param array $arrLabels
-     * @param array $arrFields
-     * @param Form $objForm
-     */
     public function prepareFormData(array &$arrSubmitted, array $arrLabels, array $arrFields, Form $objForm): void
     {
-        if ($objForm->isCalendarEventBookingForm)
-        {
-            if ($arrSubmitted['dateOfBirth'] != '')
-            {
+        if ($objForm->isCalendarEventBookingForm) {
+            if ('' !== $arrSubmitted['dateOfBirth']) {
                 $tstamp = strtotime($arrSubmitted['dateOfBirth']);
-                if ($tstamp !== false)
-                {
+
+                if (false !== $tstamp) {
                     $arrSubmitted['dateOfBirth'] = $tstamp;
                 }
             }
         }
     }
-
-
-
 }

@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+declare(strict_types=1);
+
+/*
+ * This file is part of markocupic/calendar-event-booking-bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -27,8 +31,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
- * Class ProcessFormData
- * @package Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks
+ * Class ProcessFormData.
  */
 class ProcessFormData
 {
@@ -49,9 +52,6 @@ class ProcessFormData
 
     /**
      * ProcessFormData constructor.
-     * @param ContaoFramework $framework
-     * @param LoggerInterface|null $logger
-     * @param NotificationHelper $notificationHelper
      */
     public function __construct(ContaoFramework $framework, LoggerInterface $logger = null, NotificationHelper $notificationHelper)
     {
@@ -60,17 +60,9 @@ class ProcessFormData
         $this->notificationHelper = $notificationHelper;
     }
 
-    /**
-     * @param array $arrSubmitted
-     * @param array $arrForm
-     * @param array|null $arrFiles
-     * @param array $arrLabels
-     * @param Form $objForm
-     */
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
     {
-        if ($objForm->isCalendarEventBookingForm)
-        {
+        if ($objForm->isCalendarEventBookingForm) {
             /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
@@ -87,8 +79,8 @@ class ProcessFormData
             $systemAdapter = $this->framework->getAdapter(System::class);
 
             $objEvent = $calendarEventsModelAdapter->findByIdOrAlias(Input::get('events'));
-            if ($objEvent !== null)
-            {
+
+            if (null !== $objEvent) {
                 $objCalendarEventsMemberModel = new CalendarEventsMemberModel();
                 $objCalendarEventsMemberModel->setRow($arrSubmitted);
                 $objCalendarEventsMemberModel->escorts = $objCalendarEventsMemberModel->escorts > 0 ? $objCalendarEventsMemberModel->escorts : 0;
@@ -99,14 +91,12 @@ class ProcessFormData
                 $objCalendarEventsMemberModel->save();
 
                 // Add a booking token
-                $objCalendarEventsMemberModel->bookingToken = md5(sha1(microtime())) . md5(sha1($objCalendarEventsMemberModel->email)) . $objCalendarEventsMemberModel->id;
+                $objCalendarEventsMemberModel->bookingToken = md5(sha1(microtime())).md5(sha1($objCalendarEventsMemberModel->email)).$objCalendarEventsMemberModel->id;
                 $objCalendarEventsMemberModel->save();
 
                 // Trigger calEvtBookingPostBooking hook
-                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']))
-                {
-                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback)
-                    {
+                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
+                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
                         $systemAdapter->importStatic($callback[0])->{$callback[1]}($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm, $objEvent, $objCalendarEventsMemberModel);
                     }
                 }
@@ -115,25 +105,22 @@ class ProcessFormData
                 $this->notify($objCalendarEventsMemberModel, $objEvent);
 
                 // Log new insert
-                if ($this->logger !== null)
-                {
+                if (null !== $this->logger) {
                     $level = LogLevel::INFO;
-                    $strText = 'New booking for event with title "' . $objEvent->title . '"';
+                    $strText = 'New booking for event with title "'.$objEvent->title.'"';
                     $this->logger->log(
                         $level,
                         $strText, [
-                        'contao' => new ContaoContext(__METHOD__, $level)
-                    ]);
+                            'contao' => new ContaoContext(__METHOD__, $level),
+                        ]);
                 }
 
-                if ($objForm->jumpTo)
-                {
+                if ($objForm->jumpTo) {
                     $objPageModel = $pageModelAdapter->findByPk($objForm->jumpTo);
 
-                    if ($objPageModel !== null)
-                    {
+                    if (null !== $objPageModel) {
                         // Redirect to the jumpTo page
-                        $strRedirectUrl = $urlAdapter->addQueryString('bookingToken=' . $objCalendarEventsMemberModel->bookingToken, $objPageModel->getFrontendUrl());
+                        $strRedirectUrl = $urlAdapter->addQueryString('bookingToken='.$objCalendarEventsMemberModel->bookingToken, $objPageModel->getFrontendUrl());
                         $controllerAdapter->redirect($strRedirectUrl);
                     }
                 }
@@ -142,8 +129,6 @@ class ProcessFormData
     }
 
     /**
-     * @param CalendarEventsMemberModel $objEventMember
-     * @param CalendarEventsModel $objEvent
      * @throws \Exception
      */
     protected function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): void
@@ -156,26 +141,23 @@ class ProcessFormData
         /** @var StringUtil $stringUtilAdaper */
         $stringUtilAdaper = $this->framework->getAdapter(StringUtil::class);
 
-        if ($objEvent->enableNotificationCenter)
-        {
+        if ($objEvent->enableNotificationCenter) {
             // Multiple notifications possible
             $arrNotifications = $stringUtilAdaper->deserialize($objEvent->eventBookingNotificationCenterIds);
-            if (!empty($arrNotifications) && is_array($arrNotifications))
-            {
+
+            if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
                 $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
 
                 // Send notification (multiple notifications possible)
-                foreach ($arrNotifications as $notificationId)
-                {
+                foreach ($arrNotifications as $notificationId) {
                     $objNotification = $notificationAdapter->findByPk($notificationId);
-                    if ($objNotification !== null)
-                    {
+
+                    if (null !== $objNotification) {
                         $objNotification->send($arrTokens, $objPage->language);
                     }
                 }
             }
         }
     }
-
 }
