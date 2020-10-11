@@ -72,6 +72,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
             }
 
+
             // Return an empty string if "events" is not set
             if (!$inputAdapter->get('events')) {
                 $showEmpty = true;
@@ -100,7 +101,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $services = parent::getSubscribedServices();
         $services['contao.framework'] = ContaoFramework::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['translator'] = TranslatorInterface::class;
 
         return $services;
     }

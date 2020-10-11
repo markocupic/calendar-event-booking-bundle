@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of markocupic/calendar-event-booking-bundle.
+ * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
  * @license MIT
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -89,8 +89,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
 
-            /** @var Input $configAdapter */
-            $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
+
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
             $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
@@ -98,10 +97,10 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
 
-            if ('true' !== $inputAdapter->get('unsubscribedFromEvent')) {
+            if ('true' !== $request->query->get('unsubscribedFromEvent')) {
                 $translator = $this->get('translator');
 
-                $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($inputAdapter->get('bookingToken'));
+                $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($request->query->get('bookingToken'));
 
                 if (null === $this->objEventMember) {
                     $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
@@ -144,17 +143,22 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
                 if (!$this->hasError) {
                     // Delete entry and redirect
-                    if ('tl_unsubscribe_from_event' === $inputAdapter->post('FORM_SUBMIT')) {
+                    if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
                         $this->notify($this->objEventMember, $this->objEvent, $model);
                         $this->objEventMember->delete();
 
-                        $href = $page->getFrontendUrl().'?unsubscribedFromEvent=true&eid='.$this->objEvent->id;
+                        $href = sprintf(
+                            '%s?unsubscribedFromEvent=true&eid=%s',
+                            $page->getFrontendUrl(),
+                            $this->objEvent->id
+                        );
+
                         $controllerAdapter->redirect($href);
                     }
                 }
             }
 
-            if ('true' === $inputAdapter->get('unsubscribedFromEvent')) {
+            if ('true' === $request->query->get('unsubscribedFromEvent')) {
                 $this->blnHasUnsubscribed = true;
             }
         }
@@ -178,13 +182,11 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
 
-        /** @var Input $inputAdapter */
-        $inputAdaper = $this->get('contao.framework')->getAdapter(Input::class);
 
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;
 
-            if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($inputAdaper->get('eid')))) {
+            if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($request->query->get('eid')))) {
                 $template->event = $objEvent;
             }
         } else {

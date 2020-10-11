@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of markocupic/calendar-event-booking-bundle.
+ * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
  * @license MIT
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -97,7 +97,10 @@ class ProcessFormData
                 // Trigger calEvtBookingPostBooking hook
                 if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
                     foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
-                        $systemAdapter->importStatic($callback[0])->{$callback[1]}($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm, $objEvent, $objCalendarEventsMemberModel);
+                        $systemAdapter
+                            ->importStatic($callback[0])
+                            ->{$callback[1]}($arrSubmitted, $arrForm, $arrFiles, $arrLabels, $objForm, $objEvent, $objCalendarEventsMemberModel)
+                        ;
                     }
                 }
 
