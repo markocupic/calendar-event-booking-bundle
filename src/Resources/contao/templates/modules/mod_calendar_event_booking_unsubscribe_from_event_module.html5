@@ -5,35 +5,30 @@
     <?php if ($this->blnHasUnsubscribed): ?>
         <p class="unsubscribe_info"><?= $this->trans('MSC.unsubscribeInfo', [$this->event->title]) ?></p>
     <?php else: ?>
-
         <?php if ($this->errorMsg): ?>
-            <?php foreach($this->errorMsg as $error): ?>
+            <?php foreach ($this->errorMsg as $error): ?>
             <p class="error">
                 <?= $error ?>
             </p>
             <?php endforeach; ?>
-
         <?php else: ?>
+            <form action="{{env::request}}" id="<?= $this->formId ?>" method="post">
+                <div class="formbody">
+                    <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
 
-        <form action="{{env::request}}" id="<?= $this->formId ?>" method="post">
-            <div class="formbody">
-                <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
-                <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                    <p class="unsubscribe_confirm">
+                        <?= $this->trans('MSC.unsubscribeConfirm', [$this->member->firstname, $this->member->lastname, $this->event->title]) ?>
+                    </p>
 
-                <p class="unsubscribe_confirm">
-                    <?= $this->trans('MSC.unsubscribeConfirm', [$this->member->firstname, $this->member->lastname, $this->event->title]) ?>
-                </p>
-
-                <div class="widget widget-submit">
-                    <button type="submit" class="submit"><?= $this->trans('BTN.slabelUnsubscribeFromEvent') ?></button>
+                    <div class="widget widget-submit">
+                        <button type="submit" class="submit"><?= $this->trans('BTN.slabelUnsubscribeFromEvent') ?></button>
+                    </div>
+                    <p><a href="{{env::url}}"><?= $this->trans('MSC.cancelBT') ?></a></p>
                 </div>
-                <p><a href="{{env::url}}"><?= $this->trans('MSC.cancelBT') ?></a></p>
-            </div>
-        </form>
+            </form>
         <?php endif; ?>
-
     <?php endif; ?>
-
 </div>
 
 <?php $this->endblock(); ?>

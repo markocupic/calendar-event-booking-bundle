@@ -1,29 +1,34 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
+
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
 
 // Overwrite child record callback
-$GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = ['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'listEvents'];
+$GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = array('Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'listEvents');
 
 // Palettes
-Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('booking_options_legend', 'details_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addLegend('notification_center_legend', 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addLegend('event_unsubscribe_legend', 'notification_center_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField(['addBookingForm'], 'booking_options_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField(['enableNotificationCenter'], 'notification_center_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField(['enableDeregistration'], 'event_unsubscribe_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField(['street', 'postal', 'city'], 'location', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->applyToPalette('default', 'tl_calendar_events');
+PaletteManipulator::create()
+	->addLegend('booking_options_legend', 'details_legend', PaletteManipulator::POSITION_AFTER)
+	->addLegend('notification_center_legend', 'booking_options_legend', PaletteManipulator::POSITION_AFTER)
+	->addLegend('event_unsubscribe_legend', 'notification_center_legend', PaletteManipulator::POSITION_AFTER)
+	->addField(array('addBookingForm'), 'booking_options_legend', PaletteManipulator::POSITION_APPEND)
+	->addField(array('enableNotificationCenter'), 'notification_center_legend', PaletteManipulator::POSITION_APPEND)
+	->addField(array('enableDeregistration'), 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
+	->addField(array('street', 'postal', 'city'), 'location', PaletteManipulator::POSITION_AFTER)
+	->applyToPalette('default', 'tl_calendar_events');
 
 // Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
@@ -36,152 +41,151 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCente
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 
 // Onsubmit callback
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = ['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'adjustBookingDate'];
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array(TlCalendarEvents::class, 'adjustBookingDate');
 
 // Operations
-$GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
-    'href'  => 'do=calendar&table=tl_calendar_events_member',
-    'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = array(
+	'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
+	'href'  => 'do=calendar&table=tl_calendar_events_member',
+	'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
+);
 
 // Street
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'sorting'   => true,
-    'flag'      => 1,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
+	'exclude'   => true,
+	'search'    => true,
+	'sorting'   => true,
+	'flag'      => 1,
+	'inputType' => 'text',
+	'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+	'sql'       => "varchar(255) NOT NULL default ''",
+);
 
 // postal
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'inputType' => 'text',
-    'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
-    'sql'       => "varchar(32) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
+	'exclude'   => true,
+	'search'    => true,
+	'inputType' => 'text',
+	'eval'      => array('maxlength' => 32, 'tl_class' => 'w50'),
+	'sql'       => "varchar(32) NOT NULL default ''",
+);
 
 // city
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'sorting'   => true,
-    'flag'      => 1,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
+	'exclude'   => true,
+	'search'    => true,
+	'sorting'   => true,
+	'flag'      => 1,
+	'inputType' => 'text',
+	'eval'      => array('mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'),
+	'sql'       => "varchar(255) NOT NULL default ''",
+);
 
 // Enable booking options
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = [
-    'exclude'   => true,
-    'inputType' => 'checkbox',
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
-    'sql'       => "char(1) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
+	'exclude'   => true,
+	'inputType' => 'checkbox',
+	'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+	'sql'       => "char(1) NOT NULL default ''",
+);
 
 // Enable multiple bookings with the same email address
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAddress'] = [
-    'exclude'   => true,
-    'inputType' => 'checkbox',
-    'eval'      => ['tl_class' => 'clr m12'],
-    'sql'       => "char(1) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAddress'] = array(
+	'exclude'   => true,
+	'inputType' => 'checkbox',
+	'eval'      => array('tl_class' => 'clr m12'),
+	'sql'       => "char(1) NOT NULL default ''",
+);
 
 // bookingEndDate
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = [
-    'exclude'   => true,
-    'inputType' => 'text',
-    'eval'      => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-    'sql'       => "int(10) unsigned NULL",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
+	'exclude'   => true,
+	'inputType' => 'text',
+	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'sql'       => "int(10) unsigned NULL",
+);
 
 // bookingStartDate
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [
-    'exclude'   => true,
-    'inputType' => 'text',
-    'eval'      => ['rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-    'sql'       => "int(10) unsigned NULL",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
+	'exclude'   => true,
+	'inputType' => 'text',
+	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'sql'       => "int(10) unsigned NULL",
+);
 
 // maxMembers
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'default'   => 0,
-    'inputType' => 'text',
-    'eval'      => ['tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true],
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = array(
+	'exclude'   => true,
+	'search'    => true,
+	'default'   => 0,
+	'inputType' => 'text',
+	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+);
 
 // guestsPerMember
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'default'   => 0,
-    'inputType' => 'text',
-    'eval'      => ['tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true],
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = array(
+	'exclude'   => true,
+	'search'    => true,
+	'default'   => 0,
+	'inputType' => 'text',
+	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+);
 
 // enableNotificationCenter
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = [
-    'exclude'   => true,
-    'inputType' => 'checkbox',
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
-    'sql'       => "char(1) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = array(
+	'exclude'   => true,
+	'inputType' => 'checkbox',
+	'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+	'sql'       => "char(1) NOT NULL default ''",
+);
 
 // eventBookingNotificationCenterIds
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = [
-    'exclude'    => true,
-    'search'     => true,
-    'inputType'  => 'select',
-    'foreignKey' => 'tl_nc_notification.title',
-    'eval'       => ['mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'],
-    'sql'        => "blob NULL",
-    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = array(
+	'exclude'    => true,
+	'search'     => true,
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_nc_notification.title',
+	'eval'       => array('mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
+	'sql'        => "blob NULL",
+	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+);
 
 // eventBookingNotificationSender
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = [
-    'exclude'    => true,
-    'search'     => true,
-    'inputType'  => 'select',
-    'foreignKey' => 'tl_user.name',
-    'eval'       => ['mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'clr'],
-    'sql'        => "int(10) unsigned NOT NULL default '0'",
-    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = array(
+	'exclude'    => true,
+	'search'     => true,
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_user.name',
+	'eval'       => array('mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'clr'),
+	'sql'        => "int(10) unsigned NOT NULL default '0'",
+	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+);
 
 // enableDeregistration
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = [
-    'exclude'   => true,
-    'inputType' => 'checkbox',
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
-    'sql'       => "char(1) NOT NULL default ''",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = array(
+	'exclude'   => true,
+	'inputType' => 'checkbox',
+	'eval'      => array('submitOnChange' => true, 'tl_class' => 'clr m12'),
+	'sql'       => "char(1) NOT NULL default ''",
+);
 
 // unsubscribeLimit
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
-    'exclude'   => true,
-    'filter'    => true,
-    'inputType' => 'select',
-    'options'   => range(0, 720),
-    'eval'      => ['rgxp' => 'natural', 'nospace' => true, 'tl_class' => 'w50'],
-    'sql'       => "int(10) unsigned NOT NULL default '0'",
-];
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
+	'exclude'   => true,
+	'filter'    => true,
+	'inputType' => 'select',
+	'options'   => range(0, 720),
+	'eval'      => array('rgxp' => 'natural', 'nospace' => true, 'tl_class' => 'w50'),
+	'sql'       => "int(10) unsigned NOT NULL default '0'",
+);
 
 // unsubscribeLimitTstamp
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
-    'exclude'       => true,
-    'inputType'     => 'text',
-    'eval'          => ['rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-    'sql'           => "int(10) unsigned NULL",
-    'save_callback' => [['Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents', 'saveUnsubscribeLimitTstamp']]
-];
-
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = array(
+	'exclude'       => true,
+	'inputType'     => 'text',
+	'eval'          => array('rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'sql'           => "int(10) unsigned NULL",
+	'save_callback' => array(array(TlCalendarEvents::class, 'saveUnsubscribeLimitTstamp'))
+);

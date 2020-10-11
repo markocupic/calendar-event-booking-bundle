@@ -2,7 +2,7 @@
 
 <?php $this->block('content'); ?>
 
-<?php if($this->members != ''): ?>
+<?php if (!empty($this->members)): ?>
 <div class="ce_table">
     <table class="all_records sortable">
         <thead>
