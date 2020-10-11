@@ -20,7 +20,6 @@ use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
-use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -88,8 +87,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
-
-
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
             $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
@@ -181,7 +178,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     {
         /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
-
 
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;

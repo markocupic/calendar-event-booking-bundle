@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 /*
- * This file is part of markocupic/calendar-event-booking-bundle.
+ * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
  * @license MIT
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -31,7 +31,6 @@ use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CalendarEventBookingEventBookingModuleController.
@@ -71,7 +70,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
                 $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
             }
-
 
             // Return an empty string if "events" is not set
             if (!$inputAdapter->get('events')) {
