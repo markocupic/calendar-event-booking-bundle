@@ -7,8 +7,8 @@ cd..
 cd..
 cd..
 :: src
-vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/default.php
+start vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/default.php
 :: tests
-vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/tests --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/default.php
+:: start vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/tests --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/default.php
 ::
 cd vendor/markocupic/calendar-event-booking-bundle/.ecs./batch/fix

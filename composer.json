@@ -16,7 +16,7 @@
     "terminal42/notification_center": "^1.5"
   },
   "require-dev": {
-    "contao/easy-coding-stanfdard": "^3.0"
+    "contao/easy-coding-standard": "^3.0"
   },
   "autoload": {
     "psr-4": {

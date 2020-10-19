@@ -7,6 +7,6 @@ cd..
 cd..
 cd..
 :: legacy
-vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/legacy.php
+start vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao --fix --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/legacy.php
 ::
 cd vendor/markocupic/calendar-event-booking-bundle/.ecs./batch/fix

@@ -7,6 +7,6 @@ cd..
 cd..
 cd..
 :: templates
-vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/template.php
+start vendor\bin\ecs check vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates --config vendor/markocupic/calendar-event-booking-bundle/.ecs/config/template.php
 ::
 cd vendor/markocupic/calendar-event-booking-bundle/.ecs./batch/check

@@ -90,9 +90,6 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     private function autoGenerateBookingForm(): void
     {
-        // Initialize the contao framework
-        $this->framework->initialize();
-
         $sqlTlForm = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form.sql');
         $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
 
@@ -116,6 +113,9 @@ class AutogenerateBookingForm extends AbstractMigration
                 $stmt = $this->connection->prepare('UPDATE tl_form ? WHERE id=?');
                 $stmt->execute([$set, $intInsertId]);
             }
+
+            // Initialize the contao framework
+            $this->framework->initialize();
 
             // Load dca tl_form_field
             Controller::loadDataContainer('tl_form_field');

@@ -17,13 +17,13 @@ Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anme
 Verlinken Sie in den Moduleinstellungen mit dem entsprechenden Formular aus dem Contao Formulargenerator.
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url.
 Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
-Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader_Modul ein.
+Das Anmeldeformular sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
 
 #### Angemeldete Mitglieder im Frontend auflisten
-Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen sichtbar/aufgelistet werden.
+Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen aufgelistet werden.
 Wichtig! Das Auflistungsmodul zieht den Eventnamen aus der Url.
 Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
-Binden Sie deshalb das Anmeldeformular immer in Kombination mit dem Event-Reader-Modul ein.
+Das Mitgliederauflistungs-Modul sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
 
 #### Von Event abmelden
 Die Erweiterung stellt auch eine Möglichkeit sich von einem Event wieder abzumelden.
