@@ -49,5 +49,6 @@ services:
     arguments:
     - '%kernel.project_dir%'
     - '@database_connection'
+    - '@contao.framework'
     tags:
     - { name: contao.migration, priority: 1 }

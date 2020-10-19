@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Migration;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
-use Contao\Database;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -36,12 +36,18 @@ class AutogenerateBookingForm extends AbstractMigration
     private $connection;
 
     /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
      * AutogenerateBookingForm constructor.
      */
-    public function __construct(string $projectDir, Connection $connection)
+    public function __construct(string $projectDir, Connection $connection, ContaoFramework $framework)
     {
         $this->projectDir = $projectDir;
         $this->connection = $connection;
+        $this->framework = $framework;
     }
 
     public function shouldRun(): bool
@@ -56,9 +62,10 @@ class AutogenerateBookingForm extends AbstractMigration
         $columns = $schemaManager->listTableColumns('tl_form');
 
         if (isset($columns['iscalendareventbookingform'], $columns['formid'])) {
-            $objForm = Database::getInstance()->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=? OR alias=?')->execute('1', 'event-booking-form');
+            $objForm = $this->connection->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=? OR alias=?');
+            $objForm->execute(['1', 'event-booking-form']);
 
-            if (!$objForm->numRows) {
+            if ($objForm->rowCount() > 0) {
                 // Autogenerate form
                 return true;
             }
@@ -83,6 +90,9 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     private function autoGenerateBookingForm(): void
     {
+        // Initialize the contao framework
+        $this->framework->initialize();
+
         $sqlTlForm = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form.sql');
         $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
 
@@ -90,15 +100,21 @@ class AutogenerateBookingForm extends AbstractMigration
         $sqlTlForm = str_replace('##tstamp##', time(), $sqlTlForm);
 
         // Insert into tl_form
-        $objInsertStmt1 = Database::getInstance()->query($sqlTlForm);
+        $objInsertStmt1 = $this->connection->executeQuery($sqlTlForm);
+        var_dump($objInsertStmt1);
 
-        if (($intInsertId = $objInsertStmt1->insertId) > 0) {
+        if (($intInsertId = $this->connection->lastInsertId()) > 0) {
             // Set tl_form.isCalendarEventBookingForm to true if field exists
-            if (Database::getInstance()->fieldExists('isCalendarEventBookingForm', 'tl_form')) {
+            $schemaManager = $this->connection->getSchemaManager();
+            $columns = $schemaManager->listTableColumns('tl_form');
+
+            if (isset($columns['isCalendarEventBookingForm'])) {
                 $set = [
                     'isCalendarEventBookingForm' => '1',
                 ];
-                Database::getInstance()->prepare('UPDATE tl_form %s WHERE id=?')->set($set)->execute($intInsertId);
+
+                $stmt = $this->connection->prepare('UPDATE tl_form ? WHERE id=?');
+                $stmt->execute([$set, $intInsertId]);
             }
 
             // Load dca tl_form_field
@@ -111,7 +127,7 @@ class AutogenerateBookingForm extends AbstractMigration
             $sqlTlFormField = str_replace('##extensions##', $strExtensions, $sqlTlFormField);
 
             // Insert into tl_form_field
-            Database::getInstance()->query($sqlTlFormField);
+            $this->connection->executeQuery($sqlTlFormField);
         }
     }
 }
