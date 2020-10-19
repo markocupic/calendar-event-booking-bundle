@@ -97,8 +97,7 @@ class AutogenerateBookingForm extends AbstractMigration
         $sqlTlForm = str_replace('##tstamp##', time(), $sqlTlForm);
 
         // Insert into tl_form
-        $objInsertStmt1 = $this->connection->executeQuery($sqlTlForm);
-        var_dump($objInsertStmt1);
+        $this->connection->executeQuery($sqlTlForm);
 
         if (($intInsertId = $this->connection->lastInsertId()) > 0) {
             // Set tl_form.isCalendarEventBookingForm to true if field exists
