@@ -60,12 +60,11 @@ class AutogenerateBookingForm extends AbstractMigration
         }
 
         $columns = $schemaManager->listTableColumns('tl_form');
-
-        if (isset($columns['iscalendareventbookingform'], $columns['formid'])) {
+        if (isset($columns['iscalendareventbookingform']) && isset($columns['alias'])) {
             $objForm = $this->connection->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=? OR alias=?');
             $objForm->execute(['1', 'event-booking-form']);
 
-            if ($objForm->rowCount() > 0) {
+            if (!$objForm->rowCount() > 0) {
                 // Autogenerate form
                 return true;
             }
@@ -104,13 +103,9 @@ class AutogenerateBookingForm extends AbstractMigration
             $schemaManager = $this->connection->getSchemaManager();
             $columns = $schemaManager->listTableColumns('tl_form');
 
-            if (isset($columns['isCalendarEventBookingForm'])) {
-                $set = [
-                    'isCalendarEventBookingForm' => '1',
-                ];
-
-                $stmt = $this->connection->prepare('UPDATE tl_form ? WHERE id=?');
-                $stmt->execute([$set, $intInsertId]);
+            if (isset($columns['iscalendareventbookingform'])) {
+                $stmt = $this->connection->prepare('UPDATE tl_form SET isCalendarEventBookingForm=? WHERE id=?');
+                $stmt->execute(['1', $intInsertId]);
             }
 
             // Initialize the contao framework
