@@ -22,6 +22,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['male'] = 'Mr';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['female'] = 'Mrs.';
 
 // Legends
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['presence_legend'] = 'Presence legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['booking_date_legend'] = 'Booking date';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes_legend'] = 'Notes';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['personal_legend'] = 'Personal legend';
@@ -29,7 +30,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['address_legend'] = 'Adress leg
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['contact_legend'] = 'Contact legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escort_legend'] = 'Escort legend';
 
-// Legend
+// Fields
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['addedOn'] = ['Booking date', 'Please enter the booking date.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'] = ['Notes', 'Please enter the notes.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['firstname'] = ['Firstname', 'Please enter the firstname.'];
@@ -42,4 +43,5 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['city'] = ['City', 'Please ente
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['phone'] = ['Phone', 'Please enter the phone number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['email'] = ['Email address', 'Please enter the email address.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escorts'] = ['Escorts', 'Please enter the escorts.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['hasParticipated'] = ['Has participated', 'Member has participated.'];
 

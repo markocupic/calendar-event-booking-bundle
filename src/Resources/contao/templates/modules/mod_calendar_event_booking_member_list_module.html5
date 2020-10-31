@@ -3,25 +3,43 @@
 <?php $this->block('content'); ?>
 
 <?php if (!empty($this->members)): ?>
-<div class="ce_table">
-    <table class="all_records sortable">
-        <thead>
-        <tr>
-            <th class="head col_first col_0"><?= $this->trans('tl_calendar_events_member.firstname.0') ?></th>
-            <th class="head col_1"><?= $this->trans('tl_calendar_events_member.lastname.0') ?></th>
-            <th class="head col_2"><?= $this->trans('tl_calendar_events_member.street.0') ?></th>
-            <th class="head col_3"><?= $this->trans('tl_calendar_events_member.postal.0') ?></th>
-            <th class="head col_last col_4"><?= $this->trans('tl_calendar_events_member.city.0') ?></th>
-        </tr>
-        </thead>
-        <tbody>
-        <?= $this->members ?>
-    </table>
-</div>
+
+    <?php if ($this->showForm): ?>
+    <form id="<?= $this->formId ?>" method="post">
+        <div class="formbody">
+            <input type="hidden" name="FORM_SUBMIT" value="<?= $this->formId ?>">
+            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+    <?php endif; ?>
+
+            <div class="ce_table">
+                <table class="all_records sortable">
+                    <thead>
+                    <tr>
+                        <th class="head col_0"><?= $this->trans('tl_calendar_events_member.firstname.0') ?></th>
+                        <th class="head col_1"><?= $this->trans('tl_calendar_events_member.lastname.0') ?></th>
+                        <th class="head col_2"><?= $this->trans('tl_calendar_events_member.street.0') ?></th>
+                        <th class="head col_3"><?= $this->trans('tl_calendar_events_member.postal.0') ?></th>
+                        <th class="head col_4"><?= $this->trans('tl_calendar_events_member.city.0') ?></th>
+                        <?php if ($this->showForm): ?>
+                        <th class="head col_5"><?= $this->trans('tl_calendar_events_member.hasParticipated.0') ?></th>
+                        <?php endif; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?= $this->members ?>
+                </table>
+            </div>
+
+    <?php if ($this->showForm): ?>
+            <div class="widget widget-submit">
+                <button type="submit" class="submit btn btn-primary"><?= $this->trans('BTN.slabel') ?></button>
+            </div>
+        </div>
+    </form>
+    <?php endif; ?>
+
 <?php else: ?>
-<!--
-<p class="no-event-subscriptions-found">NO registration found for this event.</p>
--->
+<p class="no-event-subscriptions-found"><?= $this->trans('MSC.noEventRegistrationsFound') ?></p>
 <?php endif; ?>
 
 <?php $this->endblock(); ?>

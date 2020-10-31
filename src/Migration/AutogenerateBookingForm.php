@@ -60,7 +60,8 @@ class AutogenerateBookingForm extends AbstractMigration
         }
 
         $columns = $schemaManager->listTableColumns('tl_form');
-        if (isset($columns['iscalendareventbookingform']) && isset($columns['alias'])) {
+
+        if (isset($columns['iscalendareventbookingform'], $columns['alias'])) {
             $objForm = $this->connection->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=? OR alias=?');
             $objForm->execute(['1', 'event-booking-form']);
 

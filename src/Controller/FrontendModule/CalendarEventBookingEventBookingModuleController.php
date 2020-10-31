@@ -22,7 +22,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
+use Contao\FrontendUser;
 use Contao\Input;
+use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -31,6 +33,7 @@ use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CalendarEventBookingEventBookingModuleController.
@@ -49,6 +52,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     protected $objPage;
 
+    /**
+     * @var MemberModel
+     */
+    protected $objUser;
+
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
@@ -59,8 +67,18 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             /** @var Input $inputAdapter */
             $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
 
+            /** @var MemberModel $memberModelAdapter */
+            $memberModelAdapter = $this->get('contao.framework')->getAdapter(MemberModel::class);
+
             /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
+
+            // Get logged in frontend user, if there is one
+            $user = $this->get('security.helper')->getUser();
+
+            if ($user instanceof FrontendUser) {
+                $this->objUser = $memberModelAdapter->findByPk($user->id);
+            }
 
             $this->objPage = $page;
 
@@ -99,6 +117,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $services = parent::getSubscribedServices();
         $services['contao.framework'] = ContaoFramework::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
+        $services['security.helper'] = Security::class;
 
         return $services;
     }
@@ -129,6 +148,17 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
+        // Check if logged in frontend user is admin
+        $loggedInUserIsAdmin = false;
+
+        if (null !== $this->objUser) {
+            $groupAdmins = $stringUtilAdapter->deserialize($model->calendar_event_booking_member_admin_member_groups, true);
+
+            if (\in_array($this->objUser->id, $groupAdmins, false)) {
+                $loggedInUserIsAdmin = true;
+            }
+        }
+
         // Count bookings if event is not fully booked
         $countBookings = $calendarEventsMemberModelAdaper->countBy('pid', $this->objEvent->id);
         $template->countBookings = $countBookings;
@@ -136,7 +166,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         // Add event model to template
         $template->event = $this->objEvent;
 
-        if ($this->objEvent->bookingStartDate > 0 && $this->objEvent->bookingStartDate > time()) {
+        if ($loggedInUserIsAdmin) {
+            // User belongs to a frontend admin group, that is why the form will be displayed always
+            $case = 'bookingPossible';
+        } elseif ($this->objEvent->bookingStartDate > 0 && $this->objEvent->bookingStartDate > time()) {
             // User has to wait. Booking is not possible yet
             $case = 'bookingNotYetPossible';
         } elseif ($this->objEvent->bookingEndDate > 0 && $this->objEvent->bookingEndDate < time()) {
@@ -167,6 +200,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             case 'eventFullyBooked':
                 break;
         }
+
+        $template->loggedInUserIsAdmin = $loggedInUserIsAdmin;
+        $template->objuser = $this->objUser;
 
         return $template->getResponse();
     }

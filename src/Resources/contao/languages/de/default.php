@@ -25,6 +25,10 @@ $GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Liebe(r) <span class="event-
 $GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Von Event abmelden';
 $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Abbrechen';
 
+// Member listing
+$GLOBALS['TL_LANG']['BTN']['slabel'] = 'Speichern';
+$GLOBALS['TL_LANG']['MSC']['noEventRegistrationsFound'] = 'Zu diesem Event wurden keine Anmeldungen gefunden.';
+
 // Errors
 $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'Die Abmeldefrist für Event "%s" ist leider abgelaufen.';
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.';
