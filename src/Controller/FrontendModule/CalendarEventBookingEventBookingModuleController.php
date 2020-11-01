@@ -135,9 +135,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
-        // Check if logged in frontend user is admin
-        $loggedInUserIsAdmin = $this->bookingFormHelper->loggedInUserIsAdmin($model);
-
         // Count bookings if event is not fully booked
         $template->countBookings = $this->bookingFormHelper->getNumberOfBookings();
 
@@ -148,7 +145,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $template->objuser = $this->objUser;
 
         // Check if logged in frontend user has admin privilegies
-        $template->loggedInUserIsAdmin = $loggedInUserIsAdmin;
+        $template->loggedInUserIsAdmin = $this->bookingFormHelper->loggedInUserIsAdmin($model);
 
         // Get the case
         $case = $this->bookingFormHelper->getCase($model);
