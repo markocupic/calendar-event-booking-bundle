@@ -62,7 +62,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
     /**
      * CalendarEventBookingEventBookingModuleController constructor.
-     * @param BookingForm $bookingFormHelper
      */
     public function __construct(BookingForm $bookingFormHelper)
     {
@@ -71,23 +70,21 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Is frontend
+        // If is frontend:
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            /** @var MemberModel|null objUser */
             $this->objUser = $this->bookingFormHelper->getLoggedInUser();
 
             $this->objPage = $page;
 
             $showEmpty = false;
 
-            $this->objEvent = $this->bookingFormHelper->getEventFromUrl();
-
-            if (null === $this->objEvent) {
+            // Get the current event
+            if (null === ($this->objEvent = $this->bookingFormHelper->getEventFromUrl())) {
                 $showEmpty = true;
             }
 
-            // Get the current event && return empty string if addBookingForm isn't set or event is not published
-            if (null !== $this->objEvent && !$this->bookingFormHelper->loggedInUserIsAdmin($model)) {
+            // Return empty string if logged in user has no admin privilegies and addBookingForm isn't set or event is not published
+            if (null !== $this->objEvent && false === $this->bookingFormHelper->loggedInUserIsAdmin($model)) {
                 if (!$this->objEvent->addBookingForm || !$this->objEvent->published) {
                     $showEmpty = true;
                 }
