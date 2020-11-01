@@ -15,22 +15,20 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
-use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
-use Contao\FrontendUser;
-use Contao\Input;
+use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Helper\BookingForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
@@ -43,6 +41,11 @@ use Symfony\Component\Security\Core\Security;
 class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
 {
     /**
+     * @var BookingForm
+     */
+    protected $bookingFormHelper;
+
+    /**
      * @var CalendarEventsModel
      */
     protected $objEvent;
@@ -53,51 +56,38 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     protected $objPage;
 
     /**
-     * @var MemberModel
+     * @var MemberModel|null
      */
     protected $objUser;
+
+    /**
+     * CalendarEventBookingEventBookingModuleController constructor.
+     * @param BookingForm $bookingFormHelper
+     */
+    public function __construct(BookingForm $bookingFormHelper)
+    {
+        $this->bookingFormHelper = $bookingFormHelper;
+    }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            /** @var Config $configAdapter */
-            $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
-
-            /** @var Input $inputAdapter */
-            $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
-
-            /** @var MemberModel $memberModelAdapter */
-            $memberModelAdapter = $this->get('contao.framework')->getAdapter(MemberModel::class);
-
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
-            $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
-
-            // Get logged in frontend user, if there is one
-            $user = $this->get('security.helper')->getUser();
-
-            if ($user instanceof FrontendUser) {
-                $this->objUser = $memberModelAdapter->findByPk($user->id);
-            }
+            /** @var MemberModel|null objUser */
+            $this->objUser = $this->bookingFormHelper->getLoggedInUser();
 
             $this->objPage = $page;
 
             $showEmpty = false;
 
-            // Set the item from the auto_item parameter
-            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
-                $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
-            }
+            $this->objEvent = $this->bookingFormHelper->getEventFromUrl();
 
-            // Return an empty string if "events" is not set
-            if (!$inputAdapter->get('events')) {
-                $showEmpty = true;
-            } elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events')))) {
+            if (null === $this->objEvent) {
                 $showEmpty = true;
             }
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
-            if (null !== $this->objEvent) {
+            if (null !== $this->objEvent && !$this->bookingFormHelper->loggedInUserIsAdmin($model)) {
                 if (!$this->objEvent->addBookingForm || !$this->objEvent->published) {
                     $showEmpty = true;
                 }
@@ -133,8 +123,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
 
-        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdaper */
-        $calendarEventsMemberModelAdaper = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
+        /** @var FormModel $formModelAdapter */
+        $formModelAdapter = $this->get('contao.framework')->getAdapter(FormModel::class);
 
         // Load language file
         $systemAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -149,45 +139,30 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         }
 
         // Check if logged in frontend user is admin
-        $loggedInUserIsAdmin = false;
-
-        if (null !== $this->objUser) {
-            $groupAdmins = $stringUtilAdapter->deserialize($model->calendar_event_booking_member_admin_member_groups, true);
-
-            if (\in_array($this->objUser->id, $groupAdmins, false)) {
-                $loggedInUserIsAdmin = true;
-            }
-        }
+        $loggedInUserIsAdmin = $this->bookingFormHelper->loggedInUserIsAdmin($model);
 
         // Count bookings if event is not fully booked
-        $countBookings = $calendarEventsMemberModelAdaper->countBy('pid', $this->objEvent->id);
-        $template->countBookings = $countBookings;
+        $template->countBookings = $this->bookingFormHelper->getNumberOfBookings();
 
         // Add event model to template
         $template->event = $this->objEvent;
 
-        if ($loggedInUserIsAdmin) {
-            // User belongs to a frontend admin group, that is why the form will be displayed always
-            $case = 'bookingPossible';
-        } elseif ($this->objEvent->bookingStartDate > 0 && $this->objEvent->bookingStartDate > time()) {
-            // User has to wait. Booking is not possible yet
-            $case = 'bookingNotYetPossible';
-        } elseif ($this->objEvent->bookingEndDate > 0 && $this->objEvent->bookingEndDate < time()) {
-            // User is to late the sign in deadline has proceeded
-            $case = 'bookingNoLongerPossible';
-        } elseif ($countBookings > 0 && $this->objEvent->maxMembers > 0 && $countBookings >= $this->objEvent->maxMembers) {
-            // Check if event is  fully booked
-            $case = 'eventFullyBooked';
-        } else {
-            $case = 'bookingPossible';
-        }
+        // Add logged in frontend user (if there is one) to template
+        $template->objuser = $this->objUser;
 
+        // Check if logged in frontend user has admin privilegies
+        $template->loggedInUserIsAdmin = $loggedInUserIsAdmin;
+
+        // Get the case
+        $case = $this->bookingFormHelper->getCase($model);
         $template->case = $case;
 
         switch ($case) {
             case 'bookingPossible':
                 if ($model->form > 0) {
-                    $template->form = $model->form;
+                    if (null !== ($objForm = $formModelAdapter->findByPk($model->form))) {
+                        $template->form = $objForm->id;
+                    }
                 }
                 break;
 
@@ -200,9 +175,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             case 'eventFullyBooked':
                 break;
         }
-
-        $template->loggedInUserIsAdmin = $loggedInUserIsAdmin;
-        $template->objuser = $this->objUser;
 
         return $template->getResponse();
     }

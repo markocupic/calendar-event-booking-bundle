@@ -151,7 +151,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
                     if (null !== $objMember) {
                         while ($objMember->next()) {
-                            $objMember->hasParticipated = $inputAdapter->post('hasParticipated_'.$objMember->id);
+                            $objMember->hasParticipated = $inputAdapter->post('hasParticipated_'.$objMember->id) == '1' ? '1' : '';
                             $objMember->save();
                         }
                     }
