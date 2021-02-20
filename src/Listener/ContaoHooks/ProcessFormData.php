@@ -41,23 +41,23 @@ class ProcessFormData
     private $framework;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var NotificationHelper
      */
     private $notificationHelper;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * ProcessFormData constructor.
      */
-    public function __construct(ContaoFramework $framework, LoggerInterface $logger = null, NotificationHelper $notificationHelper)
+    public function __construct(ContaoFramework $framework, NotificationHelper $notificationHelper, LoggerInterface $logger = null)
     {
         $this->framework = $framework;
-        $this->logger = $logger;
         $this->notificationHelper = $notificationHelper;
+        $this->logger = $logger;
     }
 
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
