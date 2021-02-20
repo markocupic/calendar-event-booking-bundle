@@ -83,7 +83,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 
 	// Palettes
 	'palettes' => array(
-		'default' => '{presence_legend},hasParticipated;{booking_date_legend},addedOn;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+		'default' => '{booking_date_legend},addedOn;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
 	),
 
 	// Fields
@@ -99,13 +99,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 		),
 		'tstamp'       => array(
 			'sql' => "int(10) unsigned NOT NULL default '0'",
-		),
-		'hasParticipated'        => array(
-			'filter'    => true,
-			'sorting'   => true,
-			'inputType' => 'checkbox',
-			'eval'      => array('mandatory' => false, 'tl_class' => 'w50'),
-			'sql'       => "char(1) NOT NULL default ''",
 		),
 		'addedOn'      => array(
 			'sorting'   => true,

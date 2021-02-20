@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -22,12 +22,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
-use Contao\FrontendUser;
 use Contao\Input;
-use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOStatement;
@@ -35,7 +32,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CalendarEventBookingMemberListModuleController.
@@ -55,11 +51,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     protected $objEvent;
 
     /**
-     * @var MemberModel
-     */
-    protected $objUser;
-
-    /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
     public function __construct(Connection $connection)
@@ -71,17 +62,10 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     {
         // Is frontend
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            /** @var Config $configAdapter */
+            // Set adapters
             $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
-
-            /** @var Input $inputAdapter */
             $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
-
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
-
-            /** @var MemberModel $memberModelAdapter */
-            $memberModelAdapter = $this->get('contao.framework')->getAdapter(MemberModel::class);
 
             $showEmpty = false;
 
@@ -95,13 +79,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
                 $showEmpty = true;
             } elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events')))) {
                 $showEmpty = true;
-            }
-
-            // Get logged in frontend user, if there is one
-            $user = $this->get('security.helper')->getUser();
-
-            if ($user instanceof FrontendUser) {
-                $this->objUser = $memberModelAdapter->findByPk($user->id);
             }
 
             if ($showEmpty) {
@@ -118,7 +95,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $services = parent::getSubscribedServices();
         $services['contao.framework'] = ContaoFramework::class;
         $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['security.helper'] = Security::class;
 
         return $services;
     }
@@ -130,36 +106,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
-
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
-
-        /** @var Input $inputAdapter */
-        $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
-
-        // Check if logged in frontend user is admin
-        $loggedInUserIsAdmin = false;
-
-        if (null !== $this->objUser) {
-            $groupAdmins = $stringUtilAdapter->deserialize($model->calendar_event_booking_member_admin_member_groups, true);
-
-            if (\in_array($this->objUser->id, $groupAdmins, false)) {
-                $loggedInUserIsAdmin = true;
-
-                if ($inputAdapter->post('FORM_SUBMIT') === 'eventMemberListingForm_'.$model->id) {
-                    $objMember = $calendarEventsMemberModelAdapter->findByPid($this->objEvent->id);
-
-                    if (null !== $objMember) {
-                        while ($objMember->next()) {
-                            $objMember->hasParticipated = $inputAdapter->post('hasParticipated_'.$objMember->id) == '1' ? '1' : '';
-                            $objMember->save();
-                        }
-                    }
-
-                    $controllerAdapter->reload();
-                }
-            }
-        }
 
         // Load language
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -182,12 +128,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             // Row class
             $partial->rowClass = $this->getRowClass($i, $intRowCount);
 
-            $partial->event = $model;
-
-            if ($loggedInUserIsAdmin) {
-                $partial->showForm = $loggedInUserIsAdmin;
-            }
-
             $strRows .= $partial->parse();
             ++$i;
         }
@@ -197,13 +137,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         // Add the event model to the parent template
         $template->event = $this->objEvent;
-
-        if ($loggedInUserIsAdmin) {
-            $template->showForm = $loggedInUserIsAdmin;
-            $template->formId = 'eventMemberListingForm_'.$model->id;
-        }
-
-        $template->objuser = $this->objUser;
 
         return $template->getResponse();
     }

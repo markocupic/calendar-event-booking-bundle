@@ -1,14 +1,7 @@
 services:
-  Markocupic\CalendarEventBookingBundle\Helper\BookingForm:
-    arguments:
-      - '@contao.framework'
-      - '@database_connection'
-      - '@security.helper'
 
   # Contao frontend module "calendar_event_booking_event_booking_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
-    arguments:
-      - '@Markocupic\CalendarEventBookingBundle\Helper\BookingForm'
     tags:
       - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
       - { name: container.service_subscriber }

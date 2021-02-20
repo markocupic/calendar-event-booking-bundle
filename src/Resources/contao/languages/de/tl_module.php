@@ -9,11 +9,9 @@
  */
 
 // Legends
-$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_form_legend'] = 'Event-Buchungsformular Einstellungen';
-$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_notification_center_legend'] = "Benachrichtigungs-Einstellungen";
-$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_config_legend'] = 'Modul-Konfiguration';
+$GLOBALS['TL_LANG']['tl_module']['form_legend'] = 'Event-Buchungsformular Einstellungen';
+$GLOBALS['TL_LANG']['tl_module']['notification_center_legend'] = "Benachrichtigungs-Einstellungen";
 
 // Fields
 $GLOBALS['TL_LANG']['tl_module']['unsubscribeFromEventNotificationIds'] = ['Benachrichtigungen bei Event-Abmeldungen', 'Wählen Sie eine oder mehrere Benachrichtigungen aus.'];
 $GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_member_list_partial_template'] = ['Event Teilnehmer-Listen-Partial-Template', 'Hier können Sie das Event-Teilnehmer-Listen-Partial-Template auswählen.'];
-$GLOBALS['TL_LANG']['tl_module']['calendar_event_booking_member_admin_member_groups'] = ['Administratoren Gruppen', 'Gewähren Sie Mitgliedern folgender Mitgliedergruppen Administratorenrechte.'];

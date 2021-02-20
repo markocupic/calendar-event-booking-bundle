@@ -25,10 +25,6 @@ $GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Dear <span class="event-memb
 $GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Unsubscribe from event';
 $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Cancel';
 
-// Member listing
-$GLOBALS['TL_LANG']['BTN']['slabel'] = 'Submit';
-$GLOBALS['TL_LANG']['MSC']['noEventRegistrationsFound'] = 'No event registration found for this event.';
-
 // Errors
 $GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'The unsubscription limit for event "%s" has expired.';
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Invalid booking token or could not find assigned event.';

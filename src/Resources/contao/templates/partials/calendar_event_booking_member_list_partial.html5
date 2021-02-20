@@ -1,15 +1,7 @@
 <tr class="<?= $this->rowClass ?>">
-  <td class="body col_0"><?= $this->model->firstname ?></td>
+  <td class="body col_0 col_first"><?= $this->model->firstname ?></td>
   <td class="body col_1"><?= $this->model->lastname ?></td>
-  <td class="body col_2"><?= $this->model->street ?></td>
-  <td class="body col_3"><?= $this->model->postal ?></td>
-  <td class="body col_4"><?= $this->model->city ?></td>
-  <?php if ($this->showForm): ?>
-  <td class="body col_5">
-    <div class="form-check">
-      <input type="hidden" name="hasParticipated_<?= $this->model->id ?>" value="">
-      <input class="form-check-input position-static" type="checkbox" name="hasParticipated_<?= $this->model->id ?>" id="hasParticipated_<?= $this->model->id ?>" value="1" aria-label="<?= $this->trans('tl_calendar_events_member.hasParticipated.0') ?>"<?php if ($this->model->hasParticipated): ?> checked<?php endif; ?>>
-    </div>
-  </td>
-  <?php endif; ?>
+  <td class="body col_2 col_last"><?= $this->model->street ?></td>
+  <td class="body col_3 col_last"><?= $this->model->postal ?></td>
+  <td class="body col_4 col_last"><?= $this->model->city ?></td>
 </tr>

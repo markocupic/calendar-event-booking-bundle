@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2020 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -41,23 +41,23 @@ class ProcessFormData
     private $framework;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var NotificationHelper
      */
     private $notificationHelper;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * ProcessFormData constructor.
      */
-    public function __construct(ContaoFramework $framework, LoggerInterface $logger = null, NotificationHelper $notificationHelper)
+    public function __construct(ContaoFramework $framework, NotificationHelper $notificationHelper, LoggerInterface $logger = null)
     {
         $this->framework = $framework;
-        $this->logger = $logger;
         $this->notificationHelper = $notificationHelper;
+        $this->logger = $logger;
     }
 
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
