@@ -158,11 +158,10 @@ class NotificationHelper
     }
 
     /**
-     * Flatten input data, Simple Tokens can't handle arrays
+     * Flatten input data, Simple Tokens can't handle arrays.
      *
      * @param mixed  $varValue
      * @param string $strKey
-     * @param array  $arrData
      * @param string $strPattern
      */
     private function flatten($varValue, $strKey, array $arrData, $strPattern = ', ')
@@ -170,15 +169,17 @@ class NotificationHelper
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
 
-        if(!empty($varValue) && is_array($stringUtilAdapter->deserialize($varValue)))
-        {
+        if (!empty($varValue) && \is_array($stringUtilAdapter->deserialize($varValue))) {
             $varValue = $stringUtilAdapter->deserialize($varValue);
         }
 
-        if (is_object($varValue)) {
+        if (\is_object($varValue)) {
             return $arrData;
-        } elseif (!is_array($varValue)) {
+        }
+
+        if (!\is_array($varValue)) {
             $arrData[$strKey] = $varValue;
+
             return $arrData;
         }
 
@@ -186,11 +187,11 @@ class NotificationHelper
         $arrValues = [];
 
         foreach ($varValue as $k => $v) {
-            if ($blnAssoc || is_array($v)) {
-                $this->flatten($v, $strKey.'_'.$k, $arrData);
+            if ($blnAssoc || \is_array($v)) {
+                $arrData = $this->flatten($v, $strKey.'_'.$k, $arrData);
             } else {
                 $arrData[$strKey.'_'.$v] = '1';
-                $arrValues[]             = $v;
+                $arrValues[] = $v;
             }
         }
 
