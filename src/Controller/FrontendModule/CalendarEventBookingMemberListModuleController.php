@@ -144,7 +144,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * Get signed up members of current event.
      */
-    protected function getSignedUpMembers(int $id): PDOStatement
+    protected function getSignedUpMembers(int $id)
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();

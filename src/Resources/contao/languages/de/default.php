@@ -2,10 +2,10 @@
 
 /**
  * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2020 Marko Cupic
+ * Copyright (c) 2008-2021 Marko Cupic
  *
  * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2020
+ * @author Marko Cupic m.cupic@gmx.ch, 2021
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 

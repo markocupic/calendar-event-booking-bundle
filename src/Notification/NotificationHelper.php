@@ -20,6 +20,7 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -67,6 +68,8 @@ class NotificationHelper
 
         $arrTokens = [];
 
+        $delimiter = ', ';
+
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
 
@@ -74,7 +77,7 @@ class NotificationHelper
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['member_'.$k] = html_entity_decode((string) $v);
+            $arrTokens = $this->flatten(html_entity_decode((string) $v), 'member_'.$k, $arrTokens, $delimiter);
         }
 
         $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
@@ -84,7 +87,7 @@ class NotificationHelper
         $row = $objEvent->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['event_'.$k] = html_entity_decode((string) $v);
+            $arrTokens = $this->flatten(html_entity_decode((string) $v), 'event_'.$k, $arrTokens, $delimiter);
         }
 
         // event startTime & endTime
@@ -124,7 +127,7 @@ class NotificationHelper
                 if ('password' === $k) {
                     continue;
                 }
-                $arrTokens['organizer_'.$k] = html_entity_decode((string) $v);
+                $arrTokens = $this->flatten(html_entity_decode((string) $v), 'organizer_'.$k, $arrTokens, $delimiter);
             }
         }
 
@@ -152,5 +155,47 @@ class NotificationHelper
         }
 
         return $arrTokens;
+    }
+
+    /**
+     * Flatten input data, Simple Tokens can't handle arrays
+     *
+     * @param mixed  $varValue
+     * @param string $strKey
+     * @param array  $arrData
+     * @param string $strPattern
+     */
+    private function flatten($varValue, $strKey, array $arrData, $strPattern = ', ')
+    {
+        /** @var StringUtil $stringUtilAdapter */
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+
+        if(!empty($varValue) && is_array($stringUtilAdapter->deserialize($varValue)))
+        {
+            $varValue = $stringUtilAdapter->deserialize($varValue);
+        }
+
+        if (is_object($varValue)) {
+            return $arrData;
+        } elseif (!is_array($varValue)) {
+            $arrData[$strKey] = $varValue;
+            return $arrData;
+        }
+
+        $blnAssoc = array_is_assoc($varValue);
+        $arrValues = [];
+
+        foreach ($varValue as $k => $v) {
+            if ($blnAssoc || is_array($v)) {
+                $this->flatten($v, $strKey.'_'.$k, $arrData);
+            } else {
+                $arrData[$strKey.'_'.$v] = '1';
+                $arrValues[]             = $v;
+            }
+        }
+
+        $arrData[$strKey] = implode($strPattern, $arrValues);
+
+        return $arrData;
     }
 }
