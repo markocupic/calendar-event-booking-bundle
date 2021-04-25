@@ -169,7 +169,7 @@ class NotificationHelper
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
 
-        if (!empty($varValue) && \is_array($stringUtilAdapter->deserialize($varValue))) {
+        if (!empty($varValue) && !\is_array($varValue) && \is_string($varValue) && \strlen($varValue) > 3 && \is_array($stringUtilAdapter->deserialize($varValue))) {
             $varValue = $stringUtilAdapter->deserialize($varValue);
         }
 
