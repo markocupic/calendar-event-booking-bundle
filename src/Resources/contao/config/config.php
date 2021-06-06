@@ -54,7 +54,7 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
 		'recipients'           => array('organizer_senderEmail', 'member_email'),
 		'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
 		'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
-		'email_replyTo'        => array('organizer_senderEmail'),
+		'email_replyTo'        => array('organizer_senderEmail', 'member_email'),
 		'email_subject'        => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
 		'email_text'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
 		'email_html'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
