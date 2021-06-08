@@ -99,6 +99,17 @@ class NotificationHelper
             $arrTokens['event_endTime'] = '';
         }
 
+        // event unsubscribeLimitTstamp
+        if($objEvent->unsubscribeLimitTstamp) {
+            $arrTokens['event_unsubscribeLimitTstamp'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $objEvent->unsubscribeLimitTstamp);
+        } else {
+            $arrTokens['event_unsubscribeLimitTstamp'] = '';
+        }
+
+        if(is_numeric($objEvent->unsubscribeLimitTstamp)) {
+            $arrTokens['event_unsubscribeLimitTstamp'] = $dateAdapter->parse($configAdapter->get('datimFormat'), $objEvent->endDate);
+        }
+
         // event title
         $arrTokens['event_title'] = html_entity_decode((string) $objEvent->title);
 
