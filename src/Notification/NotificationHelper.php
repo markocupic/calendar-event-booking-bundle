@@ -198,6 +198,7 @@ class NotificationHelper
         }
 
         $blnAssoc = array_is_assoc($varValue);
+
         $arrValues = [];
 
         foreach ($varValue as $k => $v) {
