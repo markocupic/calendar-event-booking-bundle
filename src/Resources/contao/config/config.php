@@ -55,9 +55,9 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
 		'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
 		'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
 		'email_replyTo'        => array('organizer_senderEmail', 'member_email'),
-		'email_subject'        => array('event_*', 'event_unsubscribeLimitDate', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-		'email_text'           => array('event_*', 'event_unsubscribeHref', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-		'email_html'           => array('event_*', 'event_unsubscribeHref', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_subject'        => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_text'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_html'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
 	),
 	// Type
 	'event-unsubscribe-notification' => array(
@@ -68,8 +68,8 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
 		'email_recipient_cc'   => array('organizer_senderEmail', 'member_email'),
 		'email_recipient_bcc'  => array('organizer_senderEmail', 'member_email'),
 		'email_replyTo'        => array('organizer_senderEmail'),
-		'email_subject'        => array('event_*', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-		'email_text'           => array('event_*', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
-		'email_html'           => array('event_*', 'event_unsubscribeLimitDatim', 'event_unsubscribeHref', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_subject'        => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_text'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
+		'email_html'           => array('event_*', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirthFormated', 'member_salutation', 'organizer_*', 'organizer_senderName', 'organizer_senderEmail'),
 	),
 );
