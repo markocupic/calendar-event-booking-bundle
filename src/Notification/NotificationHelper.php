@@ -101,7 +101,7 @@ class NotificationHelper
 
         // event unsubscribeLimitDate
         if ($objEvent->enableDeregistration && is_numeric($objEvent->unsubscribeLimitTstamp)) {
-            $arrTokens['event_unsubscribeLimitDate'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $objEvent->unsubscribeLimitTstamp);
+            $arrTokens['event_unsubscribeLimitDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->unsubscribeLimitTstamp);
         } else {
             $arrTokens['event_unsubscribeLimitDate'] = '';
         }

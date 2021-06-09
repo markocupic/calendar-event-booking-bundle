@@ -20,15 +20,15 @@ $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für d
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
 
 // Unsubscribe from event
-$GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'Sie wurden erfolgreich vom Event "%s" abgemeldet.';
-$GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Liebe(r) <span class="event-member-name">%s %s</span>{{br}}Möchten Sie sich wirklich vom Event "%s" abmelden?';
-$GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Von Event abmelden';
+$GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.';
+$GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Liebe(r) <span class="event-member-name">%s %s</span>{{br}}Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?';
+$GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Anmeldung stornieren';
 $GLOBALS['TL_LANG']['BTN']['slabelCancel'] = 'Abbrechen';
 
 // Errors
-$GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'Die Abmeldefrist für Event "%s" ist leider abgelaufen.';
+$GLOBALS['TL_LANG']['ERR']['unsubscriptionLimitExpired'] = 'Die Stornierungsfrist für Event "%s" ist leider abgelaufen.';
 $GLOBALS['TL_LANG']['ERR']['eventNotFound'] = 'Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.';
 $GLOBALS['TL_LANG']['ERR']['invalidBookingToken'] = 'Ungültiges Buchungs-Token.';
 $GLOBALS['TL_LANG']['ERR']['eventUnsubscriptionNotAllowed'] = 'Die Abmeldung vom Event "%s" ist nicht möglich.';
-$GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit'] = 'Diese Abmeldezeit ist zu spät (siehe Eventstart und -ende).';
-$GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits'] = 'Sie können nicht gleichzeitig eine Abmeldefrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Abmeldefrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.';
+$GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit'] = 'Diese Abmeldezeit liegt zu weit in der Zukunft (siehe Eventstart und -ende).';
+$GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits'] = 'Sie können nicht gleichzeitig eine Stornierungsfrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Stornierungsfrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.';

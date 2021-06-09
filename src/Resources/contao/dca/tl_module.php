@@ -23,7 +23,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds']
 	'search'     => true,
 	'inputType'  => 'select',
 	'foreignKey' => 'tl_nc_notification.title',
-	'eval'       => array('mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
+	'eval'       => array('mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
 	'sql'        => "blob NULL",
 	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
 );

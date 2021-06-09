@@ -9,7 +9,7 @@
  */
 
 // Legends
-$GLOBALS['TL_LANG']['tl_calendar']['event_unsubscribe_legend'] = "Event Abmelde-Einstellungen";
+$GLOBALS['TL_LANG']['tl_calendar']['event_unsubscribe_legend'] = "Event-Stornierung-Einstellungen";
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar']['eventUnsubscribePage'] = ['Seite mit dem Event-Abmeldeformular-Modul wählen', 'Wählen Sie die Seite mit dem Event-Abmeldeformular-Modul aus.'];
+$GLOBALS['TL_LANG']['tl_calendar']['eventUnsubscribePage'] = ['Seite mit dem Event-Stornierungsformular-Modul wählen', 'Wählen Sie die Seite mit dem Event-Stornierungsformular-Modul aus.'];

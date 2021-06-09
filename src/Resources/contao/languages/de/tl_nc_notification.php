@@ -11,4 +11,4 @@
 // Global operations
 $GLOBALS['TL_LANG']['tl_nc_notification']['type']['calendar-event-booking-bundle'] = 'Event-Buchungen';
 $GLOBALS['TL_LANG']['tl_nc_notification']['type']['booking-notification'] = ['Event-Buchungsbestätigung'];
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['event-unsubscribe-notification'] = ['Event-Abmeldung'];
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['event-unsubscribe-notification'] = ['Event-Stornierung'];

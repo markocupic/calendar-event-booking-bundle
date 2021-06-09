@@ -1,11 +1,16 @@
 services:
+  _defaults:
+    autoconfigure: true
+
+  _instanceof:
+    Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
+      calls:
+        - [setContainer, ['@Psr\Container\ContainerInterface']]
 
   # Contao frontend module "calendar_event_booking_event_booking_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
     tags:
       - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
-      - { name: container.service_subscriber }
-    public: true
 
   # Contao frontend module "calendar_event_booking_member_list_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController:
@@ -13,8 +18,6 @@ services:
     - '@database_connection'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
-    - { name: container.service_subscriber }
-    public: true
 
     # Contao frontend module "calendar_event_booking_unsubscribe_from_event_module"
   Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController:
@@ -22,8 +25,6 @@ services:
     - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
     tags:
     - { name: contao.frontend_module, category: events, type: calendar_event_booking_unsubscribe_from_event_module }
-    - { name: container.service_subscriber }
-    public: true
 
   # Contao dca class tl_module
   Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule:
