@@ -11,4 +11,4 @@
 // Frontend modules
 $GLOBALS['TL_LANG']['FMD']['calendar_event_booking_event_booking_module'] = ['Event-Buchungsformular'];
 $GLOBALS['TL_LANG']['FMD']['calendar_event_booking_unsubscribe_from_event_module'] = ['Event-Stornierungsformular'];
-$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_member_list_module'] = ['Event-Mitglieder-Auflistung', 'Listen Sie in Verbindung mit einem Event Reader die angemeldeten Mitglieder eines Events auf.'];
+$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_member_list_module'] = ['Event-Teilnehmerliste', 'Listen Sie in Verbindung mit einem Event Reader die angemeldeten Teilnehmer eines Events auf.'];
