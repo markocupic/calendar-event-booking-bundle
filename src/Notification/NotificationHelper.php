@@ -100,14 +100,14 @@ class NotificationHelper
         }
 
         // event unsubscribeLimitDate
-        if ($objEvent->enableDeregistration && is_numeric($objEvent->event_unsubscribeLimitTstamp)) {
+        if ($objEvent->enableDeregistration && is_numeric($objEvent->unsubscribeLimitTstamp)) {
             $arrTokens['event_unsubscribeLimitDate'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $objEvent->unsubscribeLimitTstamp);
         } else {
             $arrTokens['event_unsubscribeLimitDate'] = '';
         }
 
         // event unsubscribeLimitDatim
-        if ($objEvent->enableDeregistration && is_numeric($objEvent->event_unsubscribeLimitTstamp)) {
+        if ($objEvent->enableDeregistration && is_numeric($objEvent->unsubscribeLimitTstamp)) {
             $arrTokens['event_unsubscribeLimitDatim'] = $dateAdapter->parse($configAdapter->get('datimFormat'), $objEvent->unsubscribeLimitTstamp);
         } else {
             $arrTokens['event_unsubscribeLimitDatim'] = '';
