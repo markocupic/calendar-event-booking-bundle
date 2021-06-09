@@ -56,7 +56,7 @@ Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt u
 ##### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
 
-Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, etc. (Feldnamen aus tl_calendar_events)
+Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, ##event_unsubscribeLimitDate##, ##event_unsubscribeLimitDatim##, etc. (Feldnamen aus tl_calendar_events)
 
 Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
