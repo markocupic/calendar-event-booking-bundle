@@ -8,7 +8,11 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
+
 // Frontend modules
-$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_event_booking_module'] = ['Event-Buchungsformular'];
-$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_unsubscribe_from_event_module'] = ['Event-Stornierungsformular'];
-$GLOBALS['TL_LANG']['FMD']['calendar_event_booking_member_list_module'] = ['Event-Teilnehmerliste', 'Listen Sie in Verbindung mit einem Event Reader die angemeldeten Teilnehmer eines Events auf.'];
+$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingEventBookingModuleController::TYPE] = ['Event-Buchungsformular'];
+$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingMemberListModuleController::TYPE] = ['Event-Stornierungsformular'];
+$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingUnsubscribeFromEventModuleController::TYPE] = ['Listen Sie in Verbindung mit einem Event Reader die angemeldeten Teilnehmer eines Events auf.'];

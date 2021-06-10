@@ -36,10 +36,11 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class CalendarEventBookingMemberListModuleController.
  *
- * @FrontendModule(category="events", type="calendar_event_booking_member_list_module")
+ * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
+    public const TYPE = 'calendar_event_booking_member_list_module';
     /**
      * @var Connection
      */

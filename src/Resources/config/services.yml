@@ -1,55 +1,11 @@
 services:
   _defaults:
+    autowire: true
     autoconfigure: true
-
-  _instanceof:
-    Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
-      calls:
-        - [setContainer, ['@Psr\Container\ContainerInterface']]
-
-  # Contao frontend module "calendar_event_booking_event_booking_module"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController:
-    tags:
-      - { name: contao.frontend_module, category: events, type: calendar_event_booking_event_booking_module }
-
-  # Contao frontend module "calendar_event_booking_member_list_module"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController:
-    arguments:
-    - '@database_connection'
-    tags:
-    - { name: contao.frontend_module, category: events, type: calendar_event_booking_member_list_module }
-
-    # Contao frontend module "calendar_event_booking_unsubscribe_from_event_module"
-  Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController:
-    arguments:
-    - '@Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper'
-    tags:
-    - { name: contao.frontend_module, category: events, type: calendar_event_booking_unsubscribe_from_event_module }
-
-  # Contao dca class tl_module
-  Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule:
-    arguments:
-    - '@contao.framework'
     public: true
+    bind:
+      $projectDir: '%kernel.project_dir%'
 
-  # Notification helper class
-  Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper:
-    arguments:
-    - '@contao.framework'
-    public: true
-
-  # Run Migrations
-  Markocupic\CalendarEventBookingBundle\Migration\Migrations:
-    arguments:
-    - '@database_connection'
-    tags:
-    - { name: contao.migration, priority: 0 }
-
-  # Migration class: Autogenerate booking form
-  Markocupic\CalendarEventBookingBundle\Migration\AutogenerateBookingForm:
-    arguments:
-    - '%kernel.project_dir%'
-    - '@database_connection'
-    - '@contao.framework'
-    tags:
-    - { name: contao.migration, priority: 1 }
+  Markocupic\CalendarEventBookingBundle\:
+    resource: ../../
+    exclude: ../../{Model,DependencyInjection,Resources}

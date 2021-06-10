@@ -25,7 +25,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 /**
  * Class TlCalendarEvents.
  */
-class TlCalendarEvents extends \tl_calendar_events
+class TlCalendarEvents
 {
     /**
      * Adjust bookingStartDate and bookingStartDate.
@@ -56,7 +56,7 @@ class TlCalendarEvents extends \tl_calendar_events
      *
      * @return string
      */
-    public function listEvents($arrRow)
+    public function listEvents($arrRow): string
     {
         if ('1' === $arrRow['addBookingForm']) {
             $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
@@ -74,7 +74,7 @@ class TlCalendarEvents extends \tl_calendar_events
             return '<div class="tl_content_left">'.$arrRow['title'].' <span style="color:#999;padding-left:3px">['.$date.']</span><span style="color:#999;padding-left:3px">['.$GLOBALS['TL_LANG']['MSC']['bookings'].': '.$countBookings.'x]</span></div>';
         }
 
-        return parent::listEvents($arrRow);
+        return (new \tl_calendar_events())->listEvents($arrRow);
     }
 
     public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int

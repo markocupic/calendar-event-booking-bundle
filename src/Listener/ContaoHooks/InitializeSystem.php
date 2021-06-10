@@ -15,13 +15,16 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Class InitializeSystem.
+ * @Hook(InitializeSystem::HOOK)
  */
 class InitializeSystem
 {
+    public const HOOK = 'initializeSystem';
+
     /**
      * @var RequestStack
      */
@@ -45,7 +48,7 @@ class InitializeSystem
      * Register hooks && enable hook overriding in a custom module
      * $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS'] is set in config.php.
      */
-    public function registerCalendarEventBookingHooks(): void
+    public function __invoke(): void
     {
         // If is frontend mode
         if (null !== $this->requestStack->getCurrentRequest()) {

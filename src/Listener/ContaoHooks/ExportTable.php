@@ -17,13 +17,16 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 
 /**
- * Class ExportTable.
+ * @Hook(ExportTable::HOOK)
  */
 class ExportTable
 {
+    public const HOOK = 'exportTable';
+
     /**
      * @var ContaoFramework
      */
@@ -38,13 +41,14 @@ class ExportTable
     }
 
     /**
+     * @param string $field
      * @param $value
+     * @param string $strTable
      * @param $dataRecord
      * @param $dca
-     *
      * @return string
      */
-    public function exportBookingList(string $field, $value, string $strTable, $dataRecord, $dca)
+    public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)
     {
         if ('tl_calendar_events_member' === $strTable) {
             /** @var Date $dateAdapter */

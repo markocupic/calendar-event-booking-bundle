@@ -34,10 +34,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CalendarEventBookingUnsubscribeFromEventModuleController.
  *
- * @FrontendModule(category="events", type="calendar_event_booking_unsubscribe_from_event_module")
+ * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
+    public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
+
     /**
      * @var NotificationHelper
      */

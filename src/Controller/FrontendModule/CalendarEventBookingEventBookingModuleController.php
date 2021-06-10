@@ -33,12 +33,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * @FrontendModule(type=EventRegistrationCancelController::TYPE, category="events")
+ */
+/**
  * Class CalendarEventBookingEventBookingModuleController.
  *
- * @FrontendModule(category="events", type="calendar_event_booking_event_booking_module")
+ * @FrontendModule(type=CalendarEventBookingEventBookingModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
 {
+    public const TYPE = 'calendar_event_booking_event_booking_module';
+
     /**
      * @var CalendarEventsModel
      */
