@@ -99,7 +99,7 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, 
 ### Template Variablen
 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
-
+Tag | type | Erklärung 
 ------------ |------------- |--
 `$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
 `$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
