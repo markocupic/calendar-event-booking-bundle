@@ -22,9 +22,6 @@ use Contao\Form;
 use Contao\Input;
 use Contao\Widget;
 
-/**
- * Class LoadFormField.
- */
 class LoadFormField
 {
     /**
@@ -32,9 +29,6 @@ class LoadFormField
      */
     private $framework;
 
-    /**
-     * LoadFormField constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

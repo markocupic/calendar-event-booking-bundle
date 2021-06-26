@@ -30,9 +30,6 @@ use NotificationCenter\Model\Notification;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- * Class ProcessFormData.
- */
 class ProcessFormData
 {
     /**
@@ -50,9 +47,6 @@ class ProcessFormData
      */
     private $logger;
 
-    /**
-     * ProcessFormData constructor.
-     */
     public function __construct(ContaoFramework $framework, NotificationHelper $notificationHelper, LoggerInterface $logger = null)
     {
         $this->framework = $framework;
@@ -113,9 +107,11 @@ class ProcessFormData
                     $strText = 'New booking for event with title "'.$objEvent->title.'"';
                     $this->logger->log(
                         $level,
-                        $strText, [
+                        $strText,
+                        [
                             'contao' => new ContaoContext(__METHOD__, $level),
-                        ]);
+                        ]
+                    );
                 }
 
                 if ($objForm->jumpTo) {

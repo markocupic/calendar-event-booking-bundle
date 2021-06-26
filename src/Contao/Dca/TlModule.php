@@ -17,9 +17,6 @@ namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 
-/**
- * Class TlModule.
- */
 class TlModule
 {
     /**

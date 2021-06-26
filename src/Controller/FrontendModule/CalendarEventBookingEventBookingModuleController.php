@@ -15,29 +15,22 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
-use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
-use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @FrontendModule(type=EventRegistrationCancelController::TYPE, category="events")
- */
-/**
- * Class CalendarEventBookingEventBookingModuleController.
- *
  * @FrontendModule(type=CalendarEventBookingEventBookingModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
@@ -45,48 +38,39 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     public const TYPE = 'calendar_event_booking_event_booking_module';
 
     /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    /**
      * @var CalendarEventsModel
      */
-    protected $objEvent;
+    private $objEvent;
 
     /**
      * @var PageModel
      */
-    protected $objPage;
+    private $objPage;
+
+    public function __construct(EventRegistration $eventRegistration)
+    {
+        $this->eventRegistration = $eventRegistration;
+    }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            /** @var Config $configAdapter */
-            $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
-
-            /** @var Input $inputAdapter */
-            $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
-
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
-            $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
-
             $this->objPage = $page;
 
-            $showEmpty = false;
+            $showEmpty = true;
 
-            // Set the item from the auto_item parameter
-            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
-                $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
-            }
-
-            // Return an empty string if "events" is not set
-            if (!$inputAdapter->get('events')) {
-                $showEmpty = true;
-            } elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events')))) {
-                $showEmpty = true;
-            }
+            $this->objEvent = $this->eventRegistration->getEventFromUrl();
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if (!$this->objEvent->addBookingForm || !$this->objEvent->published) {
-                    $showEmpty = true;
+                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
+                    $showEmpty = false;
                 }
             }
 
@@ -119,9 +103,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
 
-        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdaper */
-        $calendarEventsMemberModelAdaper = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
-
         // Load language file
         $systemAdapter->loadLanguageFile('tl_calendar_events_member');
 
@@ -134,27 +115,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
-        // Count bookings if event is not fully booked
-        $countBookings = $calendarEventsMemberModelAdaper->countBy('pid', $this->objEvent->id);
-        $template->countBookings = $countBookings;
-
-        // Add event model to template
-        $template->event = $this->objEvent;
-
-        if ($this->objEvent->bookingStartDate > 0 && $this->objEvent->bookingStartDate > time()) {
-            // User has to wait. Booking is not possible yet
-            $case = 'bookingNotYetPossible';
-        } elseif ($this->objEvent->bookingEndDate > 0 && $this->objEvent->bookingEndDate < time()) {
-            // User is to late the sign in deadline has proceeded
-            $case = 'bookingNoLongerPossible';
-        } elseif ($countBookings > 0 && $this->objEvent->maxMembers > 0 && $countBookings >= $this->objEvent->maxMembers) {
-            // Check if event is  fully booked
-            $case = 'eventFullyBooked';
-        } else {
-            $case = 'bookingPossible';
-        }
-
-        $template->case = $case;
+        $case = $this->eventRegistration->getRegistrationState($this->objEvent);
 
         switch ($case) {
             case 'bookingPossible':
@@ -172,6 +133,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             case 'eventFullyBooked':
                 break;
         }
+
+        $template->case = $case;
+        $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
+        $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
+
+        $template->event = $this->objEvent;
 
         return $template->getResponse();
     }

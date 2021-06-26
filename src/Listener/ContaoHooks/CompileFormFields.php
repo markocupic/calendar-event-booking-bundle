@@ -19,9 +19,6 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 use Contao\Input;
 
-/**
- * Class CompileFormFields.
- */
 class CompileFormFields
 {
     /**
@@ -29,9 +26,6 @@ class CompileFormFields
      */
     private $framework;
 
-    /**
-     * CompileFormFields constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

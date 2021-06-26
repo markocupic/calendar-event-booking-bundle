@@ -16,9 +16,6 @@ namespace Markocupic\CalendarEventBookingBundle\Model;
 
 use Contao\Model;
 
-/**
- * Class CalendarEventsMemberModel.
- */
 class CalendarEventsMemberModel extends Model
 {
     /**

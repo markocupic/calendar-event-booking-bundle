@@ -20,9 +20,6 @@ use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
 
-/**
- * Class AutogenerateBookingForm.
- */
 class AutogenerateBookingForm extends AbstractMigration
 {
     /**
@@ -40,9 +37,6 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     private $framework;
 
-    /**
-     * AutogenerateBookingForm constructor.
-     */
     public function __construct(string $projectDir, Connection $connection, ContaoFramework $framework)
     {
         $this->projectDir = $projectDir;

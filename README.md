@@ -95,3 +95,16 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 #### Punkt 10: E-Mail Buchungsbestätigung im Event aktivieren
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
 ![Benachrichtigung im Event aktivieren](src/Resources/docs/benachrichtigung-aktivieren.jpg?raw=true)
+
+### Template Variablen
+
+Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
+
+------------ |------------- |--
+`$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
+`$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
+`$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.
+`$this->bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
+`$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
+`$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
+`$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (timestamp) an.

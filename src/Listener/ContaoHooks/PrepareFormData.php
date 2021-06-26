@@ -17,9 +17,6 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 
-/**
- * Class PrepareFormData.
- */
 class PrepareFormData
 {
     /**
@@ -27,9 +24,6 @@ class PrepareFormData
      */
     private $framework;
 
-    /**
-     * PrepareFormData constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

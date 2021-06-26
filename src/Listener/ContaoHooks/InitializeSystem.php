@@ -35,9 +35,6 @@ class InitializeSystem
      */
     private $scopeMatcher;
 
-    /**
-     * InitializeSystem constructor.
-     */
     public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher)
     {
         $this->requestStack = $requestStack;

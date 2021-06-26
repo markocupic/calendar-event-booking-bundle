@@ -32,20 +32,16 @@ class ExportTable
      */
     private $framework;
 
-    /**
-     * ExportTable constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
 
     /**
-     * @param string $field
      * @param $value
-     * @param string $strTable
      * @param $dataRecord
      * @param $dca
+     *
      * @return string
      */
     public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)

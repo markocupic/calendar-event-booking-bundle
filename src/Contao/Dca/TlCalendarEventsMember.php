@@ -17,9 +17,6 @@ namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 use Contao\Input;
 use Markocupic\ExportTable\ExportTable;
 
-/**
- * Class TlCalendarEventsMember.
- */
 class TlCalendarEventsMember
 {
     /**

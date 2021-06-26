@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enable
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableDeregistration';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 
@@ -111,6 +111,16 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 	'inputType' => 'text',
 	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
 	'sql'       => "int(10) unsigned NULL",
+);
+
+// minMembers
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = array(
+    'exclude'   => true,
+    'search'    => true,
+    'default'   => 0,
+    'inputType' => 'text',
+    'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
 // maxMembers

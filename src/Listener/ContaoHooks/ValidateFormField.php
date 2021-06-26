@@ -21,9 +21,6 @@ use Contao\Input;
 use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
- * Class ValidateFormField.
- */
 class ValidateFormField
 {
     /**
@@ -31,9 +28,6 @@ class ValidateFormField
      */
     private $framework;
 
-    /**
-     * ValidateFormField constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

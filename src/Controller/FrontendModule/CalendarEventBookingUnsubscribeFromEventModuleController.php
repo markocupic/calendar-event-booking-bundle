@@ -32,8 +32,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class CalendarEventBookingUnsubscribeFromEventModuleController.
- *
  * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
@@ -75,9 +73,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected $blnHasUnsubscribed = false;
 
-    /**
-     * CalendarEventBookingUnsubscribeFromEventModuleController constructor.
-     */
     public function __construct(NotificationHelper $notificationHelper)
     {
         $this->notificationHelper = $notificationHelper;

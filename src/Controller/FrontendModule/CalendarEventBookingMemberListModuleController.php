@@ -15,27 +15,24 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
-use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class CalendarEventBookingMemberListModuleController.
- *
  * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events", )
  */
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
@@ -44,42 +41,40 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * @var Connection
      */
-    protected $connection;
+    private $connection;
+
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
 
     /**
      * @var CalendarEventsModel
      */
-    protected $objEvent;
+    private $objEvent;
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, EventRegistration $eventRegistration)
     {
         $this->connection = $connection;
+        $this->eventRegistration = $eventRegistration;
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            // Set adapters
-            $configAdapter = $this->get('contao.framework')->getAdapter(Config::class);
-            $inputAdapter = $this->get('contao.framework')->getAdapter(Input::class);
-            $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
+            $showEmpty = true;
 
-            $showEmpty = false;
+            $this->objEvent = $this->eventRegistration->getEventFromUrl();
 
-            // Set the item from the auto_item parameter
-            if (!isset($_GET['events']) && $configAdapter->get('useAutoItem') && isset($_GET['auto_item'])) {
-                $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
-            }
-
-            // Return an empty string if "events" is not set
-            if (!$inputAdapter->get('events')) {
-                $showEmpty = true;
-            } elseif (null === ($this->objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events')))) {
-                $showEmpty = true;
+            // Get the current event && return empty string if addBookingForm isn't set or event is not published
+            if (null !== $this->objEvent) {
+                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
+                    $showEmpty = false;
+                }
             }
 
             if ($showEmpty) {

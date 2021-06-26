@@ -21,9 +21,6 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
 
-/**
- * Class Migrations.
- */
 class Migrations extends AbstractMigration
 {
     /**
@@ -31,9 +28,6 @@ class Migrations extends AbstractMigration
      */
     private $connection;
 
-    /**
-     * Migration constructor.
-     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;

@@ -25,9 +25,6 @@ use Contao\System;
 use Contao\UserModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
- * Class NotificationHelper.
- */
 class NotificationHelper
 {
     /**
@@ -35,9 +32,6 @@ class NotificationHelper
      */
     private $framework;
 
-    /**
-     * NotificationHelper constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

@@ -22,9 +22,6 @@ use Contao\Date;
 use Contao\Message;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
- * Class TlCalendarEvents.
- */
 class TlCalendarEvents
 {
     /**
@@ -53,8 +50,6 @@ class TlCalendarEvents
 
     /**
      * @param array $arrRow
-     *
-     * @return string
      */
     public function listEvents($arrRow): string
     {

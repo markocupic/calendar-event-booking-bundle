@@ -24,6 +24,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'] = ['Activate the boo
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'] = ['Maximum escorts per participant', 'Please set the maximum number of escorts per participant.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'] = ['Booking startdate', 'Set the booking starttime, please.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'] = ['Booking enddate', 'Set the booking endtime, please.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['minMembers'] = ['Minimum participants', 'Please set the minimum participant number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxMembers'] = ['Maximum participants', 'Please set the maximum participant number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['enableNotificationCenter'] = ['Select message for booking confirmation', 'Select a message (Notification Center) for the booking confirmation.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventBookingNotificationCenterIds'] = ['Choose one or more notifications', 'Choose one or more notifications.'];
