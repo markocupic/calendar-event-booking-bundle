@@ -97,20 +97,20 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAd
 	'sql'       => "char(1) NOT NULL default ''",
 );
 
-// bookingEndDate
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
-	'exclude'   => true,
-	'inputType' => 'text',
-	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-	'sql'       => "int(10) unsigned NULL",
-);
-
 // bookingStartDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 	'exclude'   => true,
 	'inputType' => 'text',
-	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'clr w50 wizard'),
 	'sql'       => "int(10) unsigned NULL",
+);
+
+// bookingEndDate
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+    'sql'       => "int(10) unsigned NULL",
 );
 
 // minMembers
