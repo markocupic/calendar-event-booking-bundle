@@ -51,7 +51,7 @@ und nutzen Sie dabei die **Simple Tokens**.
 
 Mit ##event_unsubscribeHref## kann ein tokengesicherter Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden.
 Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt und in einer Seite eingebunden worden sein.
-![Notification Center](src/Resources/docs/notification_center.jpg?raw=true)
+![Notification Center](docs/notification_center.jpg?raw=true)
 
 ##### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (male oder female), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
@@ -64,7 +64,7 @@ Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##,
 #### Punkt 5: Event-Buchungsformular erstellen
 Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
 **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
-![Formulargenerator-Einstellung](src/Resources/docs/form_generator.jpg?raw=true)
+![Formulargenerator-Einstellung](docs/form_generator.jpg?raw=true)
 Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 
@@ -94,12 +94,12 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 
 #### Punkt 10: E-Mail Buchungsbestätigung im Event aktivieren
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
-![Benachrichtigung im Event aktivieren](src/Resources/docs/benachrichtigung-aktivieren.jpg?raw=true)
+![Benachrichtigung im Event aktivieren](docs/benachrichtigung-aktivieren.jpg?raw=true)
 
 ### Template Variablen
 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
-Tag | type | Erklärung 
+Tag | type | Erklärung
 ------------ |------------- |--
 `$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
 `$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
