@@ -14,21 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 
 class PrepareFormData
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
-    }
-
     public function prepareFormData(array &$arrSubmitted, array $arrLabels, array $arrFields, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {

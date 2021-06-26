@@ -11,7 +11,9 @@
   ],
   "require": {
     "contao/core-bundle": "^4.9",
+    "contao/calendar-bundle": "^4.9",
     "markocupic/export_table": "^3.1",
+    "ramsey/uuid": "^3.0 || ^4.0",
     "codefog/contao-haste": "^4.23",
     "terminal42/notification_center": "^1.5"
   },

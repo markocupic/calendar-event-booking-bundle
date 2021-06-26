@@ -20,7 +20,6 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
 /**
  * @Hook("parseTemplate")
@@ -43,6 +42,9 @@ class ParseTemplate
         $this->addTemplateData = $addTemplateData;
     }
 
+    /**
+     * Add registration data to calendar templates.
+     */
     public function __invoke(Template $template): void
     {
         /** @var CalendarEventsModel $calendarEventsModelAdapter */

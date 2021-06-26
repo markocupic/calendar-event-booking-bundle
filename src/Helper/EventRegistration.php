@@ -32,7 +32,7 @@ class EventRegistration
         $this->framework = $framework;
     }
 
-    public function getEventFromUrl(): ?CalendarEventsModel
+    public function getCurrentEventFromUrl(): ?CalendarEventsModel
     {
         $configAdapter = $this->framework->getAdapter(Config::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
@@ -55,7 +55,6 @@ class EventRegistration
 
     public function getRegistrationState(CalendarEventsModel $objEvent): string
     {
-
         if (null === $objEvent) {
             $state = 'bookingNotYetPossible';
         } elseif (!$objEvent->addBookingForm) {

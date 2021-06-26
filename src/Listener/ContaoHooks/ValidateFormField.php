@@ -19,7 +19,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 use Contao\Input;
 use Contao\Widget;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ValidateFormField
 {
@@ -28,9 +30,21 @@ class ValidateFormField
      */
     private $framework;
 
-    public function __construct(ContaoFramework $framework)
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator)
     {
         $this->framework = $framework;
+        $this->eventRegistration = $eventRegistration;
+        $this->translator = $translator;
     }
 
     /**
@@ -54,7 +68,7 @@ class ValidateFormField
             // Check if user with submitted email has already booked
             if ('email' === $objWidget->name) {
                 if (!empty($objWidget->value)) {
-                    $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
+                    $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
                     if (null !== $objEvent) {
                         if (!$objEvent->enableMultiBookingWithSameAddress) {
@@ -65,7 +79,7 @@ class ValidateFormField
                             $objMember = $calendarEventsMemberModelAdapter->findAll($arrOptions);
 
                             if (null !== $objMember) {
-                                $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'], strtolower($inputAdapter->post('email')));
+                                $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
                                 $objWidget->addError($errorMsg);
                             }
                         }
@@ -76,14 +90,14 @@ class ValidateFormField
             // Check maxEscortsPerMember
             if ('escorts' === $objWidget->name) {
                 if ($objWidget->value < 0) {
-                    $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['enterPosIntVal']);
+                    $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
                     $objWidget->addError($errorMsg);
                 } elseif ($objWidget->value > 0) {
                     $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
 
                     if (null !== $objEvent) {
                         if ($objWidget->value > $objEvent->maxEscortsPerMember) {
-                            $errorMsg = sprintf($GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'], $objEvent->maxEscortsPerMember);
+                            $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
                             $objWidget->addError($errorMsg);
                         }
                     }

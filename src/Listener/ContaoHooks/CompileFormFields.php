@@ -14,21 +14,19 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
-use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
-use Contao\Input;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
 class CompileFormFields
 {
     /**
-     * @var ContaoFramework
+     * @var EventRegistration
      */
-    private $framework;
+    private $eventRegistration;
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(EventRegistration $eventRegistration)
     {
-        $this->framework = $framework;
+        $this->eventRegistration = $eventRegistration;
     }
 
     /**
@@ -36,15 +34,9 @@ class CompileFormFields
      */
     public function compileFormFields(array $arrFields, $formId, Form $objForm): array
     {
-        /** @var CalendarEventsModel $calendarEventsModelAdapter */
-        $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-
-        /** @var Input $inputAdapter */
-        $inputAdapter = $this->framework->getAdapter(Input::class);
-
         // Do not list input fields under certain conditions
         if ($objForm->isCalendarEventBookingForm) {
-            $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
+            $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
             if (null !== $objEvent) {
                 $maxEscorts = $objEvent->maxEscortsPerMember;

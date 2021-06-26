@@ -68,7 +68,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->objEvent = $this->eventRegistration->getEventFromUrl();
+            $this->objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {

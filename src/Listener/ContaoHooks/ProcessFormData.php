@@ -29,6 +29,7 @@ use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Ramsey\Uuid\Uuid;
 
 class ProcessFormData
 {
@@ -85,7 +86,7 @@ class ProcessFormData
                 $objCalendarEventsMemberModel->save();
 
                 // Add a booking token
-                $objCalendarEventsMemberModel->bookingToken = md5(sha1(microtime())).md5(sha1($objCalendarEventsMemberModel->email)).$objCalendarEventsMemberModel->id;
+                $objCalendarEventsMemberModel->bookingToken = Uuid::uuid4()->toString();
                 $objCalendarEventsMemberModel->save();
 
                 // Trigger calEvtBookingPostBooking hook

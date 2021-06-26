@@ -107,20 +107,20 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 
 // bookingEndDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
-    'exclude'   => true,
-    'inputType' => 'text',
-    'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-    'sql'       => "int(10) unsigned NULL",
+	'exclude'   => true,
+	'inputType' => 'text',
+	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'sql'       => "int(10) unsigned NULL",
 );
 
 // minMembers
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = array(
-    'exclude'   => true,
-    'search'    => true,
-    'default'   => 0,
-    'inputType' => 'text',
-    'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+	'exclude'   => true,
+	'search'    => true,
+	'default'   => 0,
+	'inputType' => 'text',
+	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
+	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
 // maxMembers
