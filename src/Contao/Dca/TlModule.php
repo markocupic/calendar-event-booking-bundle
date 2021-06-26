@@ -32,14 +32,6 @@ class TlModule
         $this->framework = $framework;
     }
 
-    public function getCalendarEventBookingMemberListTemplate(): array
-    {
-        /** @var Controller $controllerAdapter */
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
-
-        return $controllerAdapter->getTemplateGroup('mod_calendar_event_booking_member_list');
-    }
-
     public function getCalendarEventBookingMemberListPartialTemplate(): array
     {
         /** @var Controller $controllerAdapter */

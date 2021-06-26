@@ -14,5 +14,5 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 
 // Frontend modules
 $GLOBALS['TL_LANG']['FMD'][CalendarEventBookingEventBookingModuleController::TYPE] = ['Event-Buchungsformular'];
-$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingMemberListModuleController::TYPE] = ['Event-Stornierungsformular'];
-$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingUnsubscribeFromEventModuleController::TYPE] = ['Listen Sie in Verbindung mit einem Event Reader die angemeldeten Teilnehmer eines Events auf.'];
+$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingMemberListModuleController::TYPE] = ['Event-Teilnehmer-Liste'];
+$GLOBALS['TL_LANG']['FMD'][CalendarEventBookingUnsubscribeFromEventModuleController::TYPE] = ['Event-Stornierungsformular'];
