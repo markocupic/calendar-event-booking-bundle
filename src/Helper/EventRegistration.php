@@ -18,6 +18,7 @@ use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
+use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class EventRegistration
@@ -27,9 +28,10 @@ class EventRegistration
      */
     protected $framework;
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(ContaoFramework $framework, Connection $connection)
     {
         $this->framework = $framework;
+        $this->connection = $connection;
     }
 
     public function getCurrentEventFromUrl(): ?CalendarEventsModel
@@ -92,8 +94,21 @@ class EventRegistration
     public function getBookingCount(CalendarEventsModel $objEvent): int
     {
         $calendarEventsMemberModelAdaper = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $memberCount = (int) $calendarEventsMemberModelAdaper->countBy('pid', $objEvent->id);
 
-        return (int) $calendarEventsMemberModelAdaper->countBy('pid', $objEvent->id);
+        if ($objEvent->includeEscortsWhenCalculatingRegCount) {
+            $query = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid=?';
+            $sum = $this->connection
+                ->executeQuery($query, [(int) $objEvent->id])
+                ->fetchColumn()
+            ;
+
+            if (false !== $sum) {
+                $memberCount += $sum;
+            }
+        }
+
+        return $memberCount;
     }
 
     public function getBookingMax(CalendarEventsModel $objEvent): int

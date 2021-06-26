@@ -53,9 +53,6 @@ class ValidateFormField
     public function validateFormField(Widget $objWidget, $formId, array $arrForm, Form $objForm): Widget
     {
         if ($objForm->isCalendarEventBookingForm) {
-            /** @var CalendarEventsModel $calendarEventsModel */
-            $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-
             /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
             $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
 
@@ -89,16 +86,23 @@ class ValidateFormField
 
             // Check maxEscortsPerMember
             if ('escorts' === $objWidget->name) {
-                if ($objWidget->value < 0) {
-                    $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
-                    $objWidget->addError($errorMsg);
-                } elseif ($objWidget->value > 0) {
-                    $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
+                $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
-                    if (null !== $objEvent) {
-                        if ($objWidget->value > $objEvent->maxEscortsPerMember) {
-                            $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
-                            $objWidget->addError($errorMsg);
+                if (null !== $objEvent) {
+                    if ((int) $objWidget->value < 0) {
+                        $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
+                        $objWidget->addError($errorMsg);
+                    } elseif ($this->hasMaxMemberLimitExceeded($objEvent, $objWidget)) {
+                        $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
+                        $objWidget->addError($errorMsg);
+                    } elseif ((int) $objWidget->value > 0) {
+                        $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+
+                        if (null !== $objEvent) {
+                            if ((int) $objWidget->value > (int) $objEvent->maxEscortsPerMember) {
+                                $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
+                                $objWidget->addError($errorMsg);
+                            }
                         }
                     }
                 }
@@ -106,5 +110,26 @@ class ValidateFormField
         }
 
         return $objWidget;
+    }
+
+    private function hasMaxMemberLimitExceeded(CalendarEventsModel $objEvent, Widget $objWidget): bool
+    {
+        if ('escorts' === $objWidget->name) {
+            if ((int) $objEvent->maxMembers > 0 && (int) $objWidget->value > 0 && $objEvent->includeEscortsWhenCalculatingRegCount) {
+                $expSum = array_sum(
+                    [
+                        $this->eventRegistration->getBookingCount($objEvent),
+                        1,
+                        (int) $objWidget->value,
+                    ]
+                );
+
+                if ($expSum > (int) $objEvent->maxMembers) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

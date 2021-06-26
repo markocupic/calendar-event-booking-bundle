@@ -18,6 +18,7 @@ $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Bitte geben Sie eine positive na
 $GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Die Anmeldung für diesen Anlass ist erst ab %s möglich.';
 $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.';
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
+$GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.';
 
 // Unsubscribe from event
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.';

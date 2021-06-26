@@ -22,6 +22,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['postal'] = ['PLZ', 'Geben Sie bitte e
 $GLOBALS['TL_LANG']['tl_calendar_events']['city'] = ['Ort', 'Geben Sie bitte einen Ort ein.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'] = ['Buchungsformular aktivieren', 'Aktivieren Sie das Buchungsformular und legen Sie die Optionen fest.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'] = ['Maximale Anzahl Begleitpersonen pro Teilnehmer', 'Legen Sie die maximal mögliche Anzahl an Begleitpersonen pro Teilnehmer fest.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['includeEscortsWhenCalculatingRegCount'] = ['Begleitpersonen zur totalen Teilnehmerzahl hinzufügen', 'Legen Sie fest, ob die Begleitpersonen zur totalen Teilnehmerzahl dazugerechnet werden sollen.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'] = ['Buchung möglich ab:', 'Legen Sie fest, ab welchem Zeitpunkt eine Buchung möglich ist.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'] = ['Buchung möglich bis:', 'Legen Sie fest, bis zu welchem Zeitpunkt eine Buchung möglich ist.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['minMembers'] = ['Minimale Teilnehmerzahl', 'Geben Sie bitte die minimale Teilnehmerzahl ein.'];

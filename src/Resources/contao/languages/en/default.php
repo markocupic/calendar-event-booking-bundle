@@ -18,6 +18,7 @@ $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Please enter a positive number.'
 $GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Booking is only possible from %s .';
 $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Sorry, but unfortunately this event is already fully booked.';
+$GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'The total number of %s participants is exceeded. Please check the number of accompanying persons.';
 
 // Unsubscribe from event
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'You\'ve been successfully unsubscribed from event "%s".';

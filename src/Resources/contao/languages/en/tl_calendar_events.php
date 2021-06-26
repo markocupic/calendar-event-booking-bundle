@@ -22,6 +22,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['postal'] = ['PLZ', 'Please add the po
 $GLOBALS['TL_LANG']['tl_calendar_events']['city'] = ['Ort', 'Please add the city.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['addBookingForm'] = ['Activate the booking form', 'Activate the booking form and set the options.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'] = ['Maximum escorts per participant', 'Please set the maximum number of escorts per participant.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['includeEscortsWhenCalculatingRegCount'] = ['Add accompanying persons to the total number of participants', 'Determine whether the accompanying persons should be added to the total number of participants.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'] = ['Booking startdate', 'Set the booking starttime, please.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingEndDate'] = ['Booking enddate', 'Set the booking endtime, please.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['minMembers'] = ['Minimum participants', 'Please set the minimum participant number.'];

@@ -19,11 +19,11 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Form;
-use Contao\Input;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Haste\Util\Url;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
@@ -39,6 +39,11 @@ class ProcessFormData
     private $framework;
 
     /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    /**
      * @var NotificationHelper
      */
     private $notificationHelper;
@@ -48,9 +53,10 @@ class ProcessFormData
      */
     private $logger;
 
-    public function __construct(ContaoFramework $framework, NotificationHelper $notificationHelper, LoggerInterface $logger = null)
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, NotificationHelper $notificationHelper, LoggerInterface $logger = null)
     {
         $this->framework = $framework;
+        $this->eventRegistration = $eventRegistration;
         $this->notificationHelper = $notificationHelper;
         $this->logger = $logger;
     }
@@ -58,8 +64,7 @@ class ProcessFormData
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
-            $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
+           
 
             /** @var PageModel $pageModelAdapter */
             $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
@@ -73,7 +78,7 @@ class ProcessFormData
             /** @var System $systemAdapter */
             $systemAdapter = $this->framework->getAdapter(System::class);
 
-            $objEvent = $calendarEventsModelAdapter->findByIdOrAlias(Input::get('events'));
+            $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
             if (null !== $objEvent) {
                 $objCalendarEventsMemberModel = new CalendarEventsMemberModel();

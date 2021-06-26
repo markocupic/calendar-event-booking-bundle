@@ -36,11 +36,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enable
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableDeregistration';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,includeEscortsWhenCalculatingRegCount,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 
-// Onsubmit callback
+// Callbacks
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = array(TlCalendarEvents::class, 'adjustBookingDate');
 
 // Operations
@@ -50,7 +50,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] 
 	'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
 );
 
-// Street
+// Fields
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -61,7 +61,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = array(
 	'sql'       => "varchar(255) NOT NULL default ''",
 );
 
-// postal
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -70,7 +69,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = array(
 	'sql'       => "varchar(32) NOT NULL default ''",
 );
 
-// city
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -81,7 +79,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = array(
 	'sql'       => "varchar(255) NOT NULL default ''",
 );
 
-// Enable booking options
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
 	'exclude'   => true,
 	'inputType' => 'checkbox',
@@ -89,7 +86,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = array(
 	'sql'       => "char(1) NOT NULL default ''",
 );
 
-// Enable multiple bookings with the same email address
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAddress'] = array(
 	'exclude'   => true,
 	'inputType' => 'checkbox',
@@ -97,7 +93,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAd
 	'sql'       => "char(1) NOT NULL default ''",
 );
 
-// bookingStartDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 	'exclude'   => true,
 	'inputType' => 'text',
@@ -105,7 +100,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 	'sql'       => "int(10) unsigned NULL",
 );
 
-// bookingEndDate
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
 	'exclude'   => true,
 	'inputType' => 'text',
@@ -113,7 +107,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
 	'sql'       => "int(10) unsigned NULL",
 );
 
-// minMembers
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -123,7 +116,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = array(
 	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
-// maxMembers
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -132,8 +124,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = array(
 	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit', 'mandatory' => true),
 	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
-
-// guestsPerMember
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = array(
 	'exclude'   => true,
 	'search'    => true,
@@ -143,7 +133,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = arra
 	'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 );
 
-// enableNotificationCenter
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['includeEscortsWhenCalculatingRegCount'] = array(
+    'exclude'   => true,
+    'search'    => true,
+    'default'   => 0,
+    'inputType' => 'checkbox',
+    'eval'      => array('tl_class' => 'clr m12'),
+    'sql'       => "char(1) NOT NULL default ''",
+);
+
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = array(
 	'exclude'   => true,
 	'inputType' => 'checkbox',
@@ -151,7 +149,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] =
 	'sql'       => "char(1) NOT NULL default ''",
 );
 
-// eventBookingNotificationCenterIds
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = array(
 	'exclude'    => true,
 	'search'     => true,
@@ -162,7 +159,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCent
 	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
 );
 
-// eventBookingNotificationSender
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = array(
 	'exclude'    => true,
 	'search'     => true,
@@ -173,7 +169,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
 	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
 );
 
-// enableDeregistration
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = array(
 	'exclude'   => true,
 	'inputType' => 'checkbox',
@@ -181,7 +176,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = arr
 	'sql'       => "char(1) NOT NULL default ''",
 );
 
-// unsubscribeLimit
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
 	'exclude'   => true,
 	'filter'    => true,
@@ -191,7 +185,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = array(
 	'sql'       => "int(10) unsigned NOT NULL default '0'",
 );
 
-// unsubscribeLimitTstamp
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = array(
 	'exclude'       => true,
 	'inputType'     => 'text',

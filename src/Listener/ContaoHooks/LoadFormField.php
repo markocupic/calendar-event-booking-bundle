@@ -21,6 +21,7 @@ use Contao\Date;
 use Contao\Form;
 use Contao\Input;
 use Contao\Widget;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
 class LoadFormField
 {
@@ -29,9 +30,15 @@ class LoadFormField
      */
     private $framework;
 
-    public function __construct(ContaoFramework $framework)
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
+        $this->eventRegistration = $eventRegistration;
     }
 
     public function loadFormField(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
@@ -40,14 +47,11 @@ class LoadFormField
             /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
 
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
-            $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
             /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
 
-            /** @var Input $inputAdapter */
-            $inputAdapter = $this->framework->getAdapter(Input::class);
+           
 
             // Convert tstamps to formated date
             if ('dateOfBirth' === $objWidget->name && '' !== $objWidget->value) {
@@ -58,7 +62,7 @@ class LoadFormField
             }
 
             if ('escorts' === $objWidget->name) {
-                $objEvent = $calendarEventsModelAdapter->findByIdOrAlias($inputAdapter->get('events'));
+                $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
 
                 if (null !== $objEvent) {
                     $maxEscorts = $objEvent->maxEscortsPerMember;
