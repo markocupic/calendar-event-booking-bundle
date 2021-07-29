@@ -69,7 +69,7 @@ Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
 
 
-Werden weitere Felder gewünscht, so müssen diese im Projekt-ROOT unter contao/dca/tl_calendar_events_member.php definiert werden.
+Werden weitere Felder gewünscht, so müssen diese im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` definiert werden.
 Danach Cache neu aufbauen und via Installtool die Felder in der Datenbank anlegen.
 
 [Dokumentation](https://docs.contao.org/dev/getting-started/starting-development/#contao-configuration-translations)
