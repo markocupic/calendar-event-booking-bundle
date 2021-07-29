@@ -72,8 +72,11 @@ firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,not
 Werden weitere Felder gewünscht, so müssen diese in app/Resources/contao/dca/tl_calendar_events_member.php definiert werden und danach via das Installtool in der Datenbank angelegt werden.
 ```php
 <?php
-//app/Resources/contao/dca/tl_calendar_events_member.php
+// Put this in TL_ROOT/contao/dca/tl_calendar_events_member.php
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
+// Add additional field to tl_calendar_events_member
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
     'exclude'   => true,
     'search'    => true,
@@ -83,10 +86,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
     'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
-// Add custom fields to palette and make fields visible in the Contao backend.
+
+// Add a new legend and custom field to the default.
 Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('food_legend', 'personal_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField(['foodHabilities'], 'food_legend', Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addLegend('food_legend', 'personal_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField(['foodHabilities'], 'food_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar_events_member');
 
 ```
