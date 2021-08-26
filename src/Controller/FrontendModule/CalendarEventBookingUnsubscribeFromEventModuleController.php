@@ -212,7 +212,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
-                $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
+                $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {

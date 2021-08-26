@@ -64,7 +64,7 @@ class ProcessFormData
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {
-           
+
 
             /** @var PageModel $pageModelAdapter */
             $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
@@ -152,7 +152,7 @@ class ProcessFormData
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
-                $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember, $objEvent);
+                $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {

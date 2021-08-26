@@ -40,8 +40,12 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): array
+    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember): array
     {
+        if(null === ($objEvent = $objEventMember->getRelated('pid'))){
+            throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
+        }
+
         /** @var Config $configAdapter */
         $configAdapter = $this->framework->getAdapter(Config::class);
 
@@ -154,6 +158,9 @@ class NotificationHelper
                 }
             }
         }
+
+        // Get admin email
+        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         // Trigger calEvtBookingPostBooking hook
         if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
