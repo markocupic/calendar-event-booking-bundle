@@ -34,18 +34,22 @@ class TlCalendarEvents
             return;
         }
 
-        $arrSet['bookingStartDate'] = $dc->activeRecord->bookingStartDate;
-        $arrSet['bookingEndDate'] = $dc->activeRecord->bookingEndDate;
+        $arrSet['bookingStartDate'] = $dc->activeRecord->bookingStartDate ?: null;
+        $arrSet['bookingEndDate'] = $dc->activeRecord->bookingEndDate ?: null;
 
         // Set end date
-        if (!empty($dc->activeRecord->bookingEndDate)) {
+        if (!empty((int) $dc->activeRecord->bookingEndDate)) {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate) {
                 $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                Message::addInfo('Das Enddatum für den Buchungszeitraum wurde angepasst.', TL_MODE);
+                Message::addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'], TL_MODE);
             }
         }
 
-        Database::getInstance()->prepare('UPDATE tl_calendar_events %s WHERE id=?')->set($arrSet)->execute($dc->id);
+        Database::getInstance()
+            ->prepare('UPDATE tl_calendar_events %s WHERE id=?')
+            ->set($arrSet)
+            ->execute($dc->id)
+        ;
     }
 
     /**

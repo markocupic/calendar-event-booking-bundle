@@ -20,6 +20,9 @@ $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für d
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.';
 
+// Form validation backend
+$GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'Das Event-Enddatum für den Buchungszeitraum wurde angepasst.';
+
 // Unsubscribe from event
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.';
 $GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Liebe(r) <span class="event-member-name">%s %s</span>{{br}}Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?';

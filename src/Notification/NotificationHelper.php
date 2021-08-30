@@ -160,7 +160,7 @@ class NotificationHelper
         }
 
         // Get admin email
-        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
+        $arrTokens['admin_email'] = $configAdapter->get('adminEmail');
 
         // Trigger calEvtBookingPostBooking hook
         if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
