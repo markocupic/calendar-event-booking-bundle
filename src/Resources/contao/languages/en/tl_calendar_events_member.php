@@ -18,8 +18,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'] = ['Delete', 'Delete 
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['show'] = ['Show', 'Show member with ID %s.'];
 
 // References
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['male'] = 'Mr';
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['female'] = 'Mrs.';
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_male'] = 'Mr';
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_female'] = 'Mrs.';
 
 // Legends
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['booking_date_legend'] = 'Booking date';

@@ -133,7 +133,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 			'sorting'   => true,
 			'search'    => true,
 			'inputType' => 'select',
-			'options'   => array('male', 'female'),
+			'options'   => array('male', 'female', 'other'),
 			'reference' => &$GLOBALS['TL_LANG']['MSC'],
 			'eval'      => array('includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "varchar(32) NOT NULL default ''",

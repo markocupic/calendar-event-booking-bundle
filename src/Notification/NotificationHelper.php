@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Notification;
 
-use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -23,6 +22,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
+use Haste\Util\Format;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class NotificationHelper
@@ -42,7 +42,7 @@ class NotificationHelper
      */
     public function getNotificationTokens(CalendarEventsMemberModel $objEventMember): array
     {
-        if(null === ($objEvent = $objEventMember->getRelated('pid'))){
+        if (null === ($objEvent = $objEventMember->getRelated('pid'))) {
             throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
         }
 
@@ -66,8 +66,6 @@ class NotificationHelper
 
         $arrTokens = [];
 
-        $delimiter = ', ';
-
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
 
@@ -75,17 +73,28 @@ class NotificationHelper
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens = $this->flatten(html_entity_decode((string) $v), 'member_'.$k, $arrTokens, $delimiter);
+            $arrTokens['member_'.$k] = Format::dcaValue('tl_calendar_events_member', $k, $v);
         }
 
-        $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member'][$objEventMember->gender]);
+        $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender]);
         $arrTokens['member_dateOfBirthFormated'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEventMember->dateOfBirth);
 
         // Prepare tokens for event and use "event_" as prefix
         $row = $objEvent->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens = $this->flatten(html_entity_decode((string) $v), 'event_'.$k, $arrTokens, $delimiter);
+            $arrTokens['event_'.$k] = Format::dcaValue('tl_calendar_events', $k, $v);
+        }
+        // event startDate & endDate
+        $arrTokens['event_startDate'] = '';
+        $arrTokens['event_endDate'] = '';
+
+        if (is_numeric($objEvent->startDate)) {
+            $arrTokens['event_startDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->startDate);
+        }
+
+        if (is_numeric($objEvent->endDate)) {
+            $arrTokens['event_endDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->endDate);
         }
 
         // event startTime & endTime
@@ -114,18 +123,6 @@ class NotificationHelper
         // event title
         $arrTokens['event_title'] = html_entity_decode((string) $objEvent->title);
 
-        // event startDate & endDate
-        $arrTokens['event_startDate'] = '';
-        $arrTokens['event_endDate'] = '';
-
-        if (is_numeric($objEvent->startDate)) {
-            $arrTokens['event_startDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->startDate);
-        }
-
-        if (is_numeric($objEvent->endDate)) {
-            $arrTokens['event_endDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->endDate);
-        }
-
         // Prepare tokens for organizer_* (sender)
         $objOrganizer = $userModelAdapter->findByPk($objEvent->eventBookingNotificationSender);
 
@@ -139,7 +136,7 @@ class NotificationHelper
                 if ('password' === $k) {
                     continue;
                 }
-                $arrTokens = $this->flatten(html_entity_decode((string) $v), 'organizer_'.$k, $arrTokens, $delimiter);
+                $arrTokens['organizer_'.$k] = Format::dcaValue('tl_user', $k, $v);
             }
         }
 
@@ -160,7 +157,7 @@ class NotificationHelper
         }
 
         // Get admin email
-        $arrTokens['admin_email'] = $configAdapter->get('adminEmail');
+        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         // Trigger calEvtBookingPostBooking hook
         if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
@@ -172,47 +169,5 @@ class NotificationHelper
         return $arrTokens;
     }
 
-    /**
-     * Flatten input data, Simple Tokens can't handle arrays.
-     *
-     * @param mixed  $varValue
-     * @param string $strKey
-     * @param string $strPattern
-     */
-    private function flatten($varValue, $strKey, array $arrData, $strPattern = ', ')
-    {
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-
-        if (!empty($varValue) && !\is_array($varValue) && \is_string($varValue) && \strlen($varValue) > 3 && \is_array($stringUtilAdapter->deserialize($varValue))) {
-            $varValue = $stringUtilAdapter->deserialize($varValue);
-        }
-
-        if (\is_object($varValue)) {
-            return $arrData;
-        }
-
-        if (!\is_array($varValue)) {
-            $arrData[$strKey] = $varValue;
-
-            return $arrData;
-        }
-
-        $blnAssoc = array_is_assoc($varValue);
-
-        $arrValues = [];
-
-        foreach ($varValue as $k => $v) {
-            if ($blnAssoc || \is_array($v)) {
-                $arrData = $this->flatten($v, $strKey.'_'.$k, $arrData);
-            } else {
-                $arrData[$strKey.'_'.$v] = '1';
-                $arrValues[] = $v;
-            }
-        }
-
-        $arrData[$strKey] = implode($strPattern, $arrValues);
-
-        return $arrData;
-    }
+   
 }
