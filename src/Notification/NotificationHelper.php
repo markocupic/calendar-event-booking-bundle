@@ -19,7 +19,6 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Haste\Util\Format;
@@ -168,6 +167,4 @@ class NotificationHelper
 
         return $arrTokens;
     }
-
-   
 }

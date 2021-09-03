@@ -14,12 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
-use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\Form;
-use Contao\Input;
 use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
@@ -47,11 +45,8 @@ class LoadFormField
             /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
 
-
             /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
-
-           
 
             // Convert tstamps to formated date
             if ('dateOfBirth' === $objWidget->name && '' !== $objWidget->value) {

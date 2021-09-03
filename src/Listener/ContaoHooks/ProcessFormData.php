@@ -64,8 +64,6 @@ class ProcessFormData
     public function processFormData(array $arrSubmitted, array $arrForm, ?array $arrFiles, array $arrLabels, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {
-
-
             /** @var PageModel $pageModelAdapter */
             $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
 

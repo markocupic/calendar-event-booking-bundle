@@ -134,12 +134,12 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = arra
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['includeEscortsWhenCalculatingRegCount'] = array(
-    'exclude'   => true,
-    'search'    => true,
-    'default'   => 0,
-    'inputType' => 'checkbox',
-    'eval'      => array('tl_class' => 'clr m12'),
-    'sql'       => "char(1) NOT NULL default ''",
+	'exclude'   => true,
+	'search'    => true,
+	'default'   => 0,
+	'inputType' => 'checkbox',
+	'eval'      => array('tl_class' => 'clr m12'),
+	'sql'       => "char(1) NOT NULL default ''",
 );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = array(
