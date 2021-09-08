@@ -70,33 +70,6 @@ class Migrations extends AbstractMigration
             }
         }
 
-        // Alert wrong gender identifier in tl_nc_languages #4
-        if (!$schemaManager->tablesExist(['tl_nc_language'])) {
-            $columns = $schemaManager->listTableColumns('tl_nc_language');
-
-            if (isset($columns['email_html'], $columns['email_text'])) {
-                $stmt = $this->connection->query('SELECT * FROM tl_nc_language');
-
-                while (($row = $stmt->fetchAssociative()) !== false) {
-                    if (false !== strpos((string) $row['email_text'], "'male'")) {
-                        $doMigration = true;
-                    }
-
-                    if (false !== strpos((string) $row['email_html'], "'male'")) {
-                        $doMigration = true;
-                    }
-
-                    if (false !== strpos((string) $row['email_text'], "'female'")) {
-                        $doMigration = true;
-                    }
-
-                    if (false !== strpos((string) $row['email_html'], "'female'")) {
-                        $doMigration = true;
-                    }
-                }
-            }
-        }
-
         return $doMigration;
     }
 
@@ -135,32 +108,6 @@ class Migrations extends AbstractMigration
             $stmt = $this->connection->prepare('UPDATE tl_module SET type=? WHERE type=?');
             $stmt->execute([$type, 'eventbooking']);
             $arrMessage[] = 'Renamed frontend module type "eventbooking" to "'.$type.'". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
-        }
-
-        // Alert wrong gender identifier in tl_nc_languages #4
-        $updateNotification = false;
-        $stmt = $this->connection->query('SELECT * FROM tl_nc_language');
-
-        while (($row = $stmt->fetchAssociative()) !== false) {
-            if (false !== strpos((string) $row['email_text'], "'male'")) {
-                $updateNotification = true;
-            }
-
-            if (false !== strpos((string) $row['email_html'], "'male'")) {
-                $updateNotification = true;
-            }
-
-            if (false !== strpos((string) $row['email_text'], "'female'")) {
-                $updateNotification = true;
-            }
-
-            if (false !== strpos((string) $row['email_html'], "'female'")) {
-                $updateNotification = true;
-            }
-        }
-
-        if ($updateNotification) {
-            $arrMessage[] = "Please check email_text and email_html in your 'calendar-event-booking-notifications'! Stop using {if member_gender=='male'} or {if member_gender=='female'} as gender identifier. Use {if member_gender=='Weiblich'} or {if member_gender=='Männlich'} instead.";
         }
 
         return new MigrationResult(
