@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Notification;
 
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Date;
 use Contao\PageModel;
 use Contao\System;
 use Contao\UserModel;
@@ -45,12 +43,6 @@ class NotificationHelper
             throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
         }
 
-        /** @var Config $configAdapter */
-        $configAdapter = $this->framework->getAdapter(Config::class);
-
-        /** @var Date $dateAdapter */
-        $dateAdapter = $this->framework->getAdapter(Date::class);
-
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
@@ -63,10 +55,13 @@ class NotificationHelper
         /** @var System $systemAdapter */
         $systemAdapter = $this->framework->getAdapter(System::class);
 
-        $arrTokens = [];
-
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
+
+        $arrTokens = [];
+
+        // Get admin email
+        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         // Prepare tokens for event member and use "member_" as prefix
         $row = $objEventMember->row();
@@ -76,7 +71,6 @@ class NotificationHelper
         }
 
         $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender]);
-        $arrTokens['member_dateOfBirthFormated'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEventMember->dateOfBirth);
 
         // Prepare tokens for event and use "event_" as prefix
         $row = $objEvent->row();
@@ -84,59 +78,25 @@ class NotificationHelper
         foreach ($row as $k => $v) {
             $arrTokens['event_'.$k] = Format::dcaValue('tl_calendar_events', $k, $v);
         }
-        // event startDate & endDate
-        $arrTokens['event_startDate'] = '';
-        $arrTokens['event_endDate'] = '';
-
-        if (is_numeric($objEvent->startDate)) {
-            $arrTokens['event_startDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->startDate);
-        }
-
-        if (is_numeric($objEvent->endDate)) {
-            $arrTokens['event_endDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->endDate);
-        }
-
-        // event startTime & endTime
-        if ($objEvent->addTime) {
-            $arrTokens['event_startTime'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $objEvent->startTime);
-            $arrTokens['event_endTime'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $objEvent->endTime);
-        } else {
-            $arrTokens['event_startTime'] = '';
-            $arrTokens['event_endTime'] = '';
-        }
-
-        // event unsubscribeLimitDate
-        if ($objEvent->enableDeregistration && is_numeric($objEvent->unsubscribeLimitTstamp)) {
-            $arrTokens['event_unsubscribeLimitDate'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $objEvent->unsubscribeLimitTstamp);
-        } else {
-            $arrTokens['event_unsubscribeLimitDate'] = '';
-        }
-
-        // event unsubscribeLimitDatim
-        if ($objEvent->enableDeregistration && is_numeric($objEvent->unsubscribeLimitTstamp)) {
-            $arrTokens['event_unsubscribeLimitDatim'] = $dateAdapter->parse($configAdapter->get('datimFormat'), $objEvent->unsubscribeLimitTstamp);
-        } else {
-            $arrTokens['event_unsubscribeLimitDatim'] = '';
-        }
-
-        // event title
-        $arrTokens['event_title'] = html_entity_decode((string) $objEvent->title);
 
         // Prepare tokens for organizer_* (sender)
         $objOrganizer = $userModelAdapter->findByPk($objEvent->eventBookingNotificationSender);
 
         if (null !== $objOrganizer) {
-            $arrTokens['organizer_senderName'] = $objOrganizer->name;
-            $arrTokens['organizer_senderEmail'] = $objOrganizer->email;
-
             $row = $objOrganizer->row();
 
             foreach ($row as $k => $v) {
-                if ('password' === $k) {
+                if ('password' === $k || 'session' === $k) {
                     continue;
                 }
                 $arrTokens['organizer_'.$k] = Format::dcaValue('tl_user', $k, $v);
             }
+
+            // deprecated since version 4.2, to be removed in 5.0 Use organizer_name instead of organizer_senderName */
+            $arrTokens['organizer_senderName'] = $arrTokens['organizer_name'];
+
+            // deprecated since version 4.2, to be removed in 5.0 Use organizer_email instead of organizer_senderEmail */
+            $arrTokens['organizer_senderEmail'] = $arrTokens['organizer_email'];
         }
 
         // Generate unsubscribe href
@@ -154,9 +114,6 @@ class NotificationHelper
                 }
             }
         }
-
-        // Get admin email
-        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         // Trigger calEvtBookingPostBooking hook
         if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {

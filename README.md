@@ -56,9 +56,9 @@ Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt u
 ##### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
 
-Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, ##event_unsubscribeLimitDate##, ##event_unsubscribeLimitDatim##, etc. (Feldnamen aus tl_calendar_events)
+Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
 
-Organisator/Email-Absender: ##organizer_senderName##, ##organizer_senderEmail##, ##organizer_email, etc. (Feldnamen aus tl_user)
+Organisator/Email-Absender: ##organizer_name##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
 
 #### Punkt 5: Event-Buchungsformular erstellen
@@ -122,38 +122,38 @@ Tag | type | Erklärung
 ```
 Array
 (
-    [member_id] => 18
+    [admin_email] => admin@mi6.com
+    [member_id] => 26
     [member_pid] => Testevent 2
-    [member_tstamp] => 03.09.2021 15:05
-    [member_addedOn] => 03.09.2021 15:05
-    [member_notes] =>
-    [member_firstname] => Albert
-    [member_lastname] => Einstein
+    [member_tstamp] => 08.09.2021 21:26
+    [member_addedOn] => 08.09.2021 21:26
+    [member_notes] => Tomorrow never dies!
+    [member_firstname] => James
+    [member_lastname] => Bond
     [member_gender] => Männlich
-    [member_dateOfBirth] => 14. März 1879
-    [member_street] => Newton Avenue 2
+    [member_dateOfBirth] => 12. März 1976
+    [member_street] => Casino Royale
     [member_postal] => 66666
-    [member_city] => New York
-    [member_phone] => 6666666
-    [member_email] => albert.einstein@pure-genius.de
+    [member_city] => London
+    [member_phone] => 23123
+    [member_email] => 007@mi6.com
     [member_escorts] => 0
-    [member_bookingToken] => 13501d20-6e23-4b65-8ab1-bf21a319a739
+    [member_bookingToken] => d47636dd-7606-4f0b-ad8d-82461abde483
     [member_notificationSent] => nein
     [member_subscriptionAccepted] => nein
     [member_notificationSentDatim] =>
     [member_salutation] => Herr
-    [member_dateOfBirthFormated] => 1879-03-14
     [event_id] => 3
     [event_pid] => Events
-    [event_tstamp] => 03.09.2021 14:43
+    [event_tstamp] => 08.09.2021 14:04
     [event_title] => Testevent 2
     [event_alias] => testevent-2
-    [event_author] => xxxx xxxxx
+    [event_author] => Eve Moneypenny
     [event_addTime] => nein
-    [event_startTime] =>
-    [event_endTime] =>
-    [event_startDate] => 2021-09-16
-    [event_endDate] =>
+    [event_startTime] => 00:00
+    [event_endTime] => 23:59
+    [event_startDate] => 16. September 2021
+    [event_endDate] => 8. September 2021
     [event_location] =>
     [event_teaser] =>
     [event_addImage] => nein
@@ -188,13 +188,13 @@ Array
     [event_pageTitle] =>
     [event_unsubscribeLimit] => 0
     [event_enableDeregistration] => ja
-    [event_eventBookingNotificationSender] => xxxx xxxx
+    [event_eventBookingNotificationSender] => Eve Moneypenny
     [event_eventBookingNotificationCenterIds] => Event Buchungs Benachrichtigung
     [event_enableNotificationCenter] => ja
     [event_maxEscortsPerMember] => 0
     [event_maxMembers] => 11
     [event_bookingStartDate] => 7. Juni 2021
-    [event_bookingEndDate] => 4. September 2021
+    [event_bookingEndDate] => 15. September 2021
     [event_addBookingForm] => ja
     [event_city] =>
     [event_postal] =>
@@ -205,15 +205,11 @@ Array
     [event_robots] =>
     [event_minMembers] => 0
     [event_includeEscortsWhenCalculatingRegCount] => nein
-    [event_unsubscribeLimitDate] => 2021-08-12
-    [event_unsubscribeLimitDatim] => 2021-08-12 16:40
-    [organizer_senderName] => xxxx xxxx
-    [organizer_senderEmail] => xxxx@gmx.ch
     [organizer_id] => 1
     [organizer_tstamp] => 09.06.2021 16:08
-    [organizer_username] => xxx
-    [organizer_name] => xxx xxxx
-    [organizer_email] => xxx@gmx.ch
+    [organizer_username] => eve.moneypenny
+    [organizer_name] => Eve Moneypenny
+    [organizer_email] => em@mi6.com
     [organizer_language] => de
     [organizer_backendTheme] => flexible
     [organizer_fullscreen] => nein
@@ -239,10 +235,9 @@ Array
     [organizer_disable] => nein
     [organizer_start] =>
     [organizer_stop] =>
-    [organizer_session] => , 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, , 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, contao?do=nc_notifications&table=tl_nc_message&id=5&act=edit&rt=7d7fef2db4bbe9049.8O13BX4N7yvUTTsgQwgcPbrWZz3CjOuHGT0Tp1Sp-XI.w4VGbx1JoUXtLFMVCWUlBOzhVGWX2bjNTnpj5BDjqjWElQFoLG-3XOIeXA&ref=QqtaEyyh, , 0, 1, 0, alias, , username, , 0,30, tstamp DESC
     [organizer_dateAdded] => 09.06.2021 16:08
-    [organizer_lastLogin] => 02.09.2021 22:50
-    [organizer_currentLogin] => 03.09.2021 14:29
+    [organizer_lastLogin] => 08.09.2021 13:47
+    [organizer_currentLogin] => 08.09.2021 21:13
     [organizer_locked] => 01.01.1970 01:00
     [organizer_faqs] =>
     [organizer_faqp] =>
@@ -266,8 +261,9 @@ Array
     [organizer_activation] =>
     [organizer_rsts_permissions] =>
     [organizer_rsts_sliders] =>
-    [event_unsubscribeHref] => https://contao.com/events-stornierungsformular.html?bookingToken=13501d20-6e23-4b65-8ab1-bf21a319a739
-    [admin_email] => admin@xxxx.com
+    [organizer_senderName] => Eve Moneypenny
+    [organizer_senderEmail] => em@mi6.com
+    [event_unsubscribeHref] => https://mi6.com/events-stornierungsformular.html?bookingToken=d47636dd-7606-4f0b-ad8d-82461abde483
 )
 
 ```
