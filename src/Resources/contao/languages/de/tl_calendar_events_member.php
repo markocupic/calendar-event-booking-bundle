@@ -29,7 +29,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['address_legend'] = 'Adresse';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['contact_legend'] = 'Kontaktangaben';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escort_legend'] = 'Begleitpersonen';
 
-// Legend
+// Fields
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['addedOn'] = ['Buchungsdatum', 'Geben Sie ein Buchungsdatum ein.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'] = ['Bemerkungen', 'Geben Sie Bemerkungen ein.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['firstname'] = ['Vorname', 'Geben Sie einen Vornamen ein.'];
