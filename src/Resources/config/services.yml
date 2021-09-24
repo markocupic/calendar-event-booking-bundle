@@ -1,11 +1,15 @@
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: true
-    bind:
-      $projectDir: '%kernel.project_dir%'
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+        bind:
+            $projectDir: '%kernel.project_dir%'
 
-  Markocupic\CalendarEventBookingBundle\:
-    resource: ../../
-    exclude: ../../{Model,DependencyInjection,Resources}
+    Markocupic\CalendarEventBookingBundle\:
+        resource: ../../
+        exclude: ../../{Model,DependencyInjection,Resources}
+
+    Markocupic\CalendarEventBookingBundle\Migration\Migrations:
+        tags:
+            - { name: contao.migration, priority: 0 }
