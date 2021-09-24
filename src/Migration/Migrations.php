@@ -40,7 +40,7 @@ class Migrations extends AbstractMigration
         $schemaManager = $this->connection->getSchemaManager();
 
         // If the database table itself does not exist we should do nothing
-        if (!$schemaManager->tablesExist(['tl_module'])) {
+        if ($schemaManager->tablesExist(['tl_module'])) {
             $columns = $schemaManager->listTableColumns('tl_module');
 
             if (isset($columns['type'])) {
@@ -69,7 +69,7 @@ class Migrations extends AbstractMigration
                 }
             }
             // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
-            if(isset($columns['calendar_event_booking_member_list_partial_template'])){
+            if (isset($columns['calendar_event_booking_member_list_partial_template'])) {
                 $doMigration = true;
             }
         }
