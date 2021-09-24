@@ -44,7 +44,7 @@ class Migrations extends AbstractMigration
             $columns = $schemaManager->listTableColumns('tl_module');
 
             if (isset($columns['type'])) {
-                // Rename frontend module type #1
+                // #1 Rename frontend module type
                 $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
                 $objDb->execute(['calendar_event_booking_member_list']);
 
@@ -52,7 +52,7 @@ class Migrations extends AbstractMigration
                     $doMigration = true;
                 }
 
-                // Rename frontend module type #2
+                // #2 Rename frontend module type
                 $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
                 $objDb->execute(['unsubscribefromevent']);
 
@@ -60,13 +60,17 @@ class Migrations extends AbstractMigration
                     $doMigration = true;
                 }
 
-                // Rename frontend module type #3
+                // #3 Rename frontend module type
                 $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
                 $objDb->execute(['eventbooking']);
 
                 if ($objDb->rowCount() > 0) {
                     $doMigration = true;
                 }
+            }
+            // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
+            if(isset($columns['calendar_event_booking_member_list_partial_template'])){
+                $doMigration = true;
             }
         }
 
@@ -77,7 +81,7 @@ class Migrations extends AbstractMigration
     {
         $arrMessage = [];
 
-        // Rename frontend module type #1
+        // #1 Rename frontend module type
         $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
         $objDb->execute(['calendar_event_booking_member_list']);
 
@@ -88,7 +92,7 @@ class Migrations extends AbstractMigration
             $arrMessage[] = 'Renamed frontend module type "calendar_event_booking_member_list" to "'.$type.'". Please rename your custom templates from "mod_calendar_event_booking_member_list.html5" to "mod_calendar_event_booking_member_list_module.html5".';
         }
 
-        // Rename frontend module type #2
+        // #2 Rename frontend module type
         $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
         $objDb->execute(['unsubscribefromevent']);
 
@@ -99,7 +103,7 @@ class Migrations extends AbstractMigration
             $arrMessage[] = 'Renamed frontend module type "unsubscribefromevent" to "'.$type.'". Please rename your custom templates from "mod_unsubscribefromevent.html5" to "mod_calendar_event_booking_unsubscribe_from_event_module.html5".';
         }
 
-        // Rename frontend module type #3
+        // #3 Rename frontend module type
         $objDb = $this->connection->prepare('SELECT * FROM tl_module WHERE type=?');
         $objDb->execute(['eventbooking']);
 
@@ -108,6 +112,18 @@ class Migrations extends AbstractMigration
             $stmt = $this->connection->prepare('UPDATE tl_module SET type=? WHERE type=?');
             $stmt->execute([$type, 'eventbooking']);
             $arrMessage[] = 'Renamed frontend module type "eventbooking" to "'.$type.'". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
+        }
+
+        $schemaManager = $this->connection->getSchemaManager();
+
+        // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
+        if (!$schemaManager->tablesExist(['tl_module'])) {
+            $columns = $schemaManager->listTableColumns('tl_module');
+
+            if (isset($columns['calendar_event_booking_member_list_partial_template'])) {
+                $this->connection->query('ALTER TABLE tl_module RENAME COLUMN calendar_event_booking_member_list_partial_template TO calendarEventBookingMemberListPartialTemplate');
+                $arrMessage[] = 'Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate';
+            }
         }
 
         return new MigrationResult(

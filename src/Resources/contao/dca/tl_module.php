@@ -17,9 +17,9 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 /**
  * Table tl_module
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingEventBookingModuleController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{notification_center_legend:hide},enableNotificationCenter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingEventBookingModuleController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{booking_admin_groups},calendarEventBookingFrontendAdminGroups;{notification_center_legend:hide},enableNotificationCenter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingUnsubscribeFromEventModuleController::TYPE] = '{title_legend},name,headline,type;{notification_center_legend:hide},unsubscribeFromEventNotificationIds;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingMemberListModuleController::TYPE] = '{title_legend},name,headline,type;{template_legend},calendar_event_booking_member_list_partial_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingMemberListModuleController::TYPE] = '{title_legend},name,headline,type;{template_legend},calendarEventBookingMemberListPartialTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // unsubscribeFromEventNotificationIds
 $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds'] = array(
@@ -33,10 +33,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds']
 );
 
 // Member list partial template
-$GLOBALS['TL_DCA']['tl_module']['fields']['calendar_event_booking_member_list_partial_template'] = array(
+$GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartialTemplate'] = array(
 	'exclude'          => true,
 	'inputType'        => 'select',
 	'options_callback' => array('Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule', 'getCalendarEventBookingMemberListPartialTemplate'),
 	'eval'             => array('tl_class' => 'w50'),
 	'sql'              => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'"
+);
+
+// Admin groups
+$GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingFrontendAdminGroups'] = array(
+	'exclude'    => true,
+	'inputType'  => 'checkbox',
+	'foreignKey' => 'tl_member_group.name',
+	'eval'       => array('multiple' => true),
+	'sql'        => "blob NULL",
+	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );

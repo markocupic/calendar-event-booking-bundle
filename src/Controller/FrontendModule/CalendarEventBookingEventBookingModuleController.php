@@ -92,7 +92,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         return $services;
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    /**
+     * @return Response|null
+     */
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         /** @var System $systemAdapter */
         $systemAdapter = $this->get('contao.framework')->getAdapter(System::class);
@@ -134,11 +137,22 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 break;
         }
 
+        // Check if logged in user has booking administrator privilegies
+        $adminGroups = $stringUtilAdapter->deserialize($model->calendarEventBookingFrontendAdminGroups, true);
+
+        if ($this->eventRegistration->userIsBookingAdmin($adminGroups)) {
+            // If so, then display the form
+            if ($model->form > 0) {
+                $template->form = $model->form;
+            }
+            $template->isBookingAdmin = $this->eventRegistration->userIsBookingAdmin($adminGroups);
+        }
+
         $template->case = $case;
         $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
         $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
-
         $template->event = $this->objEvent;
+        $template->user = $this->eventRegistration->getLoggedInFrontendUser();
 
         return $template->getResponse();
     }

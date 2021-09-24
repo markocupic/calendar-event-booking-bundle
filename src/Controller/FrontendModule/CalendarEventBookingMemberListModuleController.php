@@ -115,7 +115,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         while (false !== ($arrEventMember = $results->fetch())) {
             /** @var FrontendTemplate $partial */
-            $partial = new FrontendTemplate($model->calendar_event_booking_member_list_partial_template);
+            $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
             $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);

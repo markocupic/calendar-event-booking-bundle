@@ -2,7 +2,13 @@
 
 <?php $this->block('content'); ?>
 
-<?php if ('bookingPossible' === $this->case): ?>
+<?php if ('bookingPossible' === $this->case || $this->isBookingAdmin): ?>
+<div class="alert alert-info" role="alert">
+  <?= $this->trans('MSC.loggedInAsBookingAdmin', []) ?>
+</div>
+<?php endif; ?>
+
+<?php if ('bookingPossible' === $this->case || $this->isBookingAdmin): ?>
 <?php if ($this->form > 0): ?>
 {{insert_form::<?= $this->form ?>}}
 <?php endif; ?>

@@ -17,9 +17,12 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\FrontendUser;
 use Contao\Input;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\Security\Core\Security;
 
 class EventRegistration
 {
@@ -28,10 +31,50 @@ class EventRegistration
      */
     protected $framework;
 
-    public function __construct(ContaoFramework $framework, Connection $connection)
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, Security $security)
     {
         $this->framework = $framework;
         $this->connection = $connection;
+        $this->security = $security;
+    }
+
+    public function hasLoggedInFrontendUser(): bool
+    {
+        $user = $this->security->getUser();
+
+        return $user instanceof FrontendUser ? true : false;
+    }
+
+    public function getLoggedInFrontendUser(): ?FrontendUser
+    {
+        $user = $this->security->getUser();
+
+        if ($user instanceof FrontendUser) {
+            return $user;
+        }
+
+        return null;
+    }
+
+    public function userIsBookingAdmin(array $allowedGroups): bool
+    {
+        if(!empty($allowedGroups) && null !== ($user = $this->getLoggedInFrontendUser()))
+        {
+            $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+            $groupsUserBelongsTo =  $stringUtilAdapter->deserialize($user->groups,true);
+            return array_intersect($allowedGroups,$groupsUserBelongsTo)?true:false;
+
+        }
     }
 
     public function getCurrentEventFromUrl(): ?CalendarEventsModel
@@ -74,9 +117,11 @@ class EventRegistration
         return $state;
     }
 
+
+
     public function canRegister(CalendarEventsModel $objEvent): bool
     {
-        return 'bookingPossible' === $this->getRegistrationState($objEvent) ? true : false;
+        return 'bookingPossible' === $this->getRegistrationState($objEvent) || $this->isBookingAdmin() ? true : false;
     }
 
     public function isFullyBooked(CalendarEventsModel $objEvent): bool
