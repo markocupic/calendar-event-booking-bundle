@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\Form;
@@ -48,11 +49,25 @@ class LoadFormField
             /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
 
-            // Convert tstamps to formated date
-            if ('dateOfBirth' === $objWidget->name && '' !== $objWidget->value) {
-                if (is_numeric($objWidget->value)) {
-                    $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'), $objWidget->value);
-                    $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'));
+            /** @var $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+
+            // Load DCA
+            $controllerAdapter->loadDataContainer('tl_calendar_events_member');
+            $dca = $GLOBALS['TL_DCA']['tl_calendar_events_member'];
+
+            // Convert timestamps to formatted date strings
+            if (isset($dca['fields'][$objWidget->name]['eval']['rgxp'])) {
+                if (!empty($objWidget->value)) {
+                    if (is_numeric($objWidget->value)) {
+                        if ('date' === $dca['fields'][$objWidget->name]['eval']['rgxp']) {
+                            $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'), $objWidget->value);
+                        }
+
+                        if ('datim' === $dca['fields'][$objWidget->name]['eval']['rgxp']) {
+                            $objWidget->value = $dateAdapter->parse($configAdapter->get('datimFormat'), $objWidget->value);
+                        }
+                    }
                 }
             }
 

@@ -68,13 +68,16 @@ class EventRegistration
 
     public function userIsBookingAdmin(array $allowedGroups): bool
     {
-        if(!empty($allowedGroups) && null !== ($user = $this->getLoggedInFrontendUser()))
-        {
+        if (!empty($allowedGroups) && null !== ($user = $this->getLoggedInFrontendUser())) {
             $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-            $groupsUserBelongsTo =  $stringUtilAdapter->deserialize($user->groups,true);
-            return array_intersect($allowedGroups,$groupsUserBelongsTo)?true:false;
+            $groupsUserBelongsTo = $stringUtilAdapter->deserialize($user->groups, true);
 
+            if(\count(array_intersect($allowedGroups, $groupsUserBelongsTo)) > 0)
+            {
+                return true;
+            }
         }
+        return false;
     }
 
     public function getCurrentEventFromUrl(): ?CalendarEventsModel
@@ -116,8 +119,6 @@ class EventRegistration
 
         return $state;
     }
-
-
 
     public function canRegister(CalendarEventsModel $objEvent): bool
     {

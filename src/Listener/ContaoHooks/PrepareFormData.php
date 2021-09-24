@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
+use Contao\Controller;
 use Contao\Form;
 
 class PrepareFormData
@@ -21,11 +22,17 @@ class PrepareFormData
     public function prepareFormData(array &$arrSubmitted, array $arrLabels, array $arrFields, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {
-            if (!empty($arrSubmitted['dateOfBirth'])) {
-                $tstamp = strtotime($arrSubmitted['dateOfBirth']);
+            Controller::loadDataContainer('tl_calendar_events_member');
+            $dca = $GLOBALS['TL_DCA']['tl_calendar_events_member'];
 
-                if (false !== $tstamp) {
-                    $arrSubmitted['dateOfBirth'] = $tstamp;
+            foreach ($arrSubmitted as $k => $v) {
+                // Convert date strings to timestamps
+                if (isset($dca['fields'][$k]['eval']['rgxp']) && 'date' === $dca['fields'][$k]['eval']['rgxp'] || 'datim' === $dca['fields'][$k]['eval']['rgxp']) {
+                    if (!empty($v)) {
+                        if (false !== ($tstamp = strtotime($arrSubmitted[$k]))) {
+                            $arrSubmitted[$k] = $tstamp;
+                        }
+                    }
                 }
             }
         }
