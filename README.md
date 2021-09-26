@@ -109,6 +109,8 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
 Tag | type | Erklärung
 ------------ |------------- |--
+`$this->user` | null|Contao\FrontendUser | Angemeldeter Frontend User
+`$this->isBookingAdmin` | bool | Zeigt an, ob der angemeldete Benutzer über Buchungs-Administratoren Rechte verfügt.
 `$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
 `$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
 `$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.
@@ -116,6 +118,7 @@ Tag | type | Erklärung
 `$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
 `$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
 `$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+
 
 
 ### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers

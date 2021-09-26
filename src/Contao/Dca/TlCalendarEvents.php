@@ -24,7 +24,6 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class TlCalendarEvents
 {
-
     /**
      * Adjust bookingStartDate and bookingStartDate.
      */
