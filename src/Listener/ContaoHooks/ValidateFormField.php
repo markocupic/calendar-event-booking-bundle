@@ -96,13 +96,9 @@ class ValidateFormField
                         $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
                         $objWidget->addError($errorMsg);
                     } elseif ((int) $objWidget->value > 0) {
-                        $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
-
-                        if (null !== $objEvent) {
-                            if ((int) $objWidget->value > (int) $objEvent->maxEscortsPerMember) {
-                                $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
-                                $objWidget->addError($errorMsg);
-                            }
+                        if ((int) $objWidget->value > (int) $objEvent->maxEscortsPerMember) {
+                            $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
+                            $objWidget->addError($errorMsg);
                         }
                     }
                 }

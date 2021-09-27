@@ -15,23 +15,40 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Date;
 use Contao\Form;
 
 class PrepareFormData
 {
+    private $framework;
+
+    public function __construct(ContaoFramework $framework)
+    {
+        $this->framework = $framework;
+    }
+
     public function prepareFormData(array &$arrSubmitted, array $arrLabels, array $arrFields, Form $objForm): void
     {
         if ($objForm->isCalendarEventBookingForm) {
-            Controller::loadDataContainer('tl_calendar_events_member');
-            $dca = $GLOBALS['TL_DCA']['tl_calendar_events_member'];
+            /** @var Controller $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-            foreach ($arrSubmitted as $k => $v) {
-                // Convert date strings to timestamps
-                if (isset($dca['fields'][$k]['eval']['rgxp']) && 'date' === $dca['fields'][$k]['eval']['rgxp'] || 'datim' === $dca['fields'][$k]['eval']['rgxp']) {
-                    if (!empty($v)) {
-                        if (false !== ($tstamp = strtotime($arrSubmitted[$k]))) {
-                            $arrSubmitted[$k] = $tstamp;
-                        }
+            /** @var Date $dateAdapter */
+            $dateAdapter = $this->framework->getAdapter(Date::class);
+
+            $controllerAdapter->loadDataContainer('tl_calendar_events_member');
+
+            foreach ($arrSubmitted as $fieldname => $varValue) {
+                $rgxp = $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$fieldname]['eval']['rgxp'] ?? null;
+
+                // Convert date formats into timestamps
+                if (null !== $varValue && '' !== $varValue && \in_array($rgxp, ['date', 'time', 'datim'], true)) {
+                    try {
+                        $objDate = new Date($varValue, $dateAdapter->getFormatFromRgxp($rgxp));
+                        $arrSubmitted[$fieldname] = $objDate->tstamp;
+                    } catch (\OutOfBoundsException $e) {
+                        throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
                     }
                 }
             }

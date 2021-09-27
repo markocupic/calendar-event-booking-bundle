@@ -19,7 +19,6 @@ $GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Booking is only possible 
 $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Sorry, but unfortunately this event is already fully booked.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'The total number of %s participants is exceeded. Please check the number of accompanying persons.';
-$GLOBALS['TL_LANG']['MSC']['loggedInAsBookingAdmin'] = 'You are logged in as the booking administrator. Bookings are possible at any time.';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'The end date for the booking period has been adjusted.';

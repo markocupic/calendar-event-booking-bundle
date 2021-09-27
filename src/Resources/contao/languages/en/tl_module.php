@@ -11,11 +11,7 @@
 // Legends
 $GLOBALS['TL_LANG']['tl_module']['form_legend'] = 'Booking form settings';
 $GLOBALS['TL_LANG']['tl_module']['notification_center_legend'] = "Notification settings";
-$GLOBALS['TL_LANG']['tl_module']['booking_admin_groups'] = "Booking administration";
 
 // Fields
 $GLOBALS['TL_LANG']['tl_module']['unsubscribeFromEventNotificationIds'] = ['Event unsubscribe notifications', 'Please choose one or more notifications.'];
 $GLOBALS['TL_LANG']['tl_module']['calendarEventBookingMemberListPartialTemplate'] = ['Event member list partial template', 'Here you can select the event meber list partial template.'];
-$GLOBALS['TL_LANG']['tl_module']['calendarEventBookingFrontendAdminGroups'] = ['Booking admin groups', 'Select one or more member groups which will receive booking administrator rights.'];
-
-

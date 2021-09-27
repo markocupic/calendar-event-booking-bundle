@@ -20,10 +20,9 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 // Add child table tl_calendar_events_member to tl_calendar_events
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_member';
 
-if (TL_MODE === 'BE')
-{
-	// Add Backend CSS
-	$GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
+if (TL_MODE === 'BE') {
+    // Add Backend CSS
+    $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
 }
 
 // Register custom models
@@ -46,30 +45,26 @@ $GLOBALS['CALENDAR_EVENT_BOOKING_BUNDLE']['HOOKS']['processFormData'] = array(Pr
  * Notification center
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = array(
-	// Type
-	'booking-notification'           => array(
-		// Field in tl_nc_language
-		'email_sender_name'    => array('organizer_name'),
-		'email_sender_address' => array('organizer_email', 'admin_email'),
-		'recipients'           => array('organizer_email', 'member_email', 'admin_email'),
-		'email_recipient_cc'   => array('organizer_email', 'member_email', 'admin_email'),
-		'email_recipient_bcc'  => array('organizer_email', 'member_email', 'admin_email'),
-		'email_replyTo'        => array('organizer_email', 'member_email', 'admin_email'),
-		'email_subject'        => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-		'email_text'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-		'email_html'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-	),
-	// Type
-	'event-unsubscribe-notification' => array(
-		// Field in tl_nc_language
-		'email_sender_name'    => array('organizer_name'),
-		'email_sender_address' => array('organizer_email', 'admin_email'),
-		'recipients'           => array('organizer_email', 'member_email', 'admin_email'),
-		'email_recipient_cc'   => array('organizer_email', 'member_email', 'admin_email'),
-		'email_recipient_bcc'  => array('organizer_email', 'member_email', 'admin_email'),
-		'email_replyTo'        => array('organizer_email', 'member_email', 'admin_email'),
-		'email_subject'        => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-		'email_text'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-		'email_html'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
-	),
+    'booking-notification'           => array(
+        'email_sender_name'    => array('organizer_name'),
+        'email_sender_address' => array('organizer_email', 'admin_email'),
+        'recipients'           => array('organizer_email', 'member_email', 'admin_email'),
+        'email_recipient_cc'   => array('organizer_email', 'member_email', 'admin_email'),
+        'email_recipient_bcc'  => array('organizer_email', 'member_email', 'admin_email'),
+        'email_replyTo'        => array('organizer_email', 'member_email', 'admin_email'),
+        'email_subject'        => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+        'email_text'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+        'email_html'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+    ),
+    'event-unsubscribe-notification' => array(
+        'email_sender_name'    => array('organizer_name'),
+        'email_sender_address' => array('organizer_email', 'admin_email'),
+        'recipients'           => array('organizer_email', 'member_email', 'admin_email'),
+        'email_recipient_cc'   => array('organizer_email', 'member_email', 'admin_email'),
+        'email_recipient_bcc'  => array('organizer_email', 'member_email', 'admin_email'),
+        'email_replyTo'        => array('organizer_email', 'member_email', 'admin_email'),
+        'email_subject'        => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+        'email_text'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+        'email_html'           => array('event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'),
+    ),
 );

@@ -66,20 +66,6 @@ class EventRegistration
         return null;
     }
 
-    public function userIsBookingAdmin(array $allowedGroups): bool
-    {
-        if (!empty($allowedGroups) && null !== ($user = $this->getLoggedInFrontendUser())) {
-            $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-            $groupsUserBelongsTo = $stringUtilAdapter->deserialize($user->groups, true);
-
-            if(\count(array_intersect($allowedGroups, $groupsUserBelongsTo)) > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function getCurrentEventFromUrl(): ?CalendarEventsModel
     {
         $configAdapter = $this->framework->getAdapter(Config::class);
@@ -107,9 +93,9 @@ class EventRegistration
             $state = 'bookingNotYetPossible';
         } elseif (!$objEvent->addBookingForm) {
             $state = 'bookingFormDisabled';
-        } elseif ($objEvent->bookingStartDate > 0 && $objEvent->bookingStartDate > time()) {
+        } elseif ($objEvent->bookingStartDate > time()) {
             $state = 'bookingNotYetPossible';
-        } elseif ($objEvent->bookingEndDate > 0 && $objEvent->bookingEndDate < time()) {
+        } elseif (is_numeric($objEvent->bookingEndDate) && $objEvent->bookingEndDate < time()) {
             $state = 'bookingNoLongerPossible';
         } elseif ($this->isFullyBooked($objEvent)) {
             $state = 'eventFullyBooked';

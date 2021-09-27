@@ -110,7 +110,6 @@ Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einset
 Tag | type | Erklärung
 ------------ |------------- |--
 `$this->user` | null|Contao\FrontendUser | Angemeldeter Frontend User
-`$this->isBookingAdmin` | bool | Zeigt an, ob der angemeldete Benutzer über Buchungs-Administratoren Rechte verfügt.
 `$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
 `$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
 `$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.

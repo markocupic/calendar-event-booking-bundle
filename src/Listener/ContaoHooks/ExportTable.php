@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
-use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
@@ -41,8 +41,6 @@ class ExportTable
      * @param $value
      * @param $dataRecord
      * @param $dca
-     *
-     * @return string
      */
     public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)
     {
@@ -53,13 +51,14 @@ class ExportTable
             /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
-            /** @var Config $configAdapter */
-            $configAdapter = $this->framework->getAdapter(Config::class);
+            /** @var Controller $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-            if ('addedOn' === $field || 'dateOfBirth' === $field) {
-                if ((int) $value) {
-                    $value = $dateAdapter->parse($configAdapter->get('dateFormat'), $value);
-                }
+            $controllerAdapter->loadDataContainer($strTable);
+            $rgxp = $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$field]['eval']['rgxp'] ?? null;
+
+            if (null !== $value && '' !== $value && \in_array($rgxp, ['date', 'time', 'datim'], true)) {
+                $value = $dateAdapter->parse($dateAdapter->getFormatFromRgxp($rgxp), $value);
             }
 
             if ('pid' === $field) {

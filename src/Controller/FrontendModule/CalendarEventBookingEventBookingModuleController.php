@@ -137,24 +137,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 break;
         }
 
-        // Check if logged in user has booking administrator privilegies
-        $adminGroups = $stringUtilAdapter->deserialize($model->calendarEventBookingFrontendAdminGroups, true);
-
-        $template->isBookingAdmin = false;
-
-        if ($this->eventRegistration->userIsBookingAdmin($adminGroups)) {
-            // If so, then display the form
-            if ($model->form > 0) {
-                $template->form = $model->form;
-            }
-            $template->isBookingAdmin = true;
-        }
-
         $template->case = $case;
         $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
         $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
         $template->event = $this->objEvent;
         $template->user = $this->eventRegistration->getLoggedInFrontendUser();
+        $template->model = $model;
 
         return $template->getResponse();
     }

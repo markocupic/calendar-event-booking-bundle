@@ -2,12 +2,6 @@
 
 <?php $this->block('content'); ?>
 
-<?php if ($this->isBookingAdmin): ?>
-<div class="alert alert-info" role="alert">
-  <?= $this->trans('MSC.loggedInAsBookingAdmin', []) ?>
-</div>
-<?php endif; ?>
-
 <?php if ('bookingNotYetPossible' === $this->case): ?>
 <div class="alert alert-info" role="alert">
   <?= $this->trans('MSC.bookingNotYetPossible', [\Contao\Date::parse('d.m.Y', $this->event->bookingStartDate)]) ?>
@@ -28,7 +22,7 @@
 </div>
 <?php endif; ?>
 
-<?php if ('bookingPossible' === $this->case || $this->isBookingAdmin): ?>
+<?php if ('bookingPossible' === $this->case): ?>
 <?php if ($this->form > 0): ?>
 {{insert_form::<?= $this->form ?>}}
 <?php endif; ?>

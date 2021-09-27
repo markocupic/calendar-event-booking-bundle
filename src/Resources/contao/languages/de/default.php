@@ -19,7 +19,6 @@ $GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Die Anmeldung für diesen
 $GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.';
 $GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.';
-$GLOBALS['TL_LANG']['MSC']['loggedInAsBookingAdmin'] = 'Sie sind als Buchungsadministrator angemeldet. Buchungen sind jederzeit möglich.';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'Das Event-Enddatum für den Buchungszeitraum wurde angepasst.';

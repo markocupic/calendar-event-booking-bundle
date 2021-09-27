@@ -26,10 +26,10 @@ class Plugin implements BundlePluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create('Markocupic\CalendarEventBookingBundle\MarkocupicCalendarEventBookingBundle')
+            BundleConfig::create(MarkocupicCalendarEventBookingBundle::class)
                 ->setLoadAfter([
-                    'Contao\CoreBundle\ContaoCoreBundle',
-                    'Contao\CalendarBundle\ContaoCalendarBundle',
+                    Contao\CoreBundle::class,
+                    ContaoCalendarBundle::class,
                 ]),
         ];
     }

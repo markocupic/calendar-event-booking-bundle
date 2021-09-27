@@ -16,9 +16,10 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 PaletteManipulator::create()
 	->addLegend('event_unsubscribe_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
 	->addField(array('eventUnsubscribePage'), 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
-	->applyToPalette('default', 'tl_calendar');
+	->applyToPalette('default', 'tl_calendar')
+;
 
-// eventUnsubscribePage
+// Fields
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = array(
 	'exclude'    => true,
 	'inputType'  => 'pageTree',
