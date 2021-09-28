@@ -160,7 +160,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
 
         // Load language file
-        $systemAdapter->loadLanguageFile('tl_calendar_events_member');
+        $systemAdapter->loadLanguageFile(self::EVENT_SUBSCRIPTION_TABLE);
 
         if (null === $this->objEvent) {
             throw new PageNotFoundException('Page not found: '.$environmentAdapter->get('uri'));
