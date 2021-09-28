@@ -38,12 +38,13 @@ In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das E
 3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen.
 4. Benachrichtigung des Typs "Event-Buchungsbestätigung" anlegen (Notification Center)
 5. Im Contao Formulargenerator die benötigten Felder bereitstellen.
-6. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 5 erstellte Formular auswählen. Danach noch die bei Punkt 4 erstellte Benachrichtigung auswählen.
-7. Die 3 erstellten Module (Eventliste, Eventleser und Event-Buchungsformular) in der Contao Seitenstruktur einbinden (Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite).
-8. Optional das Frontend Modul "Event-Abmeldeformular" mit dazugehörender Benachrichtigung "Event-Abmeldung" erstellen und dieses in einer extra dafür erstellten Seite einbinden.
-9. Optional das Frontend Modul "Event-Mitglieder-Auflistung" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
-10. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren.
-11. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
+6. Im Formular (Formulargenerator) die Weiterleitungsseite einrichten.
+7. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 5 erstellte Formular auswählen. Danach noch die bei Punkt 4 erstellte Benachrichtigung auswählen.
+8. Die 3 erstellten Module (Eventliste, Eventleser und Event-Buchungsformular) in der Contao Seitenstruktur einbinden (Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite).
+9. Optional das Frontend Modul "Event-Abmeldeformular" mit dazugehörender Benachrichtigung "Event-Abmeldung" erstellen und dieses in einer extra dafür erstellten Seite einbinden.
+10. Optional das Frontend Modul "Event-Mitglieder-Auflistung" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
+11. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren.
+12. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
 
 #### Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
 Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator
@@ -100,7 +101,7 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 ```
 
 
-#### Punkt 10: E-Mail Buchungsbestätigung im Event aktivieren
+#### Punkt 11: E-Mail Buchungsbestätigung im Event aktivieren
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
 ![Benachrichtigung im Event aktivieren](docs/benachrichtigung-aktivieren.png)
 

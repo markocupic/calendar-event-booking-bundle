@@ -23,8 +23,8 @@
 <?php endif; ?>
 
 <?php if ('bookingPossible' === $this->case): ?>
-<?php if ($this->form > 0): ?>
-{{insert_form::<?= $this->form ?>}}
+<?php if ($this->form): ?>
+<?= $this->form ?>
 <?php endif; ?>
 <?php endif; ?>
 

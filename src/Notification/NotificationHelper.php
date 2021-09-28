@@ -14,13 +14,16 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Notification;
 
+use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Haste\Util\Format;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use NotificationCenter\Model\Notification;
 
 class NotificationHelper
 {
@@ -123,5 +126,38 @@ class NotificationHelper
         }
 
         return $arrTokens;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): void
+    {
+        global $objPage;
+
+        /** @var Notification $notificationAdapter */
+        $notificationAdapter = $this->framework->getAdapter(Notification::class);
+
+        /** @var StringUtil $stringUtilAdaper */
+        $stringUtilAdaper = $this->framework->getAdapter(StringUtil::class);
+
+        if ($objEvent->enableNotificationCenter) {
+            // Multiple notifications possible
+            $arrNotifications = $stringUtilAdaper->deserialize($objEvent->eventBookingNotificationCenterIds);
+
+            if (!empty($arrNotifications) && \is_array($arrNotifications)) {
+                // Get $arrToken from helper
+                $arrTokens = $this->getNotificationTokens($objEventMember);
+
+                // Send notification (multiple notifications possible)
+                foreach ($arrNotifications as $notificationId) {
+                    $objNotification = $notificationAdapter->findByPk($notificationId);
+
+                    if (null !== $objNotification) {
+                        $objNotification->send($arrTokens, $objPage->language);
+                    }
+                }
+            }
+        }
     }
 }
