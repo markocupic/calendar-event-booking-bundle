@@ -36,7 +36,7 @@ class CompileFormFields
     {
         // Do not list input fields under certain conditions
         if ($objForm->isCalendarEventBookingForm) {
-            $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+            $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
             if (null !== $objEvent) {
                 $maxEscorts = $objEvent->maxEscortsPerMember;

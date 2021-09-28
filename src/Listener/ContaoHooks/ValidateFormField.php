@@ -65,7 +65,7 @@ class ValidateFormField
             // Check if user with submitted email has already booked
             if ('email' === $objWidget->name) {
                 if (!empty($objWidget->value)) {
-                    $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+                    $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
                     if (null !== $objEvent) {
                         if (!$objEvent->enableMultiBookingWithSameAddress) {
@@ -86,7 +86,7 @@ class ValidateFormField
 
             // Check maxEscortsPerMember
             if ('escorts' === $objWidget->name) {
-                $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+                $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
                 if (null !== $objEvent) {
                     if ((int) $objWidget->value < 0) {

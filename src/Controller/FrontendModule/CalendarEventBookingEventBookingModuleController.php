@@ -65,7 +65,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
             $showEmpty = true;
 
-            $this->objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+            $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {

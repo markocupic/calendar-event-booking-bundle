@@ -72,7 +72,7 @@ class LoadFormField
             }
 
             if ('escorts' === $objWidget->name) {
-                $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+                $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
                 if (null !== $objEvent) {
                     $maxEscorts = $objEvent->maxEscortsPerMember;

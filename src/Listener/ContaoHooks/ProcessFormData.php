@@ -76,7 +76,7 @@ class ProcessFormData
             /** @var System $systemAdapter */
             $systemAdapter = $this->framework->getAdapter(System::class);
 
-            $objEvent = $this->eventRegistration->getCurrentEventFromUrl();
+            $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
             if (null !== $objEvent) {
                 $objCalendarEventsMemberModel = new CalendarEventsMemberModel();

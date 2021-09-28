@@ -19,7 +19,6 @@ use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
 use Contao\Input;
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\Security\Core\Security;
@@ -66,7 +65,7 @@ class EventRegistration
         return null;
     }
 
-    public function getCurrentEventFromUrl(): ?CalendarEventsModel
+    public function getEventFromCurrentUrl(): ?CalendarEventsModel
     {
         $configAdapter = $this->framework->getAdapter(Config::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
@@ -108,7 +107,7 @@ class EventRegistration
 
     public function canRegister(CalendarEventsModel $objEvent): bool
     {
-        return 'bookingPossible' === $this->getRegistrationState($objEvent) || $this->isBookingAdmin() ? true : false;
+        return 'bookingPossible' === $this->getRegistrationState($objEvent) ? true : false;
     }
 
     public function isFullyBooked(CalendarEventsModel $objEvent): bool
