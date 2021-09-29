@@ -39,24 +39,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
 
     /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
      * @var NotificationHelper
      */
     protected $notificationHelper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
 
     /**
      * @var CalendarEventsModel
@@ -88,12 +73,27 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected $blnHasUnsubscribed = false;
 
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->notificationHelper = $notificationHelper;
-       $this->translator = $translator;
+        $this->translator = $translator;
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -103,10 +103,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
 
-            /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
             $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-
-            /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             if ('true' !== $request->query->get('unsubscribedFromEvent')) {
@@ -179,12 +176,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-
-
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var CalendarEventsModel $calendarEventsModelAdapter */
-        $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
+       $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;
@@ -210,10 +204,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent, ModuleModel $model): void
     {
-        /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-
-        /** @var Notification $notificationAdapter */
         $notificationAdapter = $this->framework->getAdapter(Notification::class);
 
         if ($objEvent->enableDeregistration) {

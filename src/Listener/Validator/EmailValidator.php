@@ -50,10 +50,7 @@ class EmailValidator
 
     public function __invoke(Form $objForm, CalendarEventsModel $objEvent): bool
     {
-        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-
-        /** @var Input $inputAdapter */
         $inputAdapter = $this->framework->getAdapter(Input::class);
 
         // Check if user with submitted email has already booked

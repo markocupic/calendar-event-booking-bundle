@@ -45,13 +45,8 @@ class ExportTable
     public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)
     {
         if ('tl_calendar_events_member' === $strTable) {
-            /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
-
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-
-            /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             $controllerAdapter->loadDataContainer($strTable);

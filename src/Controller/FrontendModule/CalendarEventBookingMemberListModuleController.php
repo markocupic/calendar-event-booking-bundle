@@ -49,7 +49,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
      */
     private $scopeMatcher;
 
-        /**
+    /**
      * @var Connection
      */
     private $connection;
@@ -67,7 +67,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher,Connection $connection, EventRegistration $eventRegistration)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
@@ -99,14 +99,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-
-
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-
-        /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
         // Load language

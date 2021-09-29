@@ -46,16 +46,9 @@ class NotificationHelper
             throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
         }
 
-        /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
-
-        /** @var UserModel $userModelAdapter */
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
-
-        /** @var PageModel $pageModelAdapter */
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-
-        /** @var System $systemAdapter */
         $systemAdapter = $this->framework->getAdapter(System::class);
 
         // Load language file

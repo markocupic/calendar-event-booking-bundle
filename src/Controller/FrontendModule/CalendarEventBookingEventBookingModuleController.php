@@ -108,10 +108,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $this->objPage = $page;
+            $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
             $showEmpty = true;
-
-            $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
@@ -150,13 +149,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        /** @var System $systemAdapter */
         $systemAdapter = $this->framework->getAdapter(System::class);
-
-        /** @var Environment $environmentAdapter */
         $environmentAdapter = $this->framework->getAdapter(Environment::class);
-
-        /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
 
         // Load language file
@@ -202,19 +196,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
     private function getForm(FormModel $objFormModel): Form
     {
-        /** @var Input $inputAdapter */
         $inputAdapter = $this->framework->getAdapter(Input::class);
-
-        /** @var PageModel $pageModelAdapter */
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-
-        /** @var Url $urlAdapter */
         $urlAdapter = $this->framework->getAdapter(Url::class);
-
-        /** @var $systemAdapter */
         $systemAdapter = $this->framework->getAdapter(System::class);
-
-        /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
         $objForm = new Form(
@@ -249,7 +234,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                     }
                 }
 
-                // You must return true otherwise the field will be skipped
+                // Return true otherwise the field will be skipped
                 return true;
             }
         );

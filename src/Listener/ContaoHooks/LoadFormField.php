@@ -43,13 +43,8 @@ class LoadFormField
     public function loadFormField(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
     {
         if ($objForm->isCalendarEventBookingForm) {
-            /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
-
-            /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
-
-            /** @var $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             // Load DCA

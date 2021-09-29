@@ -47,7 +47,6 @@ class ParseTemplate
      */
     public function __invoke(Template $template): void
     {
-        /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if (empty($template->calendar) || 0 !== strpos($template->getName(), 'event')) {
