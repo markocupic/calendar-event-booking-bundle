@@ -10,11 +10,6 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\CompileFormFields;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\LoadFormField;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ProcessFormData;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateFormField;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 // Add child table tl_calendar_events_member to tl_calendar_events

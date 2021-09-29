@@ -12,25 +12,19 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\Validator;
+namespace Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest;
 
-use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Validate email input.
- *
- * @Hook(EmailValidator::HOOK)
- */
-class EmailValidator
+final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
 {
-    public const HOOK = 'calEvtBookingValidateSubscriptionRequest';
+    public const PRIORITY = 2000;
 
     /**
      * @var ContaoFramework
@@ -48,10 +42,24 @@ class EmailValidator
         $this->translator = $translator;
     }
 
-    public function __invoke(Form $objForm, CalendarEventsModel $objEvent): bool
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            PostBookingEvent::NAME => ['validateEmailAddress', self::PRIORITY],
+        ];
+    }
+
+    /**
+     * Important! Stop event propagtion if validation fails
+     * Validate email address.
+     */
+    public function validateEmailAddress(PostBookingEvent $event): void
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
+
+        $objForm = $event->getForm();
+        $objEvent = $event->getEvent();
 
         // Check if user with submitted email has already booked
         if ($objForm->hasFormField('email')) {
@@ -71,12 +79,10 @@ class EmailValidator
                         $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
                         $objWidget->addError($errorMsg);
 
-                        return false;
+                        $event->stopPropagation();
                     }
                 }
             }
         }
-
-        return true;
     }
 }

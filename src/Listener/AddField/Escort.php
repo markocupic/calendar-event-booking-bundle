@@ -54,6 +54,7 @@ class Escort
                 return false;
             }
         }
+
         return true;
     }
 }

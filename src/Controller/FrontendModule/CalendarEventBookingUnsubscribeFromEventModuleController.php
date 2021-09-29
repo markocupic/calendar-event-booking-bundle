@@ -24,8 +24,8 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -178,7 +178,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-       $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
+        $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;

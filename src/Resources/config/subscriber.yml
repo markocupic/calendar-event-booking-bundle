@@ -1,0 +1,40 @@
+services:
+    # Format form data subscriber
+    Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData\FormatFormDataSubscriber:
+        arguments:
+            - '@Markocupic\CalendarEventBookingBundle\Helper\Formatter'
+        tags:
+            - { name: kernel.event_subscriber }
+
+
+
+    # Post booking subscriber
+    Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking\NotificationSubscriber:
+        arguments:
+            - '@Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking\ContaoLogSubscriber:
+        arguments:
+            - '@Markocupic\CalendarEventBookingBundle\Logger\Logger'
+        tags:
+            - { name: kernel.event_subscriber }
+
+
+    # Validate event registration request subscriber
+    Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest\ValidateEmailAddressSubscriber:
+        arguments:
+            - '@contao.framework'
+            - '@translator'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest\ValidateEscortsSubscriber:
+        arguments:
+            - '@contao.framework'
+            - '@translator'
+            - '@Markocupic\CalendarEventBookingBundle\Helper\EventRegistration'
+        tags:
+            - { name: kernel.event_subscriber }
+

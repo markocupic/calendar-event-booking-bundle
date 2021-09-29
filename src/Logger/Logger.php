@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Logger;
 
-use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 class Logger
 {
@@ -31,14 +29,11 @@ class Logger
         $this->logger = $logger;
     }
 
-    public function log(CalendarEventsModel $objEvent): void
+    public function log(string $strText, string $strLevel): void
     {
-        // Log new insert
         if (null !== $this->logger) {
-            $level = LogLevel::INFO;
-            $strText = 'New booking for event with title "'.$objEvent->title.'"';
             $this->logger->log(
-                $level,
+                $strLevel,
                 $strText,
                 [
                     'contao' => new ContaoContext(__METHOD__, $level),
