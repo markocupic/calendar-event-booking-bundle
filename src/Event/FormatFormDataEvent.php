@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Event;
 
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\Controller\AbstractController;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\EventDispatcher\GenericEvent;
-use Symfony\Contracts\EventDispatcher\Event;
 
-class FormatFormDataEvent extends Event
+class FormatFormDataEvent extends AbstractEvent
 {
     public const NAME = 'markocupic.calendar_event_booking.format_form_data';
 
@@ -34,18 +34,5 @@ class FormatFormDataEvent extends Event
         $this->event = $event;
     }
 
-    public function getEvent(): CalendarEventsModel
-    {
-        return $this->event->getArgument('objEvent');
-    }
 
-    public function getEventMember(): CalendarEventsMemberModel
-    {
-        return $this->event->getArgument('objEventMember');
-    }
-
-    public function getForm(): Form
-    {
-        return $this->event->getArgument('objForm');
-    }
 }

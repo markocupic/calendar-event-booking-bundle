@@ -46,6 +46,11 @@ final class NotificationSubscriber implements EventSubscriberInterface
      */
     public function notify(PostBookingEvent $event): void
     {
+        if ($event->isDisabled(self::class)) {
+            return;
+        }
+
+        $event->disableSubscriber(ContaoLogSubscriber::class);
         $this->notificationHelper->notify($event->getEventMember(), $event->getEvent());
     }
 }

@@ -24,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 2000;
+    public const PRIORITY = 1000;
 
     /**
      * @var ContaoFramework
@@ -55,6 +55,10 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
      */
     public function validateEmailAddress(PostBookingEvent $event): void
     {
+        if ($event->isDisabled(self::class)) {
+            return;
+        }
+
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
 

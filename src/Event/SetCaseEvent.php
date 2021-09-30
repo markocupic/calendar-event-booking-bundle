@@ -14,14 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Event;
 
-use Contao\CalendarEventsModel;
-use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-class ValidateEventRegistrationRequestEvent extends AbstractEvent
+class SetCaseEvent extends AbstractEvent
 {
-    public const NAME = 'markocupic.calendar_event_booking.validate_event_booking_request';
+    public const NAME = 'markocupic.calendar_event_booking.set_case';
 
     /**
      * @var GenericEvent
@@ -32,6 +29,4 @@ class ValidateEventRegistrationRequestEvent extends AbstractEvent
     {
         $this->event = $event;
     }
-
-
 }

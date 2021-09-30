@@ -20,26 +20,27 @@ use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\Date;
 use Contao\Environment;
 use Contao\FormModel;
 use Contao\Input;
+use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
 use Haste\Form\Form;
+use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\Event\FormatFormDataEvent;
 use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Event\ValidateEventRegistrationRequestEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
-use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
-use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,24 +65,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private $eventRegistration;
 
     /**
-     * @var Formatter
-     */
-    private $formatter;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
-
-    /**
-     * @var NotificationHelper
-     */
-    private $notificationHelper;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
 
     /**
      * @var ScopeMatcher
@@ -89,7 +75,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private $scopeMatcher;
 
     /**
-     * @var
+     * @var EventDispatcherInterface
      */
     private $eventDispather;
 
@@ -97,6 +83,14 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      * @var CalendarEventsModel
      */
     private $objEvent;
+
+    /**
+     * Possible cases are:
+     * bookingNotYetPossible, bookingNoLongerPossible, eventFullyBooked, bookingPossible.
+     *
+     * @var string
+     */
+    private $case;
 
     /**
      * @var CalendarEventsMemberModel
@@ -113,14 +107,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     private $objPage;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, Formatter $formatter, TranslatorInterface $translator, NotificationHelper $notificationHelper, Logger $logger, ScopeMatcher $scopeMatcher, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, EventDispatcherInterface $eventDispatcher)
     {
         $this->framework = $framework;
         $this->eventRegistration = $eventRegistration;
-        $this->formatter = $formatter;
         $this->translator = $translator;
-        $this->notificationHelper = $notificationHelper;
-        $this->logger = $logger;
         $this->scopeMatcher = $scopeMatcher;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -151,13 +142,17 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     }
 
     /**
-     * @return Response|null
+     * @throws \Exception
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         $systemAdapter = $this->framework->getAdapter(System::class);
         $environmentAdapter = $this->framework->getAdapter(Environment::class);
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
+        $urlAdapter = $this->framework->getAdapter(Url::class);
+        $messageAdapter = $this->framework->getAdapter(Message::class);
+        $dateAdapter = $this->framework->getAdapter(Date::class);
 
         // Load language file
         $systemAdapter->loadLanguageFile(self::EVENT_SUBSCRIPTION_TABLE);
@@ -171,36 +166,124 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
-        $case = $this->eventRegistration->getRegistrationState($this->objEvent);
+        // Get case
+        $this->case = $this->eventRegistration->getRegistrationState($this->objEvent);
 
-        switch ($case) {
-            case 'bookingPossible':
-                if ($model->form > 0 && null !== ($objForm = FormModel::findByPk($model->form))) {
-                    $template->form = $this->processForm($objForm);
-                }
-                break;
+        // Dispatch set case event
+        $subject = 'Set case event: manipulate case.';
+        $event = new GenericEvent(
+            $subject,
+            [
+                'objEvent' => $this->objEvent,
+                'moduleInstance' => $this,
+            ]
+        );
 
-            case 'bookingNotYetPossible':
-                break;
-
-            case 'bookingNoLongerPossible':
-                break;
-
-            case 'eventFullyBooked':
-                break;
+        if ('bookingNotYetPossible' === $this->case) {
+            $messageAdapter->addInfo(
+                $this->translator->trans(
+                    'MSC.bookingNotYetPossible',
+                    [$dateAdapter->parse('d.m.Y', $this->objEvent->bookingStartDate)],
+                    'contao_default'
+                )
+            );
         }
 
-        $template->case = $case;
+        if ('bookingNoLongerPossible' === $this->case) {
+            $messageAdapter->addInfo(
+                $this->translator->trans(
+                    'MSC.bookingNoLongerPossible',
+                    [],
+                    'contao_default'
+                )
+            );
+        }
+
+        if ('eventFullyBooked' === $this->case) {
+            $messageAdapter->addInfo(
+                $this->translator->trans(
+                    'MSC.eventFullyBooked',
+                    [],
+                    'contao_default'
+                )
+            );
+        }
+
+        if ('bookingPossible' === $this->case) {
+            if ($model->form && null !== ($objFormGeneratorModel = FormModel::findByPk($model->form))) {
+                $this->getForm($objFormGeneratorModel);
+
+                if ($this->objForm->validate()) {
+                    if ($this->validateEventRegistrationRequest($this->objForm)) {
+                        $arrData = [
+                            'pid' => $this->objEvent->id,
+                            'tstamp' => time(),
+                            'addedOn' => time(),
+                            'bookingToken' => Uuid::uuid4()->toString(),
+                        ];
+                        $this->objEventMember->mergeRow($arrData);
+                        $this->objEventMember->save();
+
+                        // Dispatch format form data event
+                        $subject = 'Format form data event: listen to this event to format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
+                        $event = new GenericEvent(
+                            $subject,
+                            [
+                                'objEvent' => $this->objEvent,
+                                'objEventMember' => $this->objEventMember,
+                                'objForm' => $this->objForm,
+                                'moduleInstance' => $this,
+                            ]
+                        );
+                        $this->eventDispatcher->dispatch(new FormatFormDataEvent($event), FormatFormDataEvent::NAME);
+                        // Dispatch post booking event
+                        $subject = 'Post booking event: listen to this event to send notifications, to log things, etc.';
+                        $event = new GenericEvent(
+                            $subject,
+                            [
+                                'objEvent' => $this->objEvent,
+                                'objEventMember' => $this->objEventMember,
+                                'objForm' => $this->objForm,
+                                'objFormGeneratorModel' => $objFormGeneratorModel,
+                                'moduleInstance' => $this,
+                            ]
+                        );
+                        $this->eventDispatcher->dispatch(new PostBookingEvent($event), PostBookingEvent::NAME);
+
+                        // Redirect to the jumpTo page
+                        if (null !== $objFormGeneratorModel && $objFormGeneratorModel->jumpTo) {
+                            /** @var PageModel $objPageModel */
+                            $objPageModel = $pageModelAdapter->findByPk($objFormGeneratorModel->jumpTo);
+
+                            if (null !== $objPageModel) {
+                                $strRedirectUrl = $urlAdapter
+                                    ->addQueryString(
+                                        'bookingToken='.$this->objEventMember->bookingToken,
+                                        $objPageModel->getAbsoluteUrl()
+                                    )
+                                ;
+
+                                return new RedirectResponse($strRedirectUrl);
+                            }
+                        }
+                    }
+                }
+                $template->form = $this->objForm;
+            }
+        }
+
+        $template->case = $this->case;
         $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
         $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
         $template->event = $this->objEvent;
         $template->user = $this->eventRegistration->getLoggedInFrontendUser();
         $template->model = $model;
+        $template->messages = $messageAdapter->hasMessages() ? $messageAdapter->generate('FE') : null;
 
         return $template->getResponse();
     }
 
-    private function processForm(FormModel $objFormModel): Form
+    private function getForm(FormModel $objFormGeneratorModel): Form
     {
         $inputAdapter = $this->framework->getAdapter(Input::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
@@ -213,13 +296,13 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             }
         );
 
-        // Bind the event member model
+        // Bind the event member model to the form input
         $this->objEventMember = new CalendarEventsMemberModel();
         $this->objForm->bindModel($this->objEventMember);
 
         // Add fields from form generator
         $this->objForm->addFieldsFromFormGenerator(
-            $objFormModel->id,
+            $objFormGeneratorModel->id,
             function (&$strField, &$arrDca) use ($systemAdapter) {
                 $blnShow = true;
 
@@ -228,8 +311,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                     foreach ($GLOBALS['TL_HOOKS']['calEvtBookingAddField'] as $callback) {
                         $blnShow = $systemAdapter
                             ->importStatic($callback[0])
-                            ->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this)
-                        ;
+                            ->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
 
                         if (!$blnShow) {
                             return false;
@@ -241,44 +323,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 return true;
             }
         );
-
-        if ($this->objForm->validate()) {
-            if ($this->validateEventRegistrationRequest($this->objForm)) {
-                $arrData = [
-                    'pid' => $this->objEvent->id,
-                    'tstamp' => time(),
-                    'addedOn' => time(),
-                    'bookingToken' => Uuid::uuid4()->toString(),
-                ];
-                $this->objEventMember->mergeRow($arrData);
-                $this->objEventMember->save();
-
-                // Dispatch format form data event
-                $subject = 'Format form data event: listen to this event to format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                $event = new GenericEvent(
-                    $subject,
-                    [
-                        'objEvent' => $this->objEvent,
-                        'objEventMember' => $this->objEventMember,
-                        'objForm' => $this->objForm,
-                    ]
-                );
-                $this->eventDispatcher->dispatch(new FormatFormDataEvent($event), FormatFormDataEvent::NAME);
-
-                // Dispatch post booking event
-                $subject = 'Post booking event: listen to this event to send notifications, to log things or to redirect to the jumpToPage.';
-                $event = new GenericEvent(
-                    $subject,
-                    [
-                        'objEvent' => $this->objEvent,
-                        'objEventMember' => $this->objEventMember,
-                        'objForm' => $this->objForm,
-                        'objFormModel' => $objFormModel,
-                    ]
-                );
-                $this->eventDispatcher->dispatch(new PostBookingEvent($event), PostBookingEvent::NAME);
-            }
-        }
 
         return $this->objForm;
     }
@@ -293,6 +337,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 'objEvent' => $this->objEvent,
                 'objEventMember' => $this->objEventMember,
                 'objForm' => $this->objForm,
+                'moduleInstance' => $this,
             ]
         );
 

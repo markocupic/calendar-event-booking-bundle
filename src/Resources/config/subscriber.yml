@@ -1,12 +1,10 @@
 services:
     # Format form data subscriber
-    Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData\FormatFormDataSubscriber:
+    Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData\FormatRegistrationFormDataSubscriber:
         arguments:
             - '@Markocupic\CalendarEventBookingBundle\Helper\Formatter'
         tags:
             - { name: kernel.event_subscriber }
-
-
 
     # Post booking subscriber
     Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking\NotificationSubscriber:

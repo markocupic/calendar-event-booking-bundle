@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ValidateEscortsSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 1000;
+    public const PRIORITY = 1100;
 
     /**
      * @var ContaoFramework
@@ -59,6 +59,10 @@ final class ValidateEscortsSubscriber implements EventSubscriberInterface
      */
     public function validateEscorts(PostBookingEvent $event): void
     {
+        if ($event->isDisabled(self::class)) {
+            return;
+        }
+
         $objForm = $event->getForm();
         $objEvent = $event->getEvent();
 

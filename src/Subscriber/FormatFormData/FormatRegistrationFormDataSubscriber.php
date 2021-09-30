@@ -16,13 +16,12 @@ namespace Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData;
 
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Event\FormatFormDataEvent;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class FormatFormDataSubscriber implements EventSubscriberInterface
+final class FormatRegistrationFormDataSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 100;
+    public const PRIORITY = 1000;
 
     /**
      * @var Formatter
@@ -37,7 +36,7 @@ final class FormatFormDataSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PostBookingEvent::NAME => ['formatUserInput', self::PRIORITY],
+            FormatFormDataEvent::NAME => ['formatUserInput', self::PRIORITY],
         ];
     }
 
@@ -48,6 +47,10 @@ final class FormatFormDataSubscriber implements EventSubscriberInterface
      */
     public function formatUserInput(FormatFormDataEvent $event): void
     {
+        if ($event->isDisabled(self::class)) {
+            return;
+        }
+
         $objForm = $event->getForm();
         $objEventMember = $event->getEventMember();
         $strTable = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;

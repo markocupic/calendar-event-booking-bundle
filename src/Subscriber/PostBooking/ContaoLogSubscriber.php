@@ -21,7 +21,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class ContaoLogSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 900;
+    public const PRIORITY = 1100;
 
     /**
      * @var Logger
@@ -45,6 +45,10 @@ final class ContaoLogSubscriber implements EventSubscriberInterface
      */
     public function log(PostBookingEvent $event): void
     {
+        if ($event->isDisabled(self::class)) {
+            return;
+        }
+
         $objEvent = $event->getEvent();
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;
