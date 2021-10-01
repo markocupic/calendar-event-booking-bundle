@@ -63,11 +63,11 @@ class AddTemplateData
             return $this->eventRegistration->getBookingEndDate($objEvent);
         };
 
-        $template->hasLoggedInFrontendUser = function (): bool {
+        $template->hasLoggedInUser = function (): bool {
             return $this->eventRegistration->hasLoggedInFrontendUser();
         };
 
-        $template->loggedInFrontendUser = function (): ?FrontendUser {
+        $template->loggedInUser = function (): ?FrontendUser {
             return $this->eventRegistration->getLoggedInFrontendUser();
         };
     }

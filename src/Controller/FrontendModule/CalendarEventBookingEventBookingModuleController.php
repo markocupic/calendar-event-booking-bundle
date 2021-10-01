@@ -258,11 +258,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
                 if ($this->objForm->validate()) {
                     if ($this->validateEventRegistrationRequest($this->objForm)) {
-
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
                         $this->objEventMember->addedOn = time();
-                        $this->objEventMember->bookingToken  = Uuid::uuid4()->toString();
+                        $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
                         $this->objEventMember->save();
 
                         // Dispatch "format form data event"
@@ -301,7 +300,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->template->countBookings = $this->template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
         $this->template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
         $this->template->event = $this->objEvent;
-        $this->template->user = $this->eventRegistration->getLoggedInFrontendUser();
         $this->template->model = $this->model;
         $this->template->messages = $messageAdapter->hasMessages() ? $messageAdapter->generate('FE') : null;
 
