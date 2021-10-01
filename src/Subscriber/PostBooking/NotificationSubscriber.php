@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking;
 
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -50,7 +51,10 @@ final class NotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        $moduleInstance = $event->getBookingModuleInstance();
+
         $event->disableSubscriber(ContaoLogSubscriber::class);
-        $this->notificationHelper->notify($event->getEventMember(), $event->getEvent());
+        $this->notificationHelper->notify($moduleInstance->getProperty('objEventMember'), $moduleInstance->getProperty('objEvent'));
     }
 }

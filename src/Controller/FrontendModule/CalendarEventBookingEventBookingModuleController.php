@@ -219,12 +219,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Dispatch "set case event"
         $subject = 'Set case event: manipulate case.';
-        $event = new GenericEvent(
-            $subject,
-            [
-                'moduleInstance' => $this,
-            ]
-        );
+        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
         $this->eventDispatcher->dispatch(new SetCaseEvent($event), SetCaseEvent::NAME);
 
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
@@ -263,36 +258,21 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
                 if ($this->objForm->validate()) {
                     if ($this->validateEventRegistrationRequest($this->objForm)) {
-                        $arrData = [
-                            'pid' => $this->objEvent->id,
-                            'tstamp' => time(),
-                            'addedOn' => time(),
-                            'bookingToken' => Uuid::uuid4()->toString(),
-                        ];
-                        $this->objEventMember->mergeRow($arrData);
+
+                        $this->objEventMember->pid = $this->objEvent->id;
+                        $this->objEventMember->tstamp = time();
+                        $this->objEventMember->addedOn = time();
+                        $this->objEventMember->bookingToken  = Uuid::uuid4()->toString();
                         $this->objEventMember->save();
 
                         // Dispatch "format form data event"
                         $subject = 'Format form data event: listen to this event to format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                        $event = new GenericEvent(
-                            $subject,
-                            [
-                                'moduleInstance' => $this,
-                            ]
-                        );
+                        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
                         $this->eventDispatcher->dispatch(new FormatFormDataEvent($event), FormatFormDataEvent::NAME);
-
-                        // Save model
-                        $this->objEventMember->save();
 
                         // Dispatch "post booking event"
                         $subject = 'Post booking event: listen to this event to send notifications, to log things, etc.';
-                        $event = new GenericEvent(
-                            $subject,
-                            [
-                                'moduleInstance' => $this,
-                            ]
-                        );
+                        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
                         $this->eventDispatcher->dispatch(new PostBookingEvent($event), PostBookingEvent::NAME);
 
                         // Redirect to the jumpTo page
@@ -376,17 +356,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     {
         // Dispatch "validate event registration request event"
         $subject = 'Validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.';
-        $event = new GenericEvent(
-            $subject,
-            [
-                'moduleInstance' => $this,
-            ]
-        );
-
+        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
         $this->eventDispatcher->dispatch(new ValidateEventRegistrationRequestEvent($event), ValidateEventRegistrationRequestEvent::NAME);
 
-        // Stop propagation inside your custom subscriber to
-        // invalidate booking request
+        // Only stopping the event propagation in your custom subscriber will make the validation fail
         if ($event->isPropagationStopped()) {
             return false;
         }

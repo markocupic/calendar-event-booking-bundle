@@ -14,8 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest;
 
+use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
+use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -50,7 +52,7 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Important! Stop event propagtion if validation fails
+     * Important! Only stopping the event propagation will make the validation fail
      * Validate email address.
      */
     public function validateEmailAddress(PostBookingEvent $event): void
@@ -62,8 +64,14 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
 
-        $objForm = $event->getForm();
-        $objEvent = $event->getEvent();
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        $moduleInstance = $event->getBookingModuleInstance();
+
+        /** @var Form $objForm */
+        $objForm = $moduleInstance->getProperty('objForm');
+
+        /** @var CalendarEventsModel $objEvent */
+        $objEvent = $moduleInstance->getProperty('objEvent');
 
         // Check if user with submitted email has already booked
         if ($objForm->hasFormField('email')) {
@@ -83,6 +91,7 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
                         $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
                         $objWidget->addError($errorMsg);
 
+                        // Stopping the event propagation will make the validation fail
                         $event->stopPropagation();
                     }
                 }

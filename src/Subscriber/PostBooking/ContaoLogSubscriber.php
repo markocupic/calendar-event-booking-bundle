@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking;
 
+use Contao\CalendarEventsModel;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Psr\Log\LogLevel;
@@ -49,7 +51,12 @@ final class ContaoLogSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $objEvent = $event->getEvent();
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        $moduleInstance = $event->getBookingModuleInstance();
+
+        /** @var CalendarEventsModel $objEvent */
+        $objEvent =  $moduleInstance->getProperty('objEvent');
+
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;
         $this->logger->log($strText, $level);

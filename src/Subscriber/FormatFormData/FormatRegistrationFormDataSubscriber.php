@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData;
 
+use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Event\FormatFormDataEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class FormatRegistrationFormDataSubscriber implements EventSubscriberInterface
@@ -51,8 +53,15 @@ final class FormatRegistrationFormDataSubscriber implements EventSubscriberInter
             return;
         }
 
-        $objForm = $event->getForm();
-        $objEventMember = $event->getEventMember();
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        $moduleInstance = $event->getBookingModuleInstance();
+
+        /** @var CalendarEventsMemberModel $objEventMember */
+        $objEventMember = $moduleInstance->getProperty('objEventMember');
+
+        /** @var Form $objForm */
+        $objForm = $moduleInstance->getProperty('objForm');
+
         $strTable = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
 
         foreach (array_keys($objForm->getFormFields()) as $strFieldname) {

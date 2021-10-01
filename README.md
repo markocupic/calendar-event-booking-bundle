@@ -118,6 +118,8 @@ Tag | type | Erklärung
 `$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
 `$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
 `$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+`$this->hasLoggedInFrontendUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
+`$this->loggedInFrontendUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 
 
 
@@ -270,3 +272,6 @@ Array
 )
 
 ```
+
+## Mit Hooks und Event Subscribern die Frontend Module erweitern/anpassen
+Vor allem das Modul "Buchungsformular" lässt sich gut erweitern. An verschiedenen Stellen im Code lässt sich mit Event Subscribern und Hooks Funktionalität hinzufügen oder durch Deaktivierung eines Event Subscriber Funktionalität entfernen.

@@ -14,31 +14,13 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Event;
 
-use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Controller\AbstractController;
-use Contao\FormModel;
-use Contao\ModuleModel;
-use Contao\Template;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class AbstractEvent extends Event
 {
     protected $disabledSubscribers = [];
-
-    public function getClassProperty(string $key)
-    {
-        /** @var GenericEvent $event */
-        $event = $this->event;
-
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getArgument('moduleInstance');
-
-        return $moduleInstance->getProperty($key);
-    }
 
     public function getBookingModuleInstance(): ?CalendarEventBookingEventBookingModuleController
     {
@@ -48,7 +30,6 @@ class AbstractEvent extends Event
         /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
         return $event->getArgument('moduleInstance');
     }
-
 
     public function disableSubscriber(string $strSubscriber): void
     {
