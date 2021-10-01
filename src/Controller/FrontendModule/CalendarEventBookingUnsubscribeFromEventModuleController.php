@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events", )
+ * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events")
  */
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {

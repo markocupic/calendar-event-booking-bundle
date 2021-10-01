@@ -33,7 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events", )
+ * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events")
  */
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {

@@ -17,38 +17,38 @@ namespace Markocupic\CalendarEventBookingBundle\Event;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Controller\AbstractController;
 use Contao\FormModel;
+use Contao\ModuleModel;
+use Contao\Template;
 use Haste\Form\Form;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class AbstractEvent extends Event
 {
     protected $disabledSubscribers = [];
 
-    public function getEvent(): CalendarEventsModel
+    public function getClassProperty(string $key)
     {
-        return $this->event->getArgument('objEvent');
+        /** @var GenericEvent $event */
+        $event = $this->event;
+
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        $moduleInstance = $event->getArgument('moduleInstance');
+
+        return $moduleInstance->getProperty($key);
     }
 
-    public function getEventMember(): CalendarEventsMemberModel
+    public function getBookingModuleInstance(): ?CalendarEventBookingEventBookingModuleController
     {
-        return $this->event->getArgument('objEventMember');
+        /** @var GenericEvent $event */
+        $event = $this->event;
+
+        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
+        return $event->getArgument('moduleInstance');
     }
 
-    public function getForm(): Form
-    {
-        return $this->event->getArgument('objForm');
-    }
-
-    public function getFormGeneratorModel(): FormModel
-    {
-        return $this->event->getArgument('objFormGeneratorModel');
-    }
-
-    public function getModuleInstance(): AbstractController
-    {
-        return $this->event->getArgument('objEvent');
-    }
 
     public function disableSubscriber(string $strSubscriber): void
     {
