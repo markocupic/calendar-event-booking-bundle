@@ -12,20 +12,23 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
+/**
+ * @Hook(ValidateEmailAddress::HOOK, priority=ValidateEmailAddress::PRIORITY)
+ */
+final class ValidateEmailAddress
 {
+    public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1000;
 
     /**
@@ -44,28 +47,18 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
         $this->translator = $translator;
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            PostBookingEvent::NAME => ['validateEmailAddress', self::PRIORITY],
-        ];
-    }
-
     /**
-     * Important! Only stopping the event propagation will make the validation fail
+     * Important! return false will make the validation fail
      * Validate email address.
      */
-    public function validateEmailAddress(PostBookingEvent $event): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
-        if ($event->isDisabled(self::class)) {
-            return;
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
+            return true;
         }
 
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
-
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getBookingModuleInstance();
 
         /** @var Form $objForm */
         $objForm = $moduleInstance->getProperty('objForm');
@@ -91,11 +84,13 @@ final class ValidateEmailAddressSubscriber implements EventSubscriberInterface
                         $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
                         $objWidget->addError($errorMsg);
 
-                        // Stopping the event propagation will make the validation fail
-                        $event->stopPropagation();
+                        // Return false will make the validation fail
+                        return false;
                     }
                 }
             }
         }
+
+        return true;
     }
 }

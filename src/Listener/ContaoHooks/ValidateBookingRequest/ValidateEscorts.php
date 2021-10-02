@@ -12,19 +12,22 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Subscriber\ValidateEventRegistrationRequest;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class ValidateEscortsSubscriber implements EventSubscriberInterface
+/**
+ * @Hook(ValidateEscorts::HOOK, priority=ValidateEscorts::PRIORITY)
+ */
+final class ValidateEscorts
 {
+    public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1100;
 
     /**
@@ -49,25 +52,15 @@ final class ValidateEscortsSubscriber implements EventSubscriberInterface
         $this->eventRegistration = $eventRegistration;
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            PostBookingEvent::NAME => ['validateEscorts', self::PRIORITY],
-        ];
-    }
-
     /**
-     * Important! Only stopping the event propagation will make the validation fail
+     * Important! return false will make the validation fail
      * Validate escorts.
      */
-    public function validateEscorts(PostBookingEvent $event): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
-        if ($event->isDisabled(self::class)) {
-            return;
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
+            return true;
         }
-
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getBookingModuleInstance();
 
         /** @var Form $objForm */
         $objForm = $moduleInstance->getProperty('objForm');
@@ -92,9 +85,11 @@ final class ValidateEscortsSubscriber implements EventSubscriberInterface
             }
 
             if ($objWidget->hasErrors()) {
-                // Stopping the event propagation will make the validation fail
-                $event->stopPropagation();
+                // return false will make the validation fail
+                return false;
             }
         }
+
+        return true;
     }
 }

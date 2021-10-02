@@ -32,15 +32,10 @@ use Contao\System;
 use Contao\Template;
 use Haste\Form\Form;
 use Haste\Util\Url;
-use Markocupic\CalendarEventBookingBundle\Event\FormatFormDataEvent;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
-use Markocupic\CalendarEventBookingBundle\Event\SetCaseEvent;
-use Markocupic\CalendarEventBookingBundle\Event\ValidateEventRegistrationRequestEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -97,6 +92,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      * @var CalendarEventsModel
      */
     private $objEvent;
+
+    /**
+     * @var array
+     */
+    private $disabledHooks = [];
 
     /**
      * Possible cases are:
@@ -217,10 +217,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         // Get case
         $this->case = $this->eventRegistration->getRegistrationState($this->objEvent);
 
-        // Dispatch "set case event"
-        $subject = 'Set case event: manipulate case.';
-        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
-        $this->eventDispatcher->dispatch(new SetCaseEvent($event), SetCaseEvent::NAME);
+        // Trigger set case hook: manipulate case
+        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingSetCase']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'])) {
+            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'] as $callback) {
+                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+            }
+        }
 
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
             $messageAdapter->addInfo(
@@ -264,15 +266,19 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
                         $this->objEventMember->save();
 
-                        // Dispatch "format form data event"
-                        $subject = 'Format form data event: listen to this event to format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
-                        $this->eventDispatcher->dispatch(new FormatFormDataEvent($event), FormatFormDataEvent::NAME);
+                        // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+                            }
+                        }
 
-                        // Dispatch "post booking event"
-                        $subject = 'Post booking event: listen to this event to send notifications, to log things, etc.';
-                        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
-                        $this->eventDispatcher->dispatch(new PostBookingEvent($event), PostBookingEvent::NAME);
+                        // Trigger post booking hook: send notifications, log things, etc.
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+                            }
+                        }
 
                         // Redirect to the jumpTo page
                         if (null !== $objFormGeneratorModel && $objFormGeneratorModel->jumpTo) {
@@ -329,12 +335,10 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             function (&$strField, &$arrDca) use ($systemAdapter) {
                 $blnShow = true;
 
-                // Trigger calEvtBookingAddField hook
+                // Trigger add field hook
                 if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingAddField']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingAddField'])) {
                     foreach ($GLOBALS['TL_HOOKS']['calEvtBookingAddField'] as $callback) {
-                        $blnShow = $systemAdapter
-                            ->importStatic($callback[0])
-                            ->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
+                        $blnShow = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
 
                         if (!$blnShow) {
                             return false;
@@ -352,14 +356,17 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
     protected function validateEventRegistrationRequest(): bool
     {
-        // Dispatch "validate event registration request event"
-        $subject = 'Validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.';
-        $event = new GenericEvent($subject, ['moduleInstance' => $this]);
-        $this->eventDispatcher->dispatch(new ValidateEventRegistrationRequestEvent($event), ValidateEventRegistrationRequestEvent::NAME);
+        $systemAdapter = $this->framework->getAdapter(System::class);
 
-        // Only stopping the event propagation in your custom subscriber will make the validation fail
-        if ($event->isPropagationStopped()) {
-            return false;
+        // Trigger validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.
+        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'])) {
+            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'] as $callback) {
+                $isValid = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+
+                if (!$isValid) {
+                    return false;
+                }
+            }
         }
 
         return true;

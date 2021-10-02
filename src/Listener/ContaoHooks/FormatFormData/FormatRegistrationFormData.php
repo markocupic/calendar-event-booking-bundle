@@ -12,17 +12,20 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Subscriber\FormatFormData;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\FormatFormData;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Event\FormatFormDataEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class FormatRegistrationFormDataSubscriber implements EventSubscriberInterface
+/**
+ * @Hook(FormatRegistrationFormData::HOOK, priority=FormatRegistrationFormData::PRIORITY)
+ */
+final class FormatRegistrationFormData
 {
+    public const HOOK= 'calEvtBookingFormatFormData';
     public const PRIORITY = 1000;
 
     /**
@@ -35,26 +38,16 @@ final class FormatRegistrationFormDataSubscriber implements EventSubscriberInter
         $this->formatter = $formatter;
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            FormatFormDataEvent::NAME => ['formatUserInput', self::PRIORITY],
-        ];
-    }
-
     /**
      * Format user input e.g. dates, email addresses,...
      *
      * @throws \Exception
      */
-    public function formatUserInput(FormatFormDataEvent $event): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
-        if ($event->isDisabled(self::class)) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return;
         }
-
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getBookingModuleInstance();
 
         /** @var CalendarEventsMemberModel $objEventMember */
         $objEventMember = $moduleInstance->getProperty('objEventMember');

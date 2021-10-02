@@ -33,6 +33,5 @@ class MarkocupicCalendarEventBookingExtension extends Extension
 
         $loader->load('parameters.yml');
         $loader->load('services.yml');
-        $loader->load('subscriber.yml');
     }
 }

@@ -12,17 +12,20 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Psr\Log\LogLevel;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class ContaoLogSubscriber implements EventSubscriberInterface
+/**
+ * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
+ */
+final class ContaoLog
 {
+    public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1100;
 
     /**
@@ -35,27 +38,17 @@ final class ContaoLogSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            PostBookingEvent::NAME => ['log', self::PRIORITY],
-        ];
-    }
-
     /**
-     * Contao system log after sending an event booking request.
+     * Contao system log.
      */
-    public function log(PostBookingEvent $event): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
-        if ($event->isDisabled(self::class)) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return;
         }
 
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getBookingModuleInstance();
-
         /** @var CalendarEventsModel $objEvent */
-        $objEvent =  $moduleInstance->getProperty('objEvent');
+        $objEvent = $moduleInstance->getProperty('objEvent');
 
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;

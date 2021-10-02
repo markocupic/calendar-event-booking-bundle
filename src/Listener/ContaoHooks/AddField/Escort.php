@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\AddField;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -22,13 +22,15 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Add field "escort".
+ * Codefog haste "Add field Hook"
  *
- * @Hook(Escort::HOOK)
+ * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
 class Escort
 {
     public const HOOK = 'calEvtBookingAddField';
+    public const PRIORITY = 1000;
+
 
     /**
      * @var ContaoFramework
@@ -46,8 +48,13 @@ class Escort
         $this->translator = $translator;
     }
 
-    public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $instance): bool
+    public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
+        $arrDisabledHooks = $moduleInstance->getProperty('disabledHooks');
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
+            return true;
+        }
+
         // Skip input field "escorts" if escorts are not allowed
         if ('escorts' === $strField) {
             if ($objEvent->maxEscortsPerMember < 1) {

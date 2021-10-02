@@ -273,4 +273,5 @@ Array
 ```
 
 ## Mit Hooks und Event Subscribern die Frontend Module erweitern/anpassen
-Vor allem das Modul "Buchungsformular" lässt sich gut erweitern. An verschiedenen Stellen im Code lässt sich mit Event Subscribern und Hooks Funktionalität hinzufügen oder durch Deaktivierung eines Event Subscriber Funktionalität entfernen.
+Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten hinzufügen oder durch Deaktivierung eines Hooks Funktionalitäten entfernen.
+So baut zum Beispiel die Benachrichtigung auf einem Hook auf.

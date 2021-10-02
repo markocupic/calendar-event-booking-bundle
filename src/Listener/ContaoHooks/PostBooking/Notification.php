@@ -12,15 +12,18 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Subscriber\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class NotificationSubscriber implements EventSubscriberInterface
+/**
+ * @Hook(Notification::HOOK, priority=Notification::PRIORITY)
+ */
+final class Notification
 {
+    public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1000;
 
     /**
@@ -33,28 +36,17 @@ final class NotificationSubscriber implements EventSubscriberInterface
         $this->notificationHelper = $notificationHelper;
     }
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            PostBookingEvent::NAME => ['notify', self::PRIORITY],
-        ];
-    }
-
     /**
-     * Launch post booking notification.
+     * Run post booking notification.
      *
      * @throws \Exception
      */
-    public function notify(PostBookingEvent $event): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
-        if ($event->isDisabled(self::class)) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return;
         }
 
-        /** @var CalendarEventBookingEventBookingModuleController $moduleInstance */
-        $moduleInstance = $event->getBookingModuleInstance();
-
-        $event->disableSubscriber(ContaoLogSubscriber::class);
         $this->notificationHelper->notify($moduleInstance->getProperty('objEventMember'), $moduleInstance->getProperty('objEvent'));
     }
 }
