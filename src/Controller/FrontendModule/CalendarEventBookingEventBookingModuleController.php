@@ -256,7 +256,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         if (self::CASE_BOOKING_POSSIBLE === $this->case) {
             if ($this->model->form && null !== ($objFormGeneratorModel = FormModel::findByPk($this->model->form))) {
-                $this->getForm($objFormGeneratorModel);
+                $this->setForm($objFormGeneratorModel);
 
                 if ($this->objForm->validate()) {
                     if ($this->validateEventRegistrationRequest($this->objForm)) {
@@ -312,7 +312,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         return $this->template->getResponse();
     }
 
-    protected function getForm(FormModel $objFormGeneratorModel): Form
+    protected function setForm(FormModel $objFormGeneratorModel): void
     {
         $inputAdapter = $this->framework->getAdapter(Input::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
@@ -351,7 +351,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             }
         );
 
-        return $this->objForm;
     }
 
     protected function validateEventRegistrationRequest(): bool
