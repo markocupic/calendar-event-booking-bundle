@@ -21,11 +21,13 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 
 /**
- * @Hook(ExportTable::HOOK)
+ * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-class ExportTable
+final class ExportTable
 {
     public const HOOK = 'exportTable';
+    public const PRIORITY = 1000;
+
 
     /**
      * @var ContaoFramework

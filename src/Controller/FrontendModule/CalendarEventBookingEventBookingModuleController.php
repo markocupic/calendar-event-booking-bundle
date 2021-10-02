@@ -48,6 +48,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 {
     public const TYPE = 'calendar_event_booking_event_booking_module';
     public const EVENT_SUBSCRIPTION_TABLE = 'tl_calendar_events_member';
+    public const CASE_BOOKING_FORM_DISABLED = 'bookingFormDisabled';
     public const CASE_BOOKING_POSSIBLE = 'bookingPossible';
     public const CASE_EVENT_FULLY_BOOKED = 'eventFullyBooked';
     public const CASE_BOOKING_NO_LONGER_POSSIBLE = 'bookingNoLongerPossible';
@@ -99,9 +100,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private $disabledHooks = [];
 
     /**
-     * Possible cases are:
-     * bookingNotYetPossible, bookingNoLongerPossible, eventFullyBooked, bookingPossible.
-     *
      * @var string
      */
     private $case;
@@ -227,7 +225,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.bookingNotYetPossible',
+                    'MSC.'.CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE,
                     [$dateAdapter->parse('d.m.Y', $this->objEvent->bookingStartDate)],
                     'contao_default'
                 )
@@ -237,7 +235,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.bookingNoLongerPossible',
+                    'MSC.' . CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE,
                     [],
                     'contao_default'
                 )
@@ -247,7 +245,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_EVENT_FULLY_BOOKED === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.eventFullyBooked',
+                    'MSC.'. CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED,
                     [],
                     'contao_default'
                 )
@@ -350,7 +348,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 return true;
             }
         );
-
     }
 
     protected function validateEventRegistrationRequest(): bool

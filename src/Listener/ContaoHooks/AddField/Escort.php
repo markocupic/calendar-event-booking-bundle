@@ -22,15 +22,14 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Codefog haste "Add field Hook"
+ * Codefog haste "Add field Hook".
  *
  * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
-class Escort
+final class Escort
 {
     public const HOOK = 'calEvtBookingAddField';
     public const PRIORITY = 1000;
-
 
     /**
      * @var ContaoFramework
@@ -51,6 +50,7 @@ class Escort
     public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
         $arrDisabledHooks = $moduleInstance->getProperty('disabledHooks');
+
         if (\in_array(self::class, $arrDisabledHooks, true)) {
             return true;
         }

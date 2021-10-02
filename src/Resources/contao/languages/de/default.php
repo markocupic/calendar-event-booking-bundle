@@ -9,16 +9,18 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+
 $GLOBALS['TL_LANG']['MSC']['bookings'] = 'Buchungen';
 
 // Form validation
 $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Es sind maximal %s Begleitpersonen pro Teilnehmer möglich.';
 $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'Eine Buchungsanfrage mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.';
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Bitte geben Sie eine positive natürliche Zahl ein.';
-$GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Die Anmeldung für diesen Anlass ist erst ab %s möglich.';
-$GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.';
-$GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Der Anlass ist leider bereits ausgebucht.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE] = 'Die Anmeldung für diesen Anlass ist erst ab %s möglich.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE] = 'Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Der Anlass ist leider bereits ausgebucht.';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'Das Event-Enddatum für den Buchungszeitraum wurde angepasst.';

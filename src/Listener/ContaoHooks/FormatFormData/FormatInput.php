@@ -21,11 +21,11 @@ use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
- * @Hook(FormatRegistrationFormData::HOOK, priority=FormatRegistrationFormData::PRIORITY)
+ * @Hook(FormatInput::HOOK, priority=FormatInput::PRIORITY)
  */
-final class FormatRegistrationFormData
+final class FormatInput
 {
-    public const HOOK= 'calEvtBookingFormatFormData';
+    public const HOOK = 'calEvtBookingFormatFormData';
     public const PRIORITY = 1000;
 
     /**
