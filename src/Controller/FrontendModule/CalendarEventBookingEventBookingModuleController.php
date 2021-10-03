@@ -57,7 +57,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     /**
      * @var ModuleModel
      */
-    public $model;
+    private $model;
 
     /**
      * @var ContaoFramework
@@ -139,7 +139,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
             $showEmpty = true;
 
-            // Get the current event && return empty string if addBookingForm isn't set or event is not published
+            // Get the current event && return an empty string
+            // if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
                 if ($this->objEvent->addBookingForm && $this->objEvent->published) {
                     $showEmpty = false;
@@ -225,7 +226,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.'.CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE,
+                    'MSC.'.self::CASE_BOOKING_NOT_YET_POSSIBLE,
                     [$dateAdapter->parse('d.m.Y', $this->objEvent->bookingStartDate)],
                     'contao_default'
                 )
@@ -235,7 +236,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.' . CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE,
+                    'MSC.'.self::CASE_BOOKING_NO_LONGER_POSSIBLE,
                     [],
                     'contao_default'
                 )
@@ -245,7 +246,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         if (self::CASE_EVENT_FULLY_BOOKED === $this->case) {
             $messageAdapter->addInfo(
                 $this->translator->trans(
-                    'MSC.'. CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED,
+                    'MSC.'.self::CASE_EVENT_FULLY_BOOKED,
                     [],
                     'contao_default'
                 )
@@ -256,8 +257,15 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             if ($this->model->form && null !== ($objFormGeneratorModel = FormModel::findByPk($this->model->form))) {
                 $this->setForm($objFormGeneratorModel);
 
+                // Trigger pre validate hook: e.g. add custom field validators.';
+                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'])) {
+                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'] as $callback) {
+                        $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+                    }
+                }
+
                 if ($this->objForm->validate()) {
-                    if ($this->validateEventRegistrationRequest($this->objForm)) {
+                    if ($this->validateEventRegistration($this->objForm)) {
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
                         $this->objEventMember->addedOn = time();
@@ -350,7 +358,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         );
     }
 
-    protected function validateEventRegistrationRequest(): bool
+    protected function validateEventRegistration(): bool
     {
         $systemAdapter = $this->framework->getAdapter(System::class);
 
