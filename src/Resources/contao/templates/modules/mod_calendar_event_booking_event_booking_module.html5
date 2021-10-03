@@ -2,32 +2,12 @@
 
 <?php $this->block('content'); ?>
 
-<?php if ('bookingNotYetPossible' === $this->case): ?>
-<div class="alert alert-info" role="alert">
-  <?= $this->trans('MSC.bookingNotYetPossible', [\Contao\Date::parse('d.m.Y', $this->event->bookingStartDate)]) ?>
-</div>
+<?php if ($this->messages): ?>
+<?= $this->messages ?>
 <?php endif; ?>
 
-<?php if ('bookingNoLongerPossible' === $this->case): ?>
-<div class="alert alert-danger" role="alert">
-  <?= $this->trans('MSC.bookingNoLongerPossible') ?>
-</div>
+<?php if ('bookingPossible' === $this->case && $this->form): ?>
+<?= $this->form ?>
 <?php endif; ?>
-
-<?php if ('eventFullyBooked' === $this->case): ?>
-<div class="event-fully-booked">
-  <div class="alert alert-danger" role="alert">
-    <?= $this->trans('MSC.eventFullyBooked') ?>
-  </div>
-</div>
-<?php endif; ?>
-
-<?php if ('bookingPossible' === $this->case): ?>
-<?php if ($this->form > 0): ?>
-{{insert_form::<?= $this->form ?>}}
-<?php endif; ?>
-<?php endif; ?>
-
-</div>
 
 <?php $this->endblock(); ?>

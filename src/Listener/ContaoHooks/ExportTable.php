@@ -21,11 +21,13 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 
 /**
- * @Hook(ExportTable::HOOK)
+ * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-class ExportTable
+final class ExportTable
 {
     public const HOOK = 'exportTable';
+    public const PRIORITY = 1000;
+
 
     /**
      * @var ContaoFramework
@@ -45,13 +47,8 @@ class ExportTable
     public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)
     {
         if ('tl_calendar_events_member' === $strTable) {
-            /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
-
-            /** @var CalendarEventsModel $calendarEventsModelAdapter */
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-
-            /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             $controllerAdapter->loadDataContainer($strTable);

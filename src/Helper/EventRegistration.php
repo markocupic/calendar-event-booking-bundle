@@ -20,6 +20,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\Security\Core\Security;
 
@@ -89,17 +90,17 @@ class EventRegistration
     public function getRegistrationState(CalendarEventsModel $objEvent): string
     {
         if (null === $objEvent) {
-            $state = 'bookingNotYetPossible';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
         } elseif (!$objEvent->addBookingForm) {
-            $state = 'bookingFormDisabled';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
         } elseif ($objEvent->bookingStartDate > time()) {
-            $state = 'bookingNotYetPossible';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
         } elseif (is_numeric($objEvent->bookingEndDate) && $objEvent->bookingEndDate < time()) {
-            $state = 'bookingNoLongerPossible';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE;
         } elseif ($this->isFullyBooked($objEvent)) {
-            $state = 'eventFullyBooked';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED;
         } else {
-            $state = 'bookingPossible';
+            $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE;
         }
 
         return $state;
@@ -107,7 +108,7 @@ class EventRegistration
 
     public function canRegister(CalendarEventsModel $objEvent): bool
     {
-        return 'bookingPossible' === $this->getRegistrationState($objEvent) ? true : false;
+        return CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE === $this->getRegistrationState($objEvent) ? true : false;
     }
 
     public function isFullyBooked(CalendarEventsModel $objEvent): bool

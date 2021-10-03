@@ -24,15 +24,15 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Markocupic\CalendarEventBookingBundle\Notification\NotificationHelper;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events", )
+ * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events")
  */
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
@@ -73,26 +73,41 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected $blnHasUnsubscribed = false;
 
-    public function __construct(NotificationHelper $notificationHelper)
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
     {
+        $this->framework = $framework;
+        $this->scopeMatcher = $scopeMatcher;
         $this->notificationHelper = $notificationHelper;
+        $this->translator = $translator;
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
-        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
+        if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
 
-            /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
-            $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
-
-            /** @var Controller $controllerAdapter */
-            $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
+            $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             if ('true' !== $request->query->get('unsubscribedFromEvent')) {
-                $translator = $this->get('translator');
+                $translator = $this->translator;
 
                 $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($request->query->get('bookingToken'));
 
@@ -161,20 +176,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    public static function getSubscribedServices(): array
-    {
-        $services = parent::getSubscribedServices();
-        $services['contao.framework'] = ContaoFramework::class;
-        $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['translator'] = TranslatorInterface::class;
-
-        return $services;
-    }
-
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var CalendarEventsModel $calendarEventsModelAdapter */
-        $calendarEventsModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsModel::class);
+        $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;
@@ -200,11 +204,8 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent, ModuleModel $model): void
     {
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->get('contao.framework')->getAdapter(StringUtil::class);
-
-        /** @var Notification $notificationAdapter */
-        $notificationAdapter = $this->get('contao.framework')->getAdapter(Notification::class);
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $notificationAdapter = $this->framework->getAdapter(Notification::class);
 
         if ($objEvent->enableDeregistration) {
             // Multiple notifications possible

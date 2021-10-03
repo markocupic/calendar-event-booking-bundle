@@ -33,11 +33,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events", )
+ * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events")
  */
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
+
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
     /**
      * @var Connection
      */
@@ -56,8 +67,10 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(Connection $connection, EventRegistration $eventRegistration)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
     {
+        $this->framework = $framework;
+        $this->scopeMatcher = $scopeMatcher;
         $this->connection = $connection;
         $this->eventRegistration = $eventRegistration;
     }
@@ -65,7 +78,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
-        if ($page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
+        if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
             $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
@@ -86,25 +99,13 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    public static function getSubscribedServices(): array
-    {
-        $services = parent::getSubscribedServices();
-        $services['contao.framework'] = ContaoFramework::class;
-        $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-
-        return $services;
-    }
-
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        /** @var CalendarEventsMemberModel $calendarEventsMemberModelAdapter */
-        $calendarEventsMemberModelAdapter = $this->get('contao.framework')->getAdapter(CalendarEventsMemberModel::class);
-
-        /** @var Controller $controllerAdapter */
-        $controllerAdapter = $this->get('contao.framework')->getAdapter(Controller::class);
+        $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
         // Load language
-        $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
+        $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
         /** @var PDOStatement $results */
         $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
@@ -142,10 +143,12 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
      */
     protected function getSignedUpMembers(int $id)
     {
+        $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
-            ->from('tl_calendar_events_member', 't')
+            ->from($t, 't')
             ->where('t.pid = :pid')
             ->orderBy('t.lastname', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')

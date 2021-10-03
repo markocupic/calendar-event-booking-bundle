@@ -21,9 +21,16 @@ use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 
-class LoadFormField
+/**
+ * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
+ */
+final class LoadFormField
 {
+    public const HOOK = 'loadFormField';
+    public const PRIORITY = 1000;
+
     /**
      * @var ContaoFramework
      */
@@ -40,16 +47,11 @@ class LoadFormField
         $this->eventRegistration = $eventRegistration;
     }
 
-    public function loadFormField(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
+    public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
     {
         if ($objForm->isCalendarEventBookingForm) {
-            /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
-
-            /** @var Config $configAdapter */
             $configAdapter = $this->framework->getAdapter(Config::class);
-
-            /** @var $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             // Load DCA

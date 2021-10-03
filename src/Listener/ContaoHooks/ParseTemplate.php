@@ -22,10 +22,13 @@ use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 
 /**
- * @Hook("parseTemplate")
+ * @Hook(ParseTemplate::HOOK, priority=ParseTemplate::PRIORITY)
  */
-class ParseTemplate
+final class ParseTemplate
 {
+    public const HOOK = 'parseTemplate';
+    public const PRIORITY = 1000;
+
     /**
      * @var ContaoFramework
      */
@@ -47,7 +50,6 @@ class ParseTemplate
      */
     public function __invoke(Template $template): void
     {
-        /** @var CalendarEventsModel $calendarEventsModelAdapter */
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if (empty($template->calendar) || 0 !== strpos($template->getName(), 'event')) {

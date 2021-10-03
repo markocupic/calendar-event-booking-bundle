@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
 use Contao\CalendarEventsModel;
+use Contao\FrontendUser;
 use Contao\Template;
 
 class AddTemplateData
@@ -60,6 +61,14 @@ class AddTemplateData
 
         $template->bookingEndDate = function () use ($objEvent): int {
             return $this->eventRegistration->getBookingEndDate($objEvent);
+        };
+
+        $template->hasLoggedInUser = function (): bool {
+            return $this->eventRegistration->hasLoggedInFrontendUser();
+        };
+
+        $template->loggedInUser = function (): ?FrontendUser {
+            return $this->eventRegistration->getLoggedInFrontendUser();
         };
     }
 }

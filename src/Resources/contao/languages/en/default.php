@@ -9,16 +9,18 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+
 $GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';
 
 // Form validation
 $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Maximum %s escorts per participant possible.';
 $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'We have already found a booking with the email address "%s". Booking process aborted.';
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Please enter a positive number.';
-$GLOBALS['TL_LANG']['MSC']['bookingNotYetPossible'] = 'Booking is only possible from %s .';
-$GLOBALS['TL_LANG']['MSC']['bookingNoLongerPossible'] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
-$GLOBALS['TL_LANG']['MSC']['eventFullyBooked'] = 'Sorry, but unfortunately this event is already fully booked.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'The total number of %s participants is exceeded. Please check the number of accompanying persons.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE] = 'Booking is only possible from %s .';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Sorry, but unfortunately this event is already fully booked.';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'The end date for the booking period has been adjusted.';

@@ -21,20 +21,19 @@ $GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingMemberListModule
 
 // Fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds'] = array(
-    'eval'       => array('mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
-    'exclude'    => true,
-    'foreignKey' => 'tl_nc_notification.title',
-    'inputType'  => 'select',
-    'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
-    'search'     => true,
-    'sql'        => "blob NULL",
+	'eval'       => array('mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'),
+	'exclude'    => true,
+	'foreignKey' => 'tl_nc_notification.title',
+	'inputType'  => 'select',
+	'relation'   => array('type' => 'hasOne', 'load' => 'lazy'),
+	'search'     => true,
+	'sql'        => "blob NULL",
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartialTemplate'] = array(
-    'eval'             => array('tl_class' => 'w50'),
-    'exclude'          => true,
-    'inputType'        => 'select',
-    'options_callback' => array('Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule', 'getCalendarEventBookingMemberListPartialTemplate'),
-    'sql'              => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'",
+	'eval'             => array('tl_class' => 'w50'),
+	'exclude'          => true,
+	'inputType'        => 'select',
+	'options_callback' => array('Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule', 'getCalendarEventBookingMemberListPartialTemplate'),
+	'sql'              => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'",
 );
-
