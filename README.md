@@ -115,8 +115,12 @@ Tag | type | Erklärung
 `$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.
 `$this->bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
 `$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
-`$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
-`$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+`$this->bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
+`$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (date) an.
+`$this->bookingStartDatim` | int | Zeigt, die Buchungsstartzeit (datim) an.
+`$this->bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+`$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (date) an.
+`$this->bookingEndDatim` | int | Zeigt, die Buchungsendzeit (datim) an.
 `$this->hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
 `$this->loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 

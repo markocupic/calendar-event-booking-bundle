@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Date;
 use Contao\FrontendUser;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
@@ -153,13 +154,54 @@ class EventRegistration
         return (int) $objEvent->minMembers;
     }
 
-    public function getBookingStartDate(CalendarEventsModel $objEvent): int
+    /**
+     * @param CalendarEventsModel $objEvent
+     * @param string $format
+     * @return int|string
+     */
+    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format= 'timestamp')
     {
-        return (int) $objEvent->bookingStartDate;
+
+        $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
+
+        $tstamp = empty($objEvent->bookingStartDate) ? 0 : $objEvent->bookingStartDate;
+
+        if($format === 'timestamp'){
+            $varValue = (int) $tstamp;
+        }elseif($format==='date'){
+            $varValue = $dateAdapter->parse($configAdapter->get('dateFormat'), $tstamp);
+        }
+        elseif($format==='datim'){
+            $varValue = $dateAdapter->parse($configAdapter->get('datimFormat'), $tstamp);
+        }else{
+            $varValue = (int) $tstamp;
+        }
+        return $varValue;
     }
 
-    public function getBookingEndDate(CalendarEventsModel $objEvent): int
+    /**
+     * @param CalendarEventsModel $objEvent
+     * @param string $format
+     * @return int|string
+     */
+    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format= 'timestamp')
     {
-        return (int) $objEvent->bookingEndDate;
+        $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
+
+        $tstamp = empty($objEvent->bookingEndDate) ? 0 : $objEvent->bookingEndDate;
+
+        if($format === 'timestamp'){
+            $varValue = (int) $tstamp;
+        }elseif($format==='date'){
+            $varValue = $dateAdapter->parse($configAdapter->get('dateFormat'), $tstamp);
+        }
+        elseif($format==='datim'){
+            $varValue = $dateAdapter->parse($configAdapter->get('datimFormat'), $tstamp);
+        }else{
+            $varValue = (int) $tstamp;
+        }
+        return $varValue;
     }
 }

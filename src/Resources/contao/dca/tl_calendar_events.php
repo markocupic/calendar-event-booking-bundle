@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAd
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 	'default'   => null,
-	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'clr w50 wizard'),
+	'eval'      => array('rgxp' => 'datim', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'clr w50 wizard'),
 	'exclude'   => true,
 	'inputType' => 'text',
 	'sorting'   => true,
@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = array(
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = array(
 	'default'   => null,
-	'eval'      => array('rgxp' => 'date', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+	'eval'      => array('rgxp' => 'datim', 'mandatory' => true, 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'),
 	'exclude'   => true,
 	'inputType' => 'text',
 	'sorting'   => true,

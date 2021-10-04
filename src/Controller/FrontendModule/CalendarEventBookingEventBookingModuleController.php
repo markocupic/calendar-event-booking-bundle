@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
+use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -198,6 +199,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $urlAdapter = $this->framework->getAdapter(Url::class);
         $messageAdapter = $this->framework->getAdapter(Message::class);
         $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
+
 
         $this->template = $template;
 
@@ -227,7 +230,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $messageAdapter->addInfo(
                 $this->translator->trans(
                     'MSC.'.self::CASE_BOOKING_NOT_YET_POSSIBLE,
-                    [$dateAdapter->parse('d.m.Y', $this->objEvent->bookingStartDate)],
+                    [$dateAdapter->parse($configAdapter->get('dateFormat'), $this->objEvent->bookingStartDate)],
                     'contao_default'
                 )
             );

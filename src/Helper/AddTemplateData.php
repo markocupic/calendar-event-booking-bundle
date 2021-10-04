@@ -56,11 +56,27 @@ class AddTemplateData
         };
 
         $template->bookingStartDate = function () use ($objEvent): int {
-            return $this->eventRegistration->getBookingStartDate($objEvent);
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'date');
+        };
+
+        $template->bookingStartDatim = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'datim');
+        };
+
+        $template->bookingStartTimestamp = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'timestamp');
         };
 
         $template->bookingEndDate = function () use ($objEvent): int {
-            return $this->eventRegistration->getBookingEndDate($objEvent);
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'date');
+        };
+
+        $template->bookingEndDatim = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'datim');
+        };
+
+        $template->bookingEndTimestamp = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'timestamp');
         };
 
         $template->hasLoggedInUser = function (): bool {
