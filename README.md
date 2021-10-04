@@ -278,4 +278,46 @@ Array
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
-So baut zum Beispiel die Benachrichtigung auf einem Hook auf.
+Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller!](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php)
+
+
+```php
+<?php
+// src/EventListener/DoSomething.php
+
+declare(strict_types=1);
+
+namespace App\EventListener;
+
+use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+
+/**
+ * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
+ */
+final class DoSomething
+{
+    public const HOOK = 'calEvtBookingPostBooking';
+    public const PRIORITY = 1200;
+
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
+    {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
+            return;
+        }
+
+        $objEvent = $moduleInstance->getProperty('objEvent');
+        $objEventMember = $moduleInstance->getProperty('objEventMember');
+        $objForm = $moduleInstance->getProperty('objForm');
+
+        // Do something
+
+    }
+}
+
+```

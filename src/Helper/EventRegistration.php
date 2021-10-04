@@ -21,12 +21,16 @@ use Contao\Date;
 use Contao\FrontendUser;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
+use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
 class EventRegistration
 {
+    public const FLASH_KEY = '_event_registration';
+
     /**
      * @var ContaoFramework
      */
@@ -42,11 +46,17 @@ class EventRegistration
      */
     private $security;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, Security $security)
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, Security $security, RequestStack $requestStack)
     {
         $this->framework = $framework;
         $this->connection = $connection;
         $this->security = $security;
+        $this->requestStack = $requestStack;
     }
 
     public function hasLoggedInFrontendUser(): bool
@@ -155,53 +165,72 @@ class EventRegistration
     }
 
     /**
-     * @param CalendarEventsModel $objEvent
-     * @param string $format
      * @return int|string
      */
-    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format= 'timestamp')
+    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format = 'timestamp')
     {
-
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
         $tstamp = empty($objEvent->bookingStartDate) ? 0 : $objEvent->bookingStartDate;
 
-        if($format === 'timestamp'){
+        if ('timestamp' === $format) {
             $varValue = (int) $tstamp;
-        }elseif($format==='date'){
+        } elseif ('date' === $format) {
             $varValue = $dateAdapter->parse($configAdapter->get('dateFormat'), $tstamp);
-        }
-        elseif($format==='datim'){
+        } elseif ('datim' === $format) {
             $varValue = $dateAdapter->parse($configAdapter->get('datimFormat'), $tstamp);
-        }else{
+        } else {
             $varValue = (int) $tstamp;
         }
+
         return $varValue;
     }
 
     /**
-     * @param CalendarEventsModel $objEvent
-     * @param string $format
      * @return int|string
      */
-    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format= 'timestamp')
+    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format = 'timestamp')
     {
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
         $tstamp = empty($objEvent->bookingEndDate) ? 0 : $objEvent->bookingEndDate;
 
-        if($format === 'timestamp'){
+        if ('timestamp' === $format) {
             $varValue = (int) $tstamp;
-        }elseif($format==='date'){
+        } elseif ('date' === $format) {
             $varValue = $dateAdapter->parse($configAdapter->get('dateFormat'), $tstamp);
-        }
-        elseif($format==='datim'){
+        } elseif ('datim' === $format) {
             $varValue = $dateAdapter->parse($configAdapter->get('datimFormat'), $tstamp);
-        }else{
+        } else {
             $varValue = (int) $tstamp;
         }
+
         return $varValue;
+    }
+
+    /**
+     * @param CalendarEventsModel $objEvent
+     * @param CalendarEventsMemberModel $objEventMember
+     * @param Form $objForm
+     */
+    public function addToSession(CalendarEventsModel $objEvent, CalendarEventsMemberModel $objEventMember, Form $objForm): void
+    {
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+
+        if (!$session->isStarted()) {
+            $session->start();
+        }
+
+        $flashBag = $session->getFlashBag();
+        $arrSession = [];
+
+        $arrSession['eventData'] = $objEvent->row();
+        $arrSession['memberData'] = $objEventMember->row();
+        $arrSession['formData'] = $objForm->fetchAll();
+
+        $flashBag->set(self::FLASH_KEY, $arrSession);
+
     }
 }

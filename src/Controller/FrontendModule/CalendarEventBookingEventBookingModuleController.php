@@ -39,6 +39,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -81,6 +82,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private $scopeMatcher;
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $eventDispather;
@@ -120,12 +126,13 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     private $objPage;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, RequestStack $requestStack, EventDispatcherInterface $eventDispatcher)
     {
         $this->framework = $framework;
         $this->eventRegistration = $eventRegistration;
         $this->translator = $translator;
         $this->scopeMatcher = $scopeMatcher;
+        $this->requestStack = $requestStack;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -201,7 +208,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-
         $this->template = $template;
 
         // Load language file
@@ -268,21 +274,30 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 }
 
                 if ($this->objForm->validate()) {
-                    if ($this->validateEventRegistration($this->objForm)) {
+                    if ($this->validateEventRegistration()) {
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
                         $this->objEventMember->addedOn = time();
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
-                        $this->objEventMember->save();
 
                         // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData'])) {
-                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingFormatFormData'] as $callback) {
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'] as $callback) {
                                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
                         }
 
-                        // Trigger post booking hook: send notifications, log things, etc.
+                        // Trigger pre booking hook: add your custom code here.
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
+                            }
+                        }
+
+                        // Save to Database
+                        $this->objEventMember->save();
+
+                        // Trigger post booking hook: add data to the session, send notifications, log things, etc.
                         if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
                             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
                                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);

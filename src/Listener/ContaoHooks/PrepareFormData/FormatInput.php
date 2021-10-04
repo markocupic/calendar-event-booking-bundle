@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\FormatFormData;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
@@ -25,7 +25,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
  */
 final class FormatInput
 {
-    public const HOOK = 'calEvtBookingFormatFormData';
+    public const HOOK = 'calEvtBookingPrepareFormData';
     public const PRIORITY = 1000;
 
     /**
