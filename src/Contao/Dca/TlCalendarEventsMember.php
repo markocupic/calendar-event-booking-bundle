@@ -15,10 +15,21 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 
 use Contao\Input;
-use Markocupic\ExportTable\ExportTable;
+use Markocupic\ExportTable\Config\Config;
+use Markocupic\ExportTable\Export\ExportTable;
 
 class TlCalendarEventsMember
 {
+    /**
+     * @var ExportTable
+     */
+    private $exportTable;
+
+    public function __construct(ExportTable $exportTable)
+    {
+        $this->exportTable = $exportTable;
+    }
+
     /**
      * @throws \Exception
      */
@@ -38,10 +49,13 @@ class TlCalendarEventsMember
                 }
             }
 
-            $opt['exportType'] = 'csv';
-            $opt['arrFilter'] = [['tl_calendar_events_member.pid=?'], [Input::get('id')]];
-            ExportTable::exportTable('tl_calendar_events_member', $opt);
-            exit;
+            $exportConfig = (new Config('tl_calendar_events_member'))
+                ->setExportType('CSV')
+                ->setFilter([['tl_calendar_events_member.pid=?'], [Input::get('id')]])
+                ;
+
+            $this->exportTable->run($exportConfig);
+
         }
     }
 }

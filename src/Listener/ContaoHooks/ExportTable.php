@@ -19,15 +19,21 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
+use Markocupic\ExportTable\Config\Config;
+use Markocupic\ExportTable\Listener\ContaoHooks\ExportTableListenerInterface;
 
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-final class ExportTable
+final class ExportTable implements ExportTableListenerInterface
 {
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
 
+    /**
+     * @var bool
+     */
+    public static $disableHook = false;
 
     /**
      * @var ContaoFramework
@@ -40,33 +46,38 @@ final class ExportTable
     }
 
     /**
-     * @param $value
-     * @param $dataRecord
-     * @param $dca
+     * @param string $strFieldname
+     * @param $varValue
+     * @param string $strTablename
+     * @param array $arrDataRecord
+     * @param array $arrDca
+     * @param Config $objConfig
+     * @return mixed
      */
-    public function __invoke(string $field, $value, string $strTable, $dataRecord, $dca)
+    public function __invoke(string $strFieldname, $varValue, string $strTablename, array $arrDataRecord, array $arrDca, Config $objConfig)
     {
-        if ('tl_calendar_events_member' === $strTable) {
-            $dateAdapter = $this->framework->getAdapter(Date::class);
+        if ('tl_calendar_events_member' === $strTablename) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-            $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-            $controllerAdapter->loadDataContainer($strTable);
-            $rgxp = $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$field]['eval']['rgxp'] ?? null;
-
-            if (null !== $value && '' !== $value && \in_array($rgxp, ['date', 'time', 'datim'], true)) {
-                $value = $dateAdapter->parse($dateAdapter->getFormatFromRgxp($rgxp), $value);
-            }
-
-            if ('pid' === $field) {
-                $objModel = $calendarEventsModelAdapter->findByPk($value);
+            if ('pid' === $strFieldname) {
+                $objModel = $calendarEventsModelAdapter->findByPk($varValue);
 
                 if (null !== $objModel) {
-                    $value = $objModel->title;
+                    $varValue = $objModel->title;
                 }
             }
         }
 
-        return $value;
+        return $varValue;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
     }
 }
