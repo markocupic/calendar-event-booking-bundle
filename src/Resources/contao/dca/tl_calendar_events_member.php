@@ -10,6 +10,8 @@
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEventsMember;
+
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 	// Config
 	'config'   => array(
@@ -19,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 		'notCopyable'       => true,
 		'onsubmit_callback' => array(),
 		'onload_callback'   => array(
-			array('Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEventsMember', 'downloadRegistrationList'),
+			array(TlCalendarEventsMember::class, 'downloadRegistrationList'),
 		),
 		'ondelete_callback' => array(),
 		'sql'               => array(
@@ -51,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = array(
 			),
 			'downloadRegistrationList' => array(
 				'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'],
-				'href'       => 'act=downloadRegistrationList',
+				'href'       => 'action=downloadRegistrationList',
 				'class'      => 'download_booking_list',
 				'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.png',
 				'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',

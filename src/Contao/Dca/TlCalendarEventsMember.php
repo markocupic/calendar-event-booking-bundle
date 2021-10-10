@@ -36,26 +36,26 @@ class TlCalendarEventsMember
     public function downloadRegistrationList(): void
     {
         // Download the registration list as a csv spreadsheet
-        if ('downloadRegistrationList' === Input::get('act')) {
-            $opt = [];
+        if ('downloadRegistrationList' === Input::get('action')) {
 
             // Add fields
             $arrSkip = ['bookingToken'];
-            $opt['arrSelectedFields'] = [];
+            $arrSelectedFields = [];
 
             foreach (array_keys($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']) as $k) {
                 if (!\in_array($k, $arrSkip, true)) {
-                    $opt['arrSelectedFields'][] = $k;
+                    $arrSelectedFields[] = $k;
                 }
             }
 
             $exportConfig = (new Config('tl_calendar_events_member'))
-                ->setExportType('CSV')
+                ->setExportType('csv')
                 ->setFilter([['tl_calendar_events_member.pid=?'], [Input::get('id')]])
+                ->setFields($arrSelectedFields)
                 ;
 
             $this->exportTable->run($exportConfig);
-
+            exit();
         }
     }
 }
