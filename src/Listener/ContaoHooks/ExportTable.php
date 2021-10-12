@@ -20,12 +20,12 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Markocupic\ExportTable\Config\Config;
-use Markocupic\ExportTable\Listener\ContaoHooks\ExportTableListenerInterface;
+use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
 
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-final class ExportTable implements ExportTableListenerInterface
+final class ExportTable implements ListenerInterface
 {
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
