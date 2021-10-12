@@ -80,4 +80,9 @@ final class ExportTable implements ListenerInterface
     {
         self::$disableHook = false;
     }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
+    }
 }
