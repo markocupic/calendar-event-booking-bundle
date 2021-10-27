@@ -2,7 +2,7 @@
 ### Achtung: Bei der Migration von Version 3.x nach 4.x gab es mehrere Änderungen in der Benennung der Modul-Typen und Template-Namen. Dies bitte bei einer allfälligen Migration berücksichtigen.
 
 ## Events buchen
-Mit dieser Contao 4 Erweiterung werden Events über ein Anmeldeformular buchbar.
+Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
 Das Anmeldeformular kann im Contao Formulargenerator erstellt werden.
 Die Erweiterung stellt während des Installationsprozesses ein Sample Anmeldeformular bereit, welches Grundansprüchen genügen sollte.
 Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abgelegt
