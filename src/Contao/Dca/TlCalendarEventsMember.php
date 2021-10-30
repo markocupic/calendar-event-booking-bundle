@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 
+use Contao\BackendUser;
 use Contao\Input;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
@@ -52,10 +53,11 @@ class TlCalendarEventsMember
                 ->setExportType('csv')
                 ->setFilter([['tl_calendar_events_member.pid=?'], [Input::get('id')]])
                 ->setFields($arrSelectedFields)
+                ->setAddHeadline(true)
+                ->setHeadlineFields($arrSelectedFields)
                 ;
 
             $this->exportTable->run($exportConfig);
-            exit();
         }
     }
 }
