@@ -55,11 +55,11 @@ class AddTemplateData
             return $this->eventRegistration->getBookingMax($objEvent);
         };
 
-        $template->bookingStartDate = function () use ($objEvent): int {
+        $template->bookingStartDate = function () use ($objEvent): string {
             return $this->eventRegistration->getBookingStartDate($objEvent, 'date');
         };
 
-        $template->bookingStartDatim = function () use ($objEvent): int {
+        $template->bookingStartDatim = function () use ($objEvent): string {
             return $this->eventRegistration->getBookingStartDate($objEvent, 'datim');
         };
 
@@ -67,11 +67,11 @@ class AddTemplateData
             return $this->eventRegistration->getBookingStartDate($objEvent, 'timestamp');
         };
 
-        $template->bookingEndDate = function () use ($objEvent): int {
+        $template->bookingEndDate = function () use ($objEvent): string {
             return $this->eventRegistration->getBookingEndDate($objEvent, 'date');
         };
 
-        $template->bookingEndDatim = function () use ($objEvent): int {
+        $template->bookingEndDatim = function () use ($objEvent): string {
             return $this->eventRegistration->getBookingEndDate($objEvent, 'datim');
         };
 
