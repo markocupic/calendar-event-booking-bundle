@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
- * @license MIT
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -19,6 +19,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class AutogenerateBookingForm extends AbstractMigration
 {
@@ -44,6 +45,9 @@ class AutogenerateBookingForm extends AbstractMigration
         $this->framework = $framework;
     }
 
+    /**
+     * @throws Exception
+     */
     public function shouldRun(): bool
     {
         $schemaManager = $this->connection->getSchemaManager();
@@ -56,10 +60,12 @@ class AutogenerateBookingForm extends AbstractMigration
         $columns = $schemaManager->listTableColumns('tl_form');
 
         if (isset($columns['iscalendareventbookingform'], $columns['alias'])) {
-            $objForm = $this->connection->prepare('SELECT * FROM tl_form WHERE isCalendarEventBookingForm=? OR alias=?');
-            $objForm->execute(['1', 'event-booking-form']);
+            $count = $this->connection->fetchOne(
+                'SELECT COUNT(id) FROM tl_form WHERE isCalendarEventBookingForm = ? OR alias = ?',
+                ['1', 'event-booking-form']
+            );
 
-            if (!$objForm->rowCount() > 0) {
+            if (!$count > 0) {
                 // Autogenerate form
                 return true;
             }
@@ -68,9 +74,12 @@ class AutogenerateBookingForm extends AbstractMigration
         return false;
     }
 
+    /**
+     * @throws Exception
+     */
     public function run(): MigrationResult
     {
-        // Auto generate event booking form, if it doesn't exists
+        // Auto generate event booking form, if it doesn't exist
         $this->autoGenerateBookingForm();
 
         return new MigrationResult(
@@ -81,6 +90,8 @@ class AutogenerateBookingForm extends AbstractMigration
 
     /**
      * Auto generate event booking form.
+     *
+     * @throws Exception
      */
     private function autoGenerateBookingForm(): void
     {
@@ -88,7 +99,7 @@ class AutogenerateBookingForm extends AbstractMigration
         $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
 
         // Set tstamp
-        $sqlTlForm = str_replace('##tstamp##', time(), $sqlTlForm);
+        $sqlTlForm = str_replace('##tstamp##', (string) time(), $sqlTlForm);
 
         // Insert into tl_form
         $this->connection->executeQuery($sqlTlForm);
@@ -99,8 +110,10 @@ class AutogenerateBookingForm extends AbstractMigration
             $columns = $schemaManager->listTableColumns('tl_form');
 
             if (isset($columns['iscalendareventbookingform'])) {
-                $stmt = $this->connection->prepare('UPDATE tl_form SET isCalendarEventBookingForm=? WHERE id=?');
-                $stmt->execute(['1', $intInsertId]);
+                $set = [
+                    'isCalendarEventBookingForm' => '1',
+                ];
+                $this->connection->update('tl_form', $set, ['id' => $intInsertId]);
             }
 
             // Initialize the contao framework
@@ -112,7 +125,7 @@ class AutogenerateBookingForm extends AbstractMigration
 
             // Set pid & tstamp
             $sqlTlFormField = str_replace('##pid##', $intInsertId, $sqlTlFormField);
-            $sqlTlFormField = str_replace('##tstamp##', time(), $sqlTlFormField);
+            $sqlTlFormField = str_replace('##tstamp##', (string) time(), $sqlTlFormField);
             $sqlTlFormField = str_replace('##extensions##', $strExtensions, $sqlTlFormField);
 
             // Insert into tl_form_field

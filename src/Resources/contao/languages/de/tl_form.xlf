@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_form.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_form.calendar_event_booking_settings">
+        <source>Event bookiung form settings</source>
+        <target>Event-Buchungsformular-Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_form.isCalendarEventBookingForm.0">
+        <source>Activate event booking form functionality</source>
+        <target>Aktiviere Event-Buchungsformular-Funktion</target>
+      </trans-unit>
+      <trans-unit id="tl_form.isCalendarEventBookingForm.1">
+        <source>Activate this checkbox if the form is used for booking events.</source>
+        <target>Aktivieren Sie diese Checkbox, falls es sich beim Formular um ein Event-Buchungsformular handelt.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

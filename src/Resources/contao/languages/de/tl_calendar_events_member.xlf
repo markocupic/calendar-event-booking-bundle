@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events_member.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_calendar_events_member.new.0">
+        <source>New</source>
+        <target>Neu</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.new.1">
+        <source>Add a new member.</source>
+        <target>Neuen Teilnehmer anlegen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.downloadRegistrationList.0">
+        <source>Memberlist</source>
+        <target>Teilnehmerliste</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.downloadRegistrationList.1">
+        <source>Download memberlist.</source>
+        <target>Teilnehmerliste herunterladen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.edit.0">
+        <source>Edit</source>
+        <target>Bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.edit.1">
+        <source>Edit member with ID %s.</source>
+        <target>Teilnehmer mit ID %s bearbeiten.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.delete.0">
+        <source>Delete</source>
+        <target>Löschen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.delete.1">
+        <source>Delete member with ID %s.</source>
+        <target>Teilnehmer mit ID %s löschen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.show.0">
+        <source>Show</source>
+        <target>Anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.show.1">
+        <source>Show member with ID %s.</source>
+        <target>Teilnehmer mit ID %s anzeigen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.salutation_male">
+        <source>Mr</source>
+        <target>Herr</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.salutation_female">
+        <source>Mrs.</source>
+        <target>Frau</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.booking_date_legend">
+        <source>Booking date</source>
+        <target>Buchungsdatum</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.notes_legend">
+        <source>Notes</source>
+        <target>Bemerkungen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.personal_legend">
+        <source>Personal legend</source>
+        <target>Personal-Daten</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.address_legend">
+        <source>Adress legend</source>
+        <target>Adresse</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.contact_legend">
+        <source>Contact legend</source>
+        <target>Kontaktangaben</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.escort_legend">
+        <source>Escort legend</source>
+        <target>Begleitpersonen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.addedOn.0">
+        <source>Booking date</source>
+        <target>Buchungsdatum</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.addedOn.1">
+        <source>Please enter the booking date.</source>
+        <target>Geben Sie ein Buchungsdatum ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.notes.0">
+        <source>Notes</source>
+        <target>Bemerkungen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.notes.1">
+        <source>Please enter the notes.</source>
+        <target>Geben Sie Bemerkungen ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.firstname.0">
+        <source>Firstname</source>
+        <target>Vorname</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.firstname.1">
+        <source>Please enter the firstname.</source>
+        <target>Geben Sie einen Vornamen ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.lastname.0">
+        <source>Lastname</source>
+        <target>Nachname</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.lastname.1">
+        <source>Please enter the lastname.</source>
+        <target>Geben Sie einen Nachnamen ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.gender.0">
+        <source>Gender</source>
+        <target>Geschlecht</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.gender.1">
+        <source>Please enter the gender.</source>
+        <target>Bitte wählen Sie das Geschlecht.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.dateOfBirth.0">
+        <source>Date of birth</source>
+        <target>Geburtsdatum</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.dateOfBirth.1">
+        <source>Please enter the date of birth.</source>
+        <target>Geben Sie ein Geburtsdatum ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.street.0">
+        <source>Street</source>
+        <target>Strasse</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.street.1">
+        <source>Please enter the street.</source>
+        <target>Geben Sie eine Strasse ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.postal.0">
+        <source>Postal code</source>
+        <target>Postleitzahl</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.postal.1">
+        <source>Please enter the postal code.</source>
+        <target>Geben Sie eine Postleitzahl ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.city.0">
+        <source>City</source>
+        <target>Ort</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.city.1">
+        <source>Please enter the postal code.</source>
+        <target>Geben Sie einen Ort ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.phone.0">
+        <source>Phone</source>
+        <target>Telefon</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.phone.1">
+        <source>Please enter the phone number.</source>
+        <target>Geben Sie eine Telefonnummer ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.email.0">
+        <source>Email address</source>
+        <target>E-Mail-Adresse</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.email.1">
+        <source>Please enter the email address.</source>
+        <target>Geben Sie eine E-Mail-Adresse ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.escorts.0">
+        <source>Escorts</source>
+        <target>Anzahl Begleitpersonen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.escorts.1">
+        <source>Please enter the escorts.</source>
+        <target>Geben Sie die Anzahl Begleitpersonen ein.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
- * @license MIT
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -31,11 +31,6 @@ final class ValidateEscorts
     public const PRIORITY = 1200;
 
     /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -45,9 +40,8 @@ final class ValidateEscorts
      */
     private $eventRegistration;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
+    public function __construct(TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
-        $this->framework = $framework;
         $this->translator = $translator;
         $this->eventRegistration = $eventRegistration;
     }

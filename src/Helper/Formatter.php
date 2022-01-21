@@ -27,12 +27,12 @@ class Formatter
         $this->framework = $framework;
     }
 
-    public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldname)
+    public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldName)
     {
         /** @var Date $dateAdapter */
         $dateAdapter = $this->framework->getAdapter(Date::class);
 
-        $rgxp = $this->getFieldRgxp($strTable, $strFieldname);
+        $rgxp = $this->getFieldRgxp($strTable, $strFieldName);
 
         // Convert date formats into timestamps
         if (null !== $varValue && '' !== $varValue && \in_array($rgxp, ['date', 'time', 'datim'], true)) {
@@ -47,9 +47,9 @@ class Formatter
         return $varValue;
     }
 
-    public function formatEmail($varValue, string $strTable, string $strFieldname)
+    public function formatEmail($varValue, string $strTable, string $strFieldName)
     {
-        $rgxp = $this->getFieldRgxp($strTable, $strFieldname);
+        $rgxp = $this->getFieldRgxp($strTable, $strFieldName);
 
         if (null !== $varValue && '' !== $varValue && 'email' === $rgxp) {
             $varValue = strtolower($varValue);
@@ -58,29 +58,29 @@ class Formatter
         return $varValue;
     }
 
-    public function getCorrectEmptyValue($varValue, string $strTable, string $strFieldname)
+    public function getCorrectEmptyValue($varValue, string $strTable, string $strFieldName)
     {
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
         $controllerAdapter->loadDataContainer($strTable);
 
-        if (isset($GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldname]['default'])) {
+        if (isset($GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldName]['default'])) {
             if (null === $varValue || '' === $varValue) {
-                return $GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldname]['default'];
+                return $GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldName]['default'];
             }
         }
 
         return $varValue;
     }
 
-    private function getFieldRgxp(string $strTable, string $strFieldname): ?string
+    private function getFieldRgxp(string $strTable, string $strFieldName): ?string
     {
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
         $controllerAdapter->loadDataContainer($strTable);
 
-        return $GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldname]['eval']['rgxp'] ?? null;
+        return $GLOBALS['TL_DCA'][$strTable]['fields'][$strFieldName]['eval']['rgxp'] ?? null;
     }
 }
