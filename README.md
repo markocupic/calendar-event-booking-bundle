@@ -321,3 +321,35 @@ final class DoSomething
 }
 
 ```
+
+
+## Mehrfaches Absenden des Buchungsformulars unterbinden
+
+Mit etwas Javascript Code, den man im Buchungs-Template einbindet,
+  lässt sich durch Deaktivierung des Absende-Buttons beim ersten Absenden des Formulars,
+  eine mehrfache Anmeldung durch Doppelklick o.Ä unterbinden.
+
+
+```javascript
+
+<script>
+/**
+  * vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates/modules/mod_calendar_event_booking_event_booking_module.html5
+  * Prevent sending forms multiple times
+  */
+document.addEventListener("DOMContentLoaded", function(event) {
+let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
+if(elForms.length){
+  elForms.forEach((elForm, index, nodeList) => {
+    elForm.addEventListener('submit', (event) => {
+      let elBtn = elForm.querySelector('.submit[type="submit"]');
+      if(elBtn)
+      {
+        elBtn.disabled = true;
+      }
+    });
+  });
+}
+});
+</script>
+```
