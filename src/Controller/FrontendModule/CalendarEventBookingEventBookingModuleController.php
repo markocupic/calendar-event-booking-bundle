@@ -329,6 +329,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->template->case = $this->case;
         $this->template->countBookings = $this->template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
         $this->template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
+        $this->template->bookingMax = $this->eventRegistration->getBookingMax($this->objEvent);
         $this->template->event = $this->objEvent;
         $this->template->model = $this->model;
         $this->template->messages = $messageAdapter->hasMessages() ? $messageAdapter->generate('FE') : null;
