@@ -119,9 +119,13 @@ class AutogenerateBookingForm extends AbstractMigration
             // Initialize the contao framework
             $this->framework->initialize();
 
+            /** @var Controller $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+
             // Load dca tl_form_field
-            Controller::loadDataContainer('tl_form_field');
-            $strExtensions = $GLOBALS['TL_DCA']['tl_form_field']['fields']['extensions']['default'];
+            $controllerAdapter->loadDataContainer('tl_form_field');
+
+            $strExtensions = $GLOBALS['TL_DCA']['tl_form_field']['fields']['extensions']['default'] ?? '';
 
             // Set pid & tstamp
             $sqlTlFormField = str_replace('##pid##', $intInsertId, $sqlTlFormField);
