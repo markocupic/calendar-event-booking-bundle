@@ -28,10 +28,7 @@ final class Notification
 
     private static bool $disableHook = false;
 
-    /**
-     * @var NotificationHelper
-     */
-    private $notificationHelper;
+    private NotificationHelper $notificationHelper;
 
     public function __construct(NotificationHelper $notificationHelper)
     {

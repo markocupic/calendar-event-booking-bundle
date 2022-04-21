@@ -33,15 +33,8 @@ final class LoadFormField
 
     private static bool $disableHook = false;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private ContaoFramework $framework;
+    private EventRegistration $eventRegistration;
 
     public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration)
     {

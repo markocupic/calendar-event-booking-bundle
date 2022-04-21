@@ -32,10 +32,7 @@ final class Escort
 
     private static bool $disableHook = false;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(TranslatorInterface $translator)
     {

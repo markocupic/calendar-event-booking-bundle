@@ -32,20 +32,11 @@ final class ValidateNumberOfParticipants
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1100;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private static bool $disableHook = false;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventRegistration
-     */
-    private $evenRegistration;
+    private ContaoFramework $framework;
+    private TranslatorInterface $translator;
+    private EventRegistration $evenRegistration;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
@@ -98,5 +89,20 @@ final class ValidateNumberOfParticipants
         }
 
         return true;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

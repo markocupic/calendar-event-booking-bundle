@@ -28,10 +28,7 @@ final class AddToSession
 
     private static bool $disableHook = false;
 
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private EventRegistration $eventRegistration;
 
     public function __construct(EventRegistration $eventRegistration)
     {

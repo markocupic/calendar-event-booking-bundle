@@ -16,6 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 
 use Contao\CalendarEventsModel;
 use Contao\Controller;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -27,14 +28,29 @@ use NotificationCenter\Model\Notification;
 
 class NotificationHelper
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private ContaoFramework $framework;
+
+    // Adapters
+    private Adapter $controller;
+    private Adapter $userModel;
+    private Adapter $pageModel;
+    private Adapter $system;
+    private Adapter $stringUtil;
+    private Adapter $format;
+    private Adapter $notification;
 
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
+
+        // Adapters
+        $this->controller = $this->framework->getAdapter(Controller::class);
+        $this->userModel = $this->framework->getAdapter(UserModel::class);
+        $this->pageModel = $this->framework->getAdapter(PageModel::class);
+        $this->system = $this->framework->getAdapter(System::class);
+        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
+        $this->format = $this->framework->getAdapter(Format::class);
+        $this->notification = $this->framework->getAdapter(Notification::class);
     }
 
     /**
@@ -46,13 +62,8 @@ class NotificationHelper
             throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
         }
 
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
-        $userModelAdapter = $this->framework->getAdapter(UserModel::class);
-        $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
-        $systemAdapter = $this->framework->getAdapter(System::class);
-
         // Load language file
-        $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
+        $this->controller->loadLanguageFile('tl_calendar_events_member');
 
         $arrTokens = [];
 
@@ -63,7 +74,7 @@ class NotificationHelper
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['member_'.$k] = Format::dcaValue('tl_calendar_events_member', $k, $v);
+            $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
         }
 
         $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender]);
@@ -72,11 +83,11 @@ class NotificationHelper
         $row = $objEvent->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['event_'.$k] = Format::dcaValue('tl_calendar_events', $k, $v);
+            $arrTokens['event_'.$k] = $this->format->dcaValue('tl_calendar_events', $k, $v);
         }
 
         // Prepare tokens for organizer_* (sender)
-        $objOrganizer = $userModelAdapter->findByPk($objEvent->eventBookingNotificationSender);
+        $objOrganizer = $this->userModel->findByPk($objEvent->eventBookingNotificationSender);
 
         if (null !== $objOrganizer) {
             $row = $objOrganizer->row();
@@ -85,7 +96,7 @@ class NotificationHelper
                 if ('password' === $k || 'session' === $k) {
                     continue;
                 }
-                $arrTokens['organizer_'.$k] = Format::dcaValue('tl_user', $k, $v);
+                $arrTokens['organizer_'.$k] = $this->format->dcaValue('tl_user', $k, $v);
             }
 
             // deprecated since version 4.2, to be removed in 5.0 Use organizer_name instead of organizer_senderName */
@@ -102,19 +113,19 @@ class NotificationHelper
             $objCalendar = $objEvent->getRelated('pid');
 
             if (null !== $objCalendar) {
-                $objPage = $pageModelAdapter->findByPk($objCalendar->eventUnsubscribePage);
+                $objPage = $this->pageModel->findByPk($objCalendar->eventUnsubscribePage);
 
                 if (null !== $objPage) {
                     $url = $objPage->getFrontendUrl().'?bookingToken='.$objEventMember->bookingToken;
-                    $arrTokens['event_unsubscribeHref'] = $controllerAdapter->replaceInsertTags('{{env::url}}/').$url;
+                    $arrTokens['event_unsubscribeHref'] = $this->controller->replaceInsertTags('{{env::url}}/').$url;
                 }
             }
         }
 
         // Trigger calEvtBookingPostBooking hook
-        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
+        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback) {
-                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
+                $arrTokens = $this->system->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
             }
         }
 
@@ -128,15 +139,9 @@ class NotificationHelper
     {
         global $objPage;
 
-        /** @var Notification $notificationAdapter */
-        $notificationAdapter = $this->framework->getAdapter(Notification::class);
-
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-
         if ($objEvent->enableNotificationCenter) {
             // Multiple notifications possible
-            $arrNotifications = $stringUtilAdapter->deserialize($objEvent->eventBookingNotificationCenterIds);
+            $arrNotifications = $this->stringUtil->deserialize($objEvent->eventBookingNotificationCenterIds);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
@@ -144,7 +149,7 @@ class NotificationHelper
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {
-                    $objNotification = $notificationAdapter->findByPk($notificationId);
+                    $objNotification = $this->notification->findByPk($notificationId);
 
                     if (null !== $objNotification) {
                         $objNotification->send($arrTokens, $objPage->language);

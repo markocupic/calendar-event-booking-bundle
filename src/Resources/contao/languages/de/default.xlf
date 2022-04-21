@@ -43,8 +43,8 @@
         <target>Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.</target>
       </trans-unit>
       <trans-unit id="MSC.unsubscribeConfirm">
-        <source>Dear &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;&amp;lt;br&gt;Are you sure you want to unsubscribe from event "%s"?</source>
-        <target>Liebe(r) &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;{{br}}Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?</target>
+        <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
+        <target><![CDATA[Liebe(r) <span class="event-member-name">%s %s</span><br>Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?]]></target>
       </trans-unit>
       <trans-unit id="BTN.slabelUnsubscribeFromEvent">
         <source>Unsubscribe from event</source>

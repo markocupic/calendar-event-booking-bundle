@@ -32,25 +32,10 @@ class EventRegistration
 {
     public const FLASH_KEY = '_event_registration';
 
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var Security
-     */
-    private $security;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    protected ContaoFramework $framework;
+    private Connection $connection;
+    private Security $security;
+    private RequestStack $requestStack;
 
     public function __construct(ContaoFramework $framework, Connection $connection, Security $security, RequestStack $requestStack)
     {

@@ -23,20 +23,9 @@ use Doctrine\DBAL\Exception;
 
 class AutogenerateBookingForm extends AbstractMigration
 {
-    /**
-     * @var string
-     */
-    private $projectDir;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private string $projectDir;
+    private Connection $connection;
+    private ContaoFramework $framework;
 
     public function __construct(string $projectDir, Connection $connection, ContaoFramework $framework)
     {

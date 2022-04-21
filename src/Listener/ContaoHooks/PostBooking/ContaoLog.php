@@ -31,12 +31,9 @@ final class ContaoLog
 
     private static bool $disableHook = false;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private ?Logger $logger;
 
-    public function __construct(Logger $logger)
+    public function __construct(?Logger $logger)
     {
         $this->logger = $logger;
     }

@@ -31,15 +31,10 @@ final class ValidateEmailAddress
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1000;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private static bool $disableHook = false;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContaoFramework $framework;
+    private TranslatorInterface $translator;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator)
     {
@@ -92,5 +87,20 @@ final class ValidateEmailAddress
         }
 
         return true;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

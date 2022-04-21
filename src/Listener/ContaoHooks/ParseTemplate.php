@@ -31,15 +31,8 @@ final class ParseTemplate
 
     private static bool $disableHook = false;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var AddTemplateData
-     */
-    private $addTemplateData;
+    private ContaoFramework $framework;
+    private AddTemplateData $addTemplateData;
 
     public function __construct(ContaoFramework $framework, AddTemplateData $addTemplateData)
     {

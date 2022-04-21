@@ -29,15 +29,10 @@ final class ValidateEscorts
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1200;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private static bool $disableHook = false;
 
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private TranslatorInterface $translator;
+    private EventRegistration $eventRegistration;
 
     public function __construct(TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
@@ -84,5 +79,20 @@ final class ValidateEscorts
         }
 
         return true;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

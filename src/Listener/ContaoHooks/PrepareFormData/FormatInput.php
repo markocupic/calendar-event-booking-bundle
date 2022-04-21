@@ -30,10 +30,7 @@ final class FormatInput
 
     private static bool $disableHook = false;
 
-    /**
-     * @var Formatter
-     */
-    private $formatter;
+    private Formatter $formatter;
 
     public function __construct(Formatter $formatter)
     {
