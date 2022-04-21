@@ -10,6 +10,7 @@
     }
   ],
   "require": {
+    "php": "^7.4||^8.0",
     "contao/core-bundle": "^4.9",
     "contao/calendar-bundle": "^4.9",
     "markocupic/export_table": "^5.1",
@@ -18,7 +19,11 @@
     "terminal42/notification_center": "^1.5"
   },
   "require-dev": {
-    "contao/easy-coding-standard": "^3.0"
+    "contao/easy-coding-standard": "^4.0",
+    "contao/manager-plugin": "^2.3.1",
+    "contao/test-case": "^4.6",
+    "phpunit/phpunit": "^9.3",
+    "symfony/phpunit-bridge": "^5.4"
   },
   "autoload": {
     "psr-4": {

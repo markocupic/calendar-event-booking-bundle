@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2021 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2021
+declare(strict_types=1);
+
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -13,4 +17,3 @@ $GLOBALS['TL_LANG']['tl_form']['calendar_event_booking_settings'] = 'Event booki
 
 // Fields
 $GLOBALS['TL_LANG']['tl_form']['isCalendarEventBookingForm'] = ['Activate event booking form functionality', 'Activate this checkbox if the form is used for booking events.'];
-

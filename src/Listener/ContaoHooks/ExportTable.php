@@ -28,10 +28,7 @@ final class ExportTable implements ListenerInterface
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
 
-    /**
-     * @var bool
-     */
-    public static $disableHook = false;
+    private static bool $disableHook = false;
 
     /**
      * @var ContaoFramework
@@ -44,12 +41,8 @@ final class ExportTable implements ListenerInterface
     }
 
     /**
-     * @param string $strFieldName
      * @param $varValue
-     * @param string $strTableName
-     * @param array $arrDataRecord
-     * @param array $arrDca
-     * @param Config $objConfig
+     *
      * @return mixed
      */
     public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig)

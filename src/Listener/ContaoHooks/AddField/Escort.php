@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
 
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
@@ -30,6 +29,8 @@ final class Escort
 {
     public const HOOK = 'calEvtBookingAddField';
     public const PRIORITY = 1000;
+
+    private static bool $disableHook = false;
 
     /**
      * @var TranslatorInterface
@@ -57,5 +58,20 @@ final class Escort
         }
 
         return true;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

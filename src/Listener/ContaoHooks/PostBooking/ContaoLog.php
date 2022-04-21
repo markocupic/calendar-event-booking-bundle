@@ -29,6 +29,8 @@ final class ContaoLog
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1100;
 
+    private static bool $disableHook = false;
+
     /**
      * @var Logger
      */
@@ -54,5 +56,20 @@ final class ContaoLog
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;
         $this->logger->log($strText, $level, ContaoContext::GENERAL);
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

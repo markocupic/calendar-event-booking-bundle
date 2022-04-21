@@ -33,10 +33,10 @@ PaletteManipulator::create()
     ->addField(['enableNotificationCenter'], 'notification_center_legend', PaletteManipulator::POSITION_APPEND)
     ->addField(['enableDeregistration'], 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
     ->addField([
-                   'street',
-                   'postal',
-                   'city',
-               ], 'location', PaletteManipulator::POSITION_AFTER)
+        'street',
+        'postal',
+        'city',
+    ], 'location', PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('default', 'tl_calendar_events');
 
 // Selector
