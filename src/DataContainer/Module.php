@@ -12,31 +12,35 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\ServiceAnnotation\Callback;
 
-class TlModule
+class Module
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    public const TABLE = 'tl_module';
 
-    /**
-     * TlModule constructor.
-     */
+    private ContaoFramework $framework;
+
+    // Adapters
+    private Adapter $controller;
+
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
+
+        // Adapters
+        $this->controller = $this->framework->getAdapter(Controller::class);
     }
 
+    /**
+     * @Callback(table=Module::TABLE, target="fields.calendarEventBookingMemberListPartialTemplate.options")
+     */
     public function getCalendarEventBookingMemberListPartialTemplate(): array
     {
-        /** @var Controller $controllerAdapter */
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
-
-        return $controllerAdapter->getTemplateGroup('calendar_event_booking_member_list_partial');
+        return $this->controller->getTemplateGroup('calendar_event_booking_member_list_partial');
     }
 }

@@ -12,47 +12,54 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
-use Contao\Input;
+use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
+use Symfony\Component\HttpFoundation\RequestStack;
 
-class TlCalendarEventsMember
+class CalendarEventsMember
 {
-    /**
-     * @var ExportTable
-     */
-    private $exportTable;
+    public const TABLE = 'tl_calendar_events_member';
 
-    public function __construct(ExportTable $exportTable)
+    private RequestStack $requestStack;
+    private ExportTable $exportTable;
+
+    public function __construct(RequestStack $requestStack, ExportTable $exportTable)
     {
+        $this->requestStack = $requestStack;
         $this->exportTable = $exportTable;
     }
 
     /**
+     * Download the registration list as a csv spreadsheet.
+     *
+     * @Callback(table=CalendarEventsMember::TABLE, target="config.onload")
+     *
      * @throws \Exception
      */
     public function downloadRegistrationList(): void
     {
-        // Download the registration list as a csv spreadsheet
-        if ('downloadRegistrationList' === Input::get('action')) {
-            // Add fields
+        $request = $this->requestStack->getCurrentRequest();
+
+        if ('downloadRegistrationList' === $request->query->get('action')) {
             $arrSkip = ['bookingToken'];
             $arrSelectedFields = [];
 
-            foreach (array_keys($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']) as $k) {
+            foreach (array_keys($GLOBALS['TL_DCA'][self::TABLE]['fields']) as $k) {
                 if (!\in_array($k, $arrSkip, true)) {
                     $arrSelectedFields[] = $k;
                 }
             }
 
-            $exportConfig = (new Config('tl_calendar_events_member'))
+            $exportConfig = (new Config(self::TABLE))
                 ->setExportType('csv')
-                ->setFilter([['tl_calendar_events_member.pid = ?'], [Input::get('id')]])
+                ->setFilter([[self::TABLE.'.pid = ?'], [$request->query->get('id')]])
                 ->setFields($arrSelectedFields)
                 ->setAddHeadline(true)
                 ->setHeadlineFields($arrSelectedFields)
+                ->setOutputBom('UTF-8')
                 ;
 
             $this->exportTable->run($exportConfig);
