@@ -22,3 +22,7 @@ indent_style = tab
 [*/src/Resources/contao/**.html5]
 indent_style = space
 indent_size = 2
+
+[*/src/Resources/contao/languages/**.xlf]
+indent_style = space
+indent_size = 2

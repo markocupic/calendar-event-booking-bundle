@@ -17,16 +17,15 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 
 /**
  * @Hook(Notification::HOOK, priority=Notification::PRIORITY)
  */
-final class Notification
+final class Notification extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private NotificationHelper $notificationHelper;
 
@@ -40,27 +39,12 @@ final class Notification
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return;
         }
 
         $this->notificationHelper->notify($moduleInstance->getProperty('objEventMember'), $moduleInstance->getProperty('objEvent'));
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

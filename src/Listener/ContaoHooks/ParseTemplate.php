@@ -24,12 +24,10 @@ use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 /**
  * @Hook(ParseTemplate::HOOK, priority=ParseTemplate::PRIORITY)
  */
-final class ParseTemplate
+final class ParseTemplate extends AbstractHook
 {
     public const HOOK = 'parseTemplate';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private ContaoFramework $framework;
     private AddTemplateData $addTemplateData;
@@ -45,6 +43,10 @@ final class ParseTemplate
      */
     public function __invoke(Template $template): void
     {
+        if (!self::isEnabled()) {
+            return;
+        }
+
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
         if (empty($template->calendar) || 0 !== strpos($template->getName(), 'event')) {
@@ -62,20 +64,5 @@ final class ParseTemplate
         }
 
         $this->addTemplateData->addTemplateData($template, $event);
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

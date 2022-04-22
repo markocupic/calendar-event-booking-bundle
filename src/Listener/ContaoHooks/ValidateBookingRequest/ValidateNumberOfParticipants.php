@@ -22,21 +22,20 @@ use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(ValidateNumberOfParticipants::HOOK, priority=ValidateNumberOfParticipants::PRIORITY)
  */
-final class ValidateNumberOfParticipants
+final class ValidateNumberOfParticipants extends AbstractHook
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1100;
 
-    private static bool $disableHook = false;
-
     private ContaoFramework $framework;
     private TranslatorInterface $translator;
-    private EventRegistration $evenRegistration;
+    private EventRegistration $eventRegistration;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
@@ -51,9 +50,9 @@ final class ValidateNumberOfParticipants
      *
      * @throws Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return true;
         }
 
@@ -89,20 +88,5 @@ final class ValidateNumberOfParticipants
         }
 
         return true;
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

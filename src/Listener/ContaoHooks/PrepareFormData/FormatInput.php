@@ -18,17 +18,16 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * @Hook(FormatInput::HOOK, priority=FormatInput::PRIORITY)
  */
-final class FormatInput
+final class FormatInput extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPrepareFormData';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private Formatter $formatter;
 
@@ -42,9 +41,9 @@ final class FormatInput
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return;
         }
 
@@ -64,20 +63,5 @@ final class FormatInput
             $objEventMember->$strFieldname = $varValue;
             $objEventMember->save();
         }
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

@@ -20,18 +20,17 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(ValidateEmailAddress::HOOK, priority=ValidateEmailAddress::PRIORITY)
  */
-final class ValidateEmailAddress
+final class ValidateEmailAddress extends AbstractHook
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private ContaoFramework $framework;
     private TranslatorInterface $translator;
@@ -46,9 +45,9 @@ final class ValidateEmailAddress
      * Important! return false will make the validation fail
      * Validate email address.
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return true;
         }
 
@@ -87,20 +86,5 @@ final class ValidateEmailAddress
         }
 
         return true;
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

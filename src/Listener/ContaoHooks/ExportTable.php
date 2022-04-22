@@ -23,12 +23,10 @@ use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-final class ExportTable implements ListenerInterface
+final class ExportTable extends AbstractHook implements ListenerInterface
 {
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private ContaoFramework $framework;
 
@@ -44,6 +42,10 @@ final class ExportTable implements ListenerInterface
      */
     public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig)
     {
+        if (!self::isEnabled()) {
+            return $varValue;
+        }
+
         if ('tl_calendar_events_member' === $strTableName) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
@@ -57,20 +59,5 @@ final class ExportTable implements ListenerInterface
         }
 
         return $varValue;
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

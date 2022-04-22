@@ -280,7 +280,6 @@ Array
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
 Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
 
-
 ```php
 <?php
 // src/EventListener/DoSomething.php
@@ -291,31 +290,46 @@ namespace App\EventListener;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;
 
 /**
  * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
  */
-final class DoSomething
+final class DoSomething extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 1200;
+    public const PRIORITY = 9000;
 
     /**
      * @var EventRegistration
      */
     private $eventRegistration;
 
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return;
         }
 
+        // It is possible to disable a HOOK with a lower priority
+        // The built in notification hook has priority of 1000
+        // so we can disable it.
+        Notification::disableHook();
+
+        // Create your own notification logic here
+        // .......
+
+        // Get the current event
         $objEvent = $moduleInstance->getProperty('objEvent');
+
+        // Get the current registration object
         $objEventMember = $moduleInstance->getProperty('objEventMember');
+
+        // Get the form object
         $objForm = $moduleInstance->getProperty('objForm');
 
-        // Do something
+        // Do something more
+        // .......
 
     }
 }

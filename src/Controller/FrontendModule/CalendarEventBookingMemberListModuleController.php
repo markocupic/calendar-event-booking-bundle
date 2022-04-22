@@ -25,8 +25,8 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\PDOStatement;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,30 +39,12 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private ContaoFramework $framework;
+    private ScopeMatcher $scopeMatcher;
+    private Connection $connection;
+    private EventRegistration $eventRegistration;
 
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
-
-    /**
-     * @var CalendarEventsModel
-     */
-    private $objEvent;
+    private ?CalendarEventsModel $objEvent = null;
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
@@ -99,6 +81,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -107,18 +92,16 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
-        /** @var PDOStatement $results */
-        $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
-        $intRowCount = $results->rowCount();
+        $result = $this->getRegistrations((int) ($this->objEvent->id));
+
+        $intRowCount = $result->rowCount();
 
         $i = 0;
         $strRows = '';
 
-        while (false !== ($arrEventMember = $results->fetch())) {
-            /** @var FrontendTemplate $partial */
+        while (false !== ($arrEventMember = $result->fetch())) {
             $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
-            /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
             $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
             $partial->model = $calendarEventsMemberModel;
 
@@ -126,6 +109,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             $partial->rowClass = $this->getRowClass($i, $intRowCount);
 
             $strRows .= $partial->parse();
+
             ++$i;
         }
 
@@ -139,16 +123,19 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     }
 
     /**
-     * Get signed up members of current event.
+     * Get signed up members of the current event.
+     *
+     * @throws Exception
+     *
+     * @return Result
      */
-    protected function getSignedUpMembers(int $id)
+    protected function getRegistrations(int $id)
     {
-        $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+        $table = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
 
-        /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
-            ->from($t, 't')
+            ->from($table, 't')
             ->where('t.pid = :pid')
             ->orderBy('t.lastname', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
@@ -156,7 +143,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             ->setParameter('pid', $id)
         ;
 
-        return $qb->execute();
+        return $qb->executeQuery();
     }
 
     protected function getRowClass(int $i, int $intRowsTotal): string

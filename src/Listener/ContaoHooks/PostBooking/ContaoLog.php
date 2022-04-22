@@ -18,18 +18,17 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Psr\Log\LogLevel;
 
 /**
  * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
  */
-final class ContaoLog
+final class ContaoLog extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1100;
-
-    private static bool $disableHook = false;
 
     private ?Logger $logger;
 
@@ -41,9 +40,9 @@ final class ContaoLog
     /**
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
     {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return;
         }
 
@@ -53,20 +52,5 @@ final class ContaoLog
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;
         $this->logger->log($strText, $level, ContaoContext::GENERAL);
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

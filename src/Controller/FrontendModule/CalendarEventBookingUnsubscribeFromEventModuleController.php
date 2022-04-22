@@ -37,56 +37,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
+    protected NotificationHelper $notificationHelper;
 
-    /**
-     * @var NotificationHelper
-     */
-    protected $notificationHelper;
+    protected ?CalendarEventsModel $objEvent = null;
+    protected ?CalendarEventsMemberModel $objEventMember = null;
+    protected ?PageModel $objPage = null;
+    protected bool $blnHasUnsubscribed = false;
+    protected bool $hasError = false;
+    protected array $errorMsg = [];
 
-    /**
-     * @var CalendarEventsModel
-     */
-    protected $objEvent;
-
-    /**
-     * @var CalendarEventsMemberModel
-     */
-    protected $objEventMember;
-
-    /**
-     * @var PageModel
-     */
-    protected $objPage;
-
-    /**
-     * @var bool
-     */
-    protected $hasError = false;
-
-    /**
-     * @var array
-     */
-    protected $errorMsg = [];
-
-    /**
-     * @var bool
-     */
-    protected $blnHasUnsubscribed = false;
-
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContaoFramework $framework;
+    private ScopeMatcher $scopeMatcher;
+    private TranslatorInterface $translator;
 
     public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
     {
@@ -96,6 +58,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         $this->translator = $translator;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
@@ -135,9 +100,8 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                         if (time() > $this->objEvent->unsubscribeLimitTstamp) {
                             $blnLimitExpired = true;
                         }
-                    }
-                    // We only have a unsubscription limit expressed in days before event start date
-                    else {
+                    } else {
+                        // We only have an unsubscription limit expressed in days before event start date
                         $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
 
                         if (time() + $limit * 3600 * 24 > $this->objEvent->startDate) {
@@ -151,7 +115,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    // Delete entry and redirect
+                    // Delete record, notify and redirect
                     if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
                         $this->notify($this->objEventMember, $this->objEvent, $model);
                         $this->objEventMember->delete();

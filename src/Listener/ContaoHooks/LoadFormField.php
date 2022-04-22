@@ -26,12 +26,10 @@ use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 /**
  * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
  */
-final class LoadFormField
+final class LoadFormField extends AbstractHook
 {
     public const HOOK = 'loadFormField';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private ContaoFramework $framework;
     private EventRegistration $eventRegistration;
@@ -44,6 +42,10 @@ final class LoadFormField
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
     {
+        if (!self::isEnabled()) {
+            return $objWidget;
+        }
+
         if ($objForm->isCalendarEventBookingForm) {
             $dateAdapter = $this->framework->getAdapter(Date::class);
             $configAdapter = $this->framework->getAdapter(Config::class);
@@ -90,20 +92,5 @@ final class LoadFormField
         }
 
         return $objWidget;
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }

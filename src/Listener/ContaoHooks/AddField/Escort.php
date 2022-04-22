@@ -18,6 +18,7 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -25,12 +26,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
-final class Escort
+final class Escort extends AbstractHook
 {
     public const HOOK = 'calEvtBookingAddField';
     public const PRIORITY = 1000;
-
-    private static bool $disableHook = false;
 
     private TranslatorInterface $translator;
 
@@ -41,9 +40,7 @@ final class Escort
 
     public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
-        $arrDisabledHooks = $moduleInstance->getProperty('disabledHooks');
-
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
+        if (!self::isEnabled()) {
             return true;
         }
 
@@ -55,20 +52,5 @@ final class Escort
         }
 
         return true;
-    }
-
-    public static function disableHook(): void
-    {
-        self::$disableHook = true;
-    }
-
-    public static function enableHook(): void
-    {
-        self::$disableHook = false;
-    }
-
-    public static function isEnabled(): bool
-    {
-        return self::$disableHook;
     }
 }
