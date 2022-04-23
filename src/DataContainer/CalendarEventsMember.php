@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
+use Markocupic\ExportTable\Writer\ByteSequence;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CalendarEventsMember
@@ -59,7 +60,7 @@ class CalendarEventsMember
                 ->setFields($arrSelectedFields)
                 ->setAddHeadline(true)
                 ->setHeadlineFields($arrSelectedFields)
-                ->setOutputBom('UTF-8')
+                ->setOutputBom(ByteSequence::BOM['UTF-8'])
                 ;
 
             $this->exportTable->run($exportConfig);
