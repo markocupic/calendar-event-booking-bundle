@@ -55,6 +55,10 @@ final class ExportTable extends AbstractHook implements ListenerInterface
                 if (null !== $objModel) {
                     $varValue = $objModel->title;
                 }
+            } elseif ('bookingState' === $strFieldName) {
+                if (!empty($varValue) && isset($GLOBALS['TL_LANG']['MSC'][$varValue])) {
+                    $varValue = $GLOBALS['TL_LANG']['MSC'][$varValue];
+                }
             }
         }
 
