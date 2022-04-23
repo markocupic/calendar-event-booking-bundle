@@ -24,7 +24,9 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,8 +119,19 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 if (!$this->hasError) {
                     // Delete record, notify and redirect
                     if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
+                        // Set booking state
+                        $this->objEventMember->bookingState = BookingState::STATE_UNSUBSCRIBED;
+                        $this->objEventMember->save();
+
+                        // Send notifications
                         $this->notify($this->objEventMember, $this->objEvent, $model);
-                        $this->objEventMember->delete();
+
+                        // Trigger the unsubscribe from event hook
+                        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT])) {
+                            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT] as $callback) {
+                                $this->system->importStatic($callback[0])->{$callback[1]}($this);
+                            }
+                        }
 
                         $href = sprintf(
                             '%s?unsubscribedFromEvent=true&eid=%s',
