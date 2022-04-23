@@ -5,6 +5,24 @@
       <trans-unit id="MSC.bookings">
         <source>bookings</source>
       </trans-unit>
+      <trans-unit id="MSC.undefined">
+        <source>undefined</source>
+      </trans-unit>
+      <trans-unit id="MSC.waiting_for_response">
+        <source>waiting for response</source>
+      </trans-unit>
+      <trans-unit id="MSC.confirmed">
+        <source>confirmed</source>
+      </trans-unit>
+      <trans-unit id="MSC.unsubscribed">
+        <source>unsubscribed</source>
+      </trans-unit>
+      <trans-unit id="MSC.rejected">
+        <source>rejected</source>
+      </trans-unit>
+      <trans-unit id="MSC.waiting_list">
+        <source>waiting list</source>
+      </trans-unit>
       <trans-unit id="MSC.maxEscortsPossible">
         <source>Maximum %s escorts per participant possible.</source>
       </trans-unit>
@@ -26,7 +44,7 @@
       <trans-unit id="MSC.eventFullyBooked">
         <source>Sorry, but unfortunately this event is already fully booked.</source>
       </trans-unit>
-      <trans-unit id="MSC.adjustedBookingPeriodEndtime">
+      <trans-unit id="MSC.adjustedBookingPeriodEndTime">
         <source>The end date for the booking period has been adjusted.</source>
       </trans-unit>
       <trans-unit id="MSC.unsubscribeInfo">

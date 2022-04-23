@@ -116,6 +116,12 @@
       <trans-unit id="tl_calendar_events.enableMultiBookingWithSameAddress.1">
         <source>Please choose if multiple bookings with same email address should be allowed.</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingState.0">
+        <source>Booking state</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingState.1">
+        <source>Select the state that is automatically assigned to a new booking.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

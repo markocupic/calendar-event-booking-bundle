@@ -178,6 +178,14 @@
         <source>The booking token is a uuid and can be used to identify the registration.</source>
         <target>Das Buchungs-Token ist eine UUID und kann benutzt werden, um eine Buchung eindeutig zu identifizieren.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingState.0">
+        <source>Booking state</source>
+        <target>Buchungs-Status</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingState.1">
+        <source>Select the booking state.</source>
+        <target>Wähle den Status der Buchung aus.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

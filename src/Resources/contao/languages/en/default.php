@@ -36,7 +36,7 @@ $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CAS
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Sorry, but unfortunately this event is already fully booked.';
 
 // Form validation backend
-$GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'The end date for the booking period has been adjusted.';
+$GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'] = 'The end date for the booking period has been adjusted.';
 
 // Unsubscribe from event
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'You\'ve been successfully unsubscribed from event "%s".';

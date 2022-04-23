@@ -74,7 +74,7 @@ class CalendarEvents
         if (!empty((int) $dc->activeRecord->bookingEndDate)) {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate) {
                 $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                $this->message->addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'], TL_MODE);
+                $this->message->addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'], TL_MODE);
             }
         }
 

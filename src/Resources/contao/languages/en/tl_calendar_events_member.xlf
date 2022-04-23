@@ -134,6 +134,12 @@
       <trans-unit id="tl_calendar_events_member.bookingToken.1">
         <source>The booking token is a uuid and can be used to identify the registration.</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingState.0">
+        <source>Booking state</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingState.1">
+        <source>Select the booking state.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
