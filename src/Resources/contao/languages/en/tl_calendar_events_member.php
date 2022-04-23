@@ -33,7 +33,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['address_legend'] = 'Adress leg
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['contact_legend'] = 'Contact legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escort_legend'] = 'Escort legend';
 
-// Legend
+// Fields
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['addedOn'] = ['Booking date', 'Please enter the booking date.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'] = ['Notes', 'Please enter the notes.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['firstname'] = ['Firstname', 'Please enter the firstname.'];
@@ -46,4 +46,5 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['city'] = ['City', 'Please ente
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['phone'] = ['Phone', 'Please enter the phone number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['email'] = ['Email address', 'Please enter the email address.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escorts'] = ['Escorts', 'Please enter the escorts.'];
-$GLOBALS['TL_LANG']['tl_calendar_events']['bookingToken'] = ['Booking token', 'The booking token is a uuid and can be used to identify the registration.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingToken'] = ['Booking token', 'The booking token is a uuid and can be used to identify the registration.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingState'] = ['Booking state', 'Select the booking state.'];

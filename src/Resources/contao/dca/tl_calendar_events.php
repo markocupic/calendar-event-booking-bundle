@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
@@ -34,7 +35,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enable
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableDeregistration';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,includeEscortsWhenCalculatingRegCount,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,includeEscortsWhenCalculatingRegCount,bookingStartDate,bookingEndDate,enableMultiBookingWithSameAddress,bookingState';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 
@@ -89,6 +90,24 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAd
     'filter'    => true,
     'inputType' => 'checkbox',
     'sql'       => "char(1) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingState'] = [
+    'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+    'filter'    => true,
+    'inputType' => 'select',
+    'options'   => [
+        BookingState::STATE_UNDEFINED,
+        BookingState::STATE_WAITING_FOR_RESPONSE,
+        BookingState::STATE_CONFIRMED,
+        BookingState::STATE_WAITING_LIST,
+        BookingState::STATE_REJECTED,
+        BookingState::STATE_UNSUBSCRIBED,
+    ],
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_UNDEFINED."'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [

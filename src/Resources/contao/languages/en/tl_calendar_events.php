@@ -38,3 +38,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['enableDeregistration'] = ['Enable eve
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'] = ['Unsubscription limit in days', 'Please set the number of days you allow users to unsubscribe from day of the event.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimitTstamp'] = ['Fixed unsubscription limit', 'Fixed time limit for unsubscriptions from this event (overrides subscription limit in days)'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['enableMultiBookingWithSameAddress'] = ['Enable mutiple bookings with same email address', 'Please choose if multiple bookings with same email address should be allowed.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['bookingState'] = ['Booking state', 'Select the state that is automatically assigned to a new booking.'];

@@ -12,9 +12,19 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 
+// Misc
 $GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';
+
+// Booking state references
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNDEFINED] = 'undefined';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_WAITING_FOR_RESPONSE] = 'waiting for response';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_CONFIRMED] = 'confirmed';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNSUBSCRIBED] = 'unsubscribed';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_REJECTED] = 'rejected';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_WAITING_LIST] = 'waiting list';
 
 // Form validation
 $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Maximum %s escorts per participant possible.';
@@ -29,7 +39,6 @@ $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CAS
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'The end date for the booking period has been adjusted.';
 
 // Unsubscribe from event
-
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'You\'ve been successfully unsubscribed from event "%s".';
 $GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?';
 $GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Unsubscribe from event';

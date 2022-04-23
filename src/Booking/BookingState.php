@@ -16,11 +16,10 @@ namespace Markocupic\CalendarEventBookingBundle\Booking;
 
 class BookingState
 {
-    public const STATES = [
-        'STATE_PENDING',
-        'STATE_CONFIRMED',
-        'STATE_WAITING_LIST',
-        'STATE_REJECTED',
-        'STATE_CANCELLED',
-    ];
+    public const STATE_UNDEFINED = 'undefined';
+    public const STATE_WAITING_FOR_RESPONSE = 'waiting_for_response';
+    public const STATE_CONFIRMED = 'confirmed';
+    public const STATE_WAITING_LIST = 'waiting_list';
+    public const STATE_REJECTED = 'rejected';
+    public const STATE_UNSUBSCRIBED = 'unsubscribed';
 }

@@ -33,7 +33,7 @@
         <source>You've been successfully unsubscribed from event "%s".</source>
       </trans-unit>
       <trans-unit id="MSC.unsubscribeConfirm">
-        <source>Dear &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;&amp;lt;br&gt;Are you sure you want to unsubscribe from event "%s"?</source>
+        <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
       </trans-unit>
       <trans-unit id="BTN.slabelUnsubscribeFromEvent">
         <source>Unsubscribe from event</source>

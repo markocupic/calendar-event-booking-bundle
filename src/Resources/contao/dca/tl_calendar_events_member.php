@@ -12,6 +12,9 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Contao\CoreBundle\DataContainer;
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
         'dataContainer'    => 'Table',
@@ -28,12 +31,12 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'list'     => [
         'sorting'           => [
             'mode'        => 2,
-            'fields'      => ['lastname'],
-            'flag'        => 1,
+            'fields'      => ['addedOn', 'bookingState'],
+            'flag'        => 6,
             'panelLayout' => 'filter;sort,search',
         ],
         'label'             => [
-            'fields'      => ['firstname', 'lastname', 'street', 'city'],
+            'fields'      => ['firstname', 'lastname', 'street', 'city', 'bookingState'],
             'showColumns' => true,
         ],
         'global_operations' => [
@@ -71,7 +74,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{booking_date_legend},addedOn;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '{booking_date_legend},addedOn,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
     ],
     'fields'   => [
         'id'           => [
@@ -87,10 +90,37 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'addedOn'      => [
-            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'default'   => time(),
+            'eval'      => ['doNotCopy' => true, 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'flag'      => defined('\Contao\CoreBundle\DataContainer::SORT_DAY_DESC') ? DataContainer::SORT_DAY_DESC : 6,
             'inputType' => 'text',
             'sorting'   => true,
-            'sql'       => "varchar(10) NOT NULL default ''",
+            'sql'       => 'int(10) unsigned NOT NULL default 0',
+        ],
+        'bookingToken' => [
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'filter'    => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'bookingState' => [
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => [
+                BookingState::STATE_UNDEFINED,
+                BookingState::STATE_WAITING_FOR_RESPONSE,
+                BookingState::STATE_CONFIRMED,
+                BookingState::STATE_WAITING_LIST,
+                BookingState::STATE_REJECTED,
+                BookingState::STATE_UNSUBSCRIBED,
+            ],
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_UNDEFINED."'",
         ],
         'notes'        => [
             'default'   => null,
@@ -182,14 +212,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'search'    => true,
             'sorting'   => true,
             'sql'       => 'int(3) unsigned NULL',
-        ],
-        'bookingToken' => [
-            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
-            'filter'    => true,
-            'inputType' => 'text',
-            'search'    => true,
-            'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
         ],
     ],
 ];

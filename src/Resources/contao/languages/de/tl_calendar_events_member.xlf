@@ -176,7 +176,7 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.bookingToken.1">
         <source>The booking token is a uuid and can be used to identify the registration.</source>
-        <source>Das Buchungs-Token ist eine UUID und kann unter anderem dazu verwendet werden, um die Registrierung zu identifizieren.</source>
+        <target>Das Buchungs-Token ist eine UUID und kann benutzt werden, um eine Buchung eindeutig zu identifizieren.</target>
       </trans-unit>
     </body>
   </file>
