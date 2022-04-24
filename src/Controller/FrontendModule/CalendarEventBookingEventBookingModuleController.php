@@ -226,7 +226,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
                         $this->objEventMember->addedOn = time();
-                        $this->bookingState = $this->objEvent->bookingState;
+                        $this->objEventMember->bookingState = $this->objEvent->bookingState;
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
 
                         // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';

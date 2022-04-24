@@ -39,6 +39,7 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
         'email_subject' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
         'email_text' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
         'email_html' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
+        'attachment_tokens' => [],
     ],
     'event-unsubscribe-notification' => [
         'email_sender_name' => ['organizer_name'],
@@ -50,5 +51,6 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bun
         'email_subject' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
         'email_text' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
         'email_html' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'event_unsubscribeHref', 'member_*', 'member_dateOfBirth', 'member_salutation', 'organizer_*', 'organizer_name', 'organizer_email', 'admin_email'],
+        'attachment_tokens' => [],
     ],
 ];

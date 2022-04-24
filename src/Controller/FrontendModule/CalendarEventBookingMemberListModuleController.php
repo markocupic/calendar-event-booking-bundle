@@ -27,6 +27,7 @@ use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,7 +100,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $i = 0;
         $strRows = '';
 
-        while (false !== ($arrEventMember = $result->fetch())) {
+        while (false !== ($arrEventMember = $result->fetchAssociative())) {
             $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
             $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
@@ -137,10 +138,12 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $qb->select('id')
             ->from($table, 't')
             ->where('t.pid = :pid')
-            ->orderBy('t.lastname', 'ASC')
+            ->andWhere('t.bookingState = :bookingState')
+            ->orderBy('t.addedOn', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
             ->addOrderBy('t.city', 'ASC')
             ->setParameter('pid', $id)
+            ->setParameter('bookingState', BookingState::STATE_CONFIRMED)
         ;
 
         return $qb->executeQuery();
