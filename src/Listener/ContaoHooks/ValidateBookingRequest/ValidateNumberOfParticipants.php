@@ -67,7 +67,7 @@ final class ValidateNumberOfParticipants extends AbstractHook
         // Check if user with submitted email has already booked
         $escorts = 0;
 
-        if ($objEvent->includeEscortsWhenCalculatingRegCount && $objForm->hasFormField('escorts')) {
+        if ($objEvent->addEscortsToTotal && $objForm->hasFormField('escorts')) {
             $objWidget = $objForm->getWidget('escorts');
             $escorts = (int) $objWidget->value;
         }

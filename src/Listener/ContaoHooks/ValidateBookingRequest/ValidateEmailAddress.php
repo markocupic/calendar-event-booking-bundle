@@ -65,7 +65,7 @@ final class ValidateEmailAddress extends AbstractHook
             $objWidget = $objForm->getWidget('email');
 
             if (!empty($objWidget->value)) {
-                if (!$objEvent->enableMultiBookingWithSameAddress) {
+                if (!$objEvent->allowDuplicateEmail) {
                     $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],

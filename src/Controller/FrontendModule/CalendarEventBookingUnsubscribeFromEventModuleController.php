@@ -89,7 +89,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    if (!$this->objEvent->enableDeregistration) {
+                    if (!$this->objEvent->activateDeregistration) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
@@ -184,9 +184,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
         $notificationAdapter = $this->framework->getAdapter(Notification::class);
 
-        if ($objEvent->enableDeregistration) {
+        if ($objEvent->activateDeregistration) {
             // Multiple notifications possible
-            $arrNotifications = $stringUtilAdapter->deserialize($model->unsubscribeFromEventNotificationIds);
+            $arrNotifications = $stringUtilAdapter->deserialize($model->cebb_unsubscribeNotification);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper

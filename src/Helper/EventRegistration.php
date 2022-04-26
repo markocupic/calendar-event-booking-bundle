@@ -90,7 +90,7 @@ class EventRegistration
      */
     public function getRegistrationState(?CalendarEventsModel $objEvent): string
     {
-        if (!$objEvent->addBookingForm) {
+        if (!$objEvent->activateBookingForm) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
         } elseif ($objEvent->bookingStartDate > time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
@@ -136,7 +136,7 @@ class EventRegistration
         return $this->countByEventAndBookingState(
             $objEvent,
             BookingState::STATE_CONFIRMED,
-            (bool) $objEvent->includeEscortsWhenCalculatingRegCount,
+            (bool) $objEvent->addEscortsToTotal,
         );
     }
 
@@ -148,7 +148,7 @@ class EventRegistration
         return $this->countByEventAndBookingState(
             $objEvent,
             BookingState::STATE_WAITING_LIST,
-            (bool) $objEvent->includeEscortsWhenCalculatingRegCount,
+            (bool) $objEvent->addEscortsToTotal,
         );
     }
 
@@ -160,7 +160,7 @@ class EventRegistration
         return $this->countByEventAndBookingState(
             $objEvent,
             BookingState::STATE_WAITING_FOR_RESPONSE,
-            (bool) $objEvent->includeEscortsWhenCalculatingRegCount,
+            (bool) $objEvent->addEscortsToTotal,
         );
     }
 

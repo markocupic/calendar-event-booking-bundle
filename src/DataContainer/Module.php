@@ -37,7 +37,7 @@ class Module
     }
 
     /**
-     * @Callback(table=Module::TABLE, target="fields.calendarEventBookingMemberListPartialTemplate.options")
+     * @Callback(table=Module::TABLE, target="fields.cebb_memberListPartialTemplate.options")
      */
     public function getCalendarEventBookingMemberListPartialTemplate(): array
     {

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_module.php" source-language="en">
-    <body>
-      <trans-unit id="tl_module.form_legend">
-        <source>Booking form settings</source>
-      </trans-unit>
-      <trans-unit id="tl_module.notification_center_legend">
-        <source>Notification settings</source>
-      </trans-unit>
-      <trans-unit id="tl_module.unsubscribeFromEventNotificationIds.0">
-        <source>Event unsubscribe notifications</source>
-      </trans-unit>
-      <trans-unit id="tl_module.unsubscribeFromEventNotificationIds.1">
-        <source>Please choose one or more notifications.</source>
-      </trans-unit>
-      <trans-unit id="tl_module.calendarEventBookingMemberListPartialTemplate.0">
-        <source>Event member list partial template</source>
-      </trans-unit>
-      <trans-unit id="tl_module.calendarEventBookingMemberListPartialTemplate.1">
-        <source>Here you can select the event meber list partial template.</source>
-      </trans-unit>
-    </body>
-  </file>
+    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_module.php" source-language="en">
+        <body>
+            <trans-unit id="tl_module.form_legend">
+                <source>Booking form settings</source>
+            </trans-unit>
+            <trans-unit id="tl_module.notification_legend">
+                <source>Notification settings</source>
+            </trans-unit>
+            <trans-unit id="tl_module.cebb_unsubscribeNotification.0">
+                <source>Event unsubscribe notifications</source>
+            </trans-unit>
+            <trans-unit id="tl_module.cebb_unsubscribeNotification.1">
+                <source>Please choose one or more notifications.</source>
+            </trans-unit>
+            <trans-unit id="tl_module.cebb_memberListPartialTemplate.0">
+                <source>Event member list partial template</source>
+            </trans-unit>
+            <trans-unit id="tl_module.cebb_memberListPartialTemplate.1">
+                <source>Here you can select the event meber list partial template.</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

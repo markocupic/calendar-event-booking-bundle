@@ -34,7 +34,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['contact_legend'] = 'Contact le
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escort_legend'] = 'Escort legend';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['addedOn'] = ['Booking date', 'Please enter the booking date.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['dateAdded'] = ['Booking date', 'Please enter the booking date.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'] = ['Notes', 'Please enter the notes.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['firstname'] = ['Firstname', 'Please enter the firstname.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['lastname'] = ['Lastname', 'Please enter the lastname.'];

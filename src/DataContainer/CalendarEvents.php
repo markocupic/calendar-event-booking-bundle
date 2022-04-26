@@ -88,7 +88,7 @@ class CalendarEvents
      */
     public function listEvents(array $arrRow): string
     {
-        if ('1' === $arrRow['addBookingForm']) {
+        if ('1' === $arrRow['activateBookingForm']) {
             $countBookings = $this->calendarEventsMemberModel->countBy('pid', $arrRow['id']);
 
             $span = $this->calendar->calculateSpan($arrRow['startTime'], $arrRow['endTime']);

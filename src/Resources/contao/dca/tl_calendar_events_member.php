@@ -31,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'list'     => [
         'sorting'           => [
             'mode'        => 2,
-            'fields'      => ['addedOn ASC'],
+            'fields'      => ['dateAdded ASC'],
             'flag'        => 6,
             'panelLayout' => 'filter;sort,search',
         ],
@@ -74,7 +74,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{booking_date_legend},addedOn,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '{booking_date_legend},dateAdded,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
     ],
     'fields'   => [
         'id'           => [
@@ -89,7 +89,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         'tstamp'       => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'addedOn'      => [
+        'dateAdded'    => [
             'default'   => time(),
             'eval'      => ['doNotCopy' => true, 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'flag'      => defined('\Contao\CoreBundle\DataContainer::SORT_DAY_DESC') ? DataContainer::SORT_DAY_DESC : 6,

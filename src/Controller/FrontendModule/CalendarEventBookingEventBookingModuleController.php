@@ -107,9 +107,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $showEmpty = true;
 
             // Get the current event && return an empty string
-            // if addBookingForm isn't set or event is not published
+            // if activateBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
+                if ($this->objEvent->activateBookingForm && $this->objEvent->published) {
                     $showEmpty = false;
                 }
             }
@@ -225,7 +225,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                     if ($this->validateEventRegistration()) {
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
-                        $this->objEventMember->addedOn = time();
+                        $this->objEventMember->dateAdded = time();
                         $this->objEventMember->bookingState = $this->objEvent->bookingState;
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
 

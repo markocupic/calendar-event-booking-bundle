@@ -66,9 +66,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
             $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
-            // Get the current event && return empty string if addBookingForm isn't set or event is not published
+            // Get the current event && return empty string if activateBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
+                if ($this->objEvent->activateBookingForm && $this->objEvent->published) {
                     $showEmpty = false;
                 }
             }
@@ -101,7 +101,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $strRows = '';
 
         while (false !== ($arrEventMember = $result->fetchAssociative())) {
-            $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
+            $partial = new FrontendTemplate($model->cebb_memberListPartialTemplate);
 
             $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
             $partial->model = $calendarEventsMemberModel;
@@ -139,7 +139,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             ->from($table, 't')
             ->where('t.pid = :pid')
             ->andWhere('t.bookingState = :bookingState')
-            ->orderBy('t.addedOn', 'ASC')
+            ->orderBy('t.dateAdded', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
             ->addOrderBy('t.city', 'ASC')
             ->setParameter('pid', $id)

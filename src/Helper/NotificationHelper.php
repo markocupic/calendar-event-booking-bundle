@@ -131,7 +131,7 @@ class NotificationHelper
         // Generate unsubscribe href
         $arrTokens['event_unsubscribeHref'] = '';
 
-        if ($objEvent->enableDeregistration) {
+        if ($objEvent->activateDeregistration) {
             $objCalendar = $objEvent->getRelated('pid');
 
             if (null !== $objCalendar) {
@@ -161,9 +161,9 @@ class NotificationHelper
     {
         global $objPage;
 
-        if ($objEvent->enableNotificationCenter) {
+        if ($objEvent->activateNotification) {
             // Multiple notifications possible
-            $arrNotifications = $this->stringUtil->deserialize($objEvent->eventBookingNotificationCenterIds);
+            $arrNotifications = $this->stringUtil->deserialize($objEvent->eventBookingNotification);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
