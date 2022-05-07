@@ -5,14 +5,17 @@
             <trans-unit id="tl_calendar_events.registrations">
                 <source>Show participants from event with ID %s</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.booking_options_legend">
-                <source>Booking settings</source>
+            <trans-unit id="tl_calendar_events.event_unsubscribe_legend">
+                <source>Event unsubscription settings</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.notification_legend">
                 <source>Notification settings</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.event_unsubscribe_legend">
-                <source>Event unsubscription settings</source>
+            <trans-unit id="tl_calendar_events.waiting_list_legend">
+                <source>Waiting list settings</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.booking_options_legend">
+                <source>Booking settings</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.street.0">
                 <source>Street</source>
@@ -74,11 +77,23 @@
             <trans-unit id="tl_calendar_events.maxMembers.1">
                 <source>Please set the maximum participant number.</source>
             </trans-unit>
+            <trans-unit id="tl_calendar_events.activateWaitingList.0">
+                <source>Activate waiting list</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.activateWaitingList.1">
+                <source>Activate the waiting list and set the options.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.waitingListLimit.0">
+                <source>Waiting list limit</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.waitingListLimit.1">
+                <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
+            </trans-unit>
             <trans-unit id="tl_calendar_events.activateNotification.0">
-                <source>Select message for booking confirmation</source>
+                <source>Activate booking notification</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateNotification.1">
-                <source>Select a message (Notification Center) for the booking confirmation.</source>
+                <source>Activate the booking notification and set the options.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.eventBookingNotification.0">
                 <source>Choose one or more notifications</source>

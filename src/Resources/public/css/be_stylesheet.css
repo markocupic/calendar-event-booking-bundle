@@ -2,3 +2,44 @@
     padding-left: 42px;
     margin-left: 1px;
 }
+
+/** tl_calendar_events Show subscription state **/
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.subscription-badge {
+    background-color: darkgray;
+    font-size: x-small;
+    border-radius: 5px;
+    padding: 3px 8px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.subscription-badge.not-confirmed {
+    background-color: darkgray;
+    animation: blinker 2s step-start infinite;
+}
+
+.subscription-badge.confirmed {
+    background-color: darkgreen;
+}
+
+.subscription-badge.waiting-list {
+    background-color: darkblue;
+}
+
+.subscription-badge.rejected {
+    background-color: darkred;
+}
+
+.subscription-badge.unsubscribed {
+    background-color: darkorange;
+}
+
+

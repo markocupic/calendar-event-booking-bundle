@@ -38,8 +38,8 @@
             <trans-unit id="tl_calendar_events_member.salutation_female">
                 <source>Mrs.</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events_member.booking_date_legend">
-                <source>Booking date</source>
+            <trans-unit id="tl_calendar_events_member.title_legend">
+                <source>Title legend</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.notes_legend">
                 <source>Notes</source>
@@ -127,6 +127,12 @@
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.escorts.1">
                 <source>Please enter the escorts.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.bookingType.0">
+                <source>Booking type</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.bookingType.1">
+                <source>Select the booking type please.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.bookingToken.0">
                 <source>Booking token</source>
