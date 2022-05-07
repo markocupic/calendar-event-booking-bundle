@@ -74,7 +74,7 @@ final class GenerateMessage extends AbstractHook
             case BookingState::STATE_NOT_CONFIRMED:
             case BookingState::STATE_CONFIRMED:
             case BookingState::STATE_WAITING_LIST:
-                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [$eventConfig->title], 'contao_default');
+                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [$eventConfig->getEvent()->title], 'contao_default');
                 break;
         }
 

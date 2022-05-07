@@ -77,7 +77,7 @@ final class ValidateEmailAddress extends AbstractHook
                     $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],
-                        'value' => [strtolower($objWidget->value), $eventConfig->event->id],
+                        'value' => [strtolower($objWidget->value), $eventConfig->getEvent()->id],
                     ];
 
                     $objMember = $this->eventMember->findAll($arrOptions);

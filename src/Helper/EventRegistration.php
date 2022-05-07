@@ -70,9 +70,9 @@ class EventRegistration
     {
         if (!$eventConfig->get('activateBookingForm')) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
-        } elseif ($eventConfig->event->bookingStartDate > time()) {
+        } elseif ($eventConfig->getEvent()->bookingStartDate > time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
-        } elseif (is_numeric($eventConfig->event->bookingEndDate) && $eventConfig->event->bookingEndDate < time()) {
+        } elseif (is_numeric($eventConfig->getEvent()->bookingEndDate) && $eventConfig->getEvent()->bookingEndDate < time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE;
         } elseif ($this->isFullyBooked($eventConfig) && !$this->isWaitingListFull($eventConfig)) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE;
@@ -194,14 +194,14 @@ class EventRegistration
         $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
         $registrationCount = $this->connection->fetchOne(
             $query1,
-            [$eventConfig->event->id, $bookingState],
+            [$eventConfig->getEvent()->id, $bookingState],
         );
 
         $sumBookingTotal = $registrationCount;
 
         if ($addEscortsToTotal) {
             $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-            $sumEscorts = $this->connection->fetchOne($query2, [$eventConfig->event->id, $bookingState]);
+            $sumEscorts = $this->connection->fetchOne($query2, [$eventConfig->getEvent()->id, $bookingState]);
 
             if (false !== $sumEscorts) {
                 $sumBookingTotal += $sumEscorts;
@@ -219,7 +219,7 @@ class EventRegistration
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-        $tstamp = empty($eventConfig->event->bookingStartDate) ? 0 : (int) $eventConfig->event->bookingStartDate;
+        $tstamp = empty($eventConfig->getEvent()->bookingStartDate) ? 0 : (int) $eventConfig->getEvent()->bookingStartDate;
 
         if ('timestamp' === $format) {
             $varValue = $tstamp;
@@ -242,7 +242,7 @@ class EventRegistration
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-        $tstamp = empty($eventConfig->event->bookingEndDate) ? 0 : $eventConfig->event->bookingEndDate;
+        $tstamp = empty($eventConfig->getEvent()->bookingEndDate) ? 0 : $eventConfig->getEvent()->bookingEndDate;
 
         if ('timestamp' === $format) {
             $varValue = (int) $tstamp;
@@ -268,7 +268,7 @@ class EventRegistration
         $flashBag = $session->getFlashBag();
         $arrSession = [];
 
-        $arrSession['eventData'] = $eventConfig->event->row();
+        $arrSession['eventData'] = $eventConfig->getEvent()->row();
         $arrSession['memberData'] = $objEventMember->row();
         $arrSession['formData'] = $objForm->fetchAll();
 

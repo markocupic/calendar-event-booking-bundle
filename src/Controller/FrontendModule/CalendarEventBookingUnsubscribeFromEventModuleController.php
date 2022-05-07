@@ -98,7 +98,19 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    if (!$this->objEvent->activateDeregistration) {
+                    if (BookingState::STATE_UNSUBSCRIBED === $this->objEventMember->bookingState) {
+                        $this->addError($translator->trans('ERR.alreadyUnsubscribed.', [$this->objEvent->title], 'contao_default'));
+                    }
+                }
+
+                if (!$this->hasError) {
+                    if (!$this->objEvent->activateDeregistration || (!empty($this->objEventMember->bookingState) && BookingState::STATE_CONFIRMED !== $this->objEventMember->bookingState)) {
+                        $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
+                    }
+                }
+
+                if (!$this->hasError) {
+                    if (BookingState::STATE_WAITING_LIST !== $this->objEventMember->bookingState && BookingState::STATE_CONFIRMED !== $this->objEventMember->bookingState && BookingState::STATE_NOT_CONFIRMED !== $this->objEventMember->bookingState) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
@@ -171,17 +183,20 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
             if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($request->query->get('eid')))) {
                 $template->event = $objEvent;
-                $template->eventConfig = $this->eventFactory->create($objEvent);
+                $template->eventConfig = $this->eventFactory->create($objEvent->id);
             }
         } else {
-            if ($this->hasError) {
-                $template->errorMsg = $this->errorMsg;
-            } else {
+            $template->blnHasUnsubscribed = false;
+
+            if (!$this->hasError) {
                 $template->formId = 'tl_unsubscribe_from_event';
                 $template->event = $this->objEvent;
                 $template->member = $this->objEventMember;
             }
         }
+
+        $template->hasError = $this->hasError;
+        $template->errorMsg = $this->errorMsg;
 
         return $template->getResponse();
     }
@@ -199,7 +214,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $arrNotifications = $stringUtilAdapter->deserialize($model->cebb_unsubscribeNotification);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
-                // Get $arrToken from helper
+                // Get notification tokens
                 $arrTokens = $this->notificationHelper->getNotificationTokens($objEventMember);
 
                 // Send notification (multiple notifications possible)

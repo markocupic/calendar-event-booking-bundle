@@ -47,15 +47,15 @@
                 <target>Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.</target>
             </trans-unit>
             <trans-unit id="MSC.post_booking_confirm_not_confirmed">
-                <source>We have taken your booking and will get in touch with you soon.</source>
+                <source>We have taken your booking for "%s" and will get in touch with you soon.</source>
                 <target>Wir haben Ihre Buchungsanfrage erhalten und werden Sie baldmöglichst kontaktieren um ihre Anfrage für die Teilnahme an "%s" definitiv zu bestätigen.</target>
             </trans-unit>
             <trans-unit id="MSC.post_booking_confirm_confirmed">
-                <source>We have successfully received your booking and you have definitely been registered.</source>
+                <source>We have successfully received your booking for "%s" and you have definitely been registered.</source>
                 <target>Besten Dank für Ihre Buchungsanfrage. Gerne bestätigen wir Ihre Teilnahme an "%s".</target>
             </trans-unit>
             <trans-unit id="MSC.post_booking_confirm_waiting_list">
-                <source>You have been successfully placed on the waiting list.</source>
+                <source>You have been successfully placed on the waiting list for "%s".</source>
                 <target>Besten Dank für Ihre Buchungsanfrage. Sie befinden sich für "%s" auf der Warteliste. Gerne kontaktieren wir Sie, sobald Plätze wieder frei werden.</target>
             </trans-unit>
             <trans-unit id="MSC.addToWaitingList">
@@ -121,6 +121,10 @@
             <trans-unit id="ERR.conflictingUnsubscribeLimits">
                 <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
                 <target>Sie können nicht gleichzeitig eine Stornierungsfrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Stornierungsfrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.</target>
+            </trans-unit>
+            <trans-unit id="ERR.alreadyUnsubscribed">
+                <source>You have already been unsubscribed from the event "%s".</source>
+                <target>Sie wurden bereits von "%s" abgemeldet.</target>
             </trans-unit>
         </body>
     </file>

@@ -59,8 +59,8 @@ final class ContaoLog extends AbstractHook
         $strText = sprintf(
             'New event subscription with ID %d for event with ID %d (%s).',
             $insertId,
-            $eventConfig->event->id,
-            $eventConfig->event->title
+            $eventConfig->getEvent()->id,
+            $eventConfig->getEvent()->title
         );
 
         $level = LogLevel::INFO;

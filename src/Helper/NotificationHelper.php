@@ -87,7 +87,7 @@ class NotificationHelper
         // Prepare tokens for event and use "event_*" as prefix
         $this->controller->loadDataContainer('tl_calendar_events');
 
-        $row = $eventConfig->event->row();
+        $row = $eventConfig->getEvent()->row();
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$k])) {
@@ -128,7 +128,7 @@ class NotificationHelper
         $arrTokens['event_unsubscribeHref'] = '';
 
         if ($eventConfig->get('activateDeregistration')) {
-            $objCalendar = $eventConfig->event->getRelated('pid');
+            $objCalendar = $eventConfig->getEvent()->getRelated('pid');
 
             if (null !== $objCalendar) {
                 $objPage = $this->pageModel->findByPk($objCalendar->eventUnsubscribePage);

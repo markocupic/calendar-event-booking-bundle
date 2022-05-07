@@ -125,7 +125,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             // Get the current event && return an empty string
             // if activateBookingForm isn't set or event is not published
             if (null !== ($event = $this->eventHelper->getEventFromCurrentUrl())) {
-                $this->eventConfig = $this->eventFactory->create((int) $event->id);
+                $this->eventConfig = $this->eventFactory->create($event->id);
 
                 if ($this->eventConfig->get('activateBookingForm') && $this->eventConfig->get('published')) {
                     $showEmpty = false;
@@ -317,7 +317,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->eventConfig);
         $template->bookingMin = $this->eventConfig->getBookingMin();
         $template->bookingMax = $this->eventConfig->getBookingMax();
-        $template->event = $this->eventConfig->event;
+        $template->event = $this->eventConfig->getEvent();
         $template->eventConfig = $this->eventConfig;
         $template->model = $this->model;
         $template->messages = $this->message->hasMessages() ? $this->message->generate('FE') : null;

@@ -66,7 +66,7 @@
                 <source>You've been successfully unsubscribed from event "%s".</source>
             </trans-unit>
             <trans-unit id="MSC.unsubscribeConfirm">
-                <source>Dear &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;&amp;lt;br&gt;Are you sure you want to unsubscribe from event "%s"?</source>
+                <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
             </trans-unit>
             <trans-unit id="BTN.slabelUnsubscribeFromEvent">
                 <source>Unsubscribe from event</source>
@@ -91,6 +91,9 @@
             </trans-unit>
             <trans-unit id="ERR.conflictingUnsubscribeLimits">
                 <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
+            </trans-unit>
+            <trans-unit id="ERR.alreadyUnsubscribed">
+                <source>You have already been unsubscribed from the event "%s".</source>
             </trans-unit>
         </body>
     </file>

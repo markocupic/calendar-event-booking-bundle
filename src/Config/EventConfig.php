@@ -20,7 +20,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 
 class EventConfig
 {
-    public CalendarEventsModel $event;
+    private CalendarEventsModel $event;
     private ContaoFramework $framework;
 
     // Adapters
@@ -38,7 +38,12 @@ class EventConfig
     public function get($propertyName)
     {
         // @todo enable presetting values in tl_calendar
-        return $this->event->$propertyName;
+        return $this->getEvent()->$propertyName;
+    }
+
+    public function getEvent(): CalendarEventsModel
+    {
+        return $this->event;
     }
 
     public function isBookingFormActivated(): bool
