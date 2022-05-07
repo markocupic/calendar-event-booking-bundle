@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -25,9 +25,8 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Result;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+use Doctrine\DBAL\Driver\PDOStatement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,12 +39,30 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    private ContaoFramework $framework;
-    private ScopeMatcher $scopeMatcher;
-    private Connection $connection;
-    private EventRegistration $eventRegistration;
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
 
-    private ?CalendarEventsModel $objEvent = null;
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
+
+    /**
+     * @var CalendarEventsModel
+     */
+    private $objEvent;
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
@@ -66,9 +83,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
             $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
-            // Get the current event && return empty string if activateBookingForm isn't set or event is not published
+            // Get the current event && return empty string if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if ($this->objEvent->activateBookingForm && $this->objEvent->published) {
+                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
                     $showEmpty = false;
                 }
             }
@@ -82,9 +99,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    /**
-     * @throws Exception
-     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -93,16 +107,18 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
-        $result = $this->getRegistrations((int) ($this->objEvent->id));
-
-        $intRowCount = $result->rowCount();
+        /** @var PDOStatement $results */
+        $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
+        $intRowCount = $results->rowCount();
 
         $i = 0;
         $strRows = '';
 
-        while (false !== ($arrEventMember = $result->fetchAssociative())) {
-            $partial = new FrontendTemplate($model->cebb_memberListPartialTemplate);
+        while (false !== ($arrEventMember = $results->fetch())) {
+            /** @var FrontendTemplate $partial */
+            $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
+            /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
             $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
             $partial->model = $calendarEventsMemberModel;
 
@@ -110,7 +126,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             $partial->rowClass = $this->getRowClass($i, $intRowCount);
 
             $strRows .= $partial->parse();
-
             ++$i;
         }
 
@@ -124,29 +139,24 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     }
 
     /**
-     * Get signed up members of the current event.
-     *
-     * @throws Exception
-     *
-     * @return Result
+     * Get signed up members of current event.
      */
-    protected function getRegistrations(int $id)
+    protected function getSignedUpMembers(int $id)
     {
-        $table = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+        $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
 
+        /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
-            ->from($table, 't')
+            ->from($t, 't')
             ->where('t.pid = :pid')
-            ->andWhere('t.bookingState = :bookingState')
-            ->orderBy('t.dateAdded', 'ASC')
+            ->orderBy('t.lastname', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
             ->addOrderBy('t.city', 'ASC')
             ->setParameter('pid', $id)
-            ->setParameter('bookingState', BookingState::STATE_CONFIRMED)
         ;
 
-        return $qb->executeQuery();
+        return $qb->execute();
     }
 
     protected function getRowClass(int $i, int $intRowsTotal): string

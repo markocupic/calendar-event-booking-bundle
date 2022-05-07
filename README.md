@@ -134,7 +134,7 @@ Array
     [member_id] => 26
     [member_pid] => Testevent 2
     [member_tstamp] => 08.09.2021 21:26
-    [member_dateAdded] => 08.09.2021 21:26
+    [member_addedOn] => 08.09.2021 21:26
     [member_notes] => Tomorrow never dies!
     [member_firstname] => James
     [member_lastname] => Bond
@@ -195,24 +195,24 @@ Array
     [event_description] =>
     [event_pageTitle] =>
     [event_unsubscribeLimit] => 0
-    [event_activateDeregistration] => ja
+    [event_enableDeregistration] => ja
     [event_eventBookingNotificationSender] => Eve Moneypenny
-    [event_eventBookingNotification] => Event Buchungs Benachrichtigung
-    [event_activateNotification] => ja
+    [event_eventBookingNotificationCenterIds] => Event Buchungs Benachrichtigung
+    [event_enableNotificationCenter] => ja
     [event_maxEscortsPerMember] => 0
     [event_maxMembers] => 11
     [event_bookingStartDate] => 7. Juni 2021
     [event_bookingEndDate] => 15. September 2021
-    [event_activateBookingForm] => ja
+    [event_addBookingForm] => ja
     [event_city] =>
     [event_postal] =>
     [event_street] =>
-    [event_allowDuplicateEmail] => ja
+    [event_enableMultiBookingWithSameAddress] => ja
     [event_unsubscribeLimitTstamp] => 12.08.2021 16:40
     [event_featured] => nein
     [event_robots] =>
     [event_minMembers] => 0
-    [event_addEscortsToTotal] => nein
+    [event_includeEscortsWhenCalculatingRegCount] => nein
     [organizer_id] => 1
     [organizer_tstamp] => 09.06.2021 16:08
     [organizer_username] => eve.moneypenny
@@ -280,6 +280,7 @@ Array
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
 Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
 
+
 ```php
 <?php
 // src/EventListener/DoSomething.php
@@ -290,46 +291,31 @@ namespace App\EventListener;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;
 
 /**
  * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
  */
-final class DoSomething extends AbstractHook
+final class DoSomething
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 9000;
+    public const PRIORITY = 1200;
 
     /**
      * @var EventRegistration
      */
     private $eventRegistration;
 
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
-        if (!self::isEnabled()) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return;
         }
 
-        // It is possible to disable a HOOK with a lower priority
-        // The built in notification hook has priority of 1000
-        // so we can disable it.
-        Notification::disableHook();
-
-        // Create your own notification logic here
-        // .......
-
-        // Get the current event
         $objEvent = $moduleInstance->getProperty('objEvent');
-
-        // Get the current registration object
         $objEventMember = $moduleInstance->getProperty('objEventMember');
-
-        // Get the form object
         $objForm = $moduleInstance->getProperty('objForm');
 
-        // Do something more
-        // .......
+        // Do something
 
     }
 }

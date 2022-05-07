@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -18,13 +18,13 @@ use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Date;
 use Contao\Environment;
 use Contao\FormModel;
+use Contao\Input;
 use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
@@ -34,9 +34,9 @@ use Contao\Template;
 use Haste\Form\Form;
 use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -56,43 +56,84 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     public const CASE_BOOKING_NO_LONGER_POSSIBLE = 'bookingNoLongerPossible';
     public const CASE_BOOKING_NOT_YET_POSSIBLE = 'bookingNotYetPossible';
 
-    private ContaoFramework $framework;
-    private EventRegistration $eventRegistration;
-    private TranslatorInterface $translator;
-    private ScopeMatcher $scopeMatcher;
-    private RequestStack $requestStack;
+    /**
+     * @var ModuleModel
+     */
+    private $model;
 
-    // Adapters
-    private Adapter $system;
-    private Adapter $environment;
-    private Adapter $stringUtil;
-    private Adapter $url;
-    private Adapter $message;
-    private Adapter $date;
-    private Adapter $config;
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
 
-    private ?CalendarEventsModel $objEvent = null;
-    private ?CalendarEventsMemberModel $objEventMember = null;
-    private ?Form $objForm = null;
-    private ?PageModel $objPage = null;
-    private ?ModuleModel $model = null;
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, RequestStack $requestStack)
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispather;
+
+    /**
+     * @var Template;
+     */
+    private $template;
+
+    /**
+     * @var CalendarEventsModel
+     */
+    private $objEvent;
+
+    /**
+     * @var array
+     */
+    private $disabledHooks = [];
+
+    /**
+     * @var string
+     */
+    private $case;
+
+    /**
+     * @var CalendarEventsMemberModel
+     */
+    private $objEventMember;
+
+    /**
+     * @var Form
+     */
+    private $objForm;
+
+    /**
+     * @var PageModel
+     */
+    private $objPage;
+
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, RequestStack $requestStack, EventDispatcherInterface $eventDispatcher)
     {
         $this->framework = $framework;
         $this->eventRegistration = $eventRegistration;
         $this->translator = $translator;
         $this->scopeMatcher = $scopeMatcher;
         $this->requestStack = $requestStack;
-
-        // Adapters
-        $this->system = $this->framework->getAdapter(System::class);
-        $this->environment = $this->framework->getAdapter(Environment::class);
-        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
-        $this->url = $this->framework->getAdapter(Url::class);
-        $this->message = $this->framework->getAdapter(Message::class);
-        $this->date = $this->framework->getAdapter(Date::class);
-        $this->config = $this->framework->getAdapter(Config::class);
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -107,9 +148,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $showEmpty = true;
 
             // Get the current event && return an empty string
-            // if activateBookingForm isn't set or event is not published
+            // if addBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if ($this->objEvent->activateBookingForm && $this->objEvent->published) {
+                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
                     $showEmpty = false;
                 }
             }
@@ -158,40 +199,51 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
+        $systemAdapter = $this->framework->getAdapter(System::class);
+        $environmentAdapter = $this->framework->getAdapter(Environment::class);
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
+        $urlAdapter = $this->framework->getAdapter(Url::class);
+        $messageAdapter = $this->framework->getAdapter(Message::class);
+        $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
+
+        $this->template = $template;
+
         // Load language file
-        $this->system->loadLanguageFile(self::EVENT_SUBSCRIPTION_TABLE);
+        $systemAdapter->loadLanguageFile(self::EVENT_SUBSCRIPTION_TABLE);
 
         if (null === $this->objEvent) {
-            throw new PageNotFoundException('Page not found: '.$this->environment->get('uri'));
+            throw new PageNotFoundException('Page not found: '.$environmentAdapter->get('uri'));
         }
 
         // Override the page title (see #2853 and #4955)
         if ('' !== $this->objEvent->title) {
-            $this->objPage->pageTitle = strip_tags($this->stringUtil->stripInsertTags($this->objEvent->title));
+            $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->objEvent->title));
         }
 
         // Get case
-        $case = $this->eventRegistration->getRegistrationState($this->objEvent);
+        $this->case = $this->eventRegistration->getRegistrationState($this->objEvent);
 
         // Trigger set case hook: manipulate case
-        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_SET_CASE]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_SET_CASE])) {
-            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_SET_CASE] as $callback) {
-                $this->system->importStatic($callback[0])->{$callback[1]}($this);
+        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingSetCase']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'])) {
+            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'] as $callback) {
+                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
             }
         }
 
-        if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $case) {
-            $this->message->addInfo(
+        if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
+            $messageAdapter->addInfo(
                 $this->translator->trans(
                     'MSC.'.self::CASE_BOOKING_NOT_YET_POSSIBLE,
-                    [$this->date->parse($this->config->get('dateFormat'), $this->objEvent->bookingStartDate)],
+                    [$dateAdapter->parse($configAdapter->get('dateFormat'), $this->objEvent->bookingStartDate)],
                     'contao_default'
                 )
             );
         }
 
-        if (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $case) {
-            $this->message->addInfo(
+        if (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $this->case) {
+            $messageAdapter->addInfo(
                 $this->translator->trans(
                     'MSC.'.self::CASE_BOOKING_NO_LONGER_POSSIBLE,
                     [],
@@ -200,8 +252,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             );
         }
 
-        if (self::CASE_EVENT_FULLY_BOOKED === $case) {
-            $this->message->addInfo(
+        if (self::CASE_EVENT_FULLY_BOOKED === $this->case) {
+            $messageAdapter->addInfo(
                 $this->translator->trans(
                     'MSC.'.self::CASE_EVENT_FULLY_BOOKED,
                     [],
@@ -210,14 +262,14 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             );
         }
 
-        if (self::CASE_BOOKING_POSSIBLE === $case) {
+        if (self::CASE_BOOKING_POSSIBLE === $this->case) {
             if ($this->model->form && null !== ($objFormGeneratorModel = FormModel::findByPk($this->model->form))) {
                 $this->setForm($objFormGeneratorModel);
 
                 // Trigger pre validate hook: e.g. add custom field validators.';
-                if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM])) {
-                    foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM] as $callback) {
-                        $this->system->importStatic($callback[0])->{$callback[1]}($this);
+                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'])) {
+                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'] as $callback) {
+                        $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                     }
                 }
 
@@ -225,44 +277,44 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                     if ($this->validateEventRegistration()) {
                         $this->objEventMember->pid = $this->objEvent->id;
                         $this->objEventMember->tstamp = time();
-                        $this->objEventMember->dateAdded = time();
-                        $this->objEventMember->bookingState = $this->objEvent->bookingState;
+                        $this->objEventMember->addedOn = time();
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
 
                         // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA])) {
-                            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($this);
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
                         }
 
-                        // Trigger pre-booking hook: add your custom code here.
-                        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING])) {
-                            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($this);
+                        // Trigger pre booking hook: add your custom code here.
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
                         }
 
                         // Save to Database
                         $this->objEventMember->save();
 
-                        // Trigger post-booking hook: add data to the session, send notifications, log things, etc.
-                        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING])) {
-                            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($this);
+                        // Trigger post booking hook: add data to the session, send notifications, log things, etc.
+                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
+                                $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
                         }
 
                         // Redirect to the jumpTo page
                         if (null !== $objFormGeneratorModel && $objFormGeneratorModel->jumpTo) {
-                            /** @var PageModel $jumpToPage */
-                            $jumpToPage = $this->objPage->findByPk($objFormGeneratorModel->jumpTo);
+                            /** @var PageModel $objPageModel */
+                            $objPageModel = $pageModelAdapter->findByPk($objFormGeneratorModel->jumpTo);
 
-                            if (null !== $jumpToPage) {
-                                $strRedirectUrl = $this->url->addQueryString(
-                                    'bookingToken='.$this->objEventMember->bookingToken,
-                                    $jumpToPage->getAbsoluteUrl()
-                                )
+                            if (null !== $objPageModel) {
+                                $strRedirectUrl = $urlAdapter
+                                    ->addQueryString(
+                                        'bookingToken='.$this->objEventMember->bookingToken,
+                                        $objPageModel->getAbsoluteUrl()
+                                    )
                                 ;
 
                                 return new RedirectResponse($strRedirectUrl);
@@ -270,29 +322,32 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                         }
                     }
                 }
-                $template->form = $this->objForm;
+                $this->template->form = $this->objForm;
             }
         }
 
-        $template->case = $case;
-        $template->countBookings = $template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
-        $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
-        $template->bookingMax = $this->eventRegistration->getBookingMax($this->objEvent);
-        $template->event = $this->objEvent;
-        $template->model = $this->model;
-        $template->messages = $this->message->hasMessages() ? $this->message->generate('FE') : null;
+        $this->template->case = $this->case;
+        $this->template->countBookings = $this->template->bookingCount = $this->eventRegistration->getBookingCount($this->objEvent);
+        $this->template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
+        $this->template->bookingMax = $this->eventRegistration->getBookingMax($this->objEvent);
+        $this->template->event = $this->objEvent;
+        $this->template->model = $this->model;
+        $this->template->messages = $messageAdapter->hasMessages() ? $messageAdapter->generate('FE') : null;
 
-        return $template->getResponse();
+        return $this->template->getResponse();
     }
 
     protected function setForm(FormModel $objFormGeneratorModel): void
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $inputAdapter = $this->framework->getAdapter(Input::class);
+        $systemAdapter = $this->framework->getAdapter(System::class);
 
         $this->objForm = new Form(
             'eventSubscriptionForm',
             'POST',
-            static fn ($objHaste) => $request->request->get('FORM_SUBMIT') === $objHaste->getFormId()
+            static function ($objHaste) use ($inputAdapter) {
+                return $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId();
+            }
         );
 
         // Bind the event member model to the form input
@@ -302,11 +357,13 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         // Add fields from form generator
         $this->objForm->addFieldsFromFormGenerator(
             $objFormGeneratorModel->id,
-            function (&$strField, &$arrDca) {
+            function (&$strField, &$arrDca) use ($systemAdapter) {
+                $blnShow = true;
+
                 // Trigger add field hook
-                if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD])) {
-                    foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD] as $callback) {
-                        $blnShow = $this->system->importStatic($callback[0])->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
+                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingAddField']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingAddField'])) {
+                    foreach ($GLOBALS['TL_HOOKS']['calEvtBookingAddField'] as $callback) {
+                        $blnShow = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
 
                         if (!$blnShow) {
                             return false;
@@ -322,10 +379,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
     protected function validateEventRegistration(): bool
     {
+        $systemAdapter = $this->framework->getAdapter(System::class);
+
         // Trigger validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.
-        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_VALIDATE_BOOKING_REQUEST]) || \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_VALIDATE_BOOKING_REQUEST])) {
-            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_VALIDATE_BOOKING_REQUEST] as $callback) {
-                $isValid = $this->system->importStatic($callback[0])->{$callback[1]}($this);
+        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'])) {
+            foreach ($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'] as $callback) {
+                $isValid = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
 
                 if (!$isValid) {
                     return false;

@@ -23,12 +23,20 @@ use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-final class ExportTable extends AbstractHook implements ListenerInterface
+final class ExportTable implements ListenerInterface
 {
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
+    /**
+     * @var bool
+     */
+    public static $disableHook = false;
+
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
 
     public function __construct(ContaoFramework $framework)
     {
@@ -36,16 +44,16 @@ final class ExportTable extends AbstractHook implements ListenerInterface
     }
 
     /**
+     * @param string $strFieldName
      * @param $varValue
-     *
+     * @param string $strTableName
+     * @param array $arrDataRecord
+     * @param array $arrDca
+     * @param Config $objConfig
      * @return mixed
      */
     public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig)
     {
-        if (!self::isEnabled()) {
-            return $varValue;
-        }
-
         if ('tl_calendar_events_member' === $strTableName) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
@@ -55,13 +63,24 @@ final class ExportTable extends AbstractHook implements ListenerInterface
                 if (null !== $objModel) {
                     $varValue = $objModel->title;
                 }
-            } elseif ('bookingState' === $strFieldName) {
-                if (!empty($varValue) && isset($GLOBALS['TL_LANG']['MSC'][$varValue])) {
-                    $varValue = $GLOBALS['TL_LANG']['MSC'][$varValue];
-                }
             }
         }
 
         return $varValue;
+    }
+
+    public static function disableHook(): void
+    {
+        self::$disableHook = true;
+    }
+
+    public static function enableHook(): void
+    {
+        self::$disableHook = false;
+    }
+
+    public static function isEnabled(): bool
+    {
+        return self::$disableHook;
     }
 }

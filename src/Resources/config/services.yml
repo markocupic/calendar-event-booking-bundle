@@ -9,3 +9,7 @@ services:
     Markocupic\CalendarEventBookingBundle\:
         resource: ../../
         exclude: ../../{Event,Model,DependencyInjection,Resources}
+
+    Markocupic\CalendarEventBookingBundle\Migration\Migrations:
+        tags:
+            - { name: contao.migration, priority: 0 }

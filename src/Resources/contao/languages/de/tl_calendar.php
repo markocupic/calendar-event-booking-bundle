@@ -9,8 +9,7 @@
  */
 
 // Legends
-$GLOBALS['TL_LANG']['tl_form']['calendar_event_booking_settings'] = 'Event bookiung form settings';
+$GLOBALS['TL_LANG']['tl_calendar']['event_unsubscribe_legend'] = "Event-Stornierung-Einstellungen";
 
 // Fields
-$GLOBALS['TL_LANG']['tl_form']['isCalendarEventBookingForm'] = ['Activate event booking form functionality', 'Activate this checkbox if the form is used for booking events.'];
-
+$GLOBALS['TL_LANG']['tl_calendar']['eventUnsubscribePage'] = ['Seite mit dem Event-Stornierungsformular-Modul wählen', 'Wählen Sie die Seite mit dem Event-Stornierungsformular-Modul aus.'];

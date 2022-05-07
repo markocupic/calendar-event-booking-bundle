@@ -1,18 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
-/*
- * This file is part of Calendar Event Booking Bundle.
- *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
+/**
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2021 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2021
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
 // Global operations
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['calendar-event-booking-bundle'] = 'Event-Bookings';
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['calendar-event-booking-bundle'] = ['Event-Bookings'];
 $GLOBALS['TL_LANG']['tl_nc_notification']['type']['booking-notification'] = ['Event booking confirmation'];
 $GLOBALS['TL_LANG']['tl_nc_notification']['type']['event-unsubscribe-notification'] = ['Event booking unsubscription'];

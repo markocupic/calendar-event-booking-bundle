@@ -12,53 +12,20 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\DataContainer;
+namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
 
 use Contao\Calendar;
 use Contao\Config;
-use Contao\CoreBundle\Framework\Adapter;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Message;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-class CalendarEvents
+class TlCalendarEvents
 {
-    public const TABLE = 'tl_calendar_events';
-
-    private ContaoFramework $framework;
-    private Connection $connection;
-
-    // Adapters
-    private Adapter $calendar;
-    private Adapter $calendarEventsMemberModel;
-    private Adapter $config;
-    private Adapter $date;
-    private Adapter $message;
-
-    public function __construct(ContaoFramework $framework, Connection $connection)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-
-        // Adapters
-        $this->calendar = $this->framework->getAdapter(Calendar::class);
-        $this->calendarEventsMemberModel = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-        $this->config = $this->framework->getAdapter(Config::class);
-        $this->date = $this->framework->getAdapter(Date::class);
-        $this->message = $this->framework->getAdapter(Message::class);
-    }
-
     /**
      * Adjust bookingStartDate and bookingStartDate.
-     *
-     * @Callback(table=CalendarEvents::TABLE, target="config.onsubmit")
-     *
-     * @throws Exception
      */
     public function adjustBookingDate(DataContainer $dc): void
     {
@@ -74,31 +41,33 @@ class CalendarEvents
         if (!empty((int) $dc->activeRecord->bookingEndDate)) {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate) {
                 $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                $this->message->addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'], TL_MODE);
+                Message::addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'], TL_MODE);
             }
         }
 
-        $this->connection->update(self::TABLE, $arrSet, ['id' => $dc->id]);
+        Database::getInstance()
+            ->prepare('UPDATE tl_calendar_events %s WHERE id = ?')
+            ->set($arrSet)
+            ->execute($dc->id)
+        ;
     }
 
     /**
-     * Override child record callback.
-     *
-     * @Callback(table=CalendarEvents::TABLE, target="list.sorting.child_record")
+     * @param array $arrRow
      */
-    public function listEvents(array $arrRow): string
+    public function listEvents($arrRow): string
     {
-        if ('1' === $arrRow['activateBookingForm']) {
-            $countBookings = $this->calendarEventsMemberModel->countBy('pid', $arrRow['id']);
+        if ('1' === $arrRow['addBookingForm']) {
+            $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
 
-            $span = $this->calendar->calculateSpan($arrRow['startTime'], $arrRow['endTime']);
+            $span = Calendar::calculateSpan($arrRow['startTime'], $arrRow['endTime']);
 
             if ($span > 0) {
-                $date = $this->date->parse($this->config->get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].$this->date->parse($this->config->get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
+                $date = Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
             } elseif ($arrRow['startTime'] === $arrRow['endTime']) {
-                $date = $this->date->parse($this->config->get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.$this->date->parse($this->config->get('timeFormat'), $arrRow['startTime']) : '');
+                $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.Date::parse(Config::get('timeFormat'), $arrRow['startTime']) : '');
             } else {
-                $date = $this->date->parse($this->config->get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.$this->date->parse($this->config->get('timeFormat'), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].$this->date->parse($this->config->get('timeFormat'), $arrRow['endTime']) : '');
+                $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.Date::parse(Config::get('timeFormat'), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].Date::parse(Config::get('timeFormat'), $arrRow['endTime']) : '');
             }
 
             return '<div class="tl_content_left">'.$arrRow['title'].' <span style="color:#999;padding-left:3px">['.$date.']</span><span style="color:#999;padding-left:3px">['.$GLOBALS['TL_LANG']['MSC']['bookings'].': '.$countBookings.'x]</span></div>';
@@ -107,9 +76,6 @@ class CalendarEvents
         return (new \tl_calendar_events())->listEvents($arrRow);
     }
 
-    /**
-     * @Callback(table=CalendarEvents::TABLE, target="fields.text.save")
-     */
     public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
     {
         if (!empty($intValue)) {
@@ -120,6 +86,8 @@ class CalendarEvents
             }
 
             // Check whether the timestamp entered makes sense in relation to the event start and end times
+            $intMaxValue = null;
+
             // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
             if ($dc->activeRecord->endDate) {
                 if ($dc->activeRecord->addTime) {

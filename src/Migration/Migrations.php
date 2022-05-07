@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Migration\Version100;
+namespace Markocupic\CalendarEventBookingBundle\Migration;
 
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
@@ -22,18 +22,16 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
 
-class Version100Update extends AbstractMigration
+class Migrations extends AbstractMigration
 {
-    private Connection $connection;
+    /**
+     * @var Connection
+     */
+    private $connection;
 
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-    }
-
-    public function getName(): string
-    {
-        return 'Calendar Event Booking Bundle version 1.0.0 update';
     }
 
     /**
@@ -80,7 +78,7 @@ class Version100Update extends AbstractMigration
                     $doMigration = true;
                 }
             }
-            // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.cebb_memberListPartialTemplate
+            // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
             if (isset($columns['calendar_event_booking_member_list_partial_template'])) {
                 $doMigration = true;
             }
@@ -140,12 +138,12 @@ class Version100Update extends AbstractMigration
 
         $schemaManager = $this->connection->getSchemaManager();
 
-        // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.cebb_memberListPartialTemplate
+        // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
         if ($schemaManager->tablesExist(['tl_module'])) {
             $columns = $schemaManager->listTableColumns('tl_module');
 
             if (isset($columns['calendar_event_booking_member_list_partial_template'])) {
-                $this->connection->executeQuery('ALTER TABLE tl_module CHANGE calendar_event_booking_member_list_partial_template cebb_memberListPartialTemplate varchar(128)');
+                $this->connection->executeQuery('ALTER TABLE tl_module CHANGE calendar_event_booking_member_list_partial_template calendarEventBookingMemberListPartialTemplate varchar(128)');
                 $arrMessage[] = 'Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate';
             }
         }

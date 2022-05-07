@@ -18,24 +18,33 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
-use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(ValidateNumberOfParticipants::HOOK, priority=ValidateNumberOfParticipants::PRIORITY)
  */
-final class ValidateNumberOfParticipants extends AbstractHook
+final class ValidateNumberOfParticipants
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1100;
 
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
-    private EventRegistration $eventRegistration;
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var EventRegistration
+     */
+    private $evenRegistration;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
@@ -44,15 +53,19 @@ final class ValidateNumberOfParticipants extends AbstractHook
         $this->eventRegistration = $eventRegistration;
     }
 
+
     /**
      * Important! return false will make the validation fail
      * Validate if number of participants exceeds max member limit.
      *
-     * @throws Exception
+     * @param CalendarEventBookingEventBookingModuleController $moduleInstance
+     * @param array $arrDisabledHooks
+     * @return bool
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
-        if (!self::isEnabled()) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return true;
         }
 
@@ -67,7 +80,7 @@ final class ValidateNumberOfParticipants extends AbstractHook
         // Check if user with submitted email has already booked
         $escorts = 0;
 
-        if ($objEvent->addEscortsToTotal && $objForm->hasFormField('escorts')) {
+        if ($objEvent->includeEscortsWhenCalculatingRegCount && $objForm->hasFormField('escorts')) {
             $objWidget = $objForm->getWidget('escorts');
             $escorts = (int) $objWidget->value;
         }

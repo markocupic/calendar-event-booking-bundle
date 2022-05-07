@@ -15,23 +15,30 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
 
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(ValidateEscorts::HOOK, priority=ValidateEscorts::PRIORITY)
  */
-final class ValidateEscorts extends AbstractHook
+final class ValidateEscorts
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1200;
 
-    private TranslatorInterface $translator;
-    private EventRegistration $eventRegistration;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
 
     public function __construct(TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
@@ -43,9 +50,9 @@ final class ValidateEscorts extends AbstractHook
      * Important! return false will make the validation fail
      * Validate escorts.
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
-        if (!self::isEnabled()) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return true;
         }
 

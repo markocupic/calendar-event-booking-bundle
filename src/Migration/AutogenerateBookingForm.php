@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Migration;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
@@ -24,21 +23,26 @@ use Doctrine\DBAL\Exception;
 
 class AutogenerateBookingForm extends AbstractMigration
 {
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private string $projectDir;
+    /**
+     * @var string
+     */
+    private $projectDir;
 
-    // Adapters
-    private Adapter $controller;
+    /**
+     * @var Connection
+     */
+    private $connection;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, string $projectDir)
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    public function __construct(string $projectDir, Connection $connection, ContaoFramework $framework)
     {
-        $this->framework = $framework;
-        $this->connection = $connection;
         $this->projectDir = $projectDir;
-
-        // Adapters
-        $this->controller = $this->framework->getAdapter(Controller::class);
+        $this->connection = $connection;
+        $this->framework = $framework;
     }
 
     /**
@@ -91,9 +95,6 @@ class AutogenerateBookingForm extends AbstractMigration
      */
     private function autoGenerateBookingForm(): void
     {
-        // Initialize the contao framework
-        $this->framework->initialize();
-
         $sqlTlForm = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form.sql');
         $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
 
@@ -101,7 +102,7 @@ class AutogenerateBookingForm extends AbstractMigration
         $sqlTlForm = str_replace('##tstamp##', (string) time(), $sqlTlForm);
 
         // Insert into tl_form
-        $this->connection->executeStatement($sqlTlForm);
+        $this->connection->executeQuery($sqlTlForm);
 
         if (($intInsertId = $this->connection->lastInsertId()) > 0) {
             // Set tl_form.isCalendarEventBookingForm to true if field exists
@@ -112,12 +113,17 @@ class AutogenerateBookingForm extends AbstractMigration
                 $set = [
                     'isCalendarEventBookingForm' => '1',
                 ];
-
                 $this->connection->update('tl_form', $set, ['id' => $intInsertId]);
             }
 
+            // Initialize the contao framework
+            $this->framework->initialize();
+
+            /** @var Controller $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+
             // Load dca tl_form_field
-            $this->controller->loadDataContainer('tl_form_field');
+            $controllerAdapter->loadDataContainer('tl_form_field');
 
             $strExtensions = $GLOBALS['TL_DCA']['tl_form_field']['fields']['extensions']['default'] ?? '';
 
@@ -127,7 +133,7 @@ class AutogenerateBookingForm extends AbstractMigration
             $sqlTlFormField = str_replace('##extensions##', $strExtensions, $sqlTlFormField);
 
             // Insert into tl_form_field
-            $this->connection->executeStatement($sqlTlFormField);
+            $this->connection->executeQuery($sqlTlFormField);
         }
     }
 }

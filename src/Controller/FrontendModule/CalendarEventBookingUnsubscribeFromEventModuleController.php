@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -24,9 +24,7 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,18 +37,56 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
-    protected NotificationHelper $notificationHelper;
 
-    protected ?CalendarEventsModel $objEvent = null;
-    protected ?CalendarEventsMemberModel $objEventMember = null;
-    protected ?PageModel $objPage = null;
-    protected bool $blnHasUnsubscribed = false;
-    protected bool $hasError = false;
-    protected array $errorMsg = [];
+    /**
+     * @var NotificationHelper
+     */
+    protected $notificationHelper;
 
-    private ContaoFramework $framework;
-    private ScopeMatcher $scopeMatcher;
-    private TranslatorInterface $translator;
+    /**
+     * @var CalendarEventsModel
+     */
+    protected $objEvent;
+
+    /**
+     * @var CalendarEventsMemberModel
+     */
+    protected $objEventMember;
+
+    /**
+     * @var PageModel
+     */
+    protected $objPage;
+
+    /**
+     * @var bool
+     */
+    protected $hasError = false;
+
+    /**
+     * @var array
+     */
+    protected $errorMsg = [];
+
+    /**
+     * @var bool
+     */
+    protected $blnHasUnsubscribed = false;
+
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var ScopeMatcher
+     */
+    private $scopeMatcher;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
     {
@@ -60,9 +96,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         $this->translator = $translator;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
@@ -89,7 +122,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    if (!$this->objEvent->activateDeregistration) {
+                    if (!$this->objEvent->enableDeregistration) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
@@ -102,8 +135,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                         if (time() > $this->objEvent->unsubscribeLimitTstamp) {
                             $blnLimitExpired = true;
                         }
-                    } else {
-                        // We only have an unsubscription limit expressed in days before event start date
+                    }
+                    // We only have a unsubscription limit expressed in days before event start date
+                    else {
                         $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
 
                         if (time() + $limit * 3600 * 24 > $this->objEvent->startDate) {
@@ -117,21 +151,10 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    // Delete record, notify and redirect
+                    // Delete entry and redirect
                     if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
-                        // Set booking state
-                        $this->objEventMember->bookingState = BookingState::STATE_UNSUBSCRIBED;
-                        $this->objEventMember->save();
-
-                        // Send notifications
                         $this->notify($this->objEventMember, $this->objEvent, $model);
-
-                        // Trigger the unsubscribe from event hook
-                        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT])) {
-                            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($this);
-                            }
-                        }
+                        $this->objEventMember->delete();
 
                         $href = sprintf(
                             '%s?unsubscribedFromEvent=true&eid=%s',
@@ -184,9 +207,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
         $notificationAdapter = $this->framework->getAdapter(Notification::class);
 
-        if ($objEvent->activateDeregistration) {
+        if ($objEvent->enableDeregistration) {
             // Multiple notifications possible
-            $arrNotifications = $stringUtilAdapter->deserialize($model->cebb_unsubscribeNotification);
+            $arrNotifications = $stringUtilAdapter->deserialize($model->unsubscribeFromEventNotificationIds);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper

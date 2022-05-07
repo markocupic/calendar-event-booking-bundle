@@ -1,30 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
-/*
- * This file is part of Calendar Event Booking Bundle.
+/**
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2021 Marko Cupic
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2021
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 
-// Misc
 $GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';
-
-// Booking state references
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNDEFINED] = 'undefined';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_WAITING_FOR_RESPONSE] = 'waiting for response';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_CONFIRMED] = 'confirmed';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNSUBSCRIBED] = 'unsubscribed';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_REJECTED] = 'rejected';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_WAITING_LIST] = 'waiting list';
 
 // Form validation
 $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Maximum %s escorts per participant possible.';
@@ -36,9 +23,10 @@ $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CAS
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Sorry, but unfortunately this event is already fully booked.';
 
 // Form validation backend
-$GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'] = 'The end date for the booking period has been adjusted.';
+$GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'] = 'The end date for the booking period has been adjusted.';
 
 // Unsubscribe from event
+
 $GLOBALS['TL_LANG']['MSC']['unsubscribeInfo'] = 'You\'ve been successfully unsubscribed from event "%s".';
 $GLOBALS['TL_LANG']['MSC']['unsubscribeConfirm'] = 'Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?';
 $GLOBALS['TL_LANG']['BTN']['slabelUnsubscribeFromEvent'] = 'Unsubscribe from event';

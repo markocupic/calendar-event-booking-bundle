@@ -1,14 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-/*
- * This file is part of Calendar Event Booking Bundle.
- *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
+/**
+ * Calendar Event Booking Bundle Extension for Contao CMS
+ * Copyright (c) 2008-2021 Marko Cupic
+ * @package Markocupic\CalendarEventBookingBundle
+ * @author Marko Cupic m.cupic@gmx.ch, 2021
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -33,8 +29,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['address_legend'] = 'Adress leg
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['contact_legend'] = 'Contact legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escort_legend'] = 'Escort legend';
 
-// Fields
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['dateAdded'] = ['Booking date', 'Please enter the booking date.'];
+// Legend
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['addedOn'] = ['Booking date', 'Please enter the booking date.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes'] = ['Notes', 'Please enter the notes.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['firstname'] = ['Firstname', 'Please enter the firstname.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['lastname'] = ['Lastname', 'Please enter the lastname.'];
@@ -46,5 +42,4 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['city'] = ['City', 'Please ente
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['phone'] = ['Phone', 'Please enter the phone number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['email'] = ['Email address', 'Please enter the email address.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escorts'] = ['Escorts', 'Please enter the escorts.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingToken'] = ['Booking token', 'The booking token is a uuid and can be used to identify the registration.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingState'] = ['Booking state', 'Select the booking state.'];
+

@@ -23,7 +23,6 @@ use Contao\Input;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -33,10 +32,25 @@ class EventRegistration
 {
     public const FLASH_KEY = '_event_registration';
 
-    protected ContaoFramework $framework;
-    private Connection $connection;
-    private Security $security;
-    private RequestStack $requestStack;
+    /**
+     * @var ContaoFramework
+     */
+    protected $framework;
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
     public function __construct(ContaoFramework $framework, Connection $connection, Security $security, RequestStack $requestStack)
     {
@@ -85,12 +99,9 @@ class EventRegistration
         return null;
     }
 
-    /**
-     * @throws Exception
-     */
     public function getRegistrationState(?CalendarEventsModel $objEvent): string
     {
-        if (!$objEvent->activateBookingForm) {
+        if (!$objEvent->addBookingForm) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
         } elseif ($objEvent->bookingStartDate > time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
@@ -105,9 +116,6 @@ class EventRegistration
         return $state;
     }
 
-    /**
-     * @throws Exception
-     */
     public function canRegister(CalendarEventsModel $objEvent): bool
     {
         return CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE === $this->getRegistrationState($objEvent);
@@ -133,60 +141,19 @@ class EventRegistration
      */
     public function getBookingCount(CalendarEventsModel $objEvent): int
     {
-        return $this->countByEventAndBookingState(
-            $objEvent,
-            BookingState::STATE_CONFIRMED,
-            (bool) $objEvent->addEscortsToTotal,
-        );
-    }
+        $calendarEventsMemberModelAdaper = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $memberCount = (int) $calendarEventsMemberModelAdaper->countBy('pid', $objEvent->id);
 
-    /**
-     * @throws Exception
-     */
-    public function getWaitingListCount(CalendarEventsModel $objEvent): int
-    {
-        return $this->countByEventAndBookingState(
-            $objEvent,
-            BookingState::STATE_WAITING_LIST,
-            (bool) $objEvent->addEscortsToTotal,
-        );
-    }
+        if ($objEvent->includeEscortsWhenCalculatingRegCount) {
+            $query = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ?';
+            $sum = $this->connection->fetchOne($query, [$objEvent->id]);
 
-    /**
-     * @throws Exception
-     */
-    public function getWaitingForResponseCount(CalendarEventsModel $objEvent): int
-    {
-        return $this->countByEventAndBookingState(
-            $objEvent,
-            BookingState::STATE_WAITING_FOR_RESPONSE,
-            (bool) $objEvent->addEscortsToTotal,
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function countByEventAndBookingState(CalendarEventsModel $objEvent, string $bookingState, bool $addEscorts = false): int
-    {
-        $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-        $registrationCount = $this->connection->fetchOne(
-            $query1,
-            [$objEvent->id, $bookingState],
-        );
-
-        $sumBookingTotal = $registrationCount;
-
-        if ($addEscorts) {
-            $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-            $sumEscorts = $this->connection->fetchOne($query2, [$objEvent->id, $bookingState]);
-
-            if (false !== $sumEscorts) {
-                $sumBookingTotal += $sumEscorts;
+            if (false !== $sum) {
+                $memberCount = $sum + $memberCount;
             }
         }
 
-        return $sumBookingTotal;
+        return $memberCount;
     }
 
     public function getBookingMax(CalendarEventsModel $objEvent): int

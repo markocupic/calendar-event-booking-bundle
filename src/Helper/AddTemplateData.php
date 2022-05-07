@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -20,7 +20,10 @@ use Contao\Template;
 
 class AddTemplateData
 {
-    private EventRegistration $eventRegistration;
+    /**
+     * @var EventRegistration
+     */
+    private $eventRegistration;
 
     public function __construct(EventRegistration $evenRegistration)
     {
@@ -32,30 +35,56 @@ class AddTemplateData
      */
     public function addTemplateData(Template $template, CalendarEventsModel $objEvent): void
     {
-        $template->canRegister = fn (): bool => $this->eventRegistration->canRegister($objEvent);
+        $template->canRegister = function () use ($objEvent): bool {
+            return $this->eventRegistration->canRegister($objEvent);
+        };
 
-        $template->isFullyBooked = fn (): bool => $this->eventRegistration->isFullyBooked($objEvent);
+        $template->isFullyBooked = function () use ($objEvent): bool {
+            return $this->eventRegistration->isFullyBooked($objEvent);
+        };
 
-        $template->bookingCount = fn (): int => $this->eventRegistration->getBookingCount($objEvent);
+        $template->bookingCount = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingCount($objEvent);
+        };
 
-        $template->bookingMin = fn (): int => $this->eventRegistration->getBookingMin($objEvent);
+        $template->bookingMin = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingMin($objEvent);
+        };
 
-        $template->bookingMax = fn (): int => $this->eventRegistration->getBookingMax($objEvent);
+        $template->bookingMax = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingMax($objEvent);
+        };
 
-        $template->bookingStartDate = fn (): string => $this->eventRegistration->getBookingStartDate($objEvent, 'date');
+        $template->bookingStartDate = function () use ($objEvent): string {
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'date');
+        };
 
-        $template->bookingStartDatim = fn (): string => $this->eventRegistration->getBookingStartDate($objEvent, 'datim');
+        $template->bookingStartDatim = function () use ($objEvent): string {
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'datim');
+        };
 
-        $template->bookingStartTimestamp = fn (): int => $this->eventRegistration->getBookingStartDate($objEvent, 'timestamp');
+        $template->bookingStartTimestamp = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingStartDate($objEvent, 'timestamp');
+        };
 
-        $template->bookingEndDate = fn (): string => $this->eventRegistration->getBookingEndDate($objEvent, 'date');
+        $template->bookingEndDate = function () use ($objEvent): string {
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'date');
+        };
 
-        $template->bookingEndDatim = fn (): string => $this->eventRegistration->getBookingEndDate($objEvent, 'datim');
+        $template->bookingEndDatim = function () use ($objEvent): string {
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'datim');
+        };
 
-        $template->bookingEndTimestamp = fn (): int => $this->eventRegistration->getBookingEndDate($objEvent, 'timestamp');
+        $template->bookingEndTimestamp = function () use ($objEvent): int {
+            return $this->eventRegistration->getBookingEndDate($objEvent, 'timestamp');
+        };
 
-        $template->hasLoggedInUser = fn (): bool => $this->eventRegistration->hasLoggedInFrontendUser();
+        $template->hasLoggedInUser = function (): bool {
+            return $this->eventRegistration->hasLoggedInFrontendUser();
+        };
 
-        $template->loggedInUser = fn (): ?FrontendUser => $this->eventRegistration->getLoggedInFrontendUser();
+        $template->loggedInUser = function (): ?FrontendUser {
+            return $this->eventRegistration->getLoggedInFrontendUser();
+        };
     }
 }

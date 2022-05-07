@@ -20,20 +20,26 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(ValidateEmailAddress::HOOK, priority=ValidateEmailAddress::PRIORITY)
  */
-final class ValidateEmailAddress extends AbstractHook
+final class ValidateEmailAddress
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
+    /**
+     * @var ContaoFramework
+     */
+    private $framework;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator)
     {
@@ -45,9 +51,9 @@ final class ValidateEmailAddress extends AbstractHook
      * Important! return false will make the validation fail
      * Validate email address.
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
-        if (!self::isEnabled()) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return true;
         }
 
@@ -65,7 +71,7 @@ final class ValidateEmailAddress extends AbstractHook
             $objWidget = $objForm->getWidget('email');
 
             if (!empty($objWidget->value)) {
-                if (!$objEvent->allowDuplicateEmail) {
+                if (!$objEvent->enableMultiBookingWithSameAddress) {
                     $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],

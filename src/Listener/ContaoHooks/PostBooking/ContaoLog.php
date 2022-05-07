@@ -18,21 +18,23 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Psr\Log\LogLevel;
 
 /**
  * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
  */
-final class ContaoLog extends AbstractHook
+final class ContaoLog
 {
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1100;
 
-    private ?Logger $logger;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
-    public function __construct(?Logger $logger)
+    public function __construct(Logger $logger)
     {
         $this->logger = $logger;
     }
@@ -40,9 +42,9 @@ final class ContaoLog extends AbstractHook
     /**
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
-        if (!self::isEnabled()) {
+        if (\in_array(self::class, $arrDisabledHooks, true)) {
             return;
         }
 
