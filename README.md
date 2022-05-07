@@ -52,7 +52,7 @@ und nutzen Sie dabei die **Simple Tokens**.
 
 Mit ##event_unsubscribeHref## kann ein tokengesicherter Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden.
 Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt und in einer Seite eingebunden worden sein.
-![Notification Center](docs/notification_center.jpg)
+![Notification Center](docs/notification_center.png)
 
 ##### Gebrauch der Simple Tokens im Notification Center
 Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
@@ -72,6 +72,7 @@ firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,not
 
 Werden weitere Felder gewünscht, so müssen diese im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` definiert werden.
 Danach Cache neu aufbauen und via Installtool die Felder in der Datenbank anlegen.
+
 
 [Dokumentation](https://docs.contao.org/dev/getting-started/starting-development/#contao-configuration-translations)
 
