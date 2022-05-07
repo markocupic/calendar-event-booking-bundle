@@ -63,7 +63,11 @@ class NotificationHelper
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['member_'.$k] = Format::dcaValue('tl_calendar_events_member', $k, $v);
+            if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
+                $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
+            } else {
+                $arrTokens['member_'.$k] = html_entity_decode((string) $v);
+            }
         }
 
         $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender]);
