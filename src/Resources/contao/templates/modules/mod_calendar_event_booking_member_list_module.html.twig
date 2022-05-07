@@ -1,0 +1,23 @@
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+
+    {% if members is defined %}
+        <div class="ce_table">
+            <table class="all_records sortable">
+                <thead>
+                <tr>
+                    <th class="head col_first col_0">{{ 'tl_calendar_events_member.firstname.0'|trans({}, 'contao_default') }}</th>
+                    <th class="head col_1">{{ 'tl_calendar_events_member.lastname.0'|trans({}, 'contao_default') }}</th>
+                    <th class="head col_2">{{ 'tl_calendar_events_member.street.0'|trans({}, 'contao_default') }}</th>
+                    <th class="head col_3">{{ 'tl_calendar_events_member.postal.0'|trans({}, 'contao_default') }}</th>
+                    <th class="head col_last col_4">{{ 'tl_calendar_events_member.city.0'|trans({}, 'contao_default') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ members|raw }}
+            </table>
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -4,11 +4,8 @@
     {% if messages is defined %}
         {{ messages|raw }}
     {% endif %}
-    {{ case }}
-    {% if form is defined %}
-        {% if case == 'waitingListPossible' %}
 
-        {% endif %}
+    {% if form is defined %}
 
         {% if case == 'bookingPossible' or case == 'waitingListPossible' %}
             {{ form|raw }}

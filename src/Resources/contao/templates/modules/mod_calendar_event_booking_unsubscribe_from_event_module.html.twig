@@ -1,0 +1,35 @@
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+
+    {% if blnHasUnsubscribed %}
+        <p class="unsubscribe_info">{{ 'MSC.unsubscribeInfo'|trans([event.title], 'contao_default') }}</p>
+    {% else %}
+        {% if hasError %}
+            {% for error in errorMsg %}
+                <p class="error">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        {% else %}
+            <form action="{{ '{{env::request}}' }}" id="{{ formId }}" method="post">
+                <div class="formbody">
+                    <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ '{{request_token}}' }}">
+
+                    <p class="unsubscribe_confirm">
+                        {{ 'MSC.unsubscribeConfirm'|trans([member.firstname,member.lastname,event.title], 'contao_default')|raw }}
+                    </p>
+
+                    <div class="widget widget-submit">
+                        <button type="submit" class="submit">{{ 'BTN.slabelUnsubscribeFromEvent'|trans({}, 'contao_default') }}</button>
+                    </div>
+                    <p><a href="{{ '{{env::url}}' }}">{{ 'MSC.cancelBT'|trans({}, 'contao_default') }}</a></p>
+                </div>
+            </form>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+
