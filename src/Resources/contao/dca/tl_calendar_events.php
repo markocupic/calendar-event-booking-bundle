@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingState'] = [
     'inputType' => 'select',
     'options'   => [
         BookingState::STATE_UNDEFINED,
-        BookingState::STATE_WAITING_FOR_RESPONSE,
+        BookingState::STATE_NOT_CONFIRMED,
         BookingState::STATE_CONFIRMED,
         BookingState::STATE_WAITING_LIST,
         BookingState::STATE_REJECTED,

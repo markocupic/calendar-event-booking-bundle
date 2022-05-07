@@ -181,7 +181,7 @@ class EventRegistration
     {
         return $this->countByEventAndBookingState(
             $eventConfig,
-            BookingState::STATE_WAITING_FOR_RESPONSE,
+            BookingState::STATE_NOT_CONFIRMED,
             (bool) $eventConfig->get('addEscortsToTotal'),
         );
     }

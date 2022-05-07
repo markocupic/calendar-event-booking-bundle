@@ -10,8 +10,8 @@
                 <source>undefined</source>
                 <target>Nicht definiert</target>
             </trans-unit>
-            <trans-unit id="MSC.waiting_for_response">
-                <source>waiting for response</source>
+            <trans-unit id="MSC.not_confirmed">
+                <source>not confirmed</source>
                 <target>Warten auf Antwort</target>
             </trans-unit>
             <trans-unit id="MSC.confirmed">
@@ -46,6 +46,22 @@
                 <source>The total number of %s participants is exceeded. Please check the number of accompanying persons.</source>
                 <target>Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.</target>
             </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_not_confirmed">
+                <source>We have taken your booking and will get in touch with you soon.</source>
+                <target>Wir haben Ihre Buchungsanfrage erhalten und werden Sie baldmöglichst kontaktieren um ihre Anfrage für die Teilnahme an "%s" definitiv zu bestätigen.</target>
+            </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_confirmed">
+                <source>We have successfully received your booking and you have definitely been registered.</source>
+                <target>Besten Dank für Ihre Buchungsanfrage. Gerne bestätigen wir Ihre Teilnahme an "%s".</target>
+            </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_waiting_list">
+                <source>You have been successfully placed on the waiting list.</source>
+                <target>Besten Dank für Ihre Buchungsanfrage. Sie befinden sich für "%s" auf der Warteliste. Gerne kontaktieren wir Sie, sobald Plätze wieder frei werden.</target>
+            </trans-unit>
+            <trans-unit id="MSC.addToWaitingList">
+                <source>Add to the waiting list.</source>
+                <target>Auf Warteliste setzen.</target>
+            </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
                 <target>Die Anmeldung für diesen Anlass ist erst ab %s möglich.</target>
@@ -57,6 +73,10 @@
             <trans-unit id="MSC.eventFullyBooked">
                 <source>Sorry, but unfortunately this event is already fully booked.</source>
                 <target>Der Anlass ist leider bereits ausgebucht.</target>
+            </trans-unit>
+            <trans-unit id="MSC.waitingListPossible">
+                <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
+                <target>Leider ist der Event bereits ausgebucht. Trotzdem können Sie sich anmelden und sich auf die Warteliste setzen lassen.</target>
             </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>

@@ -50,9 +50,9 @@
                 <source>Mrs.</source>
                 <target>Frau</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events_member.booking_date_legend">
-                <source>Booking date</source>
-                <target>Buchungsdatum</target>
+            <trans-unit id="tl_calendar_events_member.title_legend">
+                <source>Title legend</source>
+                <target>Titel</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.notes_legend">
                 <source>Notes</source>
@@ -169,6 +169,14 @@
             <trans-unit id="tl_calendar_events_member.escorts.1">
                 <source>Please enter the escorts.</source>
                 <target>Geben Sie die Anzahl Begleitpersonen ein.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.bookingType.0">
+                <source>Booking type</source>
+                <target>Buchungsmethode</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.bookingType.1">
+                <source>Select the booking type please.</source>
+                <target>Bitte wählen Sie eine Buchungsmethode aus.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.bookingToken.0">
                 <source>Booking token</source>

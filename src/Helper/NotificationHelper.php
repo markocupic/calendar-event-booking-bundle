@@ -90,7 +90,7 @@ class NotificationHelper
         $row = $eventConfig->event->row();
 
         foreach ($row as $k => $v) {
-            if (isset($GLOBALS['TL_DCA']['tl_calendar_events'][$k])) {
+            if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$k])) {
                 $arrTokens['event_'.$k] = $this->format->dcaValue('tl_calendar_events', $k, $v);
             } else {
                 $arrTokens['event_'.$k] = html_entity_decode((string) $v);
@@ -110,7 +110,7 @@ class NotificationHelper
                     continue;
                 }
 
-                if (isset($GLOBALS['TL_DCA']['tl_user'][$k])) {
+                if (isset($GLOBALS['TL_DCA']['tl_user']['fields'][$k])) {
                     $arrTokens['organizer_'.$k] = $this->format->dcaValue('tl_user', $k, $v);
                 } else {
                     $arrTokens['organizer_'.$k] = html_entity_decode((string) $v);

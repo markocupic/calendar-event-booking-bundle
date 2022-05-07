@@ -24,7 +24,9 @@ use Contao\Date;
 use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarEvents
 {
@@ -32,6 +34,7 @@ class CalendarEvents
 
     private ContaoFramework $framework;
     private Connection $connection;
+    private TranslatorInterface $translator;
 
     // Adapters
     private Adapter $calendar;
@@ -40,10 +43,11 @@ class CalendarEvents
     private Adapter $date;
     private Adapter $message;
 
-    public function __construct(ContaoFramework $framework, Connection $connection)
+    public function __construct(ContaoFramework $framework, Connection $connection, TranslatorInterface $translator)
     {
         $this->framework = $framework;
         $this->connection = $connection;
+        $this->translator = $translator;
 
         // Adapters
         $this->calendar = $this->framework->getAdapter(Calendar::class);
@@ -141,5 +145,80 @@ class CalendarEvents
         }
 
         return $intValue;
+    }
+
+    /**
+     * @Callback(table="tl_calendar_events", target="list.sorting.child_record", priority=100)
+     */
+    public function childRecordCallback(array $arrRow): string
+    {
+        $origClass = new \tl_calendar_events();
+
+        $strRegistrationsBadges = $this->getBookingStateBadgesString($arrRow);
+
+        if ($strRegistrationsBadges) {
+            $arrRow['title'] .= $strRegistrationsBadges;
+        }
+
+        return $origClass->listEvents($arrRow);
+    }
+
+    private function getBookingStateBadgesString(array $arrRow): string
+    {
+        $strRegistrationsBadges = '';
+
+        $intNotConfirmed = 0;
+        $intConfirmed = 0;
+        $intRejected = 0;
+        $intWaitingList = 0;
+        $intUnsubscribed = 0;
+
+        $eventsMemberModel = $this->calendarEventsMemberModel->findByPid($arrRow['id']);
+
+        if (null !== $eventsMemberModel) {
+            while ($eventsMemberModel->next()) {
+                if (BookingState::STATE_NOT_CONFIRMED === $eventsMemberModel->bookingState) {
+                    ++$intNotConfirmed;
+                }
+
+                if (BookingState::STATE_CONFIRMED === $eventsMemberModel->bookingState) {
+                    ++$intConfirmed;
+                }
+
+                if (BookingState::STATE_REJECTED === $eventsMemberModel->bookingState) {
+                    ++$intRejected;
+                }
+
+                if (BookingState::STATE_WAITING_LIST === $eventsMemberModel->bookingState) {
+                    ++$intWaitingList;
+                }
+
+                if (BookingState::STATE_UNSUBSCRIBED === $eventsMemberModel->bookingState) {
+                    ++$intUnsubscribed;
+                }
+            }
+
+            if ($intNotConfirmed > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge not-confirmed blink" title="%dx %s">%sx</span>', $intNotConfirmed, $this->translator->trans('MSC.not_confirmed', [], 'contao_default'), $intNotConfirmed);
+            }
+
+            if ($intConfirmed > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge confirmed" title="%dx %s">%dx</span>', $intConfirmed, $this->translator->trans('MSC.confirmed', [], 'contao_default'), $intConfirmed);
+            }
+
+            if ($intRejected > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge rejected" title="%dx %s">%dx</span>', $intRejected, $this->translator->trans('MSC.rejected', [], 'contao_default'), $intRejected);
+            }
+
+            if ($intWaitingList > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge waiting-list" title="%dx %s">%dx</span>', $intWaitingList, $this->translator->trans('MSC.waiting_list', [], 'contao_default'), $intWaitingList);
+            }
+
+            if ($intUnsubscribed > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge unsubscribed" title="%dx %s">%dx</span>', $intUnsubscribed, $this->translator->trans('MSC.unsubscribed', [], 'contao_default'), $intUnsubscribed);
+            }
+        }
+
+        return $strRegistrationsBadges;
     }
 }

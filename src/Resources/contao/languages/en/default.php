@@ -20,7 +20,7 @@ $GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';
 
 // Booking state references
 $GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNDEFINED] = 'undefined';
-$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_WAITING_FOR_RESPONSE] = 'waiting for response';
+$GLOBALS['TL_LANG']['MSC'][BookingState::STATE_NOT_CONFIRMED] = 'not confirmed';
 $GLOBALS['TL_LANG']['MSC'][BookingState::STATE_CONFIRMED] = 'confirmed';
 $GLOBALS['TL_LANG']['MSC'][BookingState::STATE_UNSUBSCRIBED] = 'unsubscribed';
 $GLOBALS['TL_LANG']['MSC'][BookingState::STATE_REJECTED] = 'rejected';
@@ -32,10 +32,10 @@ $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'We have already found a bo
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Please enter a positive number.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'The total number of %s participants is exceeded. Please check the number of accompanying persons.';
 
-// On post booking messsages
-$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_FOR_RESPONSE] = 'We have taken your booking and will get in touch with you soon.';
-$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_CONFIRMED] = 'We have successfully received your booking and you have definitely been registered.';
-$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_LIST] = 'You have been successfully placed on the waiting list.';
+// On post booking messages
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_NOT_CONFIRMED] = 'We have taken your booking for "%s" and will get in touch with you soon.';
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_CONFIRMED] = 'We have successfully received your booking for "%s" and you have definitely been registered.';
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_LIST] = 'You have been successfully placed on the waiting list for "%s".';
 
 // Form field
 $GLOBALS['TL_LANG']['MSC']['addToWaitingList'] = 'Add to the waiting list.';

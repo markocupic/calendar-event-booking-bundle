@@ -8,8 +8,8 @@
             <trans-unit id="MSC.undefined">
                 <source>undefined</source>
             </trans-unit>
-            <trans-unit id="MSC.waiting_for_response">
-                <source>waiting for response</source>
+            <trans-unit id="MSC.not_confirmed">
+                <source>not confirmed</source>
             </trans-unit>
             <trans-unit id="MSC.confirmed">
                 <source>confirmed</source>
@@ -35,6 +35,18 @@
             <trans-unit id="MSC.maxMemberLimitExceeded">
                 <source>The total number of %s participants is exceeded. Please check the number of accompanying persons.</source>
             </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_not_confirmed">
+                <source>We have taken your booking for "%s" and will get in touch with you soon.</source>
+            </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_confirmed">
+                <source>We have successfully received your booking for "%s" and you have definitely been registered.</source>
+            </trans-unit>
+            <trans-unit id="MSC.post_booking_confirm_waiting_list">
+                <source>You have been successfully placed on the waiting list for "%s".</source>
+            </trans-unit>
+            <trans-unit id="MSC.addToWaitingList">
+                <source>Add to the waiting list.</source>
+            </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
             </trans-unit>
@@ -44,6 +56,9 @@
             <trans-unit id="MSC.eventFullyBooked">
                 <source>Sorry, but unfortunately this event is already fully booked.</source>
             </trans-unit>
+            <trans-unit id="MSC.waitingListPossible">
+                <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
+            </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>
             </trans-unit>
@@ -51,7 +66,7 @@
                 <source>You've been successfully unsubscribed from event "%s".</source>
             </trans-unit>
             <trans-unit id="MSC.unsubscribeConfirm">
-                <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
+                <source>Dear &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;&amp;lt;br&gt;Are you sure you want to unsubscribe from event "%s"?</source>
             </trans-unit>
             <trans-unit id="BTN.slabelUnsubscribeFromEvent">
                 <source>Unsubscribe from event</source>

@@ -17,7 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Booking;
 class BookingState
 {
     public const STATE_UNDEFINED = 'undefined';
-    public const STATE_WAITING_FOR_RESPONSE = 'waiting_for_response';
+    public const STATE_NOT_CONFIRMED = 'not_confirmed';
     public const STATE_CONFIRMED = 'confirmed';
     public const STATE_WAITING_LIST = 'waiting_list';
     public const STATE_REJECTED = 'rejected';

@@ -66,13 +66,15 @@ final class GenerateMessage extends AbstractHook
             return;
         }
 
+        $eventConfig = $moduleInstance->getProperty('eventConfig');
+
         $msg = '';
 
         switch ($bookingState) {
-            case BookingState::STATE_WAITING_FOR_RESPONSE:
+            case BookingState::STATE_NOT_CONFIRMED:
             case BookingState::STATE_CONFIRMED:
             case BookingState::STATE_WAITING_LIST:
-                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [], 'contao_default');
+                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [$eventConfig->title], 'contao_default');
                 break;
         }
 

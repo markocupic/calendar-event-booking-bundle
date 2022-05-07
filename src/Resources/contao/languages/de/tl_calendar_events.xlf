@@ -6,17 +6,21 @@
                 <source>Show participants from event with ID %s</source>
                 <target>Teilnehmer des Events mit ID %s anzeigen</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.booking_options_legend">
-                <source>Booking settings</source>
-                <target>Buchungseinstellungen</target>
+            <trans-unit id="tl_calendar_events.event_unsubscribe_legend">
+                <source>Event unsubscription settings</source>
+                <target>Stornierungs-Einstellungen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.notification_legend">
                 <source>Notification settings</source>
                 <target>Benachrichtigungs-Einstellungen</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.event_unsubscribe_legend">
-                <source>Event unsubscription settings</source>
-                <target>Stornierungs-Einstellungen</target>
+            <trans-unit id="tl_calendar_events.waiting_list_legend">
+                <source>Waiting list settings</source>
+                <target>Warteliste</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.booking_options_legend">
+                <source>Booking settings</source>
+                <target>Buchungseinstellungen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.street.0">
                 <source>Street</source>
@@ -98,12 +102,28 @@
                 <source>Please set the maximum participant number.</source>
                 <target>Geben Sie bitte die maximale Teilnehmerzahl ein.</target>
             </trans-unit>
+            <trans-unit id="tl_calendar_events.activateWaitingList.0">
+                <source>Activate waiting list</source>
+                <target>Warteliste aktivieren</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.activateWaitingList.1">
+                <source>Activate the waiting list and set the options.</source>
+                <target>Aktivieren Sie die Warteliste und bearbeiten Sie die Optioonen.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.waitingListLimit.0">
+                <source>Waiting list limit</source>
+                <target>Platzlimit Warteliste</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.waitingListLimit.1">
+                <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
+                <target>Setzen sie ein Limit für die Anzahl Plätze auf der Warteliste. Wählen die "0", wenn Sie kein Platzlimit möchten.</target>
+            </trans-unit>
             <trans-unit id="tl_calendar_events.activateNotification.0">
-                <source>Select message for booking confirmation</source>
+                <source>Activate booking notification</source>
                 <target>Nachricht für die Buchungsbestätigung auswählen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateNotification.1">
-                <source>Select a message (Notification Center) for the booking confirmation.</source>
+                <source>Activate the booking notification and set the options.</source>
                 <target>Wählen Sie eine Nachricht (Notification Center) für die Buchungsbestätigung aus.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.eventBookingNotification.0">
