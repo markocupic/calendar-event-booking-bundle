@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
@@ -28,6 +29,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\Helper\Event;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,22 +42,32 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
+    public ?CalendarEventsModel $objEvent = null;
+
     private ContaoFramework $framework;
     private ScopeMatcher $scopeMatcher;
     private Connection $connection;
     private EventRegistration $eventRegistration;
+    private Event $eventHelper;
 
-    private ?CalendarEventsModel $objEvent = null;
+    // Adapters
+    private Adapter $controller;
+    private Adapter $eventMember;
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration, Event $eventHelper)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->connection = $connection;
         $this->eventRegistration = $eventRegistration;
+        $this->eventHelper = $eventHelper;
+
+        // Adapters
+        $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $this->controller = $this->framework->getAdapter(Controller::class);
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -64,7 +76,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
+            $this->objEvent = $this->eventHelper->getEventFromCurrentUrl();
 
             // Get the current event && return empty string if activateBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
@@ -87,11 +99,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
-
         // Load language
-        $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
+        $this->controller->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
         $result = $this->getRegistrations((int) ($this->objEvent->id));
 
@@ -103,7 +112,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         while (false !== ($arrEventMember = $result->fetchAssociative())) {
             $partial = new FrontendTemplate($model->cebb_memberListPartialTemplate);
 
-            $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
+            $calendarEventsMemberModel = $this->eventMember->findByPk($arrEventMember['id']);
             $partial->model = $calendarEventsMemberModel;
 
             // Row class

@@ -320,7 +320,7 @@ final class DoSomething extends AbstractHook
         // .......
 
         // Get the current event
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        $objEvent = $moduleInstance->getProperty('eventConfig')->event;
 
         // Get the current registration object
         $objEventMember = $moduleInstance->getProperty('objEventMember');

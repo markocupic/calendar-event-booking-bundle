@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
@@ -27,26 +28,34 @@ final class AddToSession extends AbstractHook
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1200;
 
+    private Connection $connection;
     private EventRegistration $eventRegistration;
 
-    public function __construct(EventRegistration $eventRegistration)
+    public function __construct(Connection $connection, EventRegistration $eventRegistration)
     {
+        $this->connection = $connection;
         $this->eventRegistration = $eventRegistration;
     }
 
     /**
      * Add registration to the session.
+     *
+     * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, int $insertId): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$insertId])) {
+            return;
+        }
+
+        $eventConfig = $moduleInstance->getProperty('eventConfig');
         $objEventMember = $moduleInstance->getProperty('objEventMember');
         $objForm = $moduleInstance->getProperty('objForm');
 
-        $this->eventRegistration->addToSession($objEvent, $objEventMember, $objForm);
+        $this->eventRegistration->addToSession($eventConfig, $objEventMember, $objForm);
     }
 }

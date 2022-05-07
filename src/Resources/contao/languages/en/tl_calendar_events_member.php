@@ -26,7 +26,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_male'] = 'Mr';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_female'] = 'Mrs.';
 
 // Legends
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['booking_date_legend'] = 'Booking date';
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['title_legend'] = 'Title legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['notes_legend'] = 'Notes';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['personal_legend'] = 'Personal legend';
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['address_legend'] = 'Adress legend';
@@ -46,5 +46,6 @@ $GLOBALS['TL_LANG']['tl_calendar_events_member']['city'] = ['City', 'Please ente
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['phone'] = ['Phone', 'Please enter the phone number.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['email'] = ['Email address', 'Please enter the email address.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['escorts'] = ['Escorts', 'Please enter the escorts.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingType'] = ['Booking type', 'Select the booking type please.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingToken'] = ['Booking token', 'The booking token is a uuid and can be used to identify the registration.'];
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['bookingState'] = ['Booking state', 'Select the booking state.'];

@@ -12,12 +12,13 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateRegistration;
 
-use Contao\CalendarEventsModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
+use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController as BookingModule;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ValidateEscorts extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingValidateBookingRequest';
+    public const HOOK = 'calEvtBookingValidateRegistration';
     public const PRIORITY = 1200;
 
     private TranslatorInterface $translator;
@@ -52,8 +53,8 @@ final class ValidateEscorts extends AbstractHook
         /** @var Form $objForm */
         $objForm = $moduleInstance->getProperty('objForm');
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var EventConfig $eventConfig */
+        $eventConfig = $moduleInstance->getProperty('eventConfig');
 
         if ($objForm->hasFormField('escorts')) {
             $objWidget = $objForm->getWidget('escorts');
@@ -61,12 +62,13 @@ final class ValidateEscorts extends AbstractHook
             if ((int) $objWidget->value < 0) {
                 $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
                 $objWidget->addError($errorMsg);
-            } elseif ($this->eventRegistration->isFullyBooked($objEvent)) {
-                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
+            } elseif ($this->waitingListExceeded($moduleInstance)) {
+            } elseif ($this->eventRegistration->isFullyBooked($eventConfig) && BookingModule::CASE_WAITING_LIST_POSSIBLE !== $moduleInstance->case) {
+                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
                 $objWidget->addError($errorMsg);
             } elseif ((int) $objWidget->value > 0) {
-                if ((int) $objWidget->value > (int) $objEvent->maxEscortsPerMember) {
-                    $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
+                if ((int) $objWidget->value > (int) $eventConfig->get('maxEscortsPerMember')) {
+                    $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$eventConfig->get('maxEscortsPerMember')], 'contao_default');
                     $objWidget->addError($errorMsg);
                 }
             }
@@ -78,5 +80,14 @@ final class ValidateEscorts extends AbstractHook
         }
 
         return true;
+    }
+
+    private function waitingListExceeded($frontendModule): bool
+    {
+        if (BookingModule::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
+            return true;
+        }
+
+        return false;
     }
 }

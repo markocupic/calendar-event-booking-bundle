@@ -12,14 +12,15 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
+namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateRegistration;
 
-use Contao\CalendarEventsModel;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
+use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
@@ -30,18 +31,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ValidateNumberOfParticipants extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingValidateBookingRequest';
+    public const HOOK = 'calEvtBookingValidateRegistration';
     public const PRIORITY = 1100;
 
     private ContaoFramework $framework;
     private TranslatorInterface $translator;
     private EventRegistration $eventRegistration;
 
+    // Adapters
+    private Adapter $message;
+
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->translator = $translator;
         $this->eventRegistration = $eventRegistration;
+
+        // Adapters
+        $this->message = $framework->getAdapter(Message::class);
     }
 
     /**
@@ -56,33 +63,35 @@ final class ValidateNumberOfParticipants extends AbstractHook
             return true;
         }
 
-        $messageAdapter = $this->framework->getAdapter(Message::class);
-
         /** @var Form $objForm */
         $objForm = $moduleInstance->getProperty('objForm');
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var EventConfig $eventConfig */
+        $eventConfig = $moduleInstance->getProperty('eventConfig');
 
         // Check if user with submitted email has already booked
         $escorts = 0;
 
-        if ($objEvent->addEscortsToTotal && $objForm->hasFormField('escorts')) {
+        if ($eventConfig->get('addEscortsToTotal') && $objForm->hasFormField('escorts')) {
             $objWidget = $objForm->getWidget('escorts');
             $escorts = (int) $objWidget->value;
         }
 
         $countTotal = array_sum(
             [
-                $this->eventRegistration->getBookingCount($objEvent),
+                $this->eventRegistration->getBookingCount($eventConfig),
                 $escorts,
                 1,
             ]
         );
 
-        if ($this->eventRegistration->getBookingMax($objEvent) < $countTotal) {
-            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
-            $messageAdapter->addInfo($errorMsg);
+        if ($eventConfig->getBookingMax() < $countTotal) {
+            if ($this->eventRegistration->canAddToWaitingList($eventConfig, $escorts)) {
+                return true;
+            }
+
+            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
+            $this->message->addInfo($errorMsg);
 
             return false;
         }

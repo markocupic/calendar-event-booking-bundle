@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
@@ -27,10 +28,12 @@ final class Notification extends AbstractHook
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1000;
 
+    private Connection $connection;
     private NotificationHelper $notificationHelper;
 
-    public function __construct(NotificationHelper $notificationHelper)
+    public function __construct(Connection $connection, NotificationHelper $notificationHelper)
     {
+        $this->connection = $connection;
         $this->notificationHelper = $notificationHelper;
     }
 
@@ -39,12 +42,16 @@ final class Notification extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, int $insertId): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        $this->notificationHelper->notify($moduleInstance->getProperty('objEventMember'), $moduleInstance->getProperty('objEvent'));
+        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$insertId])) {
+            return;
+        }
+
+        $this->notificationHelper->notify($moduleInstance->getProperty('objEventMember'), $moduleInstance->getProperty('eventConfig'));
     }
 }

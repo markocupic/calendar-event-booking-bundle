@@ -21,6 +21,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
+use Markocupic\CalendarEventBookingBundle\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
 /**
@@ -33,11 +34,13 @@ final class LoadFormField extends AbstractHook
 
     private ContaoFramework $framework;
     private EventRegistration $eventRegistration;
+    private EventFactory $eventFactory;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration)
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, EventFactory $eventFactory)
     {
         $this->framework = $framework;
         $this->eventRegistration = $eventRegistration;
+        $this->eventFactory = $eventFactory;
     }
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
@@ -71,22 +74,23 @@ final class LoadFormField extends AbstractHook
             }
 
             if ('escorts' === $objWidget->name) {
+                /** @var CalendarEventsModel $objEvent */
                 $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
-                if (null !== $objEvent) {
-                    $maxEscorts = $objEvent->maxEscortsPerMember;
+                $eventConfig = $this->eventFactory->create($objEvent->id);
 
-                    if ($maxEscorts > 0) {
-                        $opt = [];
+                $maxEscorts = $eventConfig->get('maxEscortsPerMember');
 
-                        for ($i = 0; $i <= $maxEscorts; ++$i) {
-                            $opt[] = [
-                                'value' => $i,
-                                'label' => $i,
-                            ];
-                        }
-                        $objWidget->options = serialize($opt);
+                if ($maxEscorts > 0) {
+                    $opt = [];
+
+                    for ($i = 0; $i <= $maxEscorts; ++$i) {
+                        $opt[] = [
+                            'value' => $i,
+                            'label' => $i,
+                        ];
                     }
+                    $objWidget->options = serialize($opt);
                 }
             }
         }

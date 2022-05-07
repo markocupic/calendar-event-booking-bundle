@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
@@ -25,6 +26,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -39,7 +41,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
+
+    public ContaoFramework $framework;
+    public ScopeMatcher $scopeMatcher;
+    public TranslatorInterface $translator;
     protected NotificationHelper $notificationHelper;
+    protected EventFactory $eventFactory;
 
     protected ?CalendarEventsModel $objEvent = null;
     protected ?CalendarEventsMemberModel $objEventMember = null;
@@ -48,16 +55,21 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     protected bool $hasError = false;
     protected array $errorMsg = [];
 
-    private ContaoFramework $framework;
-    private ScopeMatcher $scopeMatcher;
-    private TranslatorInterface $translator;
+    // Adapters
+    // Adapters
+    private Adapter $controller;
+    private Adapter $eventMember;
 
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator, EventFactory $eventFactory)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->notificationHelper = $notificationHelper;
         $this->translator = $translator;
+        $this->eventFactory = $eventFactory;
+
+        $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $this->controller = $this->framework->getAdapter(Controller::class);
     }
 
     /**
@@ -70,13 +82,10 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $this->objPage = $page;
             $this->objPage->noSearch = 1;
 
-            $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-            $controllerAdapter = $this->framework->getAdapter(Controller::class);
-
             if ('true' !== $request->query->get('unsubscribedFromEvent')) {
                 $translator = $this->translator;
 
-                $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($request->query->get('bookingToken'));
+                $this->objEventMember = $this->eventMember->findOneByBookingToken($request->query->get('bookingToken'));
 
                 if (null === $this->objEventMember) {
                     $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
@@ -139,7 +148,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                             $this->objEvent->id
                         );
 
-                        $controllerAdapter->redirect($href);
+                        $this->controller->redirect($href);
                     }
                 }
             }
@@ -162,6 +171,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
             if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($request->query->get('eid')))) {
                 $template->event = $objEvent;
+                $template->eventConfig = $this->eventFactory->create($objEvent);
             }
         } else {
             if ($this->hasError) {

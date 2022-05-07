@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
-use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -24,6 +23,7 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Haste\Util\Format;
+use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification;
 
@@ -59,12 +59,8 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember): array
+    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember, EventConfig $eventConfig): array
     {
-        if (null === ($objEvent = $objEventMember->getRelated('pid'))) {
-            throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
-        }
-
         $arrTokens = [];
 
         // Get admin email
@@ -79,7 +75,7 @@ class NotificationHelper
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member'][$k])) {
+            if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
                 $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
             } else {
                 $arrTokens['member_'.$k] = html_entity_decode((string) $v);
@@ -91,7 +87,7 @@ class NotificationHelper
         // Prepare tokens for event and use "event_*" as prefix
         $this->controller->loadDataContainer('tl_calendar_events');
 
-        $row = $objEvent->row();
+        $row = $eventConfig->event->row();
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events'][$k])) {
@@ -102,7 +98,7 @@ class NotificationHelper
         }
 
         // Prepare tokens for the organizer (sender) and use "organizer_*" as prefix
-        $objOrganizer = $this->userModel->findByPk($objEvent->eventBookingNotificationSender);
+        $objOrganizer = $this->userModel->findByPk($eventConfig->get('eventBookingNotificationSender'));
 
         if (null !== $objOrganizer) {
             $this->controller->loadDataContainer('tl_user');
@@ -131,8 +127,8 @@ class NotificationHelper
         // Generate unsubscribe href
         $arrTokens['event_unsubscribeHref'] = '';
 
-        if ($objEvent->activateDeregistration) {
-            $objCalendar = $objEvent->getRelated('pid');
+        if ($eventConfig->get('activateDeregistration')) {
+            $objCalendar = $eventConfig->event->getRelated('pid');
 
             if (null !== $objCalendar) {
                 $objPage = $this->pageModel->findByPk($objCalendar->eventUnsubscribePage);
@@ -147,7 +143,7 @@ class NotificationHelper
         // Trigger calEvtBookingPostBooking hook
         if (isset($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback) {
-                $arrTokens = $this->system->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
+                $arrTokens = $this->system->importStatic($callback[0])->{$callback[1]}($objEventMember, $eventConfig, $arrTokens);
             }
         }
 
@@ -157,17 +153,17 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): void
+    public function notify(CalendarEventsMemberModel $objEventMember, EventConfig $eventConfig): void
     {
         global $objPage;
 
-        if ($objEvent->activateNotification) {
+        if ($eventConfig->get('activateNotification')) {
             // Multiple notifications possible
-            $arrNotifications = $this->stringUtil->deserialize($objEvent->eventBookingNotification);
+            $arrNotifications = $this->stringUtil->deserialize($eventConfig->get('eventBookingNotification'), true);
 
-            if (!empty($arrNotifications) && \is_array($arrNotifications)) {
+            if (!empty($arrNotifications)) {
                 // Get $arrToken from helper
-                $arrTokens = $this->getNotificationTokens($objEventMember);
+                $arrTokens = $this->getNotificationTokens($objEventMember, $eventConfig);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {

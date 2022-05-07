@@ -14,16 +14,14 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
 
-use Contao\CalendarEventsModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
+use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Codefog haste "Add field Hook".
- *
  * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
 final class Escort extends AbstractHook
@@ -38,7 +36,7 @@ final class Escort extends AbstractHook
         $this->translator = $translator;
     }
 
-    public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(Form $objForm, string $strField, array $arrDca, EventConfig $eventConfig, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
         if (!self::isEnabled()) {
             return true;
@@ -46,7 +44,7 @@ final class Escort extends AbstractHook
 
         // Skip input field "escorts" if escorts are not allowed
         if ('escorts' === $strField) {
-            if ($objEvent->maxEscortsPerMember < 1) {
+            if ((int) $eventConfig->get('maxEscortsPerMember') < 1) {
                 return false;
             }
         }

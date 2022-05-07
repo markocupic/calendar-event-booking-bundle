@@ -22,7 +22,7 @@ abstract class AbstractHook
     public const HOOK_PRE_BOOKING = 'calEvtBookingPreBooking';
     public const HOOK_POST_BOOKING = 'calEvtBookingPostBooking';
     public const HOOK_PRE_VALIDATE_BOOKING_FORM = 'calEvtBookingPreValidate';
-    public const HOOK_VALIDATE_BOOKING_REQUEST = 'calEvtBookingValidateBookingRequest';
+    public const HOOK_VALIDATE_REGISTRATION = 'calEvtBookingValidateRegistration';
     public const HOOK_UNSUBSCRIBE_FROM_EVENT = 'calEvtBookingUnsubscribeFromEvent';
 
     protected static bool $hookIsDisabled = false;

@@ -8,4 +8,7 @@ services:
 
     Markocupic\CalendarEventBookingBundle\:
         resource: ../../
-        exclude: ../../{Event,Model,DependencyInjection,Resources}
+        exclude: [
+            '../../{Event,Model,DependencyInjection,Resources}',
+            '../../Config/EventConfig.php'
+        ]

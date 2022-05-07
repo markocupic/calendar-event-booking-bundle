@@ -74,7 +74,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{booking_date_legend},dateAdded,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '{title_legend},dateAdded,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
     ],
     'fields'   => [
         'id'           => [
@@ -96,6 +96,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'sorting'   => true,
             'sql'       => 'int(10) unsigned NOT NULL default 0',
+        ],
+        'bookingType'  => [
+            'eval'      => ['includeBlankOption' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => ['bookingTypeGuest', 'bookingTypeMember', 'bookingTypeManually'],
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'bookingToken' => [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],

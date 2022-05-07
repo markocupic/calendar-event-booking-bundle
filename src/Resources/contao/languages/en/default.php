@@ -31,9 +31,20 @@ $GLOBALS['TL_LANG']['MSC']['maxEscortsPossible'] = 'Maximum %s escorts per parti
 $GLOBALS['TL_LANG']['MSC']['youHaveAlreadyBooked'] = 'We have already found a booking with the email address "%s". Booking process aborted.';
 $GLOBALS['TL_LANG']['MSC']['enterPosIntVal'] = 'Please enter a positive number.';
 $GLOBALS['TL_LANG']['MSC']['maxMemberLimitExceeded'] = 'The total number of %s participants is exceeded. Please check the number of accompanying persons.';
+
+// On post booking messsages
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_FOR_RESPONSE] = 'We have taken your booking and will get in touch with you soon.';
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_CONFIRMED] = 'We have successfully received your booking and you have definitely been registered.';
+$GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_LIST] = 'You have been successfully placed on the waiting list.';
+
+// Form field
+$GLOBALS['TL_LANG']['MSC']['addToWaitingList'] = 'Add to the waiting list.';
+
+// Messages
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE] = 'Booking is only possible from %s .';
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Sorry, but unfortunately this event is already fully booked.';
+$GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE] = 'Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'] = 'The end date for the booking period has been adjusted.';
