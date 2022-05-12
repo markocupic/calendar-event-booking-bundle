@@ -28,9 +28,10 @@ use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
-use Markocupic\CalendarEventBookingBundle\Helper\Event;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Event;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,6 +50,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     private Connection $connection;
     private EventRegistration $eventRegistration;
     private Event $eventHelper;
+    private EventSubscriber $eventSubscriber;
 
     // Adapters
     private Adapter $controller;
@@ -57,13 +59,14 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration, Event $eventHelper)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration, Event $eventHelper, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->connection = $connection;
         $this->eventRegistration = $eventRegistration;
         $this->eventHelper = $eventHelper;
+        $this->eventSubscriber = $eventSubscriber;
 
         // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -100,7 +103,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         // Load language
-        $this->controller->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
+        $this->controller->loadLanguageFile($this->eventSubscriber->getTable());
 
         $result = $this->getRegistrations((int) ($this->objEvent->id));
 
@@ -141,11 +144,11 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
      */
     protected function getRegistrations(int $id)
     {
-        $table = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+        $t = $this->eventSubscriber->getTable();
 
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
-            ->from($table, 't')
+            ->from($t, 't')
             ->where('t.pid = :pid')
             ->andWhere('t.bookingState = :bookingState')
             ->orderBy('t.dateAdded', 'ASC')

@@ -15,11 +15,8 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateRegistration;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController as BookingModule;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -28,66 +25,51 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ValidateEscorts extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingValidateRegistration';
+    public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
     public const PRIORITY = 1200;
 
     private TranslatorInterface $translator;
-    private EventRegistration $eventRegistration;
 
-    public function __construct(TranslatorInterface $translator, EventRegistration $eventRegistration)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
-        $this->eventRegistration = $eventRegistration;
     }
 
     /**
      * Important! return false will make the validation fail
      * Validate escorts.
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(EventSubscriber $eventSubscriber, EventConfig $eventConfig): bool
     {
         if (!self::isEnabled()) {
             return true;
         }
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        $form = $eventSubscriber->getForm();
 
-        /** @var EventConfig $eventConfig */
-        $eventConfig = $moduleInstance->getProperty('eventConfig');
+        if (!$form->hasFormField('escorts')) {
+            return false;
+        }
 
-        if ($objForm->hasFormField('escorts')) {
-            $objWidget = $objForm->getWidget('escorts');
+        if ($eventConfig->getModel()->maxEscortsPerMember > 0) {
+            $widget = $form->getWidget('escorts');
 
-            if ((int) $objWidget->value < 0) {
+            if ((int) $widget->value < 0) {
                 $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
-                $objWidget->addError($errorMsg);
-            } elseif ($this->waitingListExceeded($moduleInstance)) {
-            } elseif ($this->eventRegistration->isFullyBooked($eventConfig) && BookingModule::CASE_WAITING_LIST_POSSIBLE !== $moduleInstance->case) {
-                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
-                $objWidget->addError($errorMsg);
-            } elseif ((int) $objWidget->value > 0) {
-                if ((int) $objWidget->value > (int) $eventConfig->get('maxEscortsPerMember')) {
-                    $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$eventConfig->get('maxEscortsPerMember')], 'contao_default');
-                    $objWidget->addError($errorMsg);
-                }
+                $widget->addError($errorMsg);
             }
 
-            if ($objWidget->hasErrors()) {
+            if ((int) $widget->value > (int) $eventConfig->get('maxEscortsPerMember')) {
+                $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$eventConfig->get('maxEscortsPerMember')], 'contao_default');
+                $widget->addError($errorMsg);
+            }
+
+            if ($widget->hasErrors()) {
                 // return false will make the validation fail
                 return false;
             }
         }
 
         return true;
-    }
-
-    private function waitingListExceeded($frontendModule): bool
-    {
-        if (BookingModule::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
-            return true;
-        }
-
-        return false;
     }
 }

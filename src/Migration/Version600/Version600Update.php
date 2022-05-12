@@ -109,7 +109,7 @@ class Version600Update extends AbstractMigration
                 'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
                 'old' => 'enableNotificationCenter',
-                'new' => 'activateNotification',
+                'new' => 'activateBookingNotification',
                 'sql' => 'char(1)',
             ],
             [
@@ -156,13 +156,6 @@ class Version600Update extends AbstractMigration
                 'sql' => 'int(10)',
             ],
             // tl_module
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_module',
-                'old' => 'unsubscribeFromEventNotificationIds',
-                'new' => 'cebb_unsubscribeNotification',
-                'sql' => 'blob',
-            ],
             [
                 'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_module',

@@ -16,8 +16,9 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareForm
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Formatter;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
@@ -26,14 +27,16 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
  */
 final class FormatInput extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingPrepareFormData';
+    public const HOOK = AbstractHook::HOOK_PREPARE_FORM_DATA;
     public const PRIORITY = 1000;
 
     private Formatter $formatter;
+    private EventSubscriber $eventSubscriber;
 
-    public function __construct(Formatter $formatter)
+    public function __construct(Formatter $formatter, EventSubscriber $eventSubscriber)
     {
         $this->formatter = $formatter;
+        $this->eventSubscriber = $eventSubscriber;
     }
 
     /**
@@ -41,27 +44,21 @@ final class FormatInput extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        /** @var CalendarEventsMemberModel $objEventMember */
-        $objEventMember = $moduleInstance->getProperty('objEventMember');
+        $strTable = $this->eventSubscriber->getTable();
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
-
-        $strTable = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
-
-        foreach (array_keys($objForm->getFormFields()) as $strFieldname) {
-            $varValue = $objEventMember->$strFieldname;
+        foreach (array_keys($form->getFormFields()) as $strFieldname) {
+            $varValue = $eventMember->$strFieldname;
             $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldname);
             $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldname);
             $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldname);
-            $objEventMember->$strFieldname = $varValue;
-            $objEventMember->save();
+            $eventMember->$strFieldname = $varValue;
+            $eventMember->save();
         }
     }
 }

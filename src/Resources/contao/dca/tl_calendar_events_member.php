@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\DataContainer;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [

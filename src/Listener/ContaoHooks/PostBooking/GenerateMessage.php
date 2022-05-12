@@ -19,8 +19,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -29,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class GenerateMessage extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingPostBooking';
+    public const HOOK = AbstractHook::HOOK_POST_BOOKING;
     public const PRIORITY = 900;
 
     private ContaoFramework $framework;
@@ -54,19 +55,17 @@ final class GenerateMessage extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, int $insertId): void
+    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        $bookingState = $this->connection->fetchOne('SELECT bookingState FROM tl_calendar_events_member WHERE id = ?', [$insertId]);
+        $bookingState = $this->connection->fetchOne('SELECT bookingState FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id]);
 
         if (false === $bookingState) {
             return;
         }
-
-        $eventConfig = $moduleInstance->getProperty('eventConfig');
 
         $msg = '';
 
@@ -74,7 +73,7 @@ final class GenerateMessage extends AbstractHook
             case BookingState::STATE_NOT_CONFIRMED:
             case BookingState::STATE_CONFIRMED:
             case BookingState::STATE_WAITING_LIST:
-                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [$eventConfig->getEvent()->title], 'contao_default');
+                 $msg = $this->translator->trans('MSC.post_booking_confirm_'.$bookingState, [$eventConfig->getModel()->title], 'contao_default');
                 break;
         }
 

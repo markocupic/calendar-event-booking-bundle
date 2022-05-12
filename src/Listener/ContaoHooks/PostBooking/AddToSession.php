@@ -16,8 +16,9 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 
 /**
@@ -25,7 +26,7 @@ use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
  */
 final class AddToSession extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingPostBooking';
+    public const HOOK = AbstractHook::HOOK_POST_BOOKING;
     public const PRIORITY = 1200;
 
     private Connection $connection;
@@ -42,20 +43,16 @@ final class AddToSession extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, int $insertId): void
+    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$insertId])) {
+        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id])) {
             return;
         }
 
-        $eventConfig = $moduleInstance->getProperty('eventConfig');
-        $objEventMember = $moduleInstance->getProperty('objEventMember');
-        $objForm = $moduleInstance->getProperty('objForm');
-
-        $this->eventRegistration->addToSession($eventConfig, $objEventMember, $objForm);
+        $this->eventRegistration->addToSession($eventConfig, $eventSubscriber);
     }
 }

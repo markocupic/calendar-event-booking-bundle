@@ -12,8 +12,9 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Helper;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\Notification;
 
+use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -23,15 +24,16 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Haste\Util\Format;
-use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use NotificationCenter\Model\Notification;
+use NotificationCenter\Model\Notification as NotificationModel;
 
-class NotificationHelper
+class Notification
 {
     private ContaoFramework $framework;
 
     // Adapters
+    private Adapter $config;
     private Adapter $controller;
     private Adapter $environment;
     private Adapter $format;
@@ -41,15 +43,18 @@ class NotificationHelper
     private Adapter $system;
     private Adapter $userModel;
 
+    private $arrTokens = [];
+
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
 
         // Adapters
+        $this->config = $this->framework->getAdapter(Config::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->environment = $this->framework->getAdapter(Environment::class);
         $this->format = $this->framework->getAdapter(Format::class);
-        $this->notification = $this->framework->getAdapter(Notification::class);
+        $this->notification = $this->framework->getAdapter(NotificationModel::class);
         $this->pageModel = $this->framework->getAdapter(PageModel::class);
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
         $this->system = $this->framework->getAdapter(System::class);
@@ -59,35 +64,37 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember, EventConfig $eventConfig): array
+    public function setTokens(EventConfig $eventConfig, CalendarEventsMemberModel $objEventMember, ?int $senderId): void
     {
         $arrTokens = [];
 
+        $strEventMemberTable = CalendarEventsMemberModel::getTable();
+
         // Get admin email
-        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
+        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'] ?? $this->config->get('adminEmail');
 
         // Prepare tokens for event member and use "member_*" as prefix
-        $this->controller->loadDataContainer('tl_calendar_events_member');
+        $this->controller->loadDataContainer($strEventMemberTable);
 
         // Load language file
-        $this->controller->loadLanguageFile('tl_calendar_events_member');
+        $this->controller->loadLanguageFile($strEventMemberTable);
 
         $row = $objEventMember->row();
 
         foreach ($row as $k => $v) {
-            if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
+            if (isset($GLOBALS['TL_DCA'][$strEventMemberTable]['fields'][$k])) {
                 $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
             } else {
                 $arrTokens['member_'.$k] = html_entity_decode((string) $v);
             }
         }
 
-        $arrTokens['member_salutation'] = html_entity_decode((string) ($GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender] ?? ''));
+        $arrTokens['member_salutation'] = html_entity_decode((string) ($GLOBALS['TL_LANG'][$strEventMemberTable]['salutation_'.$objEventMember->gender] ?? ''));
 
         // Prepare tokens for event and use "event_*" as prefix
         $this->controller->loadDataContainer('tl_calendar_events');
 
-        $row = $eventConfig->getEvent()->row();
+        $row = $eventConfig->getModel()->row();
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$k])) {
@@ -97,38 +104,34 @@ class NotificationHelper
             }
         }
 
-        // Prepare tokens for the organizer (sender) and use "organizer_*" as prefix
-        $objOrganizer = $this->userModel->findByPk($eventConfig->get('eventBookingNotificationSender'));
+        if ($senderId) {
+            // Prepare tokens for the sender and use "sender_*" as prefix
+            $objSender = $this->userModel->findByPk($senderId);
 
-        if (null !== $objOrganizer) {
-            $this->controller->loadDataContainer('tl_user');
+            if (null !== $objSender) {
+                $this->controller->loadDataContainer('tl_user');
 
-            $row = $objOrganizer->row();
+                $row = $objSender->row();
 
-            foreach ($row as $k => $v) {
-                if ('password' === $k || 'session' === $k) {
-                    continue;
-                }
+                foreach ($row as $k => $v) {
+                    if ('password' === $k || 'session' === $k) {
+                        continue;
+                    }
 
-                if (isset($GLOBALS['TL_DCA']['tl_user']['fields'][$k])) {
-                    $arrTokens['organizer_'.$k] = $this->format->dcaValue('tl_user', $k, $v);
-                } else {
-                    $arrTokens['organizer_'.$k] = html_entity_decode((string) $v);
+                    if (isset($GLOBALS['TL_DCA']['tl_user']['fields'][$k])) {
+                        $arrTokens['sender_'.$k] = $this->format->dcaValue('tl_user', $k, $v);
+                    } else {
+                        $arrTokens['sender'.$k] = html_entity_decode((string) $v);
+                    }
                 }
             }
-
-            // deprecated since version 4.2, to be removed in 5.0 Use organizer_name instead of organizer_senderName */
-            $arrTokens['organizer_senderName'] = $arrTokens['organizer_name'];
-
-            // deprecated since version 4.2, to be removed in 5.0 Use organizer_email instead of organizer_senderEmail */
-            $arrTokens['organizer_senderEmail'] = $arrTokens['organizer_email'];
         }
 
         // Generate unsubscribe href
         $arrTokens['event_unsubscribeHref'] = '';
 
         if ($eventConfig->get('activateDeregistration')) {
-            $objCalendar = $eventConfig->getEvent()->getRelated('pid');
+            $objCalendar = $eventConfig->getModel()->getRelated('pid');
 
             if (null !== $objCalendar) {
                 $objPage = $this->pageModel->findByPk($objCalendar->eventUnsubscribePage);
@@ -147,33 +150,30 @@ class NotificationHelper
             }
         }
 
-        return $arrTokens;
+        $this->arrTokens = $arrTokens;
     }
 
     /**
      * @throws \Exception
      */
-    public function notify(CalendarEventsMemberModel $objEventMember, EventConfig $eventConfig): void
+    public function notify(array $arrNotifications): void
     {
         global $objPage;
 
-        if ($eventConfig->get('activateNotification')) {
-            // Multiple notifications possible
-            $arrNotifications = $this->stringUtil->deserialize($eventConfig->get('eventBookingNotification'), true);
+        if (!empty($arrNotifications)) {
+            // Send notification (multiple notifications possible)
+            foreach ($arrNotifications as $notificationId) {
+                $objNotification = $this->notification->findByPk($notificationId);
 
-            if (!empty($arrNotifications)) {
-                // Get $arrToken from helper
-                $arrTokens = $this->getNotificationTokens($objEventMember, $eventConfig);
-
-                // Send notification (multiple notifications possible)
-                foreach ($arrNotifications as $notificationId) {
-                    $objNotification = $this->notification->findByPk($notificationId);
-
-                    if (null !== $objNotification) {
-                        $objNotification->send($arrTokens, $objPage->language);
-                    }
+                if (null !== $objNotification) {
+                    $objNotification->send($this->getTokens(), $objPage->language);
                 }
             }
         }
+    }
+
+    private function getTokens(): array
+    {
+        return $this->arrTokens;
     }
 }

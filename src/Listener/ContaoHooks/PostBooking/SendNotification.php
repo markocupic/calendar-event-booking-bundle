@@ -14,33 +14,44 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
-use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Logger\Logger;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
-use Psr\Log\LogLevel;
 
 /**
- * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
+ * @Hook(SendNotification::HOOK, priority=SendNotification::PRIORITY)
  */
-final class ContaoLog extends AbstractHook
+final class SendNotification extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_POST_BOOKING;
-    public const PRIORITY = 1100;
+    public const PRIORITY = 1000;
 
+    private ContaoFramework $framework;
     private Connection $connection;
-    private ?Logger $logger;
+    private Notification $notification;
 
-    public function __construct(Connection $connection, ?Logger $logger)
+    // Adapters
+    private Adapter $stringUtil;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, Notification $notification)
     {
+        $this->framework = $framework;
         $this->connection = $connection;
-        $this->logger = $logger;
+        $this->notification = $notification;
+
+        // Adapters
+        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }
 
     /**
+     * Run post booking notification.
+     *
      * @throws \Exception
      */
     public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
@@ -49,18 +60,19 @@ final class ContaoLog extends AbstractHook
             return;
         }
 
+        if (!$eventConfig->get('activateBookingNotification')) {
+            return;
+        }
+
         if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id])) {
             return;
         }
 
-        $strText = sprintf(
-            'New event subscription with ID %d for event with ID %d (%s).',
-            $eventSubscriber->getModel()->id,
-            $eventConfig->getModel()->id,
-            $eventConfig->getModel()->title
-        );
+        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->get('eventBookingNotification'), true);
 
-        $level = LogLevel::INFO;
-        $this->logger->log($strText, $level, ContaoContext::GENERAL);
+        if (!empty($arrNotificationIds)) {
+            $this->notification->setTokens($eventConfig, $eventSubscriber->getModel(), (int) $eventConfig->getModel()->eventBookingNotificationSender);
+            $this->notification->notify($arrNotificationIds);
+        }
     }
 }

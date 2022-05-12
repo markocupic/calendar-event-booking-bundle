@@ -19,10 +19,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Exception;
-use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -31,65 +30,48 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ValidateNumberOfParticipants extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingValidateRegistration';
+    public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
     public const PRIORITY = 1100;
 
     private ContaoFramework $framework;
     private TranslatorInterface $translator;
-    private EventRegistration $eventRegistration;
+    private BookingValidator $bookingValidator;
 
     // Adapters
     private Adapter $message;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
+    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, BookingValidator $bookingValidator)
     {
         $this->framework = $framework;
         $this->translator = $translator;
-        $this->eventRegistration = $eventRegistration;
+        $this->bookingValidator = $bookingValidator;
 
         // Adapters
-        $this->message = $framework->getAdapter(Message::class);
+        $this->message = $this->framework->getAdapter(Message::class);
     }
 
     /**
      * Important! return false will make the validation fail
-     * Validate if number of participants exceeds max member limit.
+     * Check if the number of available seats is not exceeded (consider the waiting list).
      *
      * @throws Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(EventSubscriber $eventSubscriber, EventConfig $eventConfig): bool
     {
         if (!self::isEnabled()) {
             return true;
         }
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        $form = $eventSubscriber->getForm();
 
-        /** @var EventConfig $eventConfig */
-        $eventConfig = $moduleInstance->getProperty('eventConfig');
+        $numSeats = 1;
 
-        // Check if user with submitted email has already booked
-        $escorts = 0;
-
-        if ($eventConfig->get('addEscortsToTotal') && $objForm->hasFormField('escorts')) {
-            $objWidget = $objForm->getWidget('escorts');
-            $escorts = (int) $objWidget->value;
+        if ($eventConfig->get('addEscortsToTotal') && $form->hasFormField('escorts')) {
+            $objWidget = $form->getWidget('escorts');
+            $numSeats += (int) $objWidget->value;
         }
 
-        $countTotal = array_sum(
-            [
-                $this->eventRegistration->getBookingCount($eventConfig),
-                $escorts,
-                1,
-            ]
-        );
-
-        if ($eventConfig->getBookingMax() < $countTotal) {
-            if ($this->eventRegistration->canAddToWaitingList($eventConfig, $escorts)) {
-                return true;
-            }
-
+        if (!$this->bookingValidator->validateBookingMax($eventConfig, $numSeats, true)) {
             $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
             $this->message->addInfo($errorMsg);
 

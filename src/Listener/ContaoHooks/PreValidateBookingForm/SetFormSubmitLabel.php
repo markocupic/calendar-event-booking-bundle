@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class SetFormSubmitLabel extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingPreValidate';
+    public const HOOK = AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM;
     public const PRIORITY = 1000;
 
     private ContaoFramework $framework;

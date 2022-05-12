@@ -59,7 +59,7 @@ Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salut
 
 Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
 
-Organisator/Email-Absender: ##organizer_name##, ##organizer_email, etc. (Feldnamen aus tl_user)
+Email-Absender: ##sender_name##, ##sender_email, etc. (Feldnamen aus tl_user)
 
 
 #### Punkt 5: Event-Buchungsformular erstellen
@@ -111,9 +111,9 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
 Tag | type | Erklärung
 ------------ |------------- |--
-`$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
+`$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
 `$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
-`$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.
+`$this->confirmedBookingsCount` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
 `$this->bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
 `$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
 `$this->bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
@@ -199,7 +199,7 @@ Array
     [event_activateDeregistration] => ja
     [event_eventBookingNotificationSender] => Eve Moneypenny
     [event_eventBookingNotification] => Event Buchungs Benachrichtigung
-    [event_activateNotification] => ja
+    [event_activateBookingNotification] => ja
     [event_maxEscortsPerMember] => 0
     [event_maxMembers] => 11
     [event_bookingStartDate] => 7. Juni 2021
@@ -214,64 +214,62 @@ Array
     [event_robots] =>
     [event_minMembers] => 0
     [event_addEscortsToTotal] => nein
-    [organizer_id] => 1
-    [organizer_tstamp] => 09.06.2021 16:08
-    [organizer_username] => eve.moneypenny
-    [organizer_name] => Eve Moneypenny
-    [organizer_email] => em@mi6.com
-    [organizer_language] => de
-    [organizer_backendTheme] => flexible
-    [organizer_fullscreen] => nein
-    [organizer_uploader] =>
-    [organizer_showHelp] => ja
-    [organizer_thumbnails] => ja
-    [organizer_useRTE] => ja
-    [organizer_useCE] => ja
-    [organizer_pwChange] => nein
-    [organizer_admin] => ja
-    [organizer_groups] =>
-    [organizer_inherit] => Nur Gruppenrechte verwenden
-    [organizer_modules] =>
-    [organizer_themes] =>
-    [organizer_pagemounts] =>
-    [organizer_alpty] =>
-    [organizer_filemounts] =>
-    [organizer_fop] =>
-    [organizer_imageSizes] =>
-    [organizer_forms] =>
-    [organizer_formp] =>
-    [organizer_amg] =>
-    [organizer_disable] => nein
-    [organizer_start] =>
-    [organizer_stop] =>
-    [organizer_dateAdded] => 09.06.2021 16:08
-    [organizer_lastLogin] => 08.09.2021 13:47
-    [organizer_currentLogin] => 08.09.2021 21:13
-    [organizer_locked] => 01.01.1970 01:00
-    [organizer_faqs] =>
-    [organizer_faqp] =>
-    [organizer_news] =>
-    [organizer_newp] =>
-    [organizer_newsfeeds] =>
-    [organizer_newsfeedp] =>
-    [organizer_newsletters] =>
-    [organizer_newsletterp] =>
-    [organizer_calendars] =>
-    [organizer_calendarp] =>
-    [organizer_calendarfeeds] =>
-    [organizer_calendarfeedp] =>
-    [organizer_useTwoFactor] =>
-    [organizer_secret] =>
-    [organizer_trustedTokenVersion] => 0
-    [organizer_backupCodes] =>
-    [organizer_loginAttempts] => 0
-    [organizer_fields] =>
-    [organizer_elements] =>
-    [organizer_activation] =>
-    [organizer_rsts_permissions] =>
-    [organizer_rsts_sliders] =>
-    [organizer_senderName] => Eve Moneypenny
-    [organizer_senderEmail] => em@mi6.com
+    [sender_id] => 1
+    [sender_tstamp] => 09.06.2021 16:08
+    [sender_username] => eve.moneypenny
+    [sender_name] => Eve Moneypenny
+    [sender_email] => em@mi6.com
+    [sender_language] => de
+    [sender_backendTheme] => flexible
+    [sender_fullscreen] => nein
+    [sender_uploader] =>
+    [sender_showHelp] => ja
+    [sender_thumbnails] => ja
+    [sender_useRTE] => ja
+    [sender_useCE] => ja
+    [sender_pwChange] => nein
+    [sender_admin] => ja
+    [sender_groups] =>
+    [sender_inherit] => Nur Gruppenrechte verwenden
+    [sender_modules] =>
+    [sender_themes] =>
+    [sender_pagemounts] =>
+    [sender_alpty] =>
+    [sender_filemounts] =>
+    [sender_fop] =>
+    [sender_imageSizes] =>
+    [sender_forms] =>
+    [sender_formp] =>
+    [sender_amg] =>
+    [sender_disable] => nein
+    [sender_start] =>
+    [sender_stop] =>
+    [sender_dateAdded] => 09.06.2021 16:08
+    [sender_lastLogin] => 08.09.2021 13:47
+    [sender_currentLogin] => 08.09.2021 21:13
+    [sender_locked] => 01.01.1970 01:00
+    [sender_faqs] =>
+    [sender_faqp] =>
+    [sender_news] =>
+    [sender_newp] =>
+    [sender_newsfeeds] =>
+    [sender_newsfeedp] =>
+    [sender_newsletters] =>
+    [sender_newsletterp] =>
+    [sender_calendars] =>
+    [sender_calendarp] =>
+    [sender_calendarfeeds] =>
+    [sender_calendarfeedp] =>
+    [sender_useTwoFactor] =>
+    [sender_secret] =>
+    [sender_trustedTokenVersion] => 0
+    [sender_backupCodes] =>
+    [sender_loginAttempts] => 0
+    [sender_fields] =>
+    [sender_elements] =>
+    [sender_activation] =>
+    [sender_rsts_permissions] =>
+    [sender_rsts_sliders] =>
     [event_unsubscribeHref] => https://mi6.com/events-stornierungsformular.html?bookingToken=d47636dd-7606-4f0b-ad8d-82461abde483
 )
 
@@ -290,8 +288,8 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;
+use Haste\Form\Form;use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
@@ -306,13 +304,13 @@ final class DoSomething extends AbstractHook
      */
     private $eventRegistration;
 
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): void
+    public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        // It is possible to disable a HOOK with a lower priority
+        // It is possible to disable a built in HOOK with a lower priority
         // The built in notification hook has priority of 1000
         // so we can disable it.
         Notification::disableHook();
@@ -321,13 +319,7 @@ final class DoSomething extends AbstractHook
         // .......
 
         // Get the current event
-        $objEvent = $moduleInstance->getProperty('eventConfig')->event;
-
-        // Get the current registration object
-        $objEventMember = $moduleInstance->getProperty('objEventMember');
-
-        // Get the form object
-        $objForm = $moduleInstance->getProperty('objForm');
+        $objEvent = $eventConfig->getEvent();
 
         // Do something more
         // .......

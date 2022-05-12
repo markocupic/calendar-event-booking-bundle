@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Logger;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\Logger;
 
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;

@@ -6,8 +6,7 @@
     {% endif %}
 
     {% if form is defined %}
-
-        {% if case == 'bookingPossible' or case == 'waitingListPossible' %}
+        {% if canRegister.invoke() == true %}
             {{ form|raw }}
         {% endif %}
 

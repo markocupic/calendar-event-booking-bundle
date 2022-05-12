@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Markocupic\CalendarEventBookingBundle\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
@@ -25,23 +25,22 @@ PaletteManipulator::create()
     ->addLegend('notification_legend', 'source_legend', PaletteManipulator::POSITION_BEFORE)
     ->addLegend('event_unsubscribe_legend', 'source_legend', PaletteManipulator::POSITION_BEFORE)
     ->addField(['activateBookingForm'], 'booking_options_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['activateWaitingList'], 'waiting_list_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['activateNotification'], 'notification_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['activateDeregistration'], 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
     ->addField(['street', 'postal', 'city'], 'location', PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('default', 'tl_calendar_events');
 
 // Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateBookingForm';
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateWaitingList';
-$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateNotification';
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateBookingNotification';
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateDeregistration';
+$GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateUnsubscribeNotification';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,addEscortsToTotal,bookingStartDate,bookingEndDate,allowDuplicateEmail,bookingState';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateBookingForm'] = 'minMembers,maxMembers,maxEscortsPerMember,addEscortsToTotal,bookingStartDate,bookingEndDate,allowDuplicateEmail,bookingState,,activateWaitingList,activateBookingNotification,activateDeregistration';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateWaitingList'] = 'waitingListLimit';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateNotification'] = 'eventBookingNotification,eventBookingNotificationSender';
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateBookingNotification'] = 'eventBookingNotification,eventBookingNotificationSender';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp,activateUnsubscribeNotification';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateUnsubscribeNotification'] = 'eventUnsubscribeNotification,eventUnsubscribeNotificationSender';
 
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
@@ -86,6 +85,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingForm'] = [
     'filter'    => true,
     'inputType' => 'checkbox',
     'sql'       => "char(1) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['overrideCalendarBookingSettings'] = [
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'sql'       => "char(1) NOT NULL default '1'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allowDuplicateEmail'] = [
@@ -179,7 +186,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['waitingListLimit'] = [
     'sql'       => "smallint(3) unsigned NOT NULL default '0'",
 ];
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateNotification'] = [
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingNotification'] = [
     'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
@@ -232,4 +239,32 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
     'inputType' => 'text',
     'sorting'   => true,
     'sql'       => 'int(10) unsigned NULL',
+];
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateUnsubscribeNotification'] = [
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'sql'       => "char(1) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribeNotification'] = [
+    'eval'       => ['mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'],
+    'exclude'    => true,
+    'foreignKey' => 'tl_nc_notification.title',
+    'inputType'  => 'select',
+    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+    'search'     => true,
+    'sql'        => 'blob NULL',
+];
+
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribeNotificationSender'] = [
+    'eval'       => ['mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'clr'],
+    'exclude'    => true,
+    'foreignKey' => 'tl_user.name',
+    'inputType'  => 'select',
+    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+    'search'     => true,
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];

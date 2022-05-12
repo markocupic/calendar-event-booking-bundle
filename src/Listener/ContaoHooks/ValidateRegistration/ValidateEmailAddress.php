@@ -17,9 +17,8 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateReg
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,21 +29,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ValidateEmailAddress extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingValidateRegistration';
+    public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
     public const PRIORITY = 1000;
 
     private ContaoFramework $framework;
     private RequestStack $requestStack;
     private TranslatorInterface $translator;
+    private EventSubscriber $eventSubscriber;
 
     // Adapters
     private Adapter $eventMember;
 
-    public function __construct(ContaoFramework $framework, RequestStack $requestStack, TranslatorInterface $translator)
+    public function __construct(ContaoFramework $framework, RequestStack $requestStack, TranslatorInterface $translator, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
+        $this->eventSubscriber = $eventSubscriber;
 
         // Adapers
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -54,7 +55,7 @@ final class ValidateEmailAddress extends AbstractHook
      * Important! return false will make the validation fail
      * Validate email address.
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(EventSubscriber $eventSubscriber, EventConfig $eventConfig): bool
     {
         if (!self::isEnabled()) {
             return true;
@@ -62,22 +63,19 @@ final class ValidateEmailAddress extends AbstractHook
 
         $request = $this->requestStack->getCurrentRequest();
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
-
-        /** @var EventConfig $eventConfig */
-        $eventConfig = $moduleInstance->getProperty('eventConfig');
+        $form = $eventSubscriber->getForm();
 
         // Check if user with submitted email has already booked
-        if ($objForm->hasFormField('email')) {
-            $objWidget = $objForm->getWidget('email');
+        if ($form->hasFormField('email')) {
+            $objWidget = $form->getWidget('email');
 
             if (!empty($objWidget->value)) {
                 if (!$eventConfig->get('allowDuplicateEmail')) {
-                    $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+                    $t = $this->eventSubscriber->getTable();
+
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],
-                        'value' => [strtolower($objWidget->value), $eventConfig->getEvent()->id],
+                        'value' => [strtolower($objWidget->value), $eventConfig->getModel()->id],
                     ];
 
                     $objMember = $this->eventMember->findAll($arrOptions);

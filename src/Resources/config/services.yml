@@ -10,5 +10,7 @@ services:
         resource: ../../
         exclude: [
             '../../{Event,Model,DependencyInjection,Resources}',
-            '../../Config/EventConfig.php'
+            '../../EventBooking/Config/EventConfig.php'
         ]
+
+

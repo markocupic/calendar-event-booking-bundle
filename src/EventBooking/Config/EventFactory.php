@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Config;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\Config;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\Adapter;
@@ -34,10 +34,10 @@ class EventFactory
         $this->eventModel = $this->framework->getAdapter(CalendarEventsModel::class);
     }
 
-    public function create(int $id): EventConfig
+    public function create(?CalendarEventsModel $event): EventConfig
     {
-        if (null === ($event = $this->eventModel->findByPk($id))) {
-            throw new InvalidArgumentException(sprintf('Could not find event with ID %d', $id));
+        if (null === $event) {
+            throw new InvalidArgumentException('Event not found!');
         }
 
         return new EventConfig($event, $this->framework);

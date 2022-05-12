@@ -16,27 +16,19 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
-use Markocupic\CalendarEventBookingBundle\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
 final class Escort extends AbstractHook
 {
-    public const HOOK = 'calEvtBookingAddField';
+    public const HOOK = AbstractHook::HOOK_ADD_FIELD;
     public const PRIORITY = 1000;
 
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
-    public function __invoke(Form $objForm, string $strField, array $arrDca, EventConfig $eventConfig, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(Form $form, string $strField, array $arrDca, EventConfig $eventConfig, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
         if (!self::isEnabled()) {
             return true;

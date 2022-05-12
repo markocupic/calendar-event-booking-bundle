@@ -21,8 +21,9 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
-use Markocupic\CalendarEventBookingBundle\Config\EventFactory;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 
 /**
  * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
@@ -35,12 +36,14 @@ final class LoadFormField extends AbstractHook
     private ContaoFramework $framework;
     private EventRegistration $eventRegistration;
     private EventFactory $eventFactory;
+    private EventSubscriber $eventSubscriber;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, EventFactory $eventFactory)
+    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, EventFactory $eventFactory, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
         $this->eventRegistration = $eventRegistration;
         $this->eventFactory = $eventFactory;
+        $this->eventSubscriber = $eventSubscriber;
     }
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
@@ -55,8 +58,8 @@ final class LoadFormField extends AbstractHook
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             // Load DCA
-            $controllerAdapter->loadDataContainer('tl_calendar_events_member');
-            $dca = $GLOBALS['TL_DCA']['tl_calendar_events_member'];
+            $controllerAdapter->loadDataContainer($this->eventSubscriber->getTable());
+            $dca = $GLOBALS['TL_DCA'][$this->eventSubscriber->getTable()];
 
             // Convert timestamps to formatted date strings
             if (isset($dca['fields'][$objWidget->name]['eval']['rgxp'])) {
@@ -73,11 +76,12 @@ final class LoadFormField extends AbstractHook
                 }
             }
 
+            // Fit select menu to max escorts per member
             if ('escorts' === $objWidget->name) {
                 /** @var CalendarEventsModel $objEvent */
                 $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
 
-                $eventConfig = $this->eventFactory->create($objEvent->id);
+                $eventConfig = $this->eventFactory->create($objEvent);
 
                 $maxEscorts = $eventConfig->get('maxEscortsPerMember');
 

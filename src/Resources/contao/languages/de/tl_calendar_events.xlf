@@ -1,187 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events.php" source-language="en" target-language="de">
-        <body>
-            <trans-unit id="tl_calendar_events.registrations">
-                <source>Show participants from event with ID %s</source>
-                <target>Teilnehmer des Events mit ID %s anzeigen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.event_unsubscribe_legend">
-                <source>Event unsubscription settings</source>
-                <target>Stornierungs-Einstellungen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.notification_legend">
-                <source>Notification settings</source>
-                <target>Benachrichtigungs-Einstellungen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.waiting_list_legend">
-                <source>Waiting list settings</source>
-                <target>Warteliste</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.booking_options_legend">
-                <source>Booking settings</source>
-                <target>Buchungseinstellungen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.street.0">
-                <source>Street</source>
-                <target>Strasse</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.street.1">
-                <source>Please add the street.</source>
-                <target>Geben Sie bitte eine Strasse ein.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.postal.0">
-                <source>PLZ</source>
-                <target>PLZ</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.postal.1">
-                <source>Please add the postal code.</source>
-                <target>Geben Sie bitte eine Postleitzahl ein.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.city.0">
-                <source>Ort</source>
-                <target>Ort</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.city.1">
-                <source>Please add the city.</source>
-                <target>Geben Sie bitte einen Ort ein.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.0">
-                <source>Activate the booking form</source>
-                <target>Buchungsformular aktivieren</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.1">
-                <source>Activate the booking form and set the options.</source>
-                <target>Aktivieren Sie das Buchungsformular und legen Sie die Optionen fest.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.maxEscortsPerMember.0">
-                <source>Maximum escorts per participant</source>
-                <target>Maximale Anzahl Begleitpersonen pro Teilnehmer</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.maxEscortsPerMember.1">
-                <source>Please set the maximum number of escorts per participant.</source>
-                <target>Legen Sie die maximal mögliche Anzahl an Begleitpersonen pro Teilnehmer fest.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.addEscortsToTotal.0">
-                <source>Add accompanying persons to the total number of participants</source>
-                <target>Begleitpersonen zur totalen Teilnehmerzahl hinzufügen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.addEscortsToTotal.1">
-                <source>Determine whether the accompanying persons should be added to the total number of participants.</source>
-                <target>Legen Sie fest, ob die Begleitpersonen zur totalen Teilnehmerzahl dazugerechnet werden sollen.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingStartDate.0">
-                <source>Booking startdate</source>
-                <target>Buchung möglich ab:</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingStartDate.1">
-                <source>Set the booking starttime, please.</source>
-                <target>Legen Sie fest, ab welchem Zeitpunkt eine Buchung möglich ist.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingEndDate.0">
-                <source>Booking enddate</source>
-                <target>Buchung möglich bis:</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingEndDate.1">
-                <source>Set the booking endtime, please.</source>
-                <target>Legen Sie fest, bis zu welchem Zeitpunkt eine Buchung möglich ist.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.minMembers.0">
-                <source>Minimum participants</source>
-                <target>Minimale Teilnehmerzahl</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.minMembers.1">
-                <source>Please set the minimum participant number.</source>
-                <target>Geben Sie bitte die minimale Teilnehmerzahl ein.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.maxMembers.0">
-                <source>Maximum participants</source>
-                <target>Maximale Teilnehmerzahl</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.maxMembers.1">
-                <source>Please set the maximum participant number.</source>
-                <target>Geben Sie bitte die maximale Teilnehmerzahl ein.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateWaitingList.0">
-                <source>Activate waiting list</source>
-                <target>Warteliste aktivieren</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateWaitingList.1">
-                <source>Activate the waiting list and set the options.</source>
-                <target>Aktivieren Sie die Warteliste und bearbeiten Sie die Optioonen.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.waitingListLimit.0">
-                <source>Waiting list limit</source>
-                <target>Platzlimit Warteliste</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.waitingListLimit.1">
-                <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
-                <target>Setzen sie ein Limit für die Anzahl Plätze auf der Warteliste. Wählen die "0", wenn Sie kein Platzlimit möchten.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateNotification.0">
-                <source>Activate booking notification</source>
-                <target>Nachricht für die Buchungsbestätigung auswählen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateNotification.1">
-                <source>Activate the booking notification and set the options.</source>
-                <target>Wählen Sie eine Nachricht (Notification Center) für die Buchungsbestätigung aus.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.eventBookingNotification.0">
-                <source>Choose one or more notifications</source>
-                <target>Eine oder mehrere Benachrichtigungen auswählen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.eventBookingNotification.1">
-                <source>Choose one or more notifications.</source>
-                <target>Wählen Sie hier eine oder mehrere Benachrichtigungen aus.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.eventBookingNotificationSender.0">
-                <source>Booking notification sender</source>
-                <target>Absender der Buchungsbestätigung auswählen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.eventBookingNotificationSender.1">
-                <source>Please choose the sender of the booking notification.</source>
-                <target>Wählen Sie hier einen Absender für die Benachrichtigung aus.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateDeregistration.0">
-                <source>Enable event unsubscription</source>
-                <target>Abmeldung von Event erlauben</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.activateDeregistration.1">
-                <source>Please choose if event unsubscription should be allowed.</source>
-                <target>Wählen Sie hier, ob eine Event-Abmeldung erlaubt werden soll.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.unsubscribeLimit.0">
-                <source>Unsubscription limit in days</source>
-                <target>Abmeldefrist in Tagen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.unsubscribeLimit.1">
-                <source>Please set the number of days you allow users to unsubscribe from day of the event.</source>
-                <target>Geben Sie an wie viele Tage bis zum Event-Anfang Abmeldungen ermöglicht werden sollen.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.0">
-                <source>Fixed unsubscription limit</source>
-                <target>Abmeldefrist-Zeitpunkt</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.1">
-                <source>Fixed time limit for unsubscriptions from this event (overrides subscription limit in days)</source>
-                <target>Geben Sie einen genauen Zeitpunkt an, bis zu dem die Abmeldung möglich sein soll. Überschreibt die Abmeldefrist in Tagen.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.allowDuplicateEmail.0">
-                <source>Enable mutiple bookings with same email address</source>
-                <target>Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.allowDuplicateEmail.1">
-                <source>Please choose if multiple bookings with same email address should be allowed.</source>
-                <target>Geben Sie an, ob Merhfachbuchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollen.</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingState.0">
-                <source>Booking state</source>
-                <target>Buchungs-Status bei Neuanmeldung</target>
-            </trans-unit>
-            <trans-unit id="tl_calendar_events.bookingState.1">
-                <source>Select the state that is automatically assigned to a new booking.</source>
-                <target>Wähle den Buchungs-Status aus, der automatisch bei einer Neuanmeldung gesetzt werden soll.</target>
-            </trans-unit>
-        </body>
-    </file>
+  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_calendar_events.registrations">
+        <source>Show participants from event with ID %s</source>
+        <target>Teilnehmer des Events mit ID %s anzeigen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.booking_options_legend">
+        <source>Booking settings</source>
+        <target>Buchungseinstellungen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.street.0">
+        <source>Street</source>
+        <target>Strasse</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.street.1">
+        <source>Please add the street.</source>
+        <target>Geben Sie bitte eine Strasse ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.postal.0">
+        <source>PLZ</source>
+        <target>PLZ</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.postal.1">
+        <source>Please add the postal code.</source>
+        <target>Geben Sie bitte eine Postleitzahl ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.city.0">
+        <source>Ort</source>
+        <target>Ort</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.city.1">
+        <source>Please add the city.</source>
+        <target>Geben Sie bitte einen Ort ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateBookingForm.0">
+        <source>Activate the booking form</source>
+        <target>Buchungsformular aktivieren</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateBookingForm.1">
+        <source>Activate the booking form and set the options.</source>
+        <target>Aktivieren Sie das Buchungsformular und legen Sie die Optionen fest.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxEscortsPerMember.0">
+        <source>Maximum escorts per participant</source>
+        <target>Maximale Anzahl Begleitpersonen pro Teilnehmer</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxEscortsPerMember.1">
+        <source>Please set the maximum number of escorts per participant.</source>
+        <target>Legen Sie die maximal mögliche Anzahl an Begleitpersonen pro Teilnehmer fest.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.addEscortsToTotal.0">
+        <source>Add accompanying persons to the total number of participants</source>
+        <target>Begleitpersonen zur totalen Teilnehmerzahl addieren</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.addEscortsToTotal.1">
+        <source>Determine whether the accompanying persons should be added to the total number of participants.</source>
+        <target>Legen Sie fest, ob die Begleitpersonen zur totalen Teilnehmerzahl dazugerechnet werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingStartDate.0">
+        <source>Booking start date</source>
+        <target>Buchung möglich ab:</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingStartDate.1">
+        <source>Set the booking start time, please.</source>
+        <target>Legen Sie fest, ab welchem Zeitpunkt eine Buchung möglich ist.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingEndDate.0">
+        <source>Booking end date</source>
+        <target>Buchung möglich bis:</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingEndDate.1">
+        <source>Set the booking end time, please.</source>
+        <target>Legen Sie fest, bis zu welchem Zeitpunkt eine Buchung möglich ist.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.minMembers.0">
+        <source>Minimum participants</source>
+        <target>Minimale Teilnehmerzahl</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.minMembers.1">
+        <source>Please set the minimum participant number.</source>
+        <target>Geben Sie bitte die minimale Teilnehmerzahl ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxMembers.0">
+        <source>Maximum participants</source>
+        <target>Maximale Teilnehmerzahl</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxMembers.1">
+        <source>Please set the maximum participant number.</source>
+        <target>Geben Sie bitte die maximale Teilnehmerzahl ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateWaitingList.0">
+        <source>Activate waiting list</source>
+        <target>Warteliste aktivieren</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateWaitingList.1">
+        <source>Activate the waiting list and set the options.</source>
+        <target>Aktivieren Sie die Warteliste und bearbeiten Sie die Optioonen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.waitingListLimit.0">
+        <source>Waiting list limit</source>
+        <target>Platzlimit Warteliste</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.waitingListLimit.1">
+        <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
+        <target>Setzen sie ein Limit für die Anzahl Plätze auf der Warteliste. Wählen die "0", wenn Sie kein Platzlimit möchten.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateBookingNotification.0">
+        <source>Booking notification</source>
+        <target>Benachrichtigung bei Buchung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateBookingNotification.1">
+        <source>Enable booking notifications.</source>
+        <target>Wählen Sie eine oder mehrere Benachrichtigungen aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventBookingNotification.0">
+        <source>Choose one or more notifications</source>
+        <target>Benachrichtigungen bei Buchung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventBookingNotification.1">
+        <source>Choose one or more notifications.</source>
+        <target>Wählen Sie hier eine oder mehrere Benachrichtigungen aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventBookingNotificationSender.0">
+        <source>Booking notification sender</source>
+        <target>Absender der Benachrichtigung bei Buchung auswählen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventBookingNotificationSender.1">
+        <source>Please choose the sender of the booking notification.</source>
+        <target>Wählen Sie hier einen Absender für die Benachrichtigung aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateDeregistration.0">
+        <source>Enable event unsubscription</source>
+        <target>Stornierung erlauben</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateDeregistration.1">
+        <source>Please choose if event unsubscription should be allowed.</source>
+        <target>Wählen Sie, ob Event-Stornierung erlaubt werden soll.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.unsubscribeLimit.0">
+        <source>Unsubscription limit in days</source>
+        <target>Abmeldefrist in Tagen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.unsubscribeLimit.1">
+        <source>Please set the number of days you allow users to unsubscribe from day of the event.</source>
+        <target>Geben Sie an, wie viele Tage bis zum Event-Anfang Abmeldungen ermöglicht werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.0">
+        <source>Fixed unsubscription limit</source>
+        <target>Abmeldefrist-Zeitpunkt</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.1">
+        <source>Fixed time limit for unsubscription from this event (overrides subscription limit in days)</source>
+        <target>Geben Sie einen genauen Zeitpunkt an, bis zu dem die Abmeldung möglich sein soll. Überschreibt die Abmeldefrist in Tagen.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateUnsubscribeNotification.0">
+        <source>Unsubscribe notification</source>
+        <target>Benachrichtigung bei Stornierung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.activateUnsubscribeNotification.1">
+        <source>Enable unsubscribe notifications.</source>
+        <target>Wählen Sie eine oder mehrere Benachrichtigungen aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventUnsubscribeNotification.0">
+        <source>Choose one or more notifications</source>
+        <target>Benachrichtigungen bei Stornierung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventUnsubscribeNotification.1">
+        <source>Choose one or more notifications.</source>
+        <target>Wählen Sie hier eine oder mehrere Benachrichtigungen aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventUnsubscribeNotificationSender.0">
+        <source>Unsubscribe notification sender</source>
+        <target>Absender der Benachrichtigung bei Buchung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.eventUnsubscribeNotificationSender.1">
+        <source>Please choose the sender of the unsubscribe notification.</source>
+        <target>Wählen Sie einen Absender für die Benachrichtigung aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.allowDuplicateEmail.0">
+        <source>Enable multiple bookings with same email address</source>
+        <target>Mehrfachbuchung mit gleicher E-Mail-Adresse ermöglichen</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.allowDuplicateEmail.1">
+        <source>Please choose if multiple bookings with same email address should be allowed.</source>
+        <target>Geben Sie an, ob die Buchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollte.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingState.0">
+        <source>Booking state</source>
+        <target>Buchungs-Status bei Neuanmeldung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.bookingState.1">
+        <source>Select the state that is automatically assigned to a new booking.</source>
+        <target>Wähle Sie den Buchungs-Status aus, der automatisch bei einer Neuanmeldung gesetzt werden soll.</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>

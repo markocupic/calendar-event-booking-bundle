@@ -14,8 +14,17 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle;
 
+use Markocupic\CalendarEventBookingBundle\DependencyInjection\Compiler\AddSubscriptionServicesPass;
+use Markocupic\CalendarEventBookingBundle\DependencyInjection\MarkocupicCalendarEventBookingExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class MarkocupicCalendarEventBookingBundle extends Bundle
 {
+
+    public function getContainerExtension(): MarkocupicCalendarEventBookingExtension
+    {
+        return new MarkocupicCalendarEventBookingExtension();
+    }
+
 }
