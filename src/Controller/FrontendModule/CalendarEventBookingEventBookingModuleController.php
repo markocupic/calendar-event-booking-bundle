@@ -5,8 +5,8 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
- * @license MIT
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -226,7 +226,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->case = $this->eventRegistration->getRegistrationState($this->objEvent);
 
         // Trigger set case hook: manipulate case
-        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingSetCase']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'])) {
+        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingSetCase']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingSetCase'] as $callback) {
                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
             }
@@ -267,7 +267,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 $this->setForm($objFormGeneratorModel);
 
                 // Trigger pre validate hook: e.g. add custom field validators.';
-                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'])) {
+                if (isset($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'])) {
                     foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreValidate'] as $callback) {
                         $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                     }
@@ -281,14 +281,14 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                         $this->objEventMember->bookingToken = Uuid::uuid4()->toString();
 
                         // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'])) {
+                        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'])) {
                             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPrepareFormData'] as $callback) {
                                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
                         }
 
                         // Trigger pre booking hook: add your custom code here.
-                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'])) {
+                        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'])) {
                             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPreBooking'] as $callback) {
                                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
@@ -298,7 +298,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                         $this->objEventMember->save();
 
                         // Trigger post booking hook: add data to the session, send notifications, log things, etc.
-                        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
+                        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'])) {
                             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingPostBooking'] as $callback) {
                                 $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
                             }
@@ -345,9 +345,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->objForm = new Form(
             'eventSubscriptionForm',
             'POST',
-            static function ($objHaste) use ($inputAdapter) {
-                return $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId();
-            }
+            static fn ($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
         );
 
         // Bind the event member model to the form input
@@ -361,7 +359,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 $blnShow = true;
 
                 // Trigger add field hook
-                if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingAddField']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingAddField'])) {
+                if (isset($GLOBALS['TL_HOOKS']['calEvtBookingAddField']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingAddField'])) {
                     foreach ($GLOBALS['TL_HOOKS']['calEvtBookingAddField'] as $callback) {
                         $blnShow = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this->objForm, $strField, $arrDca, $this->objEvent, $this);
 
@@ -382,7 +380,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $systemAdapter = $this->framework->getAdapter(System::class);
 
         // Trigger validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.
-        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'])) {
+        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingValidateBookingRequest'] as $callback) {
                 $isValid = $systemAdapter->importStatic($callback[0])->{$callback[1]}($this, $this->disabledHooks);
 

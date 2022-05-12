@@ -18,6 +18,7 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
+use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
@@ -53,15 +54,11 @@ final class ValidateNumberOfParticipants
         $this->eventRegistration = $eventRegistration;
     }
 
-
     /**
      * Important! return false will make the validation fail
      * Validate if number of participants exceeds max member limit.
      *
-     * @param CalendarEventBookingEventBookingModuleController $moduleInstance
-     * @param array $arrDisabledHooks
-     * @return bool
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {

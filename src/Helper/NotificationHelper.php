@@ -50,6 +50,7 @@ class NotificationHelper
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
+        $formatAdapter = $this->framework->getAdapter(Format::class);
 
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -64,7 +65,7 @@ class NotificationHelper
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
-                $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
+                $arrTokens['member_'.$k] = $formatAdapter->dcaValue('tl_calendar_events_member', $k, $v);
             } else {
                 $arrTokens['member_'.$k] = html_entity_decode((string) $v);
             }
@@ -76,7 +77,7 @@ class NotificationHelper
         $row = $objEvent->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['event_'.$k] = Format::dcaValue('tl_calendar_events', $k, $v);
+            $arrTokens['event_'.$k] = $formatAdapter->dcaValue('tl_calendar_events', $k, $v);
         }
 
         // Prepare tokens for organizer_* (sender)
@@ -89,7 +90,7 @@ class NotificationHelper
                 if ('password' === $k || 'session' === $k) {
                     continue;
                 }
-                $arrTokens['organizer_'.$k] = Format::dcaValue('tl_user', $k, $v);
+                $arrTokens['organizer_'.$k] = $formatAdapter->dcaValue('tl_user', $k, $v);
             }
 
             // deprecated since version 4.2, to be removed in 5.0 Use organizer_name instead of organizer_senderName */
@@ -115,8 +116,8 @@ class NotificationHelper
             }
         }
 
-        // Trigger calEvtBookingPostBooking hook
-        if (!empty($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) || \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
+        // Trigger calEvtBookingGetNotificationTokens hook
+        if (isset($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback) {
                 $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
             }

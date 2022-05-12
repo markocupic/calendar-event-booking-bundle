@@ -1,10 +1,14 @@
 <?php
 
-/**
- * Calendar Event Booking Bundle Extension for Contao CMS
- * Copyright (c) 2008-2021 Marko Cupic
- * @package Markocupic\CalendarEventBookingBundle
- * @author Marko Cupic m.cupic@gmx.ch, 2021
+declare(strict_types=1);
+
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
@@ -35,4 +39,3 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['eventUnsubscribePage'] = ['Seite mit 
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimit'] = ['Abmeldefrist in Tagen', 'Geben Sie an wie viele Tage bis zum Event-Anfang Abmeldungen ermöglicht werden sollen.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['unsubscribeLimitTstamp'] = ['Abmeldefrist-Zeitpunkt', 'Geben Sie einen genauen Zeitpunkt an, bis zu dem die Abmeldung möglich sein soll. Überschreibt die Abmeldefrist in Tagen.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['enableMultiBookingWithSameAddress'] = ['Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen', 'Geben Sie an, ob Merhfachbuchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollen.'];
-
