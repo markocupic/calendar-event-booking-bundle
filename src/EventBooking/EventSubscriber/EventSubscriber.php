@@ -137,12 +137,11 @@ final class EventSubscriber
         }
     }
 
-    public function unsubscribe()
+    public function unsubscribe(): void
     {
         $eventMember = $this->getModel();
         $eventMember->bookingState = BookingState::STATE_UNSUBSCRIBED;
         $eventMember->save();
-
     }
 
     public function hasForm(): bool

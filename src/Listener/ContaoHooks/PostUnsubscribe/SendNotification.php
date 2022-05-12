@@ -18,13 +18,10 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Formatter;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * @Hook(SendNotification::HOOK, priority=SendNotification::PRIORITY)
@@ -50,9 +47,6 @@ final class SendNotification extends AbstractHook
     }
 
     /**
-     * @param EventConfig $eventConfig
-     * @param EventSubscriber $eventSubscriber
-     * @return void
      * @throws \Exception
      */
     public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void

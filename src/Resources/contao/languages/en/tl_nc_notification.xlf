@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_nc_notification.php" source-language="en">
-    <body>
-      <trans-unit id="tl_nc_notification.type.calendar-event-booking-bundle">
-        <source>Event-Bookings</source>
-      </trans-unit>
-      <trans-unit id="tl_nc_notification.type.booking-notification.0">
-        <source>Event booking confirmation</source>
-      </trans-unit>
-      <trans-unit id="tl_nc_notification.type.event-unsubscribe-notification.0">
-        <source>Event booking unsubscription</source>
-      </trans-unit>
-    </body>
-  </file>
+    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_nc_notification.php" source-language="en">
+        <body>
+            <trans-unit id="tl_nc_notification.type.calendar-event-booking-bundle">
+                <source>Event-Bookings</source>
+            </trans-unit>
+            <trans-unit id="tl_nc_notification.type.booking-notification.0">
+                <source>Event booking confirmation</source>
+            </trans-unit>
+            <trans-unit id="tl_nc_notification.type.event-unsubscribe-notification.0">
+                <source>Event booking unsubscription</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

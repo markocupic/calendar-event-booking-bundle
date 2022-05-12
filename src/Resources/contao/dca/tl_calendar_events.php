@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingState'] = [
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_UNDEFINED."'",
+    'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_CONFIRMED."'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [

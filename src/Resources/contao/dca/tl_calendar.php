@@ -25,14 +25,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
     'exclude'    => true,
     'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
-    'eval'       => [
-        'mandatory' => true,
-        'fieldType' => 'radio',
-        'tl_class'  => 'clr',
-    ],
+    'eval'       => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
-    'relation'   => [
-        'type' => 'hasOne',
-        'load' => 'lazy',
-    ],
+    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
 ];

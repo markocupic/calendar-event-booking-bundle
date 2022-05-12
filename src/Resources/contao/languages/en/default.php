@@ -12,8 +12,8 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 
 // Misc
 $GLOBALS['TL_LANG']['MSC']['bookings'] = 'bookings';

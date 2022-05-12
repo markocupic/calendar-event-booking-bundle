@@ -157,7 +157,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                         // Trigger the unsubscribe from event hook
                         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT])) {
                             foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($eventConfig,$this->eventSubscriber);
+                                $this->system->importStatic($callback[0])->{$callback[1]}($eventConfig, $this->eventSubscriber);
                             }
                         }
 

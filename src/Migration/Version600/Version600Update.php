@@ -21,6 +21,7 @@ use Doctrine\DBAL\Exception;
 
 class Version600Update extends AbstractMigration
 {
+    private const STRING_TO_INT_CONVERSION = 'string_to_int_conversion';
     private const ALTERATION_TYPE_RENAME_COLUMN = 'alteration_type_rename_column';
 
     private Connection $connection;
@@ -44,7 +45,20 @@ class Version600Update extends AbstractMigration
         foreach ($arrAlterations as $arrAlteration) {
             $type = $arrAlteration['type'];
 
-            // Version 2 migration: "Rename columns"
+            // Version 600 migration: "Convert empty string to 0"
+            if (self::STRING_TO_INT_CONVERSION === $type) {
+                $strTable = $arrAlteration['table'];
+                // If the database table itself does not exist we should do nothing
+                if ($schemaManager->tablesExist([$strTable])) {
+                    $columns = $schemaManager->listTableColumns($strTable);
+
+                    if (isset($columns[strtolower($arrAlteration['field'])])) {
+                        $doMigration = true;
+                    }
+                }
+            }
+
+            // Version 600 migration: "Rename columns"
             if (self::ALTERATION_TYPE_RENAME_COLUMN === $type) {
                 $strTable = $arrAlteration['table'];
                 // If the database table itself does not exist we should do nothing
@@ -74,7 +88,29 @@ class Version600Update extends AbstractMigration
         foreach ($arrAlterations as $arrAlteration) {
             $type = $arrAlteration['type'];
 
-            // Version 2 migration: "Rename columns"
+            // Version 600 migration: "Convert empty string to 0"
+            if (self::STRING_TO_INT_CONVERSION === $type) {
+                $strTable = $arrAlteration['table'];
+                // If the database table itself does not exist we should do nothing
+                if ($schemaManager->tablesExist([$strTable])) {
+                    $columns = $schemaManager->listTableColumns($strTable);
+
+                    if (isset($columns[strtolower($arrAlteration['field'])])) {
+                        $set = [
+                            $arrAlteration['field'] => $arrAlteration['field_value_new'],
+                        ];
+                        // Convert ''to '0'
+                        $this->connection->update($arrAlteration['table'], $set, [$arrAlteration['field'] => $arrAlteration['field_value_old']]);
+                        $resultMessages[] = sprintf(
+                            'Convert empty string to "0" in column %s.%s. ',
+                            $strTable,
+                            $arrAlteration['field'],
+                        );
+                    }
+                }
+            }
+
+            // Version 600 migration: "Rename columns"
             if (self::ALTERATION_TYPE_RENAME_COLUMN === $type) {
                 $strTable = $arrAlteration['table'];
 
@@ -105,6 +141,13 @@ class Version600Update extends AbstractMigration
     {
         return [
             // tl_calendar_events
+            [
+                'type' => self::STRING_TO_INT_CONVERSION,
+                'table' => 'tl_calendar_events_member',
+                'field_value_old' => '',
+                'field_value_new' => '0',
+                'field' => 'addedOn',
+            ],
             [
                 'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
