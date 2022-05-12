@@ -267,7 +267,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'filter' => true,
             'inputType' => 'text',
             'search' => true,
-            'sorting' => true,
             'sql' => "varchar(255) NOT NULL default ''",
         ],
     ],

@@ -170,6 +170,17 @@
         <source>Please enter the escorts.</source>
         <target>Geben Sie die Anzahl Begleitpersonen ein.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingToken.0">
+        <source>Buchungs-Token</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingToken.0">
+        <source>Booking token</source>
+        <target>Buchungs-Token</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.bookingToken.1">
+        <source>Add a booking token please.</source>
+        <target>Geben Sie ein Buchungs-Token ein.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
