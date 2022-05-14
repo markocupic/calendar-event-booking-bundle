@@ -2,7 +2,8 @@
 ### Achtung: Bei der Migration von Version 3.x nach 4.x gab es mehrere Änderungen in der Benennung der Modul-Typen und Template-Namen. Dies bitte bei einer allfälligen Migration berücksichtigen.
 
 ## Events buchen
-Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
+Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar. Verschiedene Buchungsstati stehen zur Verfügung.
+Falls Events bereits ausgebucht sind, existiert **ab Version 6.0** die Möglichkeit, dass sich interessierte Besucher auf die **Warteliste** setzen lassen können.
 Das Anmeldeformular kann im Contao Formulargenerator erstellt werden.
 Die Erweiterung stellt während des Installationsprozesses ein Sample Anmeldeformular bereit, welches Grundansprüchen genügen sollte.
 Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abgelegt
@@ -109,23 +110,23 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, 
 ### Template Variablen
 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
+
 Tag | type | Erklärung
 ------------ |------------- |--
-`$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
-`$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
-`$this->confirmedBookingsCount` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
-`$this->bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
-`$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
-`$this->bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
-`$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (date) an.
-`$this->bookingStartDatim` | int | Zeigt, die Buchungsstartzeit (datim) an.
-`$this->bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
-`$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (date) an.
-`$this->bookingEndDatim` | int | Zeigt, die Buchungsendzeit (datim) an.
-`$this->hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
-`$this->loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
-
-
+`canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
+`isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
+`confirmedBookingsCount` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
+`bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
+`bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
+`bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
+`bookingStartDate` | int | Zeigt, die Buchungsstartzeit (date) an.
+`bookingStartDatim` | int | Zeigt, die Buchungsstartzeit (datim) an.
+`bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+`bookingEndDate` | int | Zeigt, die Buchungsendzeit (date) an.
+`bookingEndDatim` | int | Zeigt, die Buchungsendzeit (datim) an.
+`hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
+`loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
+`event` | null|CalendarEventsModel | Gibt null oder das Event Model Objekt zurück.
 
 ### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
 ```
@@ -277,7 +278,21 @@ Array
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
-Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
+Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, hilft ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
+
+Folgende **zusätzliche HOOKS** stehen neben den Contao Hooks zusätzlich zur Verfügung:
+
+**HOOK** | **Erklärung**
+------------ |--
+`calEvtBookingSetCase` | Mit diesem Hook kann auf den Modus (Case) im Buchungsmodul Einfluss genommen werden.
+`calEvtBookingAddField` | Mit diesem Hook kann auf die Sichtbarkeit der Buchungs-Formular- Felder Einfluss genommen werden.
+`calEvtBookingPrepareFormData` | Mit diesem Hook können die Eingaben im Buchungsformular vor dem Abspeichern in die Datenbank verändert werden. Z.B. Datum in einen Timestamp umwandeln
+`calEvtBookingPreBooking` | Dieser Hook wird unmittelbar vor dem Abspeichern der Buchungsdaten getriggert.
+`calEvtBookingPostBooking` | Dieser Hook wird unmittelbar nach dem Abspeichern der Buchungsdaten getriggert.
+`calEvtBookingPreValidate` | Dieser Hook wird unmittelbar vor dem Überprüfen der Buchungsformular-Feld-Eingaben getriggert.
+`calEvtBookingValidateRegistration` | Dieser Hook wird getriggert beim Überprüfen der Buchungsanfrage. (Feststellen, ob noch genügend freie Plätze vorhanden sind.)
+`calEvtBookingUnsubscribeFromEvent` | Dieser Hook wird unmittelbar nach der Stornierung einer Buchung durch das MItglied getriggert. Kann u.A. dazu genutzt werden, um Benachrichtigungen zu versenden.
+`calEvtBookingStateChange` | Dieser Hook wird getriggert, wenn im Backend der Buchungsstatus geändert wird. Könnte u.A. dazu genutzt werden, um Benutzer über die Änderung ihres Buchungsstatus zu informieren.
 
 ```php
 <?php
@@ -327,36 +342,4 @@ final class DoSomething extends AbstractHook
     }
 }
 
-```
-
-
-## Mehrfaches Absenden des Buchungsformulars unterbinden
-
-Mit etwas Javascript Code, den man im Buchungs-Template einbindet,
-  lässt sich durch Deaktivierung des Absende-Buttons beim ersten Absenden des Formulars,
-  eine mehrfache Anmeldung durch Doppelklick o.Ä unterbinden.
-
-
-```javascript
-
-<script>
-/**
-  * vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates/modules/mod_calendar_event_booking_event_booking_module.html5
-  * Prevent sending forms multiple times
-  */
-document.addEventListener("DOMContentLoaded", function(event) {
-let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
-if(elForms.length){
-  elForms.forEach((elForm, index, nodeList) => {
-    elForm.addEventListener('submit', (event) => {
-      let elBtn = elForm.querySelector('.submit[type="submit"]');
-      if(elBtn)
-      {
-        elBtn.disabled = true;
-      }
-    });
-  });
-}
-});
-</script>
 ```
