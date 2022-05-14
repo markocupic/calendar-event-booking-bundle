@@ -143,6 +143,7 @@ class Notification
 
                 if (null !== $objPage) {
                     $url = $objPage->getFrontendUrl().'?bookingToken='.$objEventMember->bookingToken;
+                    $arrTokens['member_unsubscribeHref'] = $this->environment->get('url').'/'.$url;
                     $arrTokens['event_unsubscribeHref'] = $this->environment->get('url').'/'.$url;
                 }
             }
