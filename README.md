@@ -128,6 +128,36 @@ Tag | type | Erklärung
 `loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 `event` | null|CalendarEventsModel | Gibt null oder das Event Model Objekt zurück.
 
+### Beispieltext Notification Center
+```
+{if member_gender=='Männlich'}
+Sehr geehrter Herr ##member_firstname## ##member_lastname##
+{elseif member_gender=='Weiblich'}
+Sehr geehrte Frau ##member_firstname## ##member_lastname##
+{else}
+Hallo ##member_firstname## ##member_lastname##
+{endif}
+
+Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
+
+Buchungsstatus: ##member_bookingState##.
+
+Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
+
+Ihre Angaben:
+Name/Vorname: ##member_firstname## ##member_lastname##
+Adresse: ##member_street##, ##member_postal##, ##member_city##
+Telefon: ##member_phone##
+E-Mail: ##member_email##
+Begleitpersonen: ##member_escorts##
+
+Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
+##member_unsubscribeHref##
+
+Freundliche Grüsse
+
+##sender_name##
+```
 ### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
 ```
 Array
@@ -136,8 +166,10 @@ Array
     [member_id] => 26
     [member_pid] => Testevent 2
     [member_tstamp] => 08.09.2021 21:26
+    [member_eventState] => waiting_list
     [member_dateAdded] => 08.09.2021 21:26
     [member_notes] => Tomorrow never dies!
+    [member_salutation] => Herr
     [member_firstname] => James
     [member_lastname] => Bond
     [member_gender] => Männlich
@@ -149,10 +181,6 @@ Array
     [member_email] => 007@mi6.com
     [member_escorts] => 0
     [member_bookingToken] => d47636dd-7606-4f0b-ad8d-82461abde483
-    [member_notificationSent] => nein
-    [member_subscriptionAccepted] => nein
-    [member_notificationSentDatim] =>
-    [member_salutation] => Herr
     [event_id] => 3
     [event_pid] => Events
     [event_tstamp] => 08.09.2021 14:04
@@ -166,37 +194,6 @@ Array
     [event_endDate] => 8. September 2021
     [event_location] =>
     [event_teaser] =>
-    [event_addImage] => nein
-    [event_overwriteMeta] => nein
-    [event_singleSRC] =>
-    [event_alt] =>
-    [event_imageTitle] =>
-    [event_size] =>
-    [event_imagemargin] =>
-    [event_imageUrl] =>
-    [event_fullsize] => nein
-    [event_caption] =>
-    [event_floating] => oberhalb
-    [event_recurring] => nein
-    [event_repeatEach] =>
-    [event_repeatEnd] => 0
-    [event_recurrences] => 0
-    [event_addEnclosure] => nein
-    [event_enclosure] =>
-    [event_source] => Standard
-    [event_jumpTo] => 0
-    [event_articleId] => 0
-    [event_url] =>
-    [event_target] => nein
-    [event_cssClass] =>  upcoming
-    [event_noComments] => nein
-    [event_published] => ja
-    [event_start] =>
-    [event_stop] =>
-    [event_address] =>
-    [event_description] =>
-    [event_pageTitle] =>
-    [event_unsubscribeLimit] => 0
     [event_activateDeregistration] => ja
     [event_eventBookingNotificationSender] => Eve Moneypenny
     [event_eventBookingNotification] => Event Buchungs Benachrichtigung
@@ -206,72 +203,18 @@ Array
     [event_bookingStartDate] => 7. Juni 2021
     [event_bookingEndDate] => 15. September 2021
     [event_activateBookingForm] => ja
-    [event_city] =>
-    [event_postal] =>
-    [event_street] =>
+    [event_city] => Nothingham
+    [event_postal] => 6666
+    [event_street] => black corner 2
     [event_allowDuplicateEmail] => ja
     [event_unsubscribeLimitTstamp] => 12.08.2021 16:40
-    [event_featured] => nein
-    [event_robots] =>
     [event_minMembers] => 0
     [event_addEscortsToTotal] => nein
     [sender_id] => 1
-    [sender_tstamp] => 09.06.2021 16:08
     [sender_username] => eve.moneypenny
     [sender_name] => Eve Moneypenny
     [sender_email] => em@mi6.com
     [sender_language] => de
-    [sender_backendTheme] => flexible
-    [sender_fullscreen] => nein
-    [sender_uploader] =>
-    [sender_showHelp] => ja
-    [sender_thumbnails] => ja
-    [sender_useRTE] => ja
-    [sender_useCE] => ja
-    [sender_pwChange] => nein
-    [sender_admin] => ja
-    [sender_groups] =>
-    [sender_inherit] => Nur Gruppenrechte verwenden
-    [sender_modules] =>
-    [sender_themes] =>
-    [sender_pagemounts] =>
-    [sender_alpty] =>
-    [sender_filemounts] =>
-    [sender_fop] =>
-    [sender_imageSizes] =>
-    [sender_forms] =>
-    [sender_formp] =>
-    [sender_amg] =>
-    [sender_disable] => nein
-    [sender_start] =>
-    [sender_stop] =>
-    [sender_dateAdded] => 09.06.2021 16:08
-    [sender_lastLogin] => 08.09.2021 13:47
-    [sender_currentLogin] => 08.09.2021 21:13
-    [sender_locked] => 01.01.1970 01:00
-    [sender_faqs] =>
-    [sender_faqp] =>
-    [sender_news] =>
-    [sender_newp] =>
-    [sender_newsfeeds] =>
-    [sender_newsfeedp] =>
-    [sender_newsletters] =>
-    [sender_newsletterp] =>
-    [sender_calendars] =>
-    [sender_calendarp] =>
-    [sender_calendarfeeds] =>
-    [sender_calendarfeedp] =>
-    [sender_useTwoFactor] =>
-    [sender_secret] =>
-    [sender_trustedTokenVersion] => 0
-    [sender_backupCodes] =>
-    [sender_loginAttempts] => 0
-    [sender_fields] =>
-    [sender_elements] =>
-    [sender_activation] =>
-    [sender_rsts_permissions] =>
-    [sender_rsts_sliders] =>
-    [event_unsubscribeHref] => https://mi6.com/events-stornierungsformular.html?bookingToken=d47636dd-7606-4f0b-ad8d-82461abde483
 )
 
 ```
