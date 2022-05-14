@@ -6,9 +6,27 @@
     {% endif %}
 
     {% if form is defined %}
-        {% if canRegister.invoke() == true %}
+        {% if canRegister %}
             {{ form|raw }}
         {% endif %}
+
+        <script>
+
+            // Prevent multiple form submit
+            document.addEventListener("DOMContentLoaded", function (event) {
+                let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
+                if (elForms.length) {
+                    elForms.forEach((elForm, index, nodeList) => {
+                        elForm.addEventListener('submit', (event) => {
+                            let elBtn = elForm.querySelector('.submit[type="submit"]');
+                            if (elBtn) {
+                                elBtn.disabled = true;
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
 
     {% endif %}
 

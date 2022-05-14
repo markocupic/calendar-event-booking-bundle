@@ -38,31 +38,31 @@ final class AddTemplateData
      */
     public function addTemplateData(EventConfig $eventConfig, Template $template): void
     {
-        $template->canRegister = fn (): bool => $this->bookingValidator->validateCanRegister($eventConfig);
+        $template->canRegister = $this->bookingValidator->validateCanRegister($eventConfig);
 
-        $template->isFullyBooked = fn (): bool => $this->eventRegistration->isFullyBooked($eventConfig);
+        $template->isFullyBooked = $this->eventRegistration->isFullyBooked($eventConfig);
 
-        $template->confirmedBookingsCount = fn (): int => $this->eventRegistration->getConfirmedBookingsCount($eventConfig);
+        $template->confirmedBookingsCount = $this->eventRegistration->getConfirmedBookingsCount($eventConfig);
 
-        $template->bookingMin = static fn (): int => $eventConfig->getBookingMin();
+        $template->bookingMin = $eventConfig->getBookingMin();
 
-        $template->bookingMax = static fn (): int => $eventConfig->getBookingMax($eventConfig);
+        $template->bookingMax = $eventConfig->getBookingMax($eventConfig);
 
-        $template->bookingStartDate = static fn (): string => $eventConfig->getBookingStartDate('date');
+        $template->bookingStartDate = $eventConfig->getBookingStartDate('date');
 
-        $template->bookingStartDatim = static fn (): string => $eventConfig->getBookingStartDate('datim');
+        $template->bookingStartDatim = $eventConfig->getBookingStartDate('datim');
 
-        $template->bookingStartTimestamp = static fn (): string => $eventConfig->getBookingStartDate('timestamp');
+        $template->bookingStartTimestamp = $eventConfig->getBookingStartDate('timestamp');
 
-        $template->bookingEndDate = static fn (): string => $eventConfig->getBookingEndDate('date');
+        $template->getBookingEndDate = $eventConfig->getBookingEndDate('date');
 
-        $template->bookingEndDatim = static fn (): string => $eventConfig->getBookingEndDate('datim');
+        $template->getBookingEndDatim = $eventConfig->getBookingEndDate('datim');
 
-        $template->bookingEndTimestamp = static fn (): string => $eventConfig->getBookingEndDate('timestamp');
+        $template->getBookingEndTimestamp = $eventConfig->getBookingEndDate('timestamp');
 
-        $template->hasLoggedInUser = fn (): bool => $this->hasLoggedInFrontendUser();
+        $template->hasLoggedInUser = $this->hasLoggedInFrontendUser();
 
-        $template->loggedInUser = fn (): ?FrontendUser => $this->getLoggedInFrontendUser();
+        $template->getLoggedInUser = $this->getLoggedInFrontendUser();
 
         $template->event = $eventConfig->getModel();
 

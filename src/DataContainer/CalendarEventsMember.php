@@ -14,7 +14,14 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\DataContainer;
+use Contao\System;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
 use Markocupic\ExportTable\Writer\ByteSequence;
@@ -24,13 +31,23 @@ class CalendarEventsMember
 {
     public const TABLE = 'tl_calendar_events_member';
 
+    private ContaoFramework $framework;
+    private Connection $connection;
     private RequestStack $requestStack;
     private ExportTable $exportTable;
 
-    public function __construct(RequestStack $requestStack, ExportTable $exportTable)
+    // Adapters
+    private Adapter $system;
+
+    public function __construct(ContaoFramework $framework, Connection $connection, RequestStack $requestStack, ExportTable $exportTable)
     {
+        $this->framework = $framework;
+        $this->connection = $connection;
         $this->requestStack = $requestStack;
         $this->exportTable = $exportTable;
+
+        // Adapters
+        $this->system = $this->framework->getAdapter(System::class);
     }
 
     /**
@@ -65,5 +82,30 @@ class CalendarEventsMember
 
             $this->exportTable->run($exportConfig);
         }
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @Callback(table="tl_calendar_events_member", target="fields.bookingState.save")
+     */
+    public function triggerBookingStateChangeHook(string $strBookingStateNew, DataContainer $dc): string
+    {
+        $arrEventMember = $this->connection->fetchAssociative('SELECT * FROM tl_calendar_events_member WHERE id = ?', [$dc->id]);
+
+        if ($arrEventMember) {
+            if ($strBookingStateNew !== $arrEventMember['bookingState']) {
+                $intId = (int) $arrEventMember['id'];
+                $strBookingStateOld = $arrEventMember['bookingState'];
+
+                if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_BOOKING_STATE_CHANGE]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_BOOKING_STATE_CHANGE])) {
+                    foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_BOOKING_STATE_CHANGE] as $callback) {
+                        $strBookingStateNew = $this->system->importStatic($callback[0])->{$callback[1]}($strBookingStateOld, $strBookingStateNew, $intId);
+                    }
+                }
+            }
+        }
+
+        return $strBookingStateNew;
     }
 }

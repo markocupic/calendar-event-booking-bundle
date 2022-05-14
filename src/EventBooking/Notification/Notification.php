@@ -61,6 +61,11 @@ class Notification
         $this->userModel = $this->framework->getAdapter(UserModel::class);
     }
 
+    public function getTokens(): array
+    {
+        return $this->arrTokens;
+    }
+
     /**
      * @throws \Exception
      */
@@ -170,10 +175,5 @@ class Notification
                 }
             }
         }
-    }
-
-    private function getTokens(): array
-    {
-        return $this->arrTokens;
     }
 }
