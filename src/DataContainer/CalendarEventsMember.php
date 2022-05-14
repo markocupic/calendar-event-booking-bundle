@@ -85,15 +85,17 @@ class CalendarEventsMember
     }
 
     /**
-     * @throws Exception
+     * Trigger the bookingStateChange HOOK.
      *
      * @Callback(table="tl_calendar_events_member", target="fields.bookingState.save")
+     *
+     * @throws Exception
      */
     public function triggerBookingStateChangeHook(string $strBookingStateNew, DataContainer $dc): string
     {
         $arrEventMember = $this->connection->fetchAssociative('SELECT * FROM tl_calendar_events_member WHERE id = ?', [$dc->id]);
 
-        if ($arrEventMember) {
+        if (false !== $arrEventMember) {
             if ($strBookingStateNew !== $arrEventMember['bookingState']) {
                 $intId = (int) $arrEventMember['id'];
                 $strBookingStateOld = $arrEventMember['bookingState'];
