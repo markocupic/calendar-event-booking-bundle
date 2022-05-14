@@ -119,11 +119,11 @@ Tag | type | Erklärung
 `bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
 `bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
 `bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
-`bookingStartDate` | int | Zeigt, die Buchungsstartzeit (date) an.
-`bookingStartDatim` | int | Zeigt, die Buchungsstartzeit (datim) an.
+`bookingStartDate` | string | Zeigt, die Buchungsstartzeit (date) an.
+`bookingStartDatim` | string | Zeigt, die Buchungsstartzeit (datim) an.
 `bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
-`bookingEndDate` | int | Zeigt, die Buchungsendzeit (date) an.
-`bookingEndDatim` | int | Zeigt, die Buchungsendzeit (datim) an.
+`bookingEndDate` | string | Zeigt, die Buchungsendzeit (date) an.
+`bookingEndDatim` | string | Zeigt, die Buchungsendzeit (datim) an.
 `hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
 `loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 `event` | null|CalendarEventsModel | Gibt null oder das Event Model Objekt zurück.
