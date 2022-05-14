@@ -71,7 +71,7 @@ Sehr geehrte Frau ##member_firstname## ##member_lastname##
 Hallo ##member_firstname## ##member_lastname##
 {endif}
 
-Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
+Hiermit bestätigen wir den Eingang Ihrer Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
 
 Buchungsstatus: ##member_bookingState##.
 
