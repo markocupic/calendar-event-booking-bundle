@@ -62,6 +62,97 @@ Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##ev
 
 Email-Absender: ##sender_name##, ##sender_email, etc. (Feldnamen aus tl_user)
 
+#### Beispieltext Notification Center
+```
+{if member_gender=='Männlich'}
+Sehr geehrter Herr ##member_firstname## ##member_lastname##
+{elseif member_gender=='Weiblich'}
+Sehr geehrte Frau ##member_firstname## ##member_lastname##
+{else}
+Hallo ##member_firstname## ##member_lastname##
+{endif}
+
+Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
+
+Buchungsstatus: ##member_bookingState##.
+
+Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
+
+Ihre Angaben:
+Name/Vorname: ##member_firstname## ##member_lastname##
+Adresse: ##member_street##, ##member_postal##, ##member_city##
+Telefon: ##member_phone##
+E-Mail: ##member_email##
+Begleitpersonen: ##member_escorts##
+
+Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
+##member_unsubscribeHref##
+
+Freundliche Grüsse
+
+##sender_name##
+```
+#### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
+```
+Array
+(
+    [admin_email] => admin@mi6.com
+    [member_id] => 26
+    [member_pid] => Testevent 2
+    [member_tstamp] => 08.09.2021 21:26
+    [member_eventState] => waiting_list
+    [member_dateAdded] => 08.09.2021 21:26
+    [member_notes] => Tomorrow never dies!
+    [member_salutation] => Herr
+    [member_firstname] => James
+    [member_lastname] => Bond
+    [member_gender] => Männlich
+    [member_dateOfBirth] => 12. März 1976
+    [member_street] => Casino Royale
+    [member_postal] => 66666
+    [member_city] => London
+    [member_phone] => 23123
+    [member_email] => 007@mi6.com
+    [member_escorts] => 0
+    [member_bookingToken] => d47636dd-7606-4f0b-ad8d-82461abde483
+    [event_id] => 3
+    [event_pid] => Events
+    [event_tstamp] => 08.09.2021 14:04
+    [event_title] => Testevent 2
+    [event_alias] => testevent-2
+    [event_author] => Eve Moneypenny
+    [event_addTime] => nein
+    [event_startTime] => 00:00
+    [event_endTime] => 23:59
+    [event_startDate] => 16. September 2021
+    [event_endDate] => 8. September 2021
+    [event_location] => London
+    [event_teaser] => Casino Royal
+    [event_activateDeregistration] => ja
+    [event_eventBookingNotificationSender] => Eve Moneypenny
+    [event_eventBookingNotification] => Event Buchungs Benachrichtigung
+    [event_activateBookingNotification] => ja
+    [event_maxEscortsPerMember] => 0
+    [event_maxMembers] => 11
+    [event_bookingStartDate] => 7. Juni 2021
+    [event_bookingEndDate] => 15. September 2021
+    [event_activateBookingForm] => ja
+    [event_city] => Nothingham
+    [event_postal] => 6666
+    [event_street] => black corner 2
+    [event_allowDuplicateEmail] => ja
+    [event_unsubscribeLimitTstamp] => 12.08.2021 16:40
+    [event_minMembers] => 0
+    [event_addEscortsToTotal] => nein
+    [sender_id] => 1
+    [sender_username] => eve.moneypenny
+    [sender_name] => Eve Moneypenny
+    [sender_email] => em@mi6.com
+    [sender_language] => de,
+    // etc.
+)
+
+```
 
 #### Punkt 5: Event-Buchungsformular erstellen
 Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
@@ -127,97 +218,6 @@ Tag | type | Erklärung
 `hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
 `loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 `event` | null|CalendarEventsModel | Gibt null oder das Event Model Objekt zurück.
-
-### Beispieltext Notification Center
-```
-{if member_gender=='Männlich'}
-Sehr geehrter Herr ##member_firstname## ##member_lastname##
-{elseif member_gender=='Weiblich'}
-Sehr geehrte Frau ##member_firstname## ##member_lastname##
-{else}
-Hallo ##member_firstname## ##member_lastname##
-{endif}
-
-Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
-
-Buchungsstatus: ##member_bookingState##.
-
-Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
-
-Ihre Angaben:
-Name/Vorname: ##member_firstname## ##member_lastname##
-Adresse: ##member_street##, ##member_postal##, ##member_city##
-Telefon: ##member_phone##
-E-Mail: ##member_email##
-Begleitpersonen: ##member_escorts##
-
-Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
-##member_unsubscribeHref##
-
-Freundliche Grüsse
-
-##sender_name##
-```
-### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
-```
-Array
-(
-    [admin_email] => admin@mi6.com
-    [member_id] => 26
-    [member_pid] => Testevent 2
-    [member_tstamp] => 08.09.2021 21:26
-    [member_eventState] => waiting_list
-    [member_dateAdded] => 08.09.2021 21:26
-    [member_notes] => Tomorrow never dies!
-    [member_salutation] => Herr
-    [member_firstname] => James
-    [member_lastname] => Bond
-    [member_gender] => Männlich
-    [member_dateOfBirth] => 12. März 1976
-    [member_street] => Casino Royale
-    [member_postal] => 66666
-    [member_city] => London
-    [member_phone] => 23123
-    [member_email] => 007@mi6.com
-    [member_escorts] => 0
-    [member_bookingToken] => d47636dd-7606-4f0b-ad8d-82461abde483
-    [event_id] => 3
-    [event_pid] => Events
-    [event_tstamp] => 08.09.2021 14:04
-    [event_title] => Testevent 2
-    [event_alias] => testevent-2
-    [event_author] => Eve Moneypenny
-    [event_addTime] => nein
-    [event_startTime] => 00:00
-    [event_endTime] => 23:59
-    [event_startDate] => 16. September 2021
-    [event_endDate] => 8. September 2021
-    [event_location] =>
-    [event_teaser] =>
-    [event_activateDeregistration] => ja
-    [event_eventBookingNotificationSender] => Eve Moneypenny
-    [event_eventBookingNotification] => Event Buchungs Benachrichtigung
-    [event_activateBookingNotification] => ja
-    [event_maxEscortsPerMember] => 0
-    [event_maxMembers] => 11
-    [event_bookingStartDate] => 7. Juni 2021
-    [event_bookingEndDate] => 15. September 2021
-    [event_activateBookingForm] => ja
-    [event_city] => Nothingham
-    [event_postal] => 6666
-    [event_street] => black corner 2
-    [event_allowDuplicateEmail] => ja
-    [event_unsubscribeLimitTstamp] => 12.08.2021 16:40
-    [event_minMembers] => 0
-    [event_addEscortsToTotal] => nein
-    [sender_id] => 1
-    [sender_username] => eve.moneypenny
-    [sender_name] => Eve Moneypenny
-    [sender_email] => em@mi6.com
-    [sender_language] => de
-)
-
-```
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
