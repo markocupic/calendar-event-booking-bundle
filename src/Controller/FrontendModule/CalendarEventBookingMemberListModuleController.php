@@ -27,11 +27,9 @@ use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Result;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Event;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,8 +46,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     private ContaoFramework $framework;
     private ScopeMatcher $scopeMatcher;
     private Connection $connection;
-    private EventRegistration $eventRegistration;
-    private Event $eventHelper;
     private EventSubscriber $eventSubscriber;
 
     // Adapters
@@ -59,13 +55,11 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration, Event $eventHelper, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->connection = $connection;
-        $this->eventRegistration = $eventRegistration;
-        $this->eventHelper = $eventHelper;
         $this->eventSubscriber = $eventSubscriber;
 
         // Adapters
@@ -79,7 +73,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->objEvent = $this->eventHelper->getEventFromCurrentUrl();
+            $this->objEvent = EventConfig::getEventFromCurrentUrl();
 
             // Get the current event && return empty string if activateBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
@@ -105,7 +99,22 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $this->controller->loadLanguageFile($this->eventSubscriber->getTable());
 
-        $result = $this->getRegistrations((int) ($this->objEvent->id));
+        $t = $this->eventSubscriber->getTable();
+
+        // Get subscribed event members
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('id')
+            ->from($t, 't')
+            ->where('t.pid = :pid')
+            ->andWhere('t.bookingState = :bookingState')
+            ->orderBy('t.dateAdded', 'ASC')
+            ->addOrderBy('t.firstname', 'ASC')
+            ->addOrderBy('t.city', 'ASC')
+            ->setParameter('pid', $this->objEvent->id)
+            ->setParameter('bookingState', BookingState::STATE_CONFIRMED)
+        ;
+
+        $result = $qb->executeQuery();
 
         $intRowCount = $result->rowCount();
 
@@ -127,38 +136,14 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         }
 
         // Add partial html to the parent template
-        $template->members = $strRows;
+        if ($i) {
+            $template->members = $strRows;
+        }
 
         // Add the event model to the parent template
         $template->event = $this->objEvent;
 
         return $template->getResponse();
-    }
-
-    /**
-     * Get signed up members of the current event.
-     *
-     * @throws Exception
-     *
-     * @return Result
-     */
-    protected function getRegistrations(int $id)
-    {
-        $t = $this->eventSubscriber->getTable();
-
-        $qb = $this->connection->createQueryBuilder();
-        $qb->select('id')
-            ->from($t, 't')
-            ->where('t.pid = :pid')
-            ->andWhere('t.bookingState = :bookingState')
-            ->orderBy('t.dateAdded', 'ASC')
-            ->addOrderBy('t.firstname', 'ASC')
-            ->addOrderBy('t.city', 'ASC')
-            ->setParameter('pid', $id)
-            ->setParameter('bookingState', BookingState::STATE_CONFIRMED)
-        ;
-
-        return $qb->executeQuery();
     }
 
     protected function getRowClass(int $i, int $intRowsTotal): string

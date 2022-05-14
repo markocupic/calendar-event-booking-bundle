@@ -18,7 +18,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Formatter;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Utils\Formatter;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 

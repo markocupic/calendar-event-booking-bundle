@@ -16,18 +16,10 @@ namespace Markocupic\CalendarEventBookingBundle\EventBooking\Validator;
 
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 
 class BookingValidator
 {
     public const FLASH_KEY = '_event_registration';
-
-    private EventRegistration $eventRegistration;
-
-    public function __construct(EventRegistration $eventRegistration)
-    {
-        $this->eventRegistration = $eventRegistration;
-    }
 
     /**
      * @throws Exception
@@ -53,10 +45,10 @@ class BookingValidator
             $seatsAvailable += $waitingListLimit;
         }
 
-        $total = $this->eventRegistration->getConfirmedBookingsCount($eventConfig);
+        $total = $eventConfig->getConfirmedBookingsCount($eventConfig);
 
         if ($considerWaitingList) {
-            $total += $this->eventRegistration->getWaitingListCount($eventConfig);
+            $total += $eventConfig->getWaitingListCount($eventConfig);
         }
 
         return $total + $numSeats <= $seatsAvailable;

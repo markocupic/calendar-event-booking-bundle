@@ -345,11 +345,6 @@ final class DoSomething extends AbstractHook
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 9000;
 
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
-
     public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
     {
         if (!self::isEnabled()) {

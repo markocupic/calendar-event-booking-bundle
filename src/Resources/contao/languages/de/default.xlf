@@ -59,8 +59,8 @@
                 <target>Besten Dank für Ihre Buchungsanfrage. Sie befinden sich für "%s" auf der Warteliste. Gerne kontaktieren wir Sie, sobald Plätze wieder frei werden.</target>
             </trans-unit>
             <trans-unit id="MSC.addToWaitingList">
-                <source>Add to the waiting list.</source>
-                <target>Auf Warteliste setzen.</target>
+                <source>Add to the waiting list</source>
+                <target>Auf Warteliste setzen</target>
             </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
@@ -77,6 +77,10 @@
             <trans-unit id="MSC.waitingListPossible">
                 <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
                 <target>Leider ist der Event bereits ausgebucht. Trotzdem können Sie sich anmelden und sich auf die Warteliste setzen lassen.</target>
+            </trans-unit>
+            <trans-unit id="MSC.notEnoughSeatsWaitingListPossible">
+                <source>Unfortunately there are not enough places left. Would you like to be put on the waiting list instead?</source>
+                <target>Leider sind für Ihre Buchungsanfrage nicht mehr genügend Plätze frei. Möchten Sie sich stattdessen auf die Warteliste setzen lassen?</target>
             </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>

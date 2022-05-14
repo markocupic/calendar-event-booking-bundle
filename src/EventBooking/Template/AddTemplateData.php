@@ -12,37 +12,38 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventBooking\Helper;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\Template;
 
 use Contao\FrontendUser;
 use Contao\Template;
+use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Symfony\Component\Security\Core\Security;
 
 final class AddTemplateData
 {
-    private EventRegistration $eventRegistration;
     private Security $security;
     private BookingValidator $bookingValidator;
 
-    public function __construct(EventRegistration $evenRegistration, Security $security, BookingValidator $bookingValidator)
+    public function __construct(Security $security, BookingValidator $bookingValidator)
     {
-        $this->eventRegistration = $evenRegistration;
         $this->security = $security;
         $this->bookingValidator = $bookingValidator;
     }
 
     /**
      * Augment template with more event properties.
+     *
+     * @throws Exception
      */
     public function addTemplateData(EventConfig $eventConfig, Template $template): void
     {
         $template->canRegister = $this->bookingValidator->validateCanRegister($eventConfig);
 
-        $template->isFullyBooked = $this->eventRegistration->isFullyBooked($eventConfig);
+        $template->isFullyBooked = $eventConfig->isFullyBooked($eventConfig);
 
-        $template->confirmedBookingsCount = $this->eventRegistration->getConfirmedBookingsCount($eventConfig);
+        $template->confirmedBookingsCount = $eventConfig->getConfirmedBookingsCount($eventConfig);
 
         $template->bookingMin = $eventConfig->getBookingMin();
 

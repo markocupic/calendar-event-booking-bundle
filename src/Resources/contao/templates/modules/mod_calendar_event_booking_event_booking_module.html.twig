@@ -5,6 +5,8 @@
         {{ messages|raw }}
     {% endif %}
 
+    {{ case }}
+
     {% if form is defined %}
         {% if canRegister %}
             {{ form|raw }}

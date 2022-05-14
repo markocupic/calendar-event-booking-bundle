@@ -71,8 +71,22 @@ final class ValidateNumberOfParticipants extends AbstractHook
             $numSeats += (int) $objWidget->value;
         }
 
-        if (!$this->bookingValidator->validateBookingMax($eventConfig, $numSeats, true)) {
-            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
+        if (isset($_POST['addToWaitingListSubmit'])) {
+            $valid = $this->bookingValidator->validateBookingMax($eventConfig, $numSeats, true);
+        } else {
+            $valid = $this->bookingValidator->validateBookingMax($eventConfig, $numSeats, false);
+        }
+
+        if (!$valid) {
+            if ($this->bookingValidator->validateBookingMax($eventConfig, $numSeats, true)) {
+                if (null !== ($form = $eventSubscriber->getForm())) {
+                    $form->addSubmitFormField('addToWaitingListSubmit', $this->translator->trans('MSC.addToWaitingList', [], 'contao_default'));
+                }
+                $errorMsg = $this->translator->trans('MSC.notEnoughSeatsWaitingListPossible', [$eventConfig->get('maxMembers')], 'contao_default');
+            } else {
+                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$eventConfig->get('maxMembers')], 'contao_default');
+            }
+
             $this->message->addInfo($errorMsg);
 
             return false;

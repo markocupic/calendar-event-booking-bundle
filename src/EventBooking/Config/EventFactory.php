@@ -15,31 +15,29 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\Config;
 
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use http\Exception\InvalidArgumentException;
+use Doctrine\DBAL\Connection;
 
 class EventFactory
 {
+    private Connection $connection;
     private ContaoFramework $framework;
 
-    // Adapters
-    private Adapter $eventModel;
-
-    public function __construct(ContaoFramework $framework)
+    public function __construct(Connection $connection, ContaoFramework $framework)
     {
+        $this->connection = $connection;
         $this->framework = $framework;
-
-        // Adapters
-        $this->eventModel = $this->framework->getAdapter(CalendarEventsModel::class);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function create(?CalendarEventsModel $event): EventConfig
     {
         if (null === $event) {
-            throw new InvalidArgumentException('Event not found!');
+            throw new \Exception('Event not found!');
         }
 
-        return new EventConfig($event, $this->framework);
+        return new EventConfig($this->framework, $this->connection, $event);
     }
 }

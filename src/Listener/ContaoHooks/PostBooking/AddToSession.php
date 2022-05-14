@@ -17,9 +17,10 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\SessionConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @Hook(AddToSession::HOOK, priority=AddToSession::PRIORITY)
@@ -30,12 +31,12 @@ final class AddToSession extends AbstractHook
     public const PRIORITY = 1200;
 
     private Connection $connection;
-    private EventRegistration $eventRegistration;
+    private RequestStack $requestStack;
 
-    public function __construct(Connection $connection, EventRegistration $eventRegistration)
+    public function __construct(Connection $connection, RequestStack $requestStack)
     {
         $this->connection = $connection;
-        $this->eventRegistration = $eventRegistration;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -53,6 +54,24 @@ final class AddToSession extends AbstractHook
             return;
         }
 
-        $this->eventRegistration->addToSession($eventConfig, $eventSubscriber);
+        $this->addToSession($eventConfig, $eventSubscriber);
+    }
+
+    private function addToSession(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    {
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+
+        if (!$session->isStarted()) {
+            $session->start();
+        }
+
+        $flashBag = $session->getFlashBag();
+        $arrSession = [];
+
+        $arrSession['eventData'] = $eventConfig->getModel()->row();
+        $arrSession['memberData'] = $eventSubscriber->getModel()->row();
+        $arrSession['formData'] = $eventSubscriber->getForm()->fetchAll();
+
+        $flashBag->set(SessionConfig::FLASH_KEY, $arrSession);
     }
 }

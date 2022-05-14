@@ -105,7 +105,7 @@ final class EventSubscriber
         $this->getModel()->pid = $eventConfig->getModel()->id;
         $this->getModel()->tstamp = time();
         $this->getModel()->dateAdded = time();
-        $this->getModel()->bookingState = $module::CASE_WAITING_LIST_POSSIBLE === $module->case ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
+        $this->getModel()->bookingState = isset($_POST['addToWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
         $this->getModel()->bookingToken = Uuid::uuid4()->toString();
 
         // Set the booking type

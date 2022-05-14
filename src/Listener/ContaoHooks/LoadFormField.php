@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
+use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -21,9 +22,9 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\EventRegistration;
 
 /**
  * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
@@ -34,14 +35,12 @@ final class LoadFormField extends AbstractHook
     public const PRIORITY = 1000;
 
     private ContaoFramework $framework;
-    private EventRegistration $eventRegistration;
     private EventFactory $eventFactory;
     private EventSubscriber $eventSubscriber;
 
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration, EventFactory $eventFactory, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, EventFactory $eventFactory, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
-        $this->eventRegistration = $eventRegistration;
         $this->eventFactory = $eventFactory;
         $this->eventSubscriber = $eventSubscriber;
     }
@@ -79,7 +78,7 @@ final class LoadFormField extends AbstractHook
             // Fit select menu to max escorts per member
             if ('escorts' === $objWidget->name) {
                 /** @var CalendarEventsModel $objEvent */
-                $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
+                $objEvent = EventConfig::getEventFromCurrentUrl();
 
                 $eventConfig = $this->eventFactory->create($objEvent);
 

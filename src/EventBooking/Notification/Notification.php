@@ -20,7 +20,6 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 use Haste\Util\Format;
@@ -39,7 +38,6 @@ class Notification
     private Adapter $format;
     private Adapter $notification;
     private Adapter $pageModel;
-    private Adapter $stringUtil;
     private Adapter $system;
     private Adapter $userModel;
 
@@ -56,7 +54,6 @@ class Notification
         $this->format = $this->framework->getAdapter(Format::class);
         $this->notification = $this->framework->getAdapter(NotificationModel::class);
         $this->pageModel = $this->framework->getAdapter(PageModel::class);
-        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
         $this->system = $this->framework->getAdapter(System::class);
         $this->userModel = $this->framework->getAdapter(UserModel::class);
     }

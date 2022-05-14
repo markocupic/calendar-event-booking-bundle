@@ -35,8 +35,7 @@ use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\AddTemplateData;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Helper\Event;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +64,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private ContaoFramework $framework;
     private TranslatorInterface $translator;
     private ScopeMatcher $scopeMatcher;
-    private Event $eventHelper;
     private EventFactory $eventFactory;
     private BookingValidator $bookingValidator;
     private AddTemplateData $addTemplateData;
@@ -82,12 +80,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private Adapter $system;
     private Adapter $url;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, Event $eventHelper, EventFactory $eventFactory, BookingValidator $bookingValidator, AddTemplateData $addTemplateData, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, EventFactory $eventFactory, BookingValidator $bookingValidator, AddTemplateData $addTemplateData, EventSubscriber $eventSubscriber)
     {
         $this->framework = $framework;
         $this->translator = $translator;
         $this->scopeMatcher = $scopeMatcher;
-        $this->eventHelper = $eventHelper;
         $this->eventFactory = $eventFactory;
         $this->bookingValidator = $bookingValidator;
         $this->addTemplateData = $addTemplateData;
@@ -119,7 +116,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             // Return an empty string, if...
             // - activateBookingForm isn't set or
             // - event is not published
-            if (null !== ($event = $this->eventHelper->getEventFromCurrentUrl())) {
+            if (null !== ($event = EventConfig::getEventFromCurrentUrl())) {
                 $this->eventConfig = $this->eventFactory->create($event);
 
                 if ($this->eventConfig->get('activateBookingForm') && $this->eventConfig->get('published')) {
@@ -134,6 +131,11 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Call the parent method
         return parent::__invoke($request, $this->model, $section, $classes);
+    }
+
+    public function getEventSubscriber(): ?EventSubscriber
+    {
+        return $this->eventSubscriber;
     }
 
     /**

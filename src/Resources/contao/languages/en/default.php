@@ -38,13 +38,14 @@ $GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_CONFIRMED
 $GLOBALS['TL_LANG']['MSC']['post_booking_confirm_'.BookingState::STATE_WAITING_LIST] = 'You have been successfully placed on the waiting list for "%s".';
 
 // Form field
-$GLOBALS['TL_LANG']['MSC']['addToWaitingList'] = 'Add to the waiting list.';
+$GLOBALS['TL_LANG']['MSC']['addToWaitingList'] = 'Add to the waiting list';
 
 // Messages
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE] = 'Booking is only possible from %s .';
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE] = 'The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.';
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED] = 'Sorry, but unfortunately this event is already fully booked.';
 $GLOBALS['TL_LANG']['MSC'][CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE] = 'Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.';
+$GLOBALS['TL_LANG']['MSC']['notEnoughSeatsWaitingListPossible'] = 'Unfortunately there are not enough places left. Would you like to be put on the waiting list instead?';
 
 // Form validation backend
 $GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime'] = 'The end date for the booking period has been adjusted.';

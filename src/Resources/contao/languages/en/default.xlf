@@ -45,7 +45,7 @@
                 <source>You have been successfully placed on the waiting list for "%s".</source>
             </trans-unit>
             <trans-unit id="MSC.addToWaitingList">
-                <source>Add to the waiting list.</source>
+                <source>Add to the waiting list</source>
             </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
@@ -58,6 +58,9 @@
             </trans-unit>
             <trans-unit id="MSC.waitingListPossible">
                 <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
+            </trans-unit>
+            <trans-unit id="MSC.notEnoughSeatsWaitingListPossible">
+                <source>Unfortunately there are not enough places left. Would you like to be put on the waiting list instead?</source>
             </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>

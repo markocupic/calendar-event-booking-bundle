@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventBooking\Helper;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\Utils;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\Adapter;
