@@ -23,6 +23,7 @@ class Version600Update extends AbstractMigration
 {
     private const STRING_TO_INT_CONVERSION = 'string_to_int_conversion';
     private const ALTERATION_TYPE_RENAME_COLUMN = 'alteration_type_rename_column';
+    private const NULL_TO_0_CONVERSION = 'null_to_0_conversion';
 
     private Connection $connection;
 
@@ -39,11 +40,29 @@ class Version600Update extends AbstractMigration
     public function shouldRun(): bool
     {
         $doMigration = false;
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
         $arrAlterations = $this->getAlterationData();
 
         foreach ($arrAlterations as $arrAlteration) {
             $type = $arrAlteration['type'];
+
+            // Version 600 migration: "Convert NULL to 0"
+            if (self::NULL_TO_0_CONVERSION === $type) {
+                $strTable = $arrAlteration['table'];
+                $strField = $arrAlteration['field'];
+
+                // If the database table itself does not exist we should do nothing
+                if ($schemaManager->tablesExist([$strTable])) {
+                    $columns = $schemaManager->listTableColumns($strTable);
+                    if (isset($columns[strtolower($arrAlteration['field'])])) {
+                        $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$strField.' IS NULL');
+                        if($result)
+                        {
+                            $doMigration = true;
+                        }
+                    }
+                }
+            }
 
             // Version 600 migration: "Convert empty string to 0"
             if (self::STRING_TO_INT_CONVERSION === $type) {
@@ -82,11 +101,36 @@ class Version600Update extends AbstractMigration
     {
         $resultMessages = [];
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
+
+
         $arrAlterations = $this->getAlterationData();
 
         foreach ($arrAlterations as $arrAlteration) {
             $type = $arrAlteration['type'];
+
+            // Version 600 migration: "Convert NULL to 0"
+            if (self::NULL_TO_0_CONVERSION === $type) {
+                $strTable = $arrAlteration['table'];
+                $strField = $arrAlteration['field'];
+
+                // If the database table itself does not exist we should do nothing
+                if ($schemaManager->tablesExist([$strTable])) {
+                    $columns = $schemaManager->listTableColumns($strTable);
+                    if (isset($columns[strtolower($arrAlteration['field'])])) {
+                        $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$strField.' IS NULL');
+                        if($result)
+                        {
+                            $this->connection->executeStatement('UPDATE '.$strTable.' SET '.$strField.' = ? WHERE '. $strField . ' IS NULL',['0']);
+                            $resultMessages[] = sprintf(
+                                'Convert NULL to "0" in column %s.%s. ',
+                                $strTable,
+                                $strField,
+                            );
+                        }
+                    }
+                }
+            }
 
             // Version 600 migration: "Convert empty string to 0"
             if (self::STRING_TO_INT_CONVERSION === $type) {
@@ -140,6 +184,7 @@ class Version600Update extends AbstractMigration
     private function getAlterationData(): array
     {
         return [
+
             // tl_calendar_events
             [
                 'type' => self::STRING_TO_INT_CONVERSION,
@@ -191,6 +236,11 @@ class Version600Update extends AbstractMigration
                 'sql' => 'char(1)',
             ],
             // tl_calendar_events_member
+            [
+                'type' => self::NULL_TO_0_CONVERSION,
+                'table' => 'tl_calendar_events_member',
+                'field' => 'escorts',
+            ],
             [
                 'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events_member',

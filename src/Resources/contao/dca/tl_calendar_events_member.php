@@ -220,7 +220,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => 'int(3) unsigned NULL',
+            'sql'       => "int(3) unsigned NOT NULL default '0'",
         ],
     ],
 ];
