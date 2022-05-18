@@ -48,7 +48,7 @@ final class ValidateEscorts extends AbstractHook
         $form = $eventSubscriber->getForm();
 
         if (!$form->hasFormField('escorts')) {
-            return false;
+            return true;
         }
 
         if ($eventConfig->getModel()->maxEscortsPerMember > 0) {

@@ -54,10 +54,11 @@ class Version600Update extends AbstractMigration
                 // If the database table itself does not exist we should do nothing
                 if ($schemaManager->tablesExist([$strTable])) {
                     $columns = $schemaManager->listTableColumns($strTable);
+
                     if (isset($columns[strtolower($arrAlteration['field'])])) {
                         $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$strField.' IS NULL');
-                        if($result)
-                        {
+
+                        if ($result) {
                             $doMigration = true;
                         }
                     }
@@ -103,7 +104,6 @@ class Version600Update extends AbstractMigration
 
         $schemaManager = $this->connection->createSchemaManager();
 
-
         $arrAlterations = $this->getAlterationData();
 
         foreach ($arrAlterations as $arrAlteration) {
@@ -117,11 +117,12 @@ class Version600Update extends AbstractMigration
                 // If the database table itself does not exist we should do nothing
                 if ($schemaManager->tablesExist([$strTable])) {
                     $columns = $schemaManager->listTableColumns($strTable);
+
                     if (isset($columns[strtolower($arrAlteration['field'])])) {
                         $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$strField.' IS NULL');
-                        if($result)
-                        {
-                            $this->connection->executeStatement('UPDATE '.$strTable.' SET '.$strField.' = ? WHERE '. $strField . ' IS NULL',['0']);
+
+                        if ($result) {
+                            $this->connection->executeStatement('UPDATE '.$strTable.' SET '.$strField.' = ? WHERE '.$strField.' IS NULL', ['0']);
                             $resultMessages[] = sprintf(
                                 'Convert NULL to "0" in column %s.%s. ',
                                 $strTable,
@@ -184,7 +185,6 @@ class Version600Update extends AbstractMigration
     private function getAlterationData(): array
     {
         return [
-
             // tl_calendar_events
             [
                 'type' => self::STRING_TO_INT_CONVERSION,

@@ -58,29 +58,61 @@
                 <source>You have been successfully placed on the waiting list for "%s".</source>
                 <target>Besten Dank für Ihre Buchungsanfrage. Sie befinden sich für "%s" auf der Warteliste. Gerne kontaktieren wir Sie, sobald Plätze wieder frei werden.</target>
             </trans-unit>
-            <trans-unit id="MSC.addToWaitingList">
-                <source>Add to the waiting list</source>
-                <target>Auf Warteliste setzen</target>
+            <trans-unit id="MSC.addToWaitingListBtnLbl">
+                <source>Subscribe to the waiting list</source>
+                <target>Anmelden auf Warteliste</target>
             </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
-                <target>Die Anmeldung für diesen Anlass ist erst ab %s möglich.</target>
+                <target>Die Anmeldung für diesen Event ist erst ab %s möglich.</target>
             </trans-unit>
             <trans-unit id="MSC.bookingNoLongerPossible">
-                <source>The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.</source>
-                <target>Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.</target>
+                <source>The registration period for this event has already expired. Registrations can no longer be accepted.</source>
+                <target>Die Anmeldefrist für diesen Event ist bereits abgelaufen. Es können keine Anmeldungen mehr entgegengenommen werden.</target>
             </trans-unit>
             <trans-unit id="MSC.eventFullyBooked">
-                <source>Sorry, but unfortunately this event is already fully booked.</source>
-                <target>Der Anlass ist leider bereits ausgebucht.</target>
+                <source>This event is already fully booked.</source>
+                <target>Der Event ist bereits ausgebucht.</target>
             </trans-unit>
             <trans-unit id="MSC.waitingListPossible">
-                <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
-                <target>Leider ist der Event bereits ausgebucht. Trotzdem können Sie sich anmelden und sich auf die Warteliste setzen lassen.</target>
+                <source>This event is fully booked. Subscription to the waiting list is possible.</source>
+                <target>Dieser Event ist bereits ausgebucht. Anmelden auf Warteliste möglich.</target>
             </trans-unit>
-            <trans-unit id="MSC.notEnoughSeatsWaitingListPossible">
-                <source>Unfortunately there are not enough places left. Would you like to be put on the waiting list instead?</source>
-                <target>Leider sind für Ihre Buchungsanfrage nicht mehr genügend Plätze frei. Möchten Sie sich stattdessen auf die Warteliste setzen lassen?</target>
+            <trans-unit id="MSC.bookingPossible">
+                <source>Booking possible</source>
+                <target>Buchen möglich</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorSubscribeOnRegularListInsteadOnWaitingLists">
+                <source>Your booking request to the waiting list failed. Subscribe to the regular list, please. The event is still not fully booked and there are still %d seats left.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Der Event ist noch nicht ausgebucht. Es sind noch %d Plätze frei.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorWaitingListLimitExceededReduceNumEscorts">
+                <source>Your booking request to the waiting list failed. There are only %d seats left on the waiting list. If possible, reduce the number of accompanying persons and then try again.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Auf der Warteliste sind nur noch %d Plätze frei. Reduzieren Sie, wenn möglich, die Anzahl der Begleitpersonen.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorEventHasNoWaitingList">
+                <source>Your booking request failed. Registration on the waiting list is not possible for this event.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Bei diesem Event ist die Anmeldung auf Warteliste nicht möglich.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorWaitingListFull">
+                <source>Your booking request failed. The waiting list is already fully booked.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Die Warteliste ist bereits voll.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorEventFullyBooked">
+                <source>Your booking request failed. This event is fully booked.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Dieser Event ist ausgebucht.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft">
+                <source>Your booking request failed. There are only %d seats left.</source>
+                <target>Ihre Anmeldung auf Warteliste ist fehlgeschlagen. Es sind nur noch %d Plätze frei.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionInfoWaitingListPossibleXSeatsLeft">
+                <source>Your booking request failed, but subscription to the waiting list is possible. %d seats available.</source>
+                <target>Anmeldung auf Warteliste möglich, noch %d Plätze frei.</target>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionInfoWaitingListPossible">
+                <source>Subscription to the waiting list is possible.</source>
+                <target>Anmeldung auf Warteliste möglich.</target>
             </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>
@@ -92,11 +124,11 @@
             </trans-unit>
             <trans-unit id="MSC.unsubscribeConfirm">
                 <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
-                <target><![CDATA[Liebe(r) <span class="event-member-name">%s %s</span><br>Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?]]></target>
+                <target><![CDATA[Liebe(r) <span class="event-member-name">%s %s</span><br>Möchten Sie Ihre Buchung für Event "%s" stornieren?]]></target>
             </trans-unit>
             <trans-unit id="BTN.slabelUnsubscribeFromEvent">
                 <source>Unsubscribe from event</source>
-                <target>Anmeldung stornieren</target>
+                <target>Buchung stornieren</target>
             </trans-unit>
             <trans-unit id="BTN.slabelCancel">
                 <source>Cancel</source>
@@ -104,7 +136,7 @@
             </trans-unit>
             <trans-unit id="ERR.unsubscriptionLimitExpired">
                 <source>The unsubscription limit for event "%s" has expired.</source>
-                <target>Die Stornierungsfrist für Event "%s" ist leider abgelaufen.</target>
+                <target>Die Stornierungsfrist für Event "%s" ist abgelaufen.</target>
             </trans-unit>
             <trans-unit id="ERR.eventNotFound">
                 <source>Invalid booking token or could not find assigned event.</source>

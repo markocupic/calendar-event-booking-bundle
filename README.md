@@ -10,7 +10,7 @@ Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abg
 und sind im Backend einsehbar und über eine CSV-Datei exportierbar.
 
 ## Benachrichtigung
-Event-Organisator und Teilnehmer können bei Event-Anmeldung und Event-Abmeldung über das Notification Center benachrichtigt werden.
+Event-Organisator und Teilnehmer können bei Event-Buchungen und Event-Stornierungen über das Notification Center benachrichtigt werden.
 
 ## Frontend Module
 #### Event Anmeldeformular
@@ -294,6 +294,8 @@ Tag | type | Erklärung
 ------------ |------------- |--
 `canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
 `isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
+`numberFreeSeats` | int | Zeigt, die noch verfügbaren Plätze an.
+`numberFreeSeatsWaitingList` | int | Zeigt, die noch verfügbaren Plätze auf der Warteliste an.
 `confirmedBookingsCount` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
 `bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
 `bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
@@ -334,8 +336,12 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Haste\Form\Form;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
  * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)

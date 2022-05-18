@@ -41,13 +41,17 @@ final class AddTemplateData
     {
         $template->canRegister = $this->bookingValidator->validateCanRegister($eventConfig);
 
-        $template->isFullyBooked = $eventConfig->isFullyBooked($eventConfig);
+        $template->isFullyBooked = $eventConfig->isFullyBooked();
 
-        $template->confirmedBookingsCount = $eventConfig->getConfirmedBookingsCount($eventConfig);
+        $template->numberFreeSeats = $eventConfig->getNumberOfFreeSeats();
+
+        $template->numberFreeSeatsWaitingList = $eventConfig->getNumberOfFreeSeats(true);
+
+        $template->confirmedBookingsCount = $eventConfig->getConfirmedBookingsCount();
 
         $template->bookingMin = $eventConfig->getBookingMin();
 
-        $template->bookingMax = $eventConfig->getBookingMax($eventConfig);
+        $template->bookingMax = $eventConfig->getBookingMax();
 
         $template->bookingStartDate = $eventConfig->getBookingStartDate('date');
 

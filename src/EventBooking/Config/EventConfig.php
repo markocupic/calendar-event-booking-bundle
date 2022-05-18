@@ -69,14 +69,14 @@ class EventConfig
     /**
      * @throws Exception
      */
-    public function isWaitingListFull(self $eventConfig): bool
+    public function isWaitingListFull(): bool
     {
-        if ($eventConfig->get('activateWaitingList')) {
-            if (!$eventConfig->get('waitingListLimit')) {
+        if ($this->get('activateWaitingList')) {
+            if (!$this->get('waitingListLimit')) {
                 return false;
             }
 
-            if ($this->getWaitingListCount($eventConfig) < (int) $eventConfig->get('waitingListLimit')) {
+            if ($this->getWaitingListCount() < (int) $this->get('waitingListLimit')) {
                 return false;
             }
         }
@@ -92,12 +92,11 @@ class EventConfig
     /**
      * @throws Exception
      */
-    public function getWaitingListCount(self $eventConfig): int
+    public function getWaitingListCount(): int
     {
         return $this->countByEventAndBookingState(
-            $eventConfig,
             BookingState::STATE_WAITING_LIST,
-            (bool) $eventConfig->get('addEscortsToTotal'),
+            (bool) $this->get('addEscortsToTotal'),
         );
     }
 
@@ -109,10 +108,10 @@ class EventConfig
      *
      * @throws Exception
      */
-    public function isFullyBooked(self $eventConfig): bool
+    public function isFullyBooked(): bool
     {
-        $confirmedBookingsCount = $this->getConfirmedBookingsCount($eventConfig);
-        $bookingMax = $eventConfig->getBookingMax();
+        $confirmedBookingsCount = $this->getConfirmedBookingsCount();
+        $bookingMax = $this->getBookingMax();
 
         if ($bookingMax > 0 && $confirmedBookingsCount >= $bookingMax) {
             return true;
@@ -124,25 +123,54 @@ class EventConfig
     /**
      * @throws Exception
      */
-    public function getConfirmedBookingsCount(self $eventConfig): int
+    public function getConfirmedBookingsCount(): int
     {
         return $this->countByEventAndBookingState(
-            $eventConfig,
             BookingState::STATE_CONFIRMED,
-            (bool) $eventConfig->get('addEscortsToTotal'),
+            (bool) $this->get('addEscortsToTotal'),
         );
     }
 
     /**
      * @throws Exception
      */
-    public function getNotConfirmedCount(self $eventConfig): int
+    public function getNotConfirmedCount(): int
     {
         return $this->countByEventAndBookingState(
-            $eventConfig,
             BookingState::STATE_NOT_CONFIRMED,
-            (bool) $eventConfig->get('addEscortsToTotal'),
+            (bool) $this->get('addEscortsToTotal'),
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getNumberOfFreeSeats(bool $blnWaitingList = false): int
+    {
+        if (!$this->isBookable()) {
+            return 0;
+        }
+
+        $startTstamp = empty($this->event->bookingStartDate) ? 0 : (int) $this->event->bookingStartDate;
+        $endTstamp = empty($this->event->bookingEndDate) ? 0 : (int) $this->event->bookingEndDate;
+
+        if ($startTstamp > time() || time() > $endTstamp) {
+            return 0;
+        }
+
+        if (!$blnWaitingList) {
+            $total = $this->getConfirmedBookingsCount();
+            $available = $this->getBookingMax() - $total;
+        } else {
+            if (!$this->getWaitingListLimit()) {
+                throw new \Exception('The waiting list has no member limit. Please check this out before use this method.');
+            }
+
+            $total = $this->getWaitingListCount();
+            $available = $this->getWaitingListLimit() - $total;
+        }
+
+        return max($available, 0);
     }
 
     public function isNotificationActivated(): bool
@@ -214,19 +242,19 @@ class EventConfig
     /**
      * @throws Exception
      */
-    private function countByEventAndBookingState(self $eventConfig, string $bookingState, bool $addEscortsToTotal = false): int
+    private function countByEventAndBookingState(string $bookingState, bool $addEscortsToTotal = false): int
     {
         $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
         $registrationCount = $this->connection->fetchOne(
             $query1,
-            [$eventConfig->getModel()->id, $bookingState],
+            [$this->getModel()->id, $bookingState],
         );
 
         $sumBookingTotal = $registrationCount;
 
         if ($addEscortsToTotal) {
             $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-            $sumEscorts = $this->connection->fetchOne($query2, [$eventConfig->getModel()->id, $bookingState]);
+            $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
 
             if (false !== $sumEscorts) {
                 $sumBookingTotal += $sumEscorts;

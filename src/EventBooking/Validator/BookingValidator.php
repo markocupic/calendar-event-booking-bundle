@@ -24,7 +24,7 @@ class BookingValidator
     /**
      * @throws Exception
      */
-    public function validateBookingMax(EventConfig $eventConfig, int $numSeats = 1, bool $considerWaitingList = true): bool
+    public function validateBookingMax(EventConfig $eventConfig, int $numSeats = 1): bool
     {
         if (!$eventConfig->isBookable()) {
             return false;
@@ -35,25 +35,37 @@ class BookingValidator
             return true;
         }
 
-        // Consider the waiting list
-        if ($considerWaitingList && $eventConfig->hasWaitingList()) {
-            // Value is not set, unlimited number of subscriptions
-            if (!($waitingListLimit = $eventConfig->getWaitingListLimit())) {
-                return true;
-            }
+        $total = $eventConfig->getConfirmedBookingsCount();
 
-            $seatsAvailable += $waitingListLimit;
-        }
-
-        $total = $eventConfig->getConfirmedBookingsCount($eventConfig);
-
-        if ($considerWaitingList) {
-            $total += $eventConfig->getWaitingListCount($eventConfig);
-        }
-
-        return $total + $numSeats <= $seatsAvailable;
+        return !($total + $numSeats > $seatsAvailable);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function validateBookingMaxWaitingList(EventConfig $eventConfig, int $numSeats = 1): bool
+    {
+        if (!$eventConfig->isBookable()) {
+            return false;
+        }
+
+        if (!$eventConfig->hasWaitingList()) {
+            return false;
+        }
+
+        // Value is not set, unlimited number of subscriptions
+        if (!($seatsAvailable = $eventConfig->getWaitingListLimit())) {
+            return true;
+        }
+
+        $total = $eventConfig->getWaitingListCount();
+
+        return !($total + $numSeats > $seatsAvailable);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function validateBookingStartDate(EventConfig $eventConfig): bool
     {
         if (!$eventConfig->isBookable() || $eventConfig->getModel()->bookingStartDate > time()) {
@@ -94,7 +106,11 @@ class BookingValidator
             return false;
         }
 
-        if ($this->validateBookingMax($eventConfig, 1, true)) {
+        if ($this->validateBookingMax($eventConfig, 1)) {
+            return true;
+        }
+
+        if ($this->validateBookingMaxWaitingList($eventConfig, 1)) {
             return true;
         }
 

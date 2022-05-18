@@ -44,9 +44,9 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateUnsubscribeNoti
 
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
     'href'  => 'do=calendar&table=tl_calendar_events_member',
     'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
+    'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
 ];
 
 // Fields
@@ -80,7 +80,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingForm'] = [
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -88,7 +88,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingForm'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['overrideCalendarBookingSettings'] = [
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -96,7 +96,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['overrideCalendarBookingSetti
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allowDuplicateEmail'] = [
-    'eval'      => ['tl_class' => 'clr m12'],
+    'eval'      => ['isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -165,7 +165,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addEscortsToTotal'] = [
-    'eval'      => ['tl_class' => 'clr m12'],
+    'eval'      => ['isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -173,21 +173,21 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addEscortsToTotal'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateWaitingList'] = [
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr'],
     'exclude'   => true,
     'inputType' => 'checkbox',
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr'],
     'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['waitingListLimit'] = [
+    'eval'      => ['rgxp' => 'digit', 'tl_class' => 'clr'],
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => ['rgxp' => 'digit', 'tl_class' => 'clr'],
     'sql'       => "smallint(3) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingNotification'] = [
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -215,7 +215,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateDeregistration'] = [
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -242,7 +242,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateUnsubscribeNotification'] = [
-    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',

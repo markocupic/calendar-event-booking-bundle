@@ -44,23 +44,47 @@
             <trans-unit id="MSC.post_booking_confirm_waiting_list">
                 <source>You have been successfully placed on the waiting list for "%s".</source>
             </trans-unit>
-            <trans-unit id="MSC.addToWaitingList">
-                <source>Add to the waiting list</source>
+            <trans-unit id="MSC.addToWaitingListBtnLbl">
+                <source>Subscribe to the waiting list</source>
             </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
                 <source>Booking is only possible from %s .</source>
             </trans-unit>
             <trans-unit id="MSC.bookingNoLongerPossible">
-                <source>The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.</source>
+                <source>The registration period for this event has already expired. Registrations can no longer be accepted.</source>
             </trans-unit>
             <trans-unit id="MSC.eventFullyBooked">
-                <source>Sorry, but unfortunately this event is already fully booked.</source>
+                <source>This event is already fully booked.</source>
             </trans-unit>
             <trans-unit id="MSC.waitingListPossible">
-                <source>Unfortunately, the event is already fully booked. However, we may place you on the waiting list and we will notify you if you may move up as a result of cancellations.</source>
+                <source>This event is fully booked. Subscription to the waiting list is possible.</source>
             </trans-unit>
-            <trans-unit id="MSC.notEnoughSeatsWaitingListPossible">
-                <source>Unfortunately there are not enough places left. Would you like to be put on the waiting list instead?</source>
+            <trans-unit id="MSC.bookingPossible">
+                <source>Booking possible</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorSubscribeOnRegularListInsteadOnWaitingLists">
+                <source>Your booking request to the waiting list failed. Subscribe to the regular list, please. The event is still not fully booked and there are still %d seats left.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorWaitingListLimitExceededReduceNumEscorts">
+                <source>Your booking request to the waiting list failed. There are only %d seats left on the waiting list. If possible, reduce the number of accompanying persons and then try again.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorEventHasNoWaitingList">
+                <source>Your booking request failed. Registration on the waiting list is not possible for this event.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorWaitingListFull">
+                <source>Your booking request failed. The waiting list is already fully booked.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorEventFullyBooked">
+                <source>Your booking request failed. This event is fully booked.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft">
+                <source>Your booking request failed. There are only %d seats left.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionInfoWaitingListPossibleXSeatsLeft">
+                <source>Your booking request failed, but subscription to the waiting list is possible. %d seats available.</source>
+            </trans-unit>
+            <trans-unit id="MSC.subscriptionInfoWaitingListPossible">
+                <source>Subscription to the waiting list is possible.</source>
             </trans-unit>
             <trans-unit id="MSC.adjustedBookingPeriodEndTime">
                 <source>The end date for the booking period has been adjusted.</source>

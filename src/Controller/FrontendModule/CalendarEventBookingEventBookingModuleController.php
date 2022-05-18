@@ -157,6 +157,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Get case
         $this->case = $this->getRegistrationCase($this->eventConfig);
+        $template->caseText = null;
 
         // Trigger set case hook: manipulate case
         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_SET_CASE]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_SET_CASE])) {
@@ -168,49 +169,49 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         // Display messages
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
             if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
-                $this->message->addInfo(
-                    $this->translator->trans(
-                        'MSC.'.$this->case,
-                        [$this->date->parse($this->config->get('dateFormat'), $this->eventConfig->get('bookingStartDate'))],
-                        'contao_default'
-                    )
+                $template->caseText = $this->translator->trans(
+                    'MSC.'.$this->case,
+                    [$this->date->parse($this->config->get('dateFormat'), $this->eventConfig->get('bookingStartDate'))],
+                    'contao_default'
                 );
             }
         } elseif (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $this->case) {
             if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
-                $this->message->addInfo(
-                    $this->translator->trans(
-                        'MSC.'.$this->case,
-                        [],
-                        'contao_default'
-                    )
+                $template->caseText = $this->translator->trans(
+                    'MSC.'.$this->case,
+                    [],
+                    'contao_default'
                 );
             }
         } elseif (self::CASE_EVENT_FULLY_BOOKED === $this->case) {
             if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
-                $this->message->addInfo(
-                    $this->translator->trans(
-                        'MSC.'.$this->case,
-                        [],
-                        'contao_default'
-                    )
+                $template->caseText = $this->translator->trans(
+                    'MSC.'.$this->case,
+                    [],
+                    'contao_default'
                 );
             }
         } elseif (self::CASE_WAITING_LIST_POSSIBLE === $this->case) {
             if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
-                $this->message->addInfo(
-                    $this->translator->trans(
-                        'MSC.'.$this->case,
-                        [],
-                        'contao_default'
-                    )
+                $template->caseText = $this->translator->trans(
+                    'MSC.'.$this->case,
+                    [],
+                    'contao_default'
+                );
+            }
+        } elseif (self::CASE_BOOKING_POSSIBLE === $this->case) {
+            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+                $template->caseText = $this->translator->trans(
+                    'MSC.'.$this->case,
+                    [],
+                    'contao_default'
                 );
             }
         }
 
         $template->form = null;
 
-        // If display booking form
+        // If display booking form (regular subscription or subscription to the waiting list is possible)
         if ($this->bookingValidator->validateCanRegister($this->eventConfig)) {
             $this->eventSubscriber->setModuleData($model->row());
 
@@ -275,14 +276,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $state = self::CASE_BOOKING_NOT_YET_POSSIBLE;
         } elseif (!$this->bookingValidator->validateBookingEndDate($eventConfig)) {
             $state = self::CASE_BOOKING_NO_LONGER_POSSIBLE;
-        } elseif (!$this->bookingValidator->validateBookingMax($eventConfig, 1, false) && $this->bookingValidator->validateBookingMax($eventConfig, 1, true)) {
-            $state = self::CASE_WAITING_LIST_POSSIBLE;
-        } elseif (!$this->bookingValidator->validateBookingMax($eventConfig, 1, true)) {
-            $state = self::CASE_EVENT_FULLY_BOOKED;
-        } elseif ($this->bookingValidator->validateBookingMax($eventConfig, 1, false)) {
+        } elseif ($this->bookingValidator->validateBookingMax($eventConfig, 1)) {
             $state = self::CASE_BOOKING_POSSIBLE;
+        } elseif ($this->bookingValidator->validateBookingMaxWaitingList($eventConfig, 1)) {
+            $state = self::CASE_WAITING_LIST_POSSIBLE;
         } else {
-            throw new \LogicException('Invalid registration case detected.');
+            $state = self::CASE_EVENT_FULLY_BOOKED;
         }
 
         return $state;
