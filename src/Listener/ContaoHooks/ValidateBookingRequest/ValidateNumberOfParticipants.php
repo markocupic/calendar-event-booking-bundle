@@ -90,7 +90,7 @@ final class ValidateNumberOfParticipants
             ]
         );
 
-        if ($this->eventRegistration->getBookingMax($objEvent) < $countTotal) {
+        if ($this->eventRegistration->getBookingMax($objEvent) < $countTotal && (int) $objEvent->maxMembers > 0) {
             $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
             $messageAdapter->addInfo($errorMsg);
 
