@@ -28,7 +28,7 @@ use Contao\System;
 use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -48,7 +48,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     public TranslatorInterface $translator;
     protected Notification $notification;
     protected EventFactory $eventFactory;
-    protected EventSubscriber $eventSubscriber;
+    protected EventRegistration $eventRegistration;
 
     protected ?CalendarEventsModel $objEvent = null;
     protected ?PageModel $objPage = null;
@@ -63,14 +63,14 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     private Adapter $stringUtil;
     private Adapter $system;
 
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Notification $notification, TranslatorInterface $translator, EventFactory $eventFactory, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Notification $notification, TranslatorInterface $translator, EventFactory $eventFactory, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->notification = $notification;
         $this->translator = $translator;
         $this->eventFactory = $eventFactory;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
 
         $this->calendarEvents = $this->framework->getAdapter(CalendarEventsModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
@@ -98,28 +98,28 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                     $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
                 }
 
-                $this->eventSubscriber->setModel($eventMember);
+                $this->eventRegistration->setModel($eventMember);
 
                 if (!$this->hasError) {
-                    if (null === ($this->objEvent = $this->eventSubscriber->getModel()->getRelated('pid'))) {
+                    if (null === ($this->objEvent = $this->eventRegistration->getModel()->getRelated('pid'))) {
                         $this->addError($translator->trans('ERR.eventNotFound', [], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
-                    if (BookingState::STATE_UNSUBSCRIBED === $this->eventSubscriber->getModel()->bookingState) {
+                    if (BookingState::STATE_UNSUBSCRIBED === $this->eventRegistration->getModel()->bookingState) {
                         $this->addError($translator->trans('ERR.alreadyUnsubscribed.', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
-                    if (!$this->objEvent->activateDeregistration || (!empty($this->eventSubscriber->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventSubscriber->getModel()->bookingState)) {
+                    if (!$this->objEvent->activateDeregistration || (!empty($this->eventRegistration->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState)) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
-                    if (BookingState::STATE_WAITING_LIST !== $this->eventSubscriber->getModel()->bookingState && BookingState::STATE_CONFIRMED !== $this->eventSubscriber->getModel()->bookingState && BookingState::STATE_NOT_CONFIRMED !== $this->eventSubscriber->getModel()->bookingState) {
+                    if (BookingState::STATE_WAITING_LIST !== $this->eventRegistration->getModel()->bookingState && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState && BookingState::STATE_NOT_CONFIRMED !== $this->eventRegistration->getModel()->bookingState) {
                         $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
@@ -150,14 +150,14 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                     // Delete record, notify and redirect
                     if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
                         // Unsubscribe member
-                        $this->eventSubscriber->unsubscribe();
+                        $this->eventRegistration->unsubscribe();
 
                         $eventConfig = $this->eventFactory->create($this->objEvent);
 
                         // Trigger the unsubscribe from event hook
                         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT])) {
                             foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT] as $callback) {
-                                $this->system->importStatic($callback[0])->{$callback[1]}($eventConfig, $this->eventSubscriber);
+                                $this->system->importStatic($callback[0])->{$callback[1]}($eventConfig, $this->eventRegistration);
                             }
                         }
 
@@ -196,7 +196,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             if (!$this->hasError) {
                 $template->formId = 'tl_unsubscribe_from_event';
                 $template->event = $this->objEvent;
-                $template->member = $this->eventSubscriber->getModel();
+                $template->member = $this->eventRegistration->getModel();
             }
         }
 

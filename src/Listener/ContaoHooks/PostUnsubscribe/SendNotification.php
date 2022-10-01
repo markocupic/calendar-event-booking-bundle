@@ -19,7 +19,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 
@@ -49,7 +49,7 @@ final class SendNotification extends AbstractHook
     /**
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         if (!self::isEnabled()) {
             return;
@@ -60,7 +60,7 @@ final class SendNotification extends AbstractHook
 
         if (!empty($arrNotificationIds)) {
             // Get notification tokens
-            $this->notification->setTokens($eventConfig, $eventSubscriber->getModel(), (int) $eventConfig->getModel()->eventUnsubscribeNotificationSender);
+            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->getModel()->eventUnsubscribeNotificationSender);
             $this->notification->notify($arrNotificationIds);
         }
     }

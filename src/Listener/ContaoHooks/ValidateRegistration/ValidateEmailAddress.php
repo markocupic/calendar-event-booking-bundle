@@ -18,7 +18,7 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,17 +35,17 @@ final class ValidateEmailAddress extends AbstractHook
     private ContaoFramework $framework;
     private RequestStack $requestStack;
     private TranslatorInterface $translator;
-    private EventSubscriber $eventSubscriber;
+    private EventRegistration $eventRegistration;
 
     // Adapters
     private Adapter $eventMember;
 
-    public function __construct(ContaoFramework $framework, RequestStack $requestStack, TranslatorInterface $translator, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, RequestStack $requestStack, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
 
         // Adapers
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -55,7 +55,7 @@ final class ValidateEmailAddress extends AbstractHook
      * Important! return false will make the validation fail
      * Validate email address.
      */
-    public function __invoke(EventSubscriber $eventSubscriber, EventConfig $eventConfig): bool
+    public function __invoke(EventRegistration $eventRegistration, EventConfig $eventConfig): bool
     {
         if (!self::isEnabled()) {
             return true;
@@ -63,7 +63,7 @@ final class ValidateEmailAddress extends AbstractHook
 
         $request = $this->requestStack->getCurrentRequest();
 
-        $form = $eventSubscriber->getForm();
+        $form = $eventRegistration->getForm();
 
         // Check if user with submitted email has already booked
         if ($form->hasFormField('email')) {
@@ -71,7 +71,7 @@ final class ValidateEmailAddress extends AbstractHook
 
             if (!empty($objWidget->value)) {
                 if (!$eventConfig->get('allowDuplicateEmail')) {
-                    $t = $this->eventSubscriber->getTable();
+                    $t = $this->eventRegistration->getTable();
 
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],

@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber;
+namespace Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration;
 
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -29,7 +29,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
-final class EventSubscriber
+final class EventRegistration
 {
     public const TABLE = 'tl_calendar_events_member';
 
@@ -64,7 +64,7 @@ final class EventSubscriber
     public function getModel(): ?CalendarEventsMemberModel
     {
         if (!$this->hasModel()) {
-            throw new \Exception('Model not found. Please use the EventSubscriber::setModel() method first.');
+            throw new \Exception('Model not found. Please use the EventRegistration::setModel() method first.');
         }
 
         return $this->model;
@@ -152,7 +152,7 @@ final class EventSubscriber
     public function getForm(): Form
     {
         if (!$this->hasForm()) {
-            throw new \Exception('Form not found. Please use the EventSubscriber::createForm() method first.');
+            throw new \Exception('Form not found. Please use the EventRegistration::createForm() method first.');
         }
 
         return $this->form;

@@ -18,7 +18,7 @@ use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Logger\Logger;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Psr\Log\LogLevel;
@@ -43,19 +43,19 @@ final class ContaoLog extends AbstractHook
     /**
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id])) {
+        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventRegistration->getModel()->id])) {
             return;
         }
 
         $strText = sprintf(
             'New event subscription with ID %d for event with ID %d (%s).',
-            $eventSubscriber->getModel()->id,
+            $eventRegistration->getModel()->id,
             $eventConfig->getModel()->id,
             $eventConfig->getModel()->title
         );

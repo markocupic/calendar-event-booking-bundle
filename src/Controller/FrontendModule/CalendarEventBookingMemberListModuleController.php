@@ -29,7 +29,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +46,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     private ContaoFramework $framework;
     private ScopeMatcher $scopeMatcher;
     private Connection $connection;
-    private EventSubscriber $eventSubscriber;
+    private EventRegistration $eventRegistration;
 
     // Adapters
     private Adapter $controller;
@@ -55,12 +55,12 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * CalendarEventBookingMemberListModuleController constructor.
      */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->scopeMatcher = $scopeMatcher;
         $this->connection = $connection;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
 
         // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -97,9 +97,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         // Load language
-        $this->controller->loadLanguageFile($this->eventSubscriber->getTable());
+        $this->controller->loadLanguageFile($this->eventRegistration->getTable());
 
-        $t = $this->eventSubscriber->getTable();
+        $t = $this->eventRegistration->getTable();
 
         // Get subscribed event members
         $qb = $this->connection->createQueryBuilder();

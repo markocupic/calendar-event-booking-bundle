@@ -21,7 +21,7 @@ use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -55,13 +55,13 @@ final class GenerateMessage extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        $bookingState = $this->connection->fetchOne('SELECT bookingState FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id]);
+        $bookingState = $this->connection->fetchOne('SELECT bookingState FROM tl_calendar_events_member WHERE id = ?', [$eventRegistration->getModel()->id]);
 
         if (false === $bookingState) {
             return;

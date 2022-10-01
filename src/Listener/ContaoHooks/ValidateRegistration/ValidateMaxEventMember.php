@@ -21,7 +21,7 @@ use Contao\Message;
 use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -63,13 +63,13 @@ final class ValidateMaxEventMember extends AbstractHook
      *
      * @throws Exception
      */
-    public function __invoke(EventSubscriber $eventSubscriber, EventConfig $eventConfig): bool
+    public function __invoke(EventRegistration $eventRegistration, EventConfig $eventConfig): bool
     {
         if (!self::isEnabled()) {
             return true;
         }
 
-        $form = $eventSubscriber->getForm();
+        $form = $eventRegistration->getForm();
 
         $arrMsg = [];
         $numSeats = 1;

@@ -17,7 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareForm
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Utils\Formatter;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -31,12 +31,12 @@ final class FormatInput extends AbstractHook
     public const PRIORITY = 1000;
 
     private Formatter $formatter;
-    private EventSubscriber $eventSubscriber;
+    private EventRegistration $eventRegistration;
 
-    public function __construct(Formatter $formatter, EventSubscriber $eventSubscriber)
+    public function __construct(Formatter $formatter, EventRegistration $eventRegistration)
     {
         $this->formatter = $formatter;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
     }
 
     /**
@@ -50,7 +50,7 @@ final class FormatInput extends AbstractHook
             return;
         }
 
-        $strTable = $this->eventSubscriber->getTable();
+        $strTable = $this->eventRegistration->getTable();
 
         foreach (array_keys($form->getFormFields()) as $strFieldname) {
             $varValue = $eventMember->$strFieldname;

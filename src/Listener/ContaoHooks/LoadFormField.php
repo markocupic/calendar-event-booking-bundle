@@ -24,7 +24,7 @@ use Contao\Form;
 use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 
 /**
  * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
@@ -36,13 +36,13 @@ final class LoadFormField extends AbstractHook
 
     private ContaoFramework $framework;
     private EventFactory $eventFactory;
-    private EventSubscriber $eventSubscriber;
+    private EventRegistration $eventRegistration;
 
-    public function __construct(ContaoFramework $framework, EventFactory $eventFactory, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, EventFactory $eventFactory, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->eventFactory = $eventFactory;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
     }
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
@@ -57,8 +57,8 @@ final class LoadFormField extends AbstractHook
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
             // Load DCA
-            $controllerAdapter->loadDataContainer($this->eventSubscriber->getTable());
-            $dca = $GLOBALS['TL_DCA'][$this->eventSubscriber->getTable()];
+            $controllerAdapter->loadDataContainer($this->eventRegistration->getTable());
+            $dca = $GLOBALS['TL_DCA'][$this->eventRegistration->getTable()];
 
             // Convert timestamps to formatted date strings
             if (isset($dca['fields'][$objWidget->name]['eval']['rgxp'])) {

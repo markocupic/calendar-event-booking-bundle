@@ -18,7 +18,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\SessionConfig;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -44,20 +44,20 @@ final class AddToSession extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         if (!self::isEnabled()) {
             return;
         }
 
-        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventSubscriber->getModel()->id])) {
+        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventRegistration->getModel()->id])) {
             return;
         }
 
-        $this->addToSession($eventConfig, $eventSubscriber);
+        $this->addToSession($eventConfig, $eventRegistration);
     }
 
-    private function addToSession(EventConfig $eventConfig, EventSubscriber $eventSubscriber): void
+    private function addToSession(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
@@ -69,8 +69,8 @@ final class AddToSession extends AbstractHook
         $arrSession = [];
 
         $arrSession['eventData'] = $eventConfig->getModel()->row();
-        $arrSession['memberData'] = $eventSubscriber->getModel()->row();
-        $arrSession['formData'] = $eventSubscriber->getForm()->fetchAll();
+        $arrSession['memberData'] = $eventRegistration->getModel()->row();
+        $arrSession['formData'] = $eventRegistration->getForm()->fetchAll();
 
         $flashBag->set(SessionConfig::FLASH_KEY, $arrSession);
     }

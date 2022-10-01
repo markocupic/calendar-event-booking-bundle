@@ -45,7 +45,7 @@ final class AddTemplateData
 
         $template->numberFreeSeats = $eventConfig->getNumberOfFreeSeats();
 
-        $template->numberFreeSeatsWaitingList = $eventConfig->getNumberOfFreeSeats(true);
+        $template->numberFreeSeatsWaitingList = $eventConfig->getModel()->activateWaitingList ? $eventConfig->getNumberOfFreeSeats(true) : 0;
 
         $template->confirmedBookingsCount = $eventConfig->getConfirmedBookingsCount();
 

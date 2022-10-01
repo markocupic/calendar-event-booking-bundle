@@ -32,15 +32,13 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
-use Haste\Form\Form;
 use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
-use Markocupic\CalendarEventBookingBundle\EventBooking\EventSubscriber\EventSubscriber;
+use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -70,7 +68,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private EventFactory $eventFactory;
     private BookingValidator $bookingValidator;
     private AddTemplateData $addTemplateData;
-    private EventSubscriber $eventSubscriber;
+    private EventRegistration $eventRegistration;
 
     // Adapters
     private Adapter $config;
@@ -83,7 +81,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private Adapter $system;
     private Adapter $url;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, EventFactory $eventFactory, BookingValidator $bookingValidator, AddTemplateData $addTemplateData, EventSubscriber $eventSubscriber)
+    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, ScopeMatcher $scopeMatcher, EventFactory $eventFactory, BookingValidator $bookingValidator, AddTemplateData $addTemplateData, EventRegistration $eventRegistration)
     {
         $this->framework = $framework;
         $this->translator = $translator;
@@ -91,7 +89,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->eventFactory = $eventFactory;
         $this->bookingValidator = $bookingValidator;
         $this->addTemplateData = $addTemplateData;
-        $this->eventSubscriber = $eventSubscriber;
+        $this->eventRegistration = $eventRegistration;
 
         // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
@@ -136,24 +134,18 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         return parent::__invoke($request, $this->model, $section, $classes);
     }
 
-    public function getEventSubscriber(): ?EventSubscriber
+    public function getEventRegistrationHelper(): ?EventRegistration
     {
-        return $this->eventSubscriber;
-    }
-
-    public function getEventRegistration(): ?CalendarEventsMemberModel
-    {
-        return $this->objEventMember;
+        return $this->eventRegistration;
     }
 
     public function getEvent(): ?CalendarEventsModel
     {
-        return $this->objEvent;
-    }
+        if (null === $this->eventConfig) {
+            return null;
+        }
 
-    public function getForm(): ?Form
-    {
-        return $this->objForm;
+        return $this->eventConfig->getModel();
     }
 
     public function getCase(): ?string
@@ -167,7 +159,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         // Load language file
-        $this->system->loadLanguageFile($this->eventSubscriber->getTable());
+        $this->system->loadLanguageFile($this->eventRegistration->getTable());
 
         if (null === $this->eventConfig) {
             throw new PageNotFoundException('Page not found: '.$this->environment->get('uri'));
@@ -236,14 +228,14 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // If display booking form (regular subscription or subscription to the waiting list is possible)
         if ($this->bookingValidator->validateCanRegister($this->eventConfig)) {
-            $this->eventSubscriber->setModuleData($model->row());
+            $this->eventRegistration->setModuleData($model->row());
 
             // Create a new CalendarEventsMember model
-            $this->eventSubscriber->setModel();
+            $this->eventRegistration->setModel();
 
             // Create the form
             $contaoFormId = (int) $this->model->form;
-            $this->eventSubscriber->createForm($contaoFormId, $this->eventConfig, $this);
+            $this->eventRegistration->createForm($contaoFormId, $this->eventConfig, $this);
 
             // Trigger pre validate hook: e.g. add custom field validators.';
             if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM])) {
@@ -252,12 +244,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 }
             }
 
-            if ($this->eventSubscriber->getForm()->validate()) {
-                // Use an event subscriber class to
-                // validate subscription and
-                // write the new event member to the database
-                if ($this->eventSubscriber->validateSubscription($this->eventConfig, $this)) {
-                    $this->eventSubscriber->subscribe($this->eventConfig, $this);
+            if ($this->eventRegistration->getForm()->validate()) {
+                // Use an event registration helper class to
+                // validate subscriptions and
+                // write the new event subscription to the database
+                if ($this->eventRegistration->validateSubscription($this->eventConfig, $this)) {
+                    $this->eventRegistration->subscribe($this->eventConfig, $this);
 
                     // Reload or redirect to the jumpTo page
                     if (null !== ($formModel = $this->formModel->findByPk($this->model->form))) {
@@ -266,7 +258,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
                         if (null !== $jumpTo) {
                             $url = $this->url->addQueryString(
-                                'bookingToken='.$this->eventSubscriber->getModel()->bookingToken,
+                                'bookingToken='.$this->eventRegistration->getModel()->bookingToken,
                                 $jumpTo->getAbsoluteUrl()
                             );
 
@@ -278,7 +270,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 }
             }
 
-            $template->form = $this->eventSubscriber->getForm();
+            $template->form = $this->eventRegistration->getForm();
         }
 
         $template->case = $this->case;

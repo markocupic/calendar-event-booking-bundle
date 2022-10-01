@@ -45,11 +45,11 @@ final class HandleSubmitButtons extends AbstractHook
 
         $eventConfig = $frontendModule->eventConfig;
 
-        if (null === ($eventSubscriber = $frontendModule->getEventSubscriber())) {
+        if (null === ($eventRegistration = $frontendModule->getEventRegistrationHelper())) {
             return;
         }
 
-        if (null === ($form = $eventSubscriber->getForm())) {
+        if (null === ($form = $eventRegistration->getForm())) {
             return;
         }
 
