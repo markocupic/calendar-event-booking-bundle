@@ -165,9 +165,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     }
 
     /**
+     * @return mixed
      * @throws \Exception
      *
-     * @return mixed
      */
     public function getProperty(string $key)
     {
@@ -334,8 +334,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                                     ->addQueryString(
                                         'bookingToken='.$this->objEventMember->bookingToken,
                                         $objPageModel->getAbsoluteUrl()
-                                    )
-                                ;
+                                    );
 
                                 return new RedirectResponse($strRedirectUrl);
                             }
@@ -365,7 +364,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->objForm = new Form(
             'eventSubscriptionForm',
             'POST',
-            static fn ($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
+            static fn($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
         );
 
         // Bind the event member model to the form input
