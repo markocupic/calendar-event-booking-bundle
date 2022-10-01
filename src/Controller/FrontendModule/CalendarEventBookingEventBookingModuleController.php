@@ -194,6 +194,26 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         throw new \Exception(sprintf('Property "%s" not found.', $key));
     }
 
+    public function getEventRegistration(): ?CalendarEventsMemberModel
+    {
+        return $this->objEventMember;
+    }
+
+    public function getEvent(): ?CalendarEventsModel
+    {
+        return $this->objEvent;
+    }
+
+    public function getForm(): ?Form
+    {
+        return $this->objForm;
+    }
+
+    public function getCase(): ?string
+    {
+        return $this->case;
+    }
+
     /**
      * @throws \Exception
      */
