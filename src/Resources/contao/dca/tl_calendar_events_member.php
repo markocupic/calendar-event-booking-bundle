@@ -6,18 +6,19 @@ declare(strict_types=1);
  * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Contao\CoreBundle\DataContainer;
+use Contao\DataContainer;
+use Contao\DC_Table;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
-        'dataContainer'    => 'Table',
+        'dataContainer'    => DC_Table::class,
         'ptable'           => 'tl_calendar_events',
         'enableVersioning' => true,
         'notCopyable'      => true,
@@ -30,9 +31,9 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     ],
     'list'     => [
         'sorting'           => [
-            'mode'        => 2,
+            'mode'        => DataContainer::MODE_SORTABLE,
             'fields'      => ['dateAdded ASC'],
-            'flag'        => 6,
+            'flag'        => DataContainer::SORT_DAY_DESC,
             'panelLayout' => 'filter;sort,search',
         ],
         'label'             => [
@@ -74,7 +75,13 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{title_legend},dateAdded,bookingState;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '
+        {title_legend},dateAdded,bookingState;
+        {notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;
+        {address_legend:hide},street,postal,city;
+        {contact_legend},phone,email;
+        {escort_legend},escorts
+        ',
     ],
     'fields'   => [
         'id'           => [
@@ -92,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         'dateAdded'    => [
             'default'   => time(),
             'eval'      => ['doNotCopy' => true, 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'flag'      => defined('\Contao\CoreBundle\DataContainer::SORT_DAY_DESC') ? DataContainer::SORT_DAY_DESC : 6,
+            'flag'      => DataContainer::SORT_DAY_DESC,
             'inputType' => 'text',
             'sorting'   => true,
             'sql'       => 'int(10) unsigned NOT NULL default 0',
