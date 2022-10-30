@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/modules.php" source-language="en">
+    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/contao/languages/en/modules.php" source-language="en">
         <body>
             <trans-unit id="FMD.calendar_event_booking_event_booking_module.0">
                 <source>Event booking form</source>

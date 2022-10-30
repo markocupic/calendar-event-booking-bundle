@@ -13,10 +13,8 @@ return static function (ECSConfig $ecsConfig): void {
 
     // Customize
     $ecsConfig->skip([
-        '*/Resources/contao/*',
         MethodChainingIndentationFixer::class => [
             '*/DependencyInjection/Configuration.php',
-            '*/Resources/config/*.php',
         ],
         TypeHintOrderFixer::class,
     ]);

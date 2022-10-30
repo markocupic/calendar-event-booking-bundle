@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -74,6 +74,7 @@ class Version600Update extends AbstractMigration
 
                     if (isset($columns[strtolower($arrAlteration['field'])])) {
                         $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$arrAlteration['field'].' = ?', ['']);
+
                         if ($result) {
                             $doMigration = true;
                         }
@@ -103,74 +104,74 @@ class Version600Update extends AbstractMigration
         return [
             // tl_calendar_events
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'enableNotificationCenter',
-                'new'   => 'activateBookingNotification',
-                'sql'   => 'char(1)',
+                'old' => 'enableNotificationCenter',
+                'new' => 'activateBookingNotification',
+                'sql' => 'char(1)',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'addBookingForm',
-                'new'   => 'activateBookingForm',
-                'sql'   => 'char(1)',
+                'old' => 'addBookingForm',
+                'new' => 'activateBookingForm',
+                'sql' => 'char(1)',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'enableDeregistration',
-                'new'   => 'activateDeregistration',
-                'sql'   => 'char(1)',
+                'old' => 'enableDeregistration',
+                'new' => 'activateDeregistration',
+                'sql' => 'char(1)',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'eventBookingNotificationCenterIds',
-                'new'   => 'eventBookingNotification',
-                'sql'   => 'blob',
+                'old' => 'eventBookingNotificationCenterIds',
+                'new' => 'eventBookingNotification',
+                'sql' => 'blob',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'includeEscortsWhenCalculatingRegCount',
-                'new'   => 'addEscortsToTotal',
-                'sql'   => 'char(1)',
+                'old' => 'includeEscortsWhenCalculatingRegCount',
+                'new' => 'addEscortsToTotal',
+                'sql' => 'char(1)',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
-                'old'   => 'enableMultiBookingWithSameAddress',
-                'new'   => 'allowDuplicateEmail',
-                'sql'   => 'char(1)',
+                'old' => 'enableMultiBookingWithSameAddress',
+                'new' => 'allowDuplicateEmail',
+                'sql' => 'char(1)',
             ],
             // tl_calendar_events_member
             [
-                'type'            => self::STRING_TO_INT_CONVERSION,
-                'table'           => 'tl_calendar_events_member',
+                'type' => self::STRING_TO_INT_CONVERSION,
+                'table' => 'tl_calendar_events_member',
                 'field_value_old' => '',
                 'field_value_new' => '0',
-                'field'           => 'addedOn',
+                'field' => 'addedOn',
             ],
             [
-                'type'  => self::NULL_TO_0_CONVERSION,
+                'type' => self::NULL_TO_0_CONVERSION,
                 'table' => 'tl_calendar_events_member',
                 'field' => 'escorts',
             ],
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events_member',
-                'old'   => 'addedOn',
-                'new'   => 'dateAdded',
-                'sql'   => 'int(10)',
+                'old' => 'addedOn',
+                'new' => 'dateAdded',
+                'sql' => 'int(10)',
             ],
             // tl_module
             [
-                'type'  => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_module',
-                'old'   => 'calendarEventBookingMemberListPartialTemplate',
-                'new'   => 'cebb_memberListPartialTemplate',
-                'sql'   => 'varchar(128)',
+                'old' => 'calendarEventBookingMemberListPartialTemplate',
+                'new' => 'cebb_memberListPartialTemplate',
+                'sql' => 'varchar(128)',
             ],
         ];
     }
@@ -222,6 +223,7 @@ class Version600Update extends AbstractMigration
 
                     if (isset($columns[strtolower($arrAlteration['field'])])) {
                         $result = $this->connection->fetchOne('SELECT id FROM '.$strTable.' WHERE '.$arrAlteration['field'].' = ?', ['']);
+
                         if ($result) {
                             $set = [
                                 $arrAlteration['field'] => $arrAlteration['field_value_new'],

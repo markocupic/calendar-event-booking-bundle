@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events_member.php" source-language="en">
+    <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/contao/languages/en/tl_calendar_events_member.php" source-language="en">
         <body>
             <trans-unit id="tl_calendar_events_member.new.0">
                 <source>New</source>

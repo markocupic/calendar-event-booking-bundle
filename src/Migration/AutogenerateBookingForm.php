@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -94,8 +94,8 @@ class AutogenerateBookingForm extends AbstractMigration
         // Initialize the contao framework
         $this->framework->initialize();
 
-        $sqlTlForm = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form.sql');
-        $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/autogenerate-form-sql/tl_form_field.sql');
+        $sqlTlForm = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/sql/tl_form.sql');
+        $sqlTlFormField = file_get_contents($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/sql/tl_form_field.sql');
 
         // Set tstamp
         $sqlTlForm = str_replace('##tstamp##', (string) time(), $sqlTlForm);
