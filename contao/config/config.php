@@ -14,43 +14,42 @@ declare(strict_types=1);
 
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-// Add child table tl_calendar_events_member to tl_calendar_events
+/**
+ * Backend modules
+ */
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_member';
 
-if (TL_MODE === 'BE') {
-    // Add Backend CSS
-    $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
-}
-
-// Register custom models
+/**
+ * Contao models
+ */
 $GLOBALS['TL_MODELS']['tl_calendar_events_member'] = CalendarEventsMemberModel::class;
 
 /*
  * Notification center
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['calendar-event-booking-bundle'] = [
-    'booking-notification' => [
-        'email_sender_name' => ['sender_name'],
+    'booking-notification'           => [
+        'email_sender_name'    => ['sender_name'],
         'email_sender_address' => ['sender_email', 'admin_email'],
-        'recipients' => ['sender_email', 'member_email', 'admin_email'],
-        'email_recipient_cc' => ['sender_email', 'member_email', 'admin_email'],
-        'email_recipient_bcc' => ['sender_email', 'member_email', 'admin_email'],
-        'email_replyTo' => ['sender_email', 'member_email', 'admin_email'],
-        'email_subject' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'email_text' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'email_html' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'attachment_tokens' => [],
+        'recipients'           => ['sender_email', 'member_email', 'admin_email'],
+        'email_recipient_cc'   => ['sender_email', 'member_email', 'admin_email'],
+        'email_recipient_bcc'  => ['sender_email', 'member_email', 'admin_email'],
+        'email_replyTo'        => ['sender_email', 'member_email', 'admin_email'],
+        'email_subject'        => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'email_text'           => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'email_html'           => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'attachment_tokens'    => [],
     ],
     'event-unsubscribe-notification' => [
-        'email_sender_name' => ['sender_name'],
+        'email_sender_name'    => ['sender_name'],
         'email_sender_address' => ['sender_email', 'admin_email'],
-        'recipients' => ['sender_email', 'member_email', 'admin_email'],
-        'email_recipient_cc' => ['sender_email', 'member_email', 'admin_email'],
-        'email_recipient_bcc' => ['sender_email', 'member_email', 'admin_email'],
-        'email_replyTo' => ['sender_email', 'member_email', 'admin_email'],
-        'email_subject' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'email_text' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'email_html' => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
-        'attachment_tokens' => [],
+        'recipients'           => ['sender_email', 'member_email', 'admin_email'],
+        'email_recipient_cc'   => ['sender_email', 'member_email', 'admin_email'],
+        'email_recipient_bcc'  => ['sender_email', 'member_email', 'admin_email'],
+        'email_replyTo'        => ['sender_email', 'member_email', 'admin_email'],
+        'email_subject'        => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'email_text'           => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'email_html'           => ['event_*', 'event_title', 'event_unsubscribeLimitTstamp', 'member_*', 'member_dateOfBirth', 'member_salutation', 'member_unsubscribeHref', 'sender_*', 'sender_name', 'sender_email', 'admin_email'],
+        'attachment_tokens'    => [],
     ],
 ];
