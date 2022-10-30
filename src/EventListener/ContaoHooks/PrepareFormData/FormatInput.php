@@ -12,14 +12,14 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PrepareFormData;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Utils\Formatter;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**

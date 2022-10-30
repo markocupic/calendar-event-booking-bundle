@@ -12,13 +12,13 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\ExportTable\Config\Config;
-use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
+use Markocupic\ExportTable\EventListener\ContaoHooks\ListenerInterface;
 
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)

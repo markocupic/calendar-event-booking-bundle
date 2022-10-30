@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
 use Contao\Config;

@@ -12,37 +12,34 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostUnsubscribe;
 
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
-use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 
 /**
  * @Hook(SendNotification::HOOK, priority=SendNotification::PRIORITY)
  */
 final class SendNotification extends AbstractHook
 {
-    public const HOOK = AbstractHook::HOOK_POST_BOOKING;
+    public const HOOK = AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT;
     public const PRIORITY = 1000;
 
     private ContaoFramework $framework;
-    private Connection $connection;
     private Notification $notification;
 
     // Adapters
     private Adapter $stringUtil;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, Notification $notification)
+    public function __construct(ContaoFramework $framework, Notification $notification)
     {
         $this->framework = $framework;
-        $this->connection = $connection;
         $this->notification = $notification;
 
         // Adapters
@@ -50,8 +47,6 @@ final class SendNotification extends AbstractHook
     }
 
     /**
-     * Run post booking notification.
-     *
      * @throws \Exception
      */
     public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
@@ -60,18 +55,12 @@ final class SendNotification extends AbstractHook
             return;
         }
 
-        if (!$eventConfig->get('activateBookingNotification')) {
-            return;
-        }
-
-        if (false === $this->connection->fetchOne('SELECT id FROM tl_calendar_events_member WHERE id = ?', [$eventRegistration->getModel()->id])) {
-            return;
-        }
-
-        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->get('eventBookingNotification'), true);
+        // Multiple notifications possible
+        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->getModel()->eventUnsubscribeNotification, true);
 
         if (!empty($arrNotificationIds)) {
-            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->getModel()->eventBookingNotificationSender);
+            // Get notification tokens
+            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->getModel()->eventUnsubscribeNotificationSender);
             $this->notification->notify($arrNotificationIds);
         }
     }

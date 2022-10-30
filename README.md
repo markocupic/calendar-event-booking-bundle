@@ -339,8 +339,8 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AbstractHook;
-use Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking\Notification;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking\Notification;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 /**
