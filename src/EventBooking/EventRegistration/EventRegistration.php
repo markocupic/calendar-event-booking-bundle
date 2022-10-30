@@ -102,32 +102,33 @@ final class EventRegistration
 
     public function subscribe(EventConfig $eventConfig, $module = null): void
     {
-        $this->getModel()->pid = $eventConfig->getModel()->id;
-        $this->getModel()->tstamp = time();
-        $this->getModel()->dateAdded = time();
-        $this->getModel()->bookingState = isset($_POST['addToWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
-        $this->getModel()->bookingToken = Uuid::uuid4()->toString();
+        $eventMember = $this->getModel();
+        $eventMember->pid = $eventConfig->getModel()->id;
+        $eventMember->tstamp = time();
+        $eventMember->dateAdded = time();
+        $eventMember->bookingState = isset($_POST['addToWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
+        $eventMember->bookingToken = Uuid::uuid4()->toString();
 
         // Set the booking type
         $user = $this->security->getUser();
-        $this->getModel()->bookingType = $user instanceof FrontendUser ? BookingType::TYPE_MEMBER : BookingType::TYPE_GUEST;
+        $eventMember->bookingType = $user instanceof FrontendUser ? BookingType::TYPE_MEMBER : BookingType::TYPE_GUEST;
 
         // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA])) {
             foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA] as $callback) {
-                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $this->getModel());
+                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $eventMember);
             }
         }
 
         // Trigger pre-booking hook: add your custom code here.
         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING])) {
             foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING] as $callback) {
-                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $this->getModel());
+                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $eventMember);
             }
         }
 
         // Save to Database
-        $this->getModel()->save();
+        $eventMember->save();
 
         // Trigger post-booking hook: add data to the session, send notifications, log things, etc.
         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING])) {

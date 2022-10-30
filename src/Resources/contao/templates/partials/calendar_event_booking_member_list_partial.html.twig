@@ -4,4 +4,5 @@
     <td class="body col_2 col_last">{{ model.street }}</td>
     <td class="body col_3 col_last">{{ model.postal }}</td>
     <td class="body col_4 col_last">{{ model.city }}</td>
+    <td class="body col_5 col_last">{{ ('MSC.' ~ model.bookingState)|trans({}, 'contao_default') }}</td>
 </tr>

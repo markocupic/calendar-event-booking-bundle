@@ -16,10 +16,10 @@ namespace Markocupic\CalendarEventBookingBundle\EventBooking\Booking;
 
 class BookingState
 {
-    public const STATE_UNDEFINED = 'undefined';
-    public const STATE_NOT_CONFIRMED = 'not_confirmed';
-    public const STATE_CONFIRMED = 'confirmed';
-    public const STATE_WAITING_LIST = 'waiting_list';
-    public const STATE_REJECTED = 'rejected';
-    public const STATE_UNSUBSCRIBED = 'unsubscribed';
+    public const STATE_UNDEFINED = 'cebb_booking_state_undefined';
+    public const STATE_NOT_CONFIRMED = 'cebb_booking_state_not_confirmed';
+    public const STATE_CONFIRMED = 'cebb_booking_state_confirmed';
+    public const STATE_WAITING_LIST = 'cebb_booking_state_on_waiting_list';
+    public const STATE_REJECTED = 'cebb_booking_state_rejected';
+    public const STATE_UNSUBSCRIBED = 'cebb_booking_state_unsubscribed';
 }

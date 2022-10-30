@@ -6,29 +6,29 @@
                 <source>bookings</source>
                 <target>Buchungen</target>
             </trans-unit>
-            <trans-unit id="MSC.undefined">
+            <trans-unit id="MSC.cebb_booking_state_undefined">
                 <source>undefined</source>
                 <target>Nicht definiert</target>
             </trans-unit>
-            <trans-unit id="MSC.not_confirmed">
+            <trans-unit id="MSC.cebb_booking_state_not_confirmed">
                 <source>not confirmed</source>
-                <target>Warten auf Antwort</target>
+                <target>Buchungsanfrage noch nicht beantwortet</target>
             </trans-unit>
-            <trans-unit id="MSC.confirmed">
+            <trans-unit id="MSC.cebb_booking_state_confirmed">
                 <source>confirmed</source>
-                <target>Bestätigt</target>
+                <target>Buchungsanfrage bestätigt</target>
             </trans-unit>
-            <trans-unit id="MSC.unsubscribed">
+            <trans-unit id="MSC.cebb_booking_state_unsubscribed">
                 <source>unsubscribed</source>
-                <target>Abgemeldet</target>
+                <target>Buchung storniert</target>
             </trans-unit>
-            <trans-unit id="MSC.rejected">
+            <trans-unit id="MSC.cebb_booking_state_rejected">
                 <source>rejected</source>
                 <target>Buchungsanfrage abgelehnt</target>
             </trans-unit>
-            <trans-unit id="MSC.waiting_list">
+            <trans-unit id="MSC.cebb_booking_state_on_waiting_list">
                 <source>waiting list</source>
-                <target>Warteliste</target>
+                <target>Auf Warteliste</target>
             </trans-unit>
             <trans-unit id="MSC.maxEscortsPossible">
                 <source>Maximum %s escorts per participant possible.</source>

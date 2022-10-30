@@ -18,6 +18,14 @@
                 <source>Here you can select the event meber list partial template.</source>
                 <target>Hier können Sie das Event-Teilnehmer-Listen-Partial-Template auswählen.</target>
             </trans-unit>
+            <trans-unit id="tl_module.cebb_memberListAllowedBookingStates.0">
+                <source>Allowed booking states</source>
+                <target>Zur Anzeige freigegeben Buchungen</target>
+            </trans-unit>
+            <trans-unit id="tl_module.cebb_memberListAllowedBookingStates.1">
+                <source>Please choose the allowed booking states.</source>
+                <target>Bitte wählen Sie aus, welche Buchungen angezeigt werden sollen.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

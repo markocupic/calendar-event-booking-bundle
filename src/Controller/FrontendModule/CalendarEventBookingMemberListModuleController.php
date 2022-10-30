@@ -24,10 +24,10 @@ use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -51,6 +51,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     // Adapters
     private Adapter $controller;
     private Adapter $eventMember;
+    private Adapter $stringUtil;
 
     /**
      * CalendarEventBookingMemberListModuleController constructor.
@@ -65,6 +66,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
+        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
+
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -99,6 +102,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $this->controller->loadLanguageFile($this->eventRegistration->getTable());
 
+        $arrAllowedStates = $this->stringUtil->deserialize($model->cebb_memberListAllowedBookingStates, true);
+
         $t = $this->eventRegistration->getTable();
 
         // Get subscribed event members
@@ -106,13 +111,17 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $qb->select('id')
             ->from($t, 't')
             ->where('t.pid = :pid')
-            ->andWhere('t.bookingState = :bookingState')
             ->orderBy('t.dateAdded', 'ASC')
             ->addOrderBy('t.firstname', 'ASC')
             ->addOrderBy('t.city', 'ASC')
             ->setParameter('pid', $this->objEvent->id)
-            ->setParameter('bookingState', BookingState::STATE_CONFIRMED)
         ;
+
+        if (!empty($arrAllowedStates))
+        {
+            $qb = $qb->andWhere('t.bookingState IN (:arrAllowedStates)');
+            $qb = $qb->setParameter('arrAllowedStates', $arrAllowedStates, Connection::PARAM_STR_ARRAY);
+        }
 
         $result = $qb->executeQuery();
 
@@ -121,7 +130,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $i = 0;
         $strRows = '';
 
-        while (false !== ($arrEventMember = $result->fetchAssociative())) {
+        while (!empty($arrAllowedStates) && false !== ($arrEventMember = $result->fetchAssociative())) {
             $partial = new FrontendTemplate($model->cebb_memberListPartialTemplate);
 
             $calendarEventsMemberModel = $this->eventMember->findByPk($arrEventMember['id']);

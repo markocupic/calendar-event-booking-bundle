@@ -5,22 +5,22 @@
             <trans-unit id="MSC.bookings">
                 <source>bookings</source>
             </trans-unit>
-            <trans-unit id="MSC.undefined">
+            <trans-unit id="MSC.cebb_booking_state_undefined">
                 <source>undefined</source>
             </trans-unit>
-            <trans-unit id="MSC.not_confirmed">
+            <trans-unit id="MSC.cebb_booking_state_not_confirmed">
                 <source>not confirmed</source>
             </trans-unit>
-            <trans-unit id="MSC.confirmed">
+            <trans-unit id="MSC.cebb_booking_state_confirmed">
                 <source>confirmed</source>
             </trans-unit>
-            <trans-unit id="MSC.unsubscribed">
+            <trans-unit id="MSC.cebb_booking_state_unsubscribed">
                 <source>unsubscribed</source>
             </trans-unit>
-            <trans-unit id="MSC.rejected">
+            <trans-unit id="MSC.cebb_booking_state_rejected">
                 <source>rejected</source>
             </trans-unit>
-            <trans-unit id="MSC.waiting_list">
+            <trans-unit id="MSC.cebb_booking_state_on_waiting_list">
                 <source>waiting list</source>
             </trans-unit>
             <trans-unit id="MSC.maxEscortsPossible">

@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="tl_calendar_events.bookingState.1">
                 <source>Select the state that is automatically assigned to a new booking.</source>
-                <target>Wähle Sie den Buchungs-Status aus, der automatisch bei einer Neuanmeldung gesetzt werden soll.</target>
+                <target>Wähle Sie den Buchungs-Status, der automatisch nach dem Absenden des Buchungsformulars gesetzt werden soll, aus.</target>
             </trans-unit>
         </body>
     </file>
