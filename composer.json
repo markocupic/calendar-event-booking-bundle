@@ -30,6 +30,12 @@
       "Markocupic\\CalendarEventBookingBundle\\": "src/"
     }
   },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "contao/manager-plugin": true
+    }
+  },
   "extra": {
     "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
   }
