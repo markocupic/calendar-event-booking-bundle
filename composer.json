@@ -10,6 +10,7 @@
     }
   ],
   "require": {
+    "php": "^7.4 || ^8.0",
     "contao/core-bundle": "^4.9",
     "contao/calendar-bundle": "^4.9",
     "markocupic/export_table": "^5.1",

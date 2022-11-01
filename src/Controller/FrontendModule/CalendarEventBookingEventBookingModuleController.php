@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -194,22 +194,22 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         throw new \Exception(sprintf('Property "%s" not found.', $key));
     }
 
-    public function getEventRegistration(): CalendarEventsMemberModel|null
+    public function getEventRegistration(): ?CalendarEventsMemberModel
     {
         return $this->objEventMember;
     }
 
-    public function getEvent(): CalendarEventsModel|null
+    public function getEvent(): ?CalendarEventsModel
     {
         return $this->objEvent;
     }
 
-    public function getForm(): Form|null
+    public function getForm(): ?Form
     {
         return $this->objForm;
     }
 
-    public function getCase(): string|null
+    public function getCase(): ?string
     {
         return $this->case;
     }
