@@ -76,7 +76,7 @@ class TlCalendarEvents
         return (new \tl_calendar_events())->listEvents($arrRow);
     }
 
-    public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
+    public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
             // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot

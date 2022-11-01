@@ -67,7 +67,7 @@ class EventRegistration
         return $user instanceof FrontendUser;
     }
 
-    public function getLoggedInFrontendUser(): ?FrontendUser
+    public function getLoggedInFrontendUser(): FrontendUser|null
     {
         $user = $this->security->getUser();
 
@@ -78,7 +78,7 @@ class EventRegistration
         return null;
     }
 
-    public function getEventFromCurrentUrl(): ?CalendarEventsModel
+    public function getEventFromCurrentUrl(): CalendarEventsModel|null
     {
         $configAdapter = $this->framework->getAdapter(Config::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
@@ -99,7 +99,7 @@ class EventRegistration
         return null;
     }
 
-    public function getRegistrationState(?CalendarEventsModel $objEvent): string
+    public function getRegistrationState(CalendarEventsModel|null $objEvent): string
     {
         if (!$objEvent->addBookingForm) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;

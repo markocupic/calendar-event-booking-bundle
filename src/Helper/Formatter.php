@@ -74,7 +74,7 @@ class Formatter
         return $varValue;
     }
 
-    private function getFieldRgxp(string $strTable, string $strFieldName): ?string
+    private function getFieldRgxp(string $strTable, string $strFieldName): string|null
     {
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);

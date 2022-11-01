@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/calendar-event-booking-bundle
@@ -37,8 +37,7 @@ PaletteManipulator::create()
         'postal',
         'city',
     ], 'location', PaletteManipulator::POSITION_AFTER)
-    ->applyToPalette('default', 'tl_calendar_events')
-;
+    ->applyToPalette('default', 'tl_calendar_events');
 
 // Selector
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'addBookingForm';
@@ -59,242 +58,242 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = [
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
-    'href' => 'do=calendar&table=tl_calendar_events_member',
-    'icon' => 'bundles/markocupiccalendareventbooking/icons/group.png',
+    'href'  => 'do=calendar&table=tl_calendar_events_member',
+    'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
 ];
 
 // Fields
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = [
-    'eval' => [
+    'eval'      => [
         'mandatory' => false,
         'maxlength' => 255,
-        'tl_class' => 'w50',
+        'tl_class'  => 'w50',
     ],
-    'exclude' => true,
-    'flag' => 1,
+    'exclude'   => true,
+    'flag'      => 1,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "varchar(255) NOT NULL default ''",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = [
-    'eval' => [
+    'eval'      => [
         'maxlength' => 32,
-        'tl_class' => 'w50',
+        'tl_class'  => 'w50',
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "varchar(32) NOT NULL default ''",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "varchar(32) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
-    'eval' => [
+    'eval'      => [
         'mandatory' => false,
         'maxlength' => 255,
-        'tl_class' => 'w50',
+        'tl_class'  => 'w50',
     ],
-    'exclude' => true,
-    'flag' => 1,
+    'exclude'   => true,
+    'flag'      => 1,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "varchar(255) NOT NULL default ''",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = [
-    'eval' => [
+    'eval'      => [
         'submitOnChange' => true,
-        'tl_class' => 'clr m12',
+        'tl_class'       => 'clr m12',
     ],
-    'exclude' => true,
-    'filter' => true,
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAddress'] = [
-    'eval' => ['tl_class' => 'clr m12'],
-    'exclude' => true,
-    'filter' => true,
+    'eval'      => ['tl_class' => 'clr m12'],
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [
-    'default' => null,
-    'eval' => [
-        'rgxp' => 'datim',
-        'mandatory' => true,
-        'doNotCopy' => true,
+    'default'   => null,
+    'eval'      => [
+        'rgxp'       => 'datim',
+        'mandatory'  => true,
+        'doNotCopy'  => true,
         'datepicker' => true,
-        'tl_class' => 'clr w50 wizard',
+        'tl_class'   => 'clr w50 wizard',
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'sorting' => true,
-    'sql' => 'int(10) unsigned NULL',
+    'sorting'   => true,
+    'sql'       => 'int(10) unsigned NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = [
-    'default' => null,
-    'eval' => [
-        'rgxp' => 'datim',
-        'mandatory' => true,
-        'doNotCopy' => true,
+    'default'   => null,
+    'eval'      => [
+        'rgxp'       => 'datim',
+        'mandatory'  => true,
+        'doNotCopy'  => true,
         'datepicker' => true,
-        'tl_class' => 'w50 wizard',
+        'tl_class'   => 'w50 wizard',
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'sorting' => true,
-    'sql' => 'int(10) unsigned NULL',
+    'sorting'   => true,
+    'sql'       => 'int(10) unsigned NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = [
-    'default' => 0,
-    'eval' => [
-        'tl_class' => 'w50',
-        'rgxp' => 'digit',
+    'default'   => 0,
+    'eval'      => [
+        'tl_class'  => 'w50',
+        'rgxp'      => 'digit',
         'mandatory' => true,
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "smallint(5) unsigned NOT NULL default '0'",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = [
-    'default' => 0,
-    'eval' => [
-        'tl_class' => 'w50',
-        'rgxp' => 'digit',
+    'default'   => 0,
+    'eval'      => [
+        'tl_class'  => 'w50',
+        'rgxp'      => 'digit',
         'mandatory' => true,
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "smallint(5) unsigned NOT NULL default '0'",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
-    'default' => 0,
-    'eval' => [
-        'tl_class' => 'w50',
-        'rgxp' => 'digit',
+    'default'   => 0,
+    'eval'      => [
+        'tl_class'  => 'w50',
+        'rgxp'      => 'digit',
         'mandatory' => true,
     ],
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'text',
-    'search' => true,
-    'sorting' => true,
-    'sql' => "smallint(5) unsigned NOT NULL default '0'",
+    'search'    => true,
+    'sorting'   => true,
+    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['includeEscortsWhenCalculatingRegCount'] = [
-    'default' => 0,
-    'eval' => ['tl_class' => 'clr m12'],
-    'exclude' => true,
-    'filter' => true,
+    'default'   => 0,
+    'eval'      => ['tl_class' => 'clr m12'],
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = [
-    'eval' => [
+    'eval'      => [
         'submitOnChange' => true,
-        'tl_class' => 'clr m12',
+        'tl_class'       => 'clr m12',
     ],
-    'exclude' => true,
-    'filter' => true,
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = [
-    'eval' => [
-        'mandatory' => true,
+    'eval'       => [
+        'mandatory'          => true,
         'includeBlankOption' => true,
-        'chosen' => true,
-        'multiple' => true,
-        'tl_class' => 'clr',
+        'chosen'             => true,
+        'multiple'           => true,
+        'tl_class'           => 'clr',
     ],
-    'exclude' => true,
+    'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
-    'inputType' => 'select',
-    'relation' => [
+    'inputType'  => 'select',
+    'relation'   => [
         'type' => 'hasOne',
         'load' => 'lazy',
     ],
-    'search' => true,
-    'sql' => 'blob NULL',
+    'search'     => true,
+    'sql'        => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = [
-    'default' => 0,
-    'eval' => [
-        'mandatory' => true,
+    'default'    => 0,
+    'eval'       => [
+        'mandatory'          => true,
         'includeBlankOption' => true,
-        'chosen' => true,
-        'tl_class' => 'clr',
+        'chosen'             => true,
+        'tl_class'           => 'clr',
     ],
-    'exclude' => true,
+    'exclude'    => true,
     'foreignKey' => 'tl_user.name',
-    'inputType' => 'select',
-    'relation' => [
+    'inputType'  => 'select',
+    'relation'   => [
         'type' => 'hasOne',
         'load' => 'lazy',
     ],
-    'search' => true,
-    'sql' => "int(10) unsigned NOT NULL default '0'",
+    'search'     => true,
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = [
-    'eval' => [
+    'eval'      => [
         'submitOnChange' => true,
-        'tl_class' => 'clr m12',
+        'tl_class'       => 'clr m12',
     ],
-    'exclude' => true,
-    'filter' => true,
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
-    'default' => 0,
-    'eval' => [
-        'rgxp' => 'natural',
-        'nospace' => true,
+    'default'   => 0,
+    'eval'      => [
+        'rgxp'     => 'natural',
+        'nospace'  => true,
         'tl_class' => 'w50',
     ],
-    'exclude' => true,
-    'filter' => true,
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'select',
-    'options' => range(0, 720),
-    'sorting' => true,
-    'sql' => "int(10) unsigned NOT NULL default '0'",
+    'options'   => range(0, 720),
+    'sorting'   => true,
+    'sql'       => "int(10) unsigned NOT NULL default '0'",
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
-    'default' => null,
-    'eval' => [
-        'rgxp' => 'datim',
-        'doNotCopy' => true,
+    'default'       => null,
+    'eval'          => [
+        'rgxp'       => 'datim',
+        'doNotCopy'  => true,
         'datepicker' => true,
-        'tl_class' => 'w50 wizard',
+        'tl_class'   => 'w50 wizard',
     ],
-    'exclude' => true,
-    'inputType' => 'text',
+    'exclude'       => true,
+    'inputType'     => 'text',
     'save_callback' => [
         [
             TlCalendarEvents::class,
             'saveUnsubscribeLimitTstamp',
         ],
     ],
-    'sorting' => true,
-    'sql' => 'int(10) unsigned NULL',
+    'sorting'       => true,
+    'sql'           => 'int(10) unsigned NULL',
 ];

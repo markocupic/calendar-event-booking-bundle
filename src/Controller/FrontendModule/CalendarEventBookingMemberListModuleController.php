@@ -99,7 +99,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $controllerAdapter = $this->framework->getAdapter(Controller::class);

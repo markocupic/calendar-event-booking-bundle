@@ -165,9 +165,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     }
 
     /**
-     * @return mixed
      * @throws \Exception
      *
+     * @return mixed
      */
     public function getProperty(string $key)
     {
@@ -194,22 +194,22 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         throw new \Exception(sprintf('Property "%s" not found.', $key));
     }
 
-    public function getEventRegistration(): ?CalendarEventsMemberModel
+    public function getEventRegistration(): CalendarEventsMemberModel|null
     {
         return $this->objEventMember;
     }
 
-    public function getEvent(): ?CalendarEventsModel
+    public function getEvent(): CalendarEventsModel|null
     {
         return $this->objEvent;
     }
 
-    public function getForm(): ?Form
+    public function getForm(): Form|null
     {
         return $this->objForm;
     }
 
-    public function getCase(): ?string
+    public function getCase(): string|null
     {
         return $this->case;
     }
@@ -334,7 +334,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                                     ->addQueryString(
                                         'bookingToken='.$this->objEventMember->bookingToken,
                                         $objPageModel->getAbsoluteUrl()
-                                    );
+                                    )
+                                ;
 
                                 return new RedirectResponse($strRedirectUrl);
                             }
@@ -364,7 +365,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->objForm = new Form(
             'eventSubscriptionForm',
             'POST',
-            static fn($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
+            static fn ($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
         );
 
         // Bind the event member model to the form input
