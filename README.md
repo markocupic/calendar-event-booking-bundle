@@ -292,6 +292,7 @@ Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einset
 
 Tag | type | Erklärung
 ------------ |------------- |--
+`registrations` | array | Zeigt alle Daten zu den für den Event registierten Personen (das Daten-Array enthält auch die unbestätigten/stornierten Personen)
 `canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
 `isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
 `numberFreeSeats` | int | Zeigt, die noch verfügbaren Plätze an.

@@ -20,9 +20,11 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
 use Contao\Input;
+use Contao\Model\Collection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class EventConfig
 {
@@ -45,6 +47,28 @@ class EventConfig
         $this->date = $this->framework->getAdapter(Date::class);
     }
 
+    public static function getEventFromCurrentUrl(): ?CalendarEventsModel
+    {
+        // Set the item from the auto_item parameter
+        if (!isset($_GET['events']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+            Input::setGet('events', Input::get('auto_item'));
+        }
+
+        // Return an empty string if "events" is not set
+        if ('' !== Input::get('events')) {
+            if (null !== ($objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events')))) {
+                return $objEvent;
+            }
+        }
+
+        return null;
+    }
+
+    public function hasWaitingList(): bool
+    {
+        return (bool) $this->get('activateWaitingList');
+    }
+
     public function get($propertyName)
     {
         // @todo enable presetting values in tl_calendar
@@ -54,16 +78,6 @@ class EventConfig
     public function getModel(): CalendarEventsModel
     {
         return $this->event;
-    }
-
-    public function isBookable(): bool
-    {
-        return (bool) $this->get('activateBookingForm');
-    }
-
-    public function hasWaitingList(): bool
-    {
-        return (bool) $this->get('activateWaitingList');
     }
 
     /**
@@ -84,11 +98,6 @@ class EventConfig
         return true;
     }
 
-    public function getWaitingListLimit(): int
-    {
-        return (int) $this->event->waitingListLimit;
-    }
-
     /**
      * @throws Exception
      */
@@ -98,6 +107,31 @@ class EventConfig
             BookingState::STATE_WAITING_LIST,
             (bool) $this->get('addEscortsToTotal'),
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function countByEventAndBookingState(string $bookingState, bool $addEscortsToTotal = false): int
+    {
+        $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
+        $registrationCount = $this->connection->fetchOne(
+            $query1,
+            [$this->getModel()->id, $bookingState],
+        );
+
+        $sumBookingTotal = $registrationCount;
+
+        if ($addEscortsToTotal) {
+            $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
+            $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
+
+            if (false !== $sumEscorts) {
+                $sumBookingTotal += $sumEscorts;
+            }
+        }
+
+        return $sumBookingTotal;
     }
 
     /**
@@ -129,6 +163,11 @@ class EventConfig
             BookingState::STATE_CONFIRMED,
             (bool) $this->get('addEscortsToTotal'),
         );
+    }
+
+    public function getBookingMax(): int
+    {
+        return (int) $this->get('maxMembers');
     }
 
     /**
@@ -173,6 +212,16 @@ class EventConfig
         return max($available, 0);
     }
 
+    public function isBookable(): bool
+    {
+        return (bool) $this->get('activateBookingForm');
+    }
+
+    public function getWaitingListLimit(): int
+    {
+        return (int) $this->event->waitingListLimit;
+    }
+
     public function isNotificationActivated(): bool
     {
         return (bool) $this->get('activateBookingNotification');
@@ -212,55 +261,29 @@ class EventConfig
         return $varValue;
     }
 
-    public function getBookingMax(): int
-    {
-        return (int) $this->get('maxMembers');
-    }
-
     public function getBookingMin(): int
     {
         return (int) $this->get('minMembers');
     }
 
-    public static function getEventFromCurrentUrl(): ?CalendarEventsModel
+    public function getRegistrationAsArray(): array
     {
-        // Set the item from the auto_item parameter
-        if (!isset($_GET['events']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
-            Input::setGet('events', Input::get('auto_item'));
-        }
+        $arrReg = [];
 
-        // Return an empty string if "events" is not set
-        if ('' !== Input::get('events')) {
-            if (null !== ($objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events')))) {
-                return $objEvent;
+        if (null !== ($collection = $this->getRegistrations())) {
+            while($collection->next())
+            {
+                $arrReg[] = $collection->row();
             }
         }
 
-        return null;
+        return $arrReg;
     }
 
-    /**
-     * @throws Exception
-     */
-    private function countByEventAndBookingState(string $bookingState, bool $addEscortsToTotal = false): int
+    public function getRegistrations(): ?Collection
     {
-        $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-        $registrationCount = $this->connection->fetchOne(
-            $query1,
-            [$this->getModel()->id, $bookingState],
-        );
+        $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
 
-        $sumBookingTotal = $registrationCount;
-
-        if ($addEscortsToTotal) {
-            $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-            $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
-
-            if (false !== $sumEscorts) {
-                $sumBookingTotal += $sumEscorts;
-            }
-        }
-
-        return $sumBookingTotal;
+        return $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
     }
 }
