@@ -67,9 +67,9 @@ final class AddTemplateData
 
         $template->hasLoggedInUser = $this->hasLoggedInFrontendUser();
 
-        $template->getLoggedInUser = $this->getLoggedInFrontendUser();
+        $template->getLoggedInUser = $this->getLoggedInFrontendUser() ? $this->getLoggedInFrontendUser()->row() : [];
 
-        $template->event = $eventConfig->getModel();
+        $template->event = $eventConfig->getModel()->row();
 
         $template->eventConfig = $eventConfig;
 

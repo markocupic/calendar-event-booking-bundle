@@ -292,6 +292,8 @@ Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einset
 
 Tag | type | Erklärung
 ------------ |------------- |--
+`event` | array | Enthält alle Event-Daten.
+`eventConfig` | object | Enthält das EventConfig-Objekt.
 `registrations` | array | Zeigt alle Daten zu den für den Event registierten Personen (das Daten-Array enthält auch die unbestätigten/stornierten Personen)
 `canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
 `isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
@@ -307,8 +309,7 @@ Tag | type | Erklärung
 `bookingEndDate` | string | Zeigt, die Buchungsendzeit (date) an.
 `bookingEndDatim` | string | Zeigt, die Buchungsendzeit (datim) an.
 `hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
-`loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
-`event` | null|CalendarEventsModel | Gibt null oder das Event Model Objekt zurück.
+`loggedInUser` | array | Enthält alle Daten zum eingeloggten FE User.
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
