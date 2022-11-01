@@ -18,17 +18,16 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 PaletteManipulator::create()
     ->addLegend('calendar_event_booking_settings', 'title_legend', PaletteManipulator::POSITION_BEFORE, false)
     ->addField('isCalendarEventBookingForm', 'calendar_event_booking_settings', PaletteManipulator::POSITION_PREPEND)
-    ->applyToPalette('default', 'tl_form')
-;
+    ->applyToPalette('default', 'tl_form');
 
 // Fields
 $GLOBALS['TL_DCA']['tl_form']['fields']['isCalendarEventBookingForm'] = [
-    'eval' => [
+    'eval'      => [
         'submitOnChange' => false,
-        'tl_class' => 'clr',
+        'tl_class'       => 'clr',
     ],
-    'exclude' => true,
-    'filter' => true,
+    'exclude'   => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''",
+    'sql'       => "char(1) NOT NULL default ''",
 ];

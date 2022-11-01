@@ -16,37 +16,37 @@ use Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEventsMember;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     // Config
-    'config' => [
-        'dataContainer' => 'Table',
-        'ptable' => 'tl_calendar_events',
-        'enableVersioning' => true,
-        'notCopyable' => true,
+    'config'   => [
+        'dataContainer'     => 'Table',
+        'ptable'            => 'tl_calendar_events',
+        'enableVersioning'  => true,
+        'notCopyable'       => true,
         'onsubmit_callback' => [],
-        'onload_callback' => [
+        'onload_callback'   => [
             [
                 TlCalendarEventsMember::class,
                 'downloadRegistrationList',
             ],
         ],
         'ondelete_callback' => [],
-        'sql' => [
+        'sql'               => [
             'keys' => [
-                'id' => 'primary',
+                'id'        => 'primary',
                 'email,pid' => 'index',
             ],
         ],
     ],
 
     // List
-    'list' => [
-        'sorting' => [
-            'mode' => 2,
-            'fields' => ['lastname'],
-            'flag' => 1,
+    'list'     => [
+        'sorting'           => [
+            'mode'        => 2,
+            'fields'      => ['lastname'],
+            'flag'        => 1,
             'panelLayout' => 'filter;sort,search',
         ],
-        'label' => [
-            'fields' => [
+        'label'             => [
+            'fields'      => [
                 'firstname',
                 'lastname',
                 'street',
@@ -55,38 +55,38 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'showColumns' => true,
         ],
         'global_operations' => [
-            'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
+            'all'                      => [
+                'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
+                'href'       => 'act=select',
+                'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
             'downloadRegistrationList' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'],
-                'href' => 'action=downloadRegistrationList',
-                'class' => 'download_booking_list',
-                'icon' => 'bundles/markocupiccalendareventbooking/icons/excel.png',
+                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'],
+                'href'       => 'action=downloadRegistrationList',
+                'class'      => 'download_booking_list',
+                'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.png',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
-        'operations' => [
+        'operations'        => [
             'edit' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.svg',
+                'href'  => 'act=edit',
+                'icon'  => 'edit.svg',
             ],
 
             'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
+                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'],
+                'href'       => 'act=delete',
+                'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
 
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.svg',
+                'href'  => 'act=show',
+                'icon'  => 'show.svg',
             ],
         ],
     ],
@@ -97,177 +97,177 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     ],
 
     // Fields
-    'fields' => [
-        'id' => [
+    'fields'   => [
+        'id'           => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'pid' => [
-            'eval' => ['readonly' => true],
+        'pid'          => [
+            'eval'       => ['readonly' => true],
             'foreignKey' => 'tl_calendar_events.title',
-            'relation' => [
+            'relation'   => [
                 'type' => 'belongsTo',
                 'load' => 'eager',
             ],
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'tstamp'       => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'tstamp' => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
-        'addedOn' => [
-            'eval' => [
-                'rgxp' => 'datim',
+        'addedOn'      => [
+            'eval'      => [
+                'rgxp'       => 'datim',
                 'datepicker' => true,
-                'tl_class' => 'w50 wizard',
+                'tl_class'   => 'w50 wizard',
             ],
             'inputType' => 'text',
-            'sorting' => true,
-            'sql' => "varchar(10) NOT NULL default ''",
+            'sorting'   => true,
+            'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'notes' => [
-            'default' => null,
-            'eval' => [
-                'tl_class' => 'clr',
+        'notes'        => [
+            'default'   => null,
+            'eval'      => [
+                'tl_class'  => 'clr',
                 'mandatory' => false,
             ],
-            'exclude' => true,
+            'exclude'   => true,
             'inputType' => 'textarea',
-            'search' => true,
-            'sql' => 'text NULL',
+            'search'    => true,
+            'sql'       => 'text NULL',
         ],
-        'firstname' => [
-            'eval' => [
+        'firstname'    => [
+            'eval'      => [
                 'mandatory' => true,
                 'maxlength' => 255,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'lastname' => [
-            'eval' => [
+        'lastname'     => [
+            'eval'      => [
                 'mandatory' => true,
                 'maxlength' => 255,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'gender' => [
-            'eval' => [
+        'gender'       => [
+            'eval'      => [
                 'includeBlankOption' => true,
-                'tl_class' => 'w50',
+                'tl_class'           => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'select',
-            'options' => [
+            'options'   => [
                 'male',
                 'female',
                 'other',
             ],
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(32) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(32) NOT NULL default ''",
         ],
-        'dateOfBirth' => [
-            'eval' => [
-                'rgxp' => 'date',
+        'dateOfBirth'  => [
+            'eval'      => [
+                'rgxp'       => 'date',
                 'datepicker' => true,
-                'tl_class' => 'w50 wizard',
+                'tl_class'   => 'w50 wizard',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(11) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(11) NOT NULL default ''",
         ],
-        'street' => [
-            'eval' => [
+        'street'       => [
+            'eval'      => [
                 'maxlength' => 255,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'postal' => [
-            'eval' => [
+        'postal'       => [
+            'eval'      => [
                 'maxlength' => 32,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(32) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(32) NOT NULL default ''",
         ],
-        'city' => [
-            'eval' => [
+        'city'         => [
+            'eval'      => [
                 'maxlength' => 255,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'phone' => [
-            'eval' => [
-                'maxlength' => 64,
-                'rgxp' => 'phone',
+        'phone'        => [
+            'eval'      => [
+                'maxlength'      => 64,
+                'rgxp'           => 'phone',
                 'decodeEntities' => true,
-                'tl_class' => 'w50',
+                'tl_class'       => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(64) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(64) NOT NULL default ''",
         ],
-        'email' => [
-            'eval' => [
-                'mandatory' => true,
-                'maxlength' => 255,
-                'rgxp' => 'email',
+        'email'        => [
+            'eval'      => [
+                'mandatory'      => true,
+                'maxlength'      => 255,
+                'rgxp'           => 'email',
                 'decodeEntities' => true,
-                'tl_class' => 'w50',
+                'tl_class'       => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'escorts' => [
-            'default' => null,
-            'eval' => [
+        'escorts'      => [
+            'default'   => null,
+            'eval'      => [
                 'maxlength' => 3,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sorting' => true,
-            'sql' => 'int(3) unsigned NULL',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => 'int(3) unsigned NULL',
         ],
         'bookingToken' => [
-            'eval' => [
+            'eval'      => [
                 'maxlength' => 255,
-                'tl_class' => 'w50',
+                'tl_class'  => 'w50',
             ],
-            'filter' => true,
+            'filter'    => true,
             'inputType' => 'text',
-            'search' => true,
-            'sql' => "varchar(255) NOT NULL default ''",
+            'search'    => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
     ],
 ];
