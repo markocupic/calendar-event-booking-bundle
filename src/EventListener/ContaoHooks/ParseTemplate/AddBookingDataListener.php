@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\ParseTemplate;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Template;
@@ -45,6 +46,15 @@ class AddBookingDataListener
     public function __invoke(Template $template): void
     {
         if (0 === strpos($template->getName(), 'event_')) {
+
+            if (empty($template->calendar)) {
+                return;
+            }
+
+            if (!$template->calendar instanceof CalendarModel) {
+                return;
+            }
+
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
             $arrData = $template->getData();
 
