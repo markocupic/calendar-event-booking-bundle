@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
+ */
+
+namespace Markocupic\CalendarEventBookingBundle\Tests\EventBooking\Config;
+
+use Contao\CalendarEventsModel;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\TestCase\ContaoTestCase;
+use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
+
+class EventFactoryTest extends ContaoTestCase
+{
+    public function testCreate(): void
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $connection = $this->createMock(Connection::class);
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+
+        $this->assertInstanceOf(EventConfig::class, $factory->create($event));
+    }
+
+    public function testException(): void
+    {
+        $this->expectException(\Exception::class);
+
+        $event = null;
+        $connection = $this->createMock(Connection::class);
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+
+        $this->assertInstanceOf(EventConfig::class, $factory->create($event));
+    }
+}
