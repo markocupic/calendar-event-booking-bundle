@@ -29,15 +29,8 @@ class EventFactory
         $this->framework = $framework;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function create(?CalendarEventsModel $event): EventConfig
+    public function create(CalendarEventsModel $event): EventConfig
     {
-        if (null === $event) {
-            throw new \Exception('Event not found!');
-        }
-
         return new EventConfig($this->framework, $this->connection, $event);
     }
 }

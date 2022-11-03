@@ -25,7 +25,7 @@ class EventFactoryTest extends ContaoTestCase
 {
     public function testCreate(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createMock(CalendarEventsModel::class);
         $connection = $this->createMock(Connection::class);
         $framework = $this->createMock(ContaoFramework::class);
         $factory = new EventFactory($connection, $framework);
@@ -33,15 +33,4 @@ class EventFactoryTest extends ContaoTestCase
         $this->assertInstanceOf(EventConfig::class, $factory->create($event));
     }
 
-    public function testException(): void
-    {
-        $this->expectException(\Exception::class);
-
-        $event = null;
-        $connection = $this->createMock(Connection::class);
-        $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
-
-        $this->assertInstanceOf(EventConfig::class, $factory->create($event));
-    }
 }

@@ -54,9 +54,11 @@ class EventConfig
             Input::setGet('events', Input::get('auto_item'));
         }
 
+        $eventIdOrAlias = Input::get('events');
+
         // Return an empty string if "events" is not set
-        if ('' !== Input::get('events')) {
-            if (null !== ($objEvent = CalendarEventsModel::findByIdOrAlias(Input::get('events')))) {
+        if ('' !== $eventIdOrAlias) {
+            if (null !== ($objEvent = CalendarEventsModel::findByIdOrAlias($eventIdOrAlias))) {
                 return $objEvent;
             }
         }
@@ -86,6 +88,7 @@ class EventConfig
     public function isWaitingListFull(): bool
     {
         if ($this->get('activateWaitingList')) {
+
             if (!$this->get('waitingListLimit')) {
                 return false;
             }
@@ -271,8 +274,7 @@ class EventConfig
         $arrReg = [];
 
         if (null !== ($collection = $this->getRegistrations())) {
-            while($collection->next())
-            {
+            while ($collection->next()) {
                 $arrReg[] = $collection->row();
             }
         }
