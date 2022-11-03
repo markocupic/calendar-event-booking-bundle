@@ -18,6 +18,7 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FormModel;
 use Contao\FrontendUser;
+use Contao\StringUtil;
 use Contao\System;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
@@ -164,9 +165,9 @@ final class EventRegistration
      *
      * @throws \Exception
      */
-    public function createForm(int $formId, EventConfig $eventConfig, $module = null): void
+    public function createForm(int $formId, string $formSubmitId, EventConfig $eventConfig, $module = null): void
     {
-        if (null === FormModel::findByPk($formId)) {
+        if (null === ($formModel = FormModel::findByPk($formId))) {
             throw new \Exception('Invalid or missing Contao form id.');
         }
 
@@ -175,7 +176,7 @@ final class EventRegistration
         $request = $this->requestStack->getCurrentRequest();
 
         $form = new Form(
-            'eventSubscriptionForm',
+            $formSubmitId,
             'POST',
             static fn ($objHaste) => $request->request->get('FORM_SUBMIT') === $objHaste->getFormId()
         );

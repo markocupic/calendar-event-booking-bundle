@@ -49,6 +49,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_event_booking_module';
+    public const FORM_SUBMIT_ID = 'event_subscription_form_%s';
 
     public const CASE_EVENT_NOT_BOOKABLE = 'eventNotBookable';
     public const CASE_BOOKING_POSSIBLE = 'bookingPossible';
@@ -158,6 +159,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
+        $contaoFormId = (int) $this->model->form;
+        $formSubmitId = sprintf(static::FORM_SUBMIT_ID, $contaoFormId);
+
         // Load language file
         $this->system->loadLanguageFile($this->eventRegistration->getTable());
 
@@ -183,7 +187,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Display messages
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
-            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+            if ($formSubmitId !== $request->request->get('FORM_SUBMIT')) {
                 $template->caseText = $this->translator->trans(
                     'MSC.'.$this->case,
                     [$this->date->parse($this->config->get('dateFormat'), $this->eventConfig->get('bookingStartDate'))],
@@ -191,7 +195,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 );
             }
         } elseif (self::CASE_BOOKING_NO_LONGER_POSSIBLE === $this->case) {
-            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+            if ($formSubmitId !== $request->request->get('FORM_SUBMIT')) {
                 $template->caseText = $this->translator->trans(
                     'MSC.'.$this->case,
                     [],
@@ -199,7 +203,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 );
             }
         } elseif (self::CASE_EVENT_FULLY_BOOKED === $this->case) {
-            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+            if ($formSubmitId !== $request->request->get('FORM_SUBMIT')) {
                 $template->caseText = $this->translator->trans(
                     'MSC.'.$this->case,
                     [],
@@ -207,7 +211,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 );
             }
         } elseif (self::CASE_WAITING_LIST_POSSIBLE === $this->case) {
-            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+            if ($formSubmitId !== $request->request->get('FORM_SUBMIT')) {
                 $template->caseText = $this->translator->trans(
                     'MSC.'.$this->case,
                     [],
@@ -215,7 +219,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 );
             }
         } elseif (self::CASE_BOOKING_POSSIBLE === $this->case) {
-            if ('eventSubscriptionForm' !== $request->request->get('FORM_SUBMIT')) {
+            if ($formSubmitId !== $request->request->get('FORM_SUBMIT')) {
                 $template->caseText = $this->translator->trans(
                     'MSC.'.$this->case,
                     [],
@@ -234,8 +238,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             $this->eventRegistration->setModel();
 
             // Create the form
-            $contaoFormId = (int) $this->model->form;
-            $this->eventRegistration->createForm($contaoFormId, $this->eventConfig, $this);
+            $this->eventRegistration->createForm($contaoFormId, $formSubmitId, $this->eventConfig, $this);
 
             // Trigger pre validate hook: e.g. add custom field validators.';
             if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM])) {
