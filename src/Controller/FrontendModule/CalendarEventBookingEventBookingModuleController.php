@@ -33,6 +33,7 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
 use Haste\Util\Url;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;

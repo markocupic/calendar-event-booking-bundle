@@ -88,7 +88,6 @@ class EventConfig
     public function isWaitingListFull(): bool
     {
         if ($this->get('activateWaitingList')) {
-
             if (!$this->get('waitingListLimit')) {
                 return false;
             }
@@ -205,7 +204,7 @@ class EventConfig
             $available = $this->getBookingMax() - $total;
         } else {
             if (!$this->getWaitingListLimit()) {
-                throw new \Exception('The waiting list has no member limit. Please check this out before use this method.');
+                throw new \Exception('The waiting list has no member limit. Please correct this in your event settings.');
             }
 
             $total = $this->getWaitingListCount();
@@ -269,23 +268,40 @@ class EventConfig
         return (int) $this->get('minMembers');
     }
 
-    public function getRegistrationAsArray(): array
+    public function getRegistrationsAsArray(array $arrBookingStateFilter = []): ?array
     {
         $arrReg = [];
 
-        if (null !== ($collection = $this->getRegistrations())) {
+        if (null !== ($collection = $this->getRegistrations($arrBookingStateFilter))) {
             while ($collection->next()) {
                 $arrReg[] = $collection->row();
             }
         }
 
-        return $arrReg;
+        return !empty($arrReg) ? $arrReg : null;
     }
 
-    public function getRegistrations(): ?Collection
+    public function getRegistrations(array $arrBookingStateFilter = []): ?Collection
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
 
-        return $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
+        if (empty($arrBookingStateFilter)) {
+            return $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
+        }
+
+        $collection = [];
+        $registrations = $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
+
+        if (null === $registrations) {
+            return null;
+        }
+
+        while ($registrations->next()) {
+            if (\in_array($registrations->bookingState, $arrBookingStateFilter, true)) {
+                $collection[] = $registrations->current();
+            }
+        }
+
+        return !empty($collection) ? new Collection($collection, $calendarEventsMemberModelAdapter->getTable()) : null;
     }
 }

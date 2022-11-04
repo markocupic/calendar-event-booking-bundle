@@ -73,7 +73,7 @@ final class AddTemplateData
 
         $template->eventConfig = $eventConfig;
 
-        $template->registrations = $eventConfig->getRegistrationAsArray();
+        $template->registrations = $eventConfig->getRegistrationsAsArray([]);
     }
 
     private function hasLoggedInFrontendUser(): bool
