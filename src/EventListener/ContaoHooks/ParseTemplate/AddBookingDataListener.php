@@ -46,7 +46,6 @@ class AddBookingDataListener
     public function __invoke(Template $template): void
     {
         if (0 === strpos($template->getName(), 'event_')) {
-
             if (empty($template->calendar)) {
                 return;
             }

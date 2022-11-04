@@ -32,5 +32,4 @@ class EventFactoryTest extends ContaoTestCase
 
         $this->assertInstanceOf(EventConfig::class, $factory->create($event));
     }
-
 }

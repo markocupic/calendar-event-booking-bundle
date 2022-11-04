@@ -68,7 +68,7 @@ class EventConfigTest extends ContaoTestCase
     /**
      * @dataProvider provideIsWaitingListFull
      */
-    public function testIsWaitingListFull(bool $expectedResult, array $input): void
+    public function testIsWaitingListFull(bool $expected, array $input): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->id = 42;
@@ -91,13 +91,13 @@ class EventConfigTest extends ContaoTestCase
         $factory = new EventFactory($connection, $framework);
         $eventConfig = $factory->create($event);
 
-        $this->assertSame($expectedResult, $eventConfig->isWaitingListFull());
+        $this->assertSame($expected, $eventConfig->isWaitingListFull());
     }
 
     /**
      * @dataProvider provideIsFullyBooked
      */
-    public function testIsFullyBooked(bool $expectedResult, array $input): void
+    public function testIsFullyBooked(bool $expected, array $input): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
@@ -120,10 +120,10 @@ class EventConfigTest extends ContaoTestCase
         $factory = new EventFactory($connection, $framework);
         $eventConfig = $factory->create($event);
 
-        $this->assertSame($expectedResult, $eventConfig->isFullyBooked());
+        $this->assertSame($expected, $eventConfig->isFullyBooked());
     }
 
-    public function provideIsWaitingListFull()
+    public function provideIsWaitingListFull(): \Generator
     {
         yield 'case #1' => [
             true, // expected
@@ -189,7 +189,7 @@ class EventConfigTest extends ContaoTestCase
         ];
     }
 
-    public function provideIsFullyBooked()
+    public function provideIsFullyBooked(): \Generator
     {
         yield 'case #1' => [
             true, // expected

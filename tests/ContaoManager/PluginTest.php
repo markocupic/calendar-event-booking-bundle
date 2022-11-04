@@ -18,9 +18,9 @@ use Contao\CalendarBundle\ContaoCalendarBundle;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use PHPUnit\Framework\TestCase;
 use Markocupic\CalendarEventBookingBundle\ContaoManager\Plugin;
 use Markocupic\CalendarEventBookingBundle\MarkocupicCalendarEventBookingBundle;
+use PHPUnit\Framework\TestCase;
 
 class PluginTest extends TestCase
 {
