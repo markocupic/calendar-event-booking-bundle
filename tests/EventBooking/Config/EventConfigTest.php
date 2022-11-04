@@ -140,7 +140,7 @@ class EventConfigTest extends ContaoTestCase
         $this->assertSame($expectedResult, $eventConfig->isFullyBooked());
     }
 
-    private function provideIsWaitingListFull()
+    public function provideIsWaitingListFull()
     {
         yield 'case #1' => [
             true, // expected
@@ -150,7 +150,7 @@ class EventConfigTest extends ContaoTestCase
                 'expectsExactly' => 2,
             ],
         ];
-        
+
         yield 'case #2' => [
             false, // expected
             [ // input
@@ -206,7 +206,7 @@ class EventConfigTest extends ContaoTestCase
         ];
     }
 
-    private function provideIsFullyBooked()
+    public function provideIsFullyBooked()
     {
         yield 'case #1' => [
             true, // expected
