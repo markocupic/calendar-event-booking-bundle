@@ -79,165 +79,187 @@ class EventConfigTest extends ContaoTestCase
         $this->assertInstanceOf(CalendarEventsModel::class, $eventConfig->getModel());
     }
 
-    public function testIsWaitingListFull(): void
+    /**
+     * @dataProvider provideIsWaitingListFull
+     */
+    public function testIsWaitingListFull(bool $expectedResult, array $input): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
         $event->id = 42;
-        $event->alias = 'foo-event';
+        $event->alias = 'test-event';
+        $event->activateWaitingList = $input['dataEvent']['activateWaitingList'];
+        $event->waitingListLimit = $input['dataEvent']['waitingListLimit'];
+        $event->addEscortsToTotal = $input['dataEvent']['addEscortsToTotal'];
 
-        $dataEvent = [];
-        $consecutiveReturn = [];
-        $assert = [];
-        $expectsExactly = [];
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->expects($this->exactly($input['expectsExactly']))
+            ->method('fetchOne')
+            ->withConsecutive(
+                ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
+                ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
+            )
+            ->willReturnOnConsecutiveCalls(...$input['consecutiveReturn'])
+        ;
 
-        // Case #0
-        $i=0;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = true;
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+        $eventConfig = $factory->create($event);
 
-        // Case #1
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = false;
-
-        // Case #2
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 3, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = true;
-
-        // Case #3
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 1, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = true;
-
-        // Case #4
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = false;
-
-        // Case #5
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = false;
-
-        // Case #6
-        $i++;
-        $dataEvent[$i] = ['activateWaitingList' => '', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [];
-        $expectsExactly[$i] = 0;
-        $assert[$i] = true;
-
-        for ($i = 0; $i < \count($dataEvent); ++$i) {
-            $event->activateWaitingList = $dataEvent[$i]['activateWaitingList'];
-            $event->waitingListLimit = $dataEvent[$i]['waitingListLimit'];
-            $event->addEscortsToTotal = $dataEvent[$i]['addEscortsToTotal'];
-
-            $connection = $this->createMock(Connection::class);
-            $connection
-                ->expects($this->exactly($expectsExactly[$i]))
-                ->method('fetchOne')
-                ->withConsecutive(
-                    ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
-                    ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
-                )
-                ->willReturnOnConsecutiveCalls(...$consecutiveReturn[$i])
-            ;
-
-            $framework = $this->createMock(ContaoFramework::class);
-            $factory = new EventFactory($connection, $framework);
-            $eventConfig = $factory->create($event);
-
-            $this->assertSame($assert[$i], $eventConfig->isWaitingListFull());
-        }
+        $this->assertSame($expectedResult, $eventConfig->isWaitingListFull());
     }
 
-    public function testIsFullyBooked(): void
+    /**
+     * @dataProvider provideIsFullyBooked
+     */
+    public function testIsFullyBooked(bool $expectedResult, array $input): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
         $event->id = 42;
-        $event->alias = 'foo-event';
+        $event->alias = 'test-event';
+        $event->maxMembers = $input['dataEvent']['maxMembers'];
+        $event->addEscortsToTotal = $input['dataEvent']['addEscortsToTotal'];
 
-        $dataEvent = [];
-        $consecutiveReturn = [];
-        $assert = [];
-        $expectsExactly = [];
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->expects($this->exactly($input['expectsExactly']))
+            ->method('fetchOne')
+            ->withConsecutive(
+                ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
+                ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
+            )
+            ->willReturnOnConsecutiveCalls(...$input['consecutiveReturn'])
+        ;
 
-        // Case #0
-        $i=0;
-        $dataEvent[$i] = ['maxMembers' => 2, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = true;
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+        $eventConfig = $factory->create($event);
 
-        // Case #1
-        $i++;
-        $dataEvent[$i] = ['maxMembers' => 2, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [3, 2];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = true;
+        $this->assertSame($expectedResult, $eventConfig->isFullyBooked());
+    }
 
-        // Case #2
-        $i++;
-        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [1, 2];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = true;
+    private function provideIsWaitingListFull()
+    {
+        yield 'case #1' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
+        
+        yield 'case #2' => [
+            false, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
 
-        // Case #3
-        $i++;
-        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [3, 0];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = true;
+        yield 'case #3' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 3, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
 
-        // Case #4
-        $i++;
-        $dataEvent[$i] = ['maxMembers' => 4, 'addEscortsToTotal' => '1'];
-        $consecutiveReturn[$i] = [2, 1];
-        $expectsExactly[$i] = 2;
-        $assert[$i] = false;
+        yield 'case #4' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 1, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
 
-        // Case #5
-        $i++;
-        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => ''];
-        $consecutiveReturn[$i] = [2, 0];
-        $expectsExactly[$i] = 1;
-        $assert[$i] = false;
+        yield 'case #5' => [
+            false, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
 
-        for ($i = 0; $i < \count($dataEvent); ++$i) {
-            $event->maxMembers = $dataEvent[$i]['maxMembers'];
-            $event->addEscortsToTotal = $dataEvent[$i]['addEscortsToTotal'];
+        yield 'case #6' => [
+            false, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
 
-            $connection = $this->createMock(Connection::class);
-            $connection
-                ->expects($this->exactly($expectsExactly[$i]))
-                ->method('fetchOne')
-                ->withConsecutive(
-                    ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
-                    ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
-                )
-                ->willReturnOnConsecutiveCalls(...$consecutiveReturn[$i])
-            ;
+        yield 'case #7' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['activateWaitingList' => '', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 0,
+            ],
+        ];
+    }
 
-            $framework = $this->createMock(ContaoFramework::class);
-            $factory = new EventFactory($connection, $framework);
-            $eventConfig = $factory->create($event);
+    private function provideIsFullyBooked()
+    {
+        yield 'case #1' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 2, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [3, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
 
-            $this->assertSame($assert[$i], $eventConfig->isFullyBooked());
-        }
+        yield 'case #2' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 3, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
+
+        yield 'case #3' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 2, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [1, 2], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
+
+        yield 'case #4' => [
+            true, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 3, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [3, 0], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
+
+        yield 'case #5' => [
+            false, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 4, 'addEscortsToTotal' => '1'],
+                'consecutiveReturn' => [2, 1], // [countRegistrations,countEscorts]
+                'expectsExactly' => 2,
+            ],
+        ];
+
+        yield 'case #6' => [
+            false, // expected
+            [ // input
+                'dataEvent' => ['maxMembers' => 3, 'addEscortsToTotal' => ''],
+                'consecutiveReturn' => [2, 0], // [countRegistrations,countEscorts]
+                'expectsExactly' => 1,
+            ],
+        ];
     }
 }
