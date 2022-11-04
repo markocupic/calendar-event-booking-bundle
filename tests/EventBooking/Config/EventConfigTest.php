@@ -31,22 +31,7 @@ class EventConfigTest extends ContaoTestCase
         $eventConfig->getModel()->activateWaitingList = '1';
         $this->assertTrue($eventConfig->hasWaitingList());
 
-        $eventConfig->getModel()->activateWaitingList = 1;
-        $this->assertTrue($eventConfig->hasWaitingList());
-
-        $eventConfig->getModel()->activateWaitingList = true;
-        $this->assertTrue($eventConfig->hasWaitingList());
-
-        $eventConfig->getModel()->activateWaitingList = '0';
-        $this->assertFalse($eventConfig->hasWaitingList());
-
         $eventConfig->getModel()->activateWaitingList = '';
-        $this->assertFalse($eventConfig->hasWaitingList());
-
-        $eventConfig->getModel()->activateWaitingList = 0;
-        $this->assertFalse($eventConfig->hasWaitingList());
-
-        $eventConfig->getModel()->activateWaitingList = false;
         $this->assertFalse($eventConfig->hasWaitingList());
     }
 
@@ -55,7 +40,7 @@ class EventConfigTest extends ContaoTestCase
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
         $event->id = 42;
-        $event->alias = 'foo-event';
+        $event->alias = 'test-event';
 
         $connection = $this->createMock(Connection::class);
         $framework = $this->createMock(ContaoFramework::class);
@@ -70,6 +55,7 @@ class EventConfigTest extends ContaoTestCase
         $eventConfig->getModel()->activateWaitingList = '1';
 
         $this->assertSame('1', $eventConfig->get('activateWaitingList'));
+        $this->assertSame('test-event', $eventConfig->get('alias'));
     }
 
     public function testGetModel(): void
@@ -85,9 +71,7 @@ class EventConfigTest extends ContaoTestCase
     public function testIsWaitingListFull(bool $expectedResult, array $input): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
-        $event->pid = 1;
         $event->id = 42;
-        $event->alias = 'test-event';
         $event->activateWaitingList = $input['dataEvent']['activateWaitingList'];
         $event->waitingListLimit = $input['dataEvent']['waitingListLimit'];
         $event->addEscortsToTotal = $input['dataEvent']['addEscortsToTotal'];
@@ -118,7 +102,6 @@ class EventConfigTest extends ContaoTestCase
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
         $event->id = 42;
-        $event->alias = 'test-event';
         $event->maxMembers = $input['dataEvent']['maxMembers'];
         $event->addEscortsToTotal = $input['dataEvent']['addEscortsToTotal'];
 
