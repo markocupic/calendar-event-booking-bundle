@@ -15,19 +15,15 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Tests\EventBooking\Config;
 
 use Contao\CalendarEventsModel;
-use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Input;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
-use Symfony\Component\HttpFoundation\Request;
 
 class EventConfigTest extends ContaoTestCase
 {
-
     public function testHasWaitingList(): void
     {
         $eventConfig = $this->getEventConfig();
@@ -54,6 +50,20 @@ class EventConfigTest extends ContaoTestCase
         $this->assertFalse($eventConfig->hasWaitingList());
     }
 
+    private function getEventConfig(): EventConfig
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event->pid = 1;
+        $event->id = 42;
+        $event->alias = 'foo-event';
+
+        $connection = $this->createMock(Connection::class);
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+
+        return $factory->create($event);
+    }
+
     public function testGetClassProperty(): void
     {
         $eventConfig = $this->getEventConfig();
@@ -75,42 +85,159 @@ class EventConfigTest extends ContaoTestCase
         $event->pid = 1;
         $event->id = 42;
         $event->alias = 'foo-event';
-        $event->activateWaitingList = '1';
-        $event->waitingListLimit = 2;
-        $event->addEscortsToTotal = '1';
 
-        $connection = $this->createMock(Connection::class);
-        $connection
-            ->expects($this->exactly(2))
-            ->method('fetchOne')
-            ->withConsecutive(
-                    ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [42, BookingState::STATE_WAITING_LIST]],
-                    ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [42, BookingState::STATE_WAITING_LIST]],
-            )
-            ->willReturnOnConsecutiveCalls(
-                1,2,
-            )
-        ;
+        $dataEvent = [];
+        $consecutiveReturn = [];
+        $assert = [];
+        $expectsExactly = [];
 
-        $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
-        $eventConfig = $factory->create($event);
+        // Case #0
+        $i=0;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = true;
 
-        $this->assertTrue($eventConfig->isWaitingListFull());
+        // Case #1
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 2, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = false;
+
+        // Case #2
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 3, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = true;
+
+        // Case #3
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 1, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = true;
+
+        // Case #4
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = false;
+
+        // Case #5
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '1', 'waitingListLimit' => 4, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = false;
+
+        // Case #6
+        $i++;
+        $dataEvent[$i] = ['activateWaitingList' => '', 'waitingListLimit' => 2, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [];
+        $expectsExactly[$i] = 0;
+        $assert[$i] = true;
+
+        for ($i = 0; $i < \count($dataEvent); ++$i) {
+            $event->activateWaitingList = $dataEvent[$i]['activateWaitingList'];
+            $event->waitingListLimit = $dataEvent[$i]['waitingListLimit'];
+            $event->addEscortsToTotal = $dataEvent[$i]['addEscortsToTotal'];
+
+            $connection = $this->createMock(Connection::class);
+            $connection
+                ->expects($this->exactly($expectsExactly[$i]))
+                ->method('fetchOne')
+                ->withConsecutive(
+                    ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
+                    ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_WAITING_LIST]],
+                )
+                ->willReturnOnConsecutiveCalls(...$consecutiveReturn[$i])
+            ;
+
+            $framework = $this->createMock(ContaoFramework::class);
+            $factory = new EventFactory($connection, $framework);
+            $eventConfig = $factory->create($event);
+
+            $this->assertSame($assert[$i], $eventConfig->isWaitingListFull());
+        }
     }
 
-    private function getEventConfig(): EventConfig
+    public function testIsFullyBooked(): void
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class);
         $event->pid = 1;
         $event->id = 42;
         $event->alias = 'foo-event';
 
-        $connection = $this->createMock(Connection::class);
-        $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
+        $dataEvent = [];
+        $consecutiveReturn = [];
+        $assert = [];
+        $expectsExactly = [];
 
-        return $factory->create($event);
+        // Case #0
+        $i=0;
+        $dataEvent[$i] = ['maxMembers' => 2, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = true;
+
+        // Case #1
+        $i++;
+        $dataEvent[$i] = ['maxMembers' => 2, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [3, 2];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = true;
+
+        // Case #2
+        $i++;
+        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [1, 2];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = true;
+
+        // Case #3
+        $i++;
+        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [3, 0];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = true;
+
+        // Case #4
+        $i++;
+        $dataEvent[$i] = ['maxMembers' => 4, 'addEscortsToTotal' => '1'];
+        $consecutiveReturn[$i] = [2, 1];
+        $expectsExactly[$i] = 2;
+        $assert[$i] = false;
+
+        // Case #5
+        $i++;
+        $dataEvent[$i] = ['maxMembers' => 3, 'addEscortsToTotal' => ''];
+        $consecutiveReturn[$i] = [2, 0];
+        $expectsExactly[$i] = 1;
+        $assert[$i] = false;
+
+        for ($i = 0; $i < \count($dataEvent); ++$i) {
+            $event->maxMembers = $dataEvent[$i]['maxMembers'];
+            $event->addEscortsToTotal = $dataEvent[$i]['addEscortsToTotal'];
+
+            $connection = $this->createMock(Connection::class);
+            $connection
+                ->expects($this->exactly($expectsExactly[$i]))
+                ->method('fetchOne')
+                ->withConsecutive(
+                    ['SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
+                    ['SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?', [$event->id, BookingState::STATE_CONFIRMED]],
+                )
+                ->willReturnOnConsecutiveCalls(...$consecutiveReturn[$i])
+            ;
+
+            $framework = $this->createMock(ContaoFramework::class);
+            $factory = new EventFactory($connection, $framework);
+            $eventConfig = $factory->create($event);
+
+            $this->assertSame($assert[$i], $eventConfig->isFullyBooked());
+        }
     }
-
 }
