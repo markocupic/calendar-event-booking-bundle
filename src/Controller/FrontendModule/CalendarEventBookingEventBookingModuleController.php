@@ -32,6 +32,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
+use Doctrine\DBAL\Exception;
 use Haste\Util\Url;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
@@ -286,6 +287,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         return $template->getResponse();
     }
 
+    /**
+     * @throws Exception
+     */
     private function getRegistrationCase(EventConfig $eventConfig): string
     {
         if (!$eventConfig->isBookable()) {

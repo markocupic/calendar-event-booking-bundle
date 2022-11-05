@@ -38,6 +38,8 @@ final class ValidateEscorts extends AbstractHook
     /**
      * Important! return false will make the validation fail
      * Validate escorts.
+     *
+     * @throws \Exception
      */
     public function __invoke(EventRegistration $eventRegistration, EventConfig $eventConfig): bool
     {

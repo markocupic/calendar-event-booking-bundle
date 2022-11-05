@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 // Global operations
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['new'] = ['New', 'Add a new member.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'] = ['Memberlist', 'Download memberlist.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'] = ['Memberlist', 'Download member list.'];
 
 // Operations
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'] = ['Edit', 'Edit member with ID %s.'];

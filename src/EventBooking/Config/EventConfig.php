@@ -185,6 +185,7 @@ class EventConfig
 
     /**
      * @throws Exception
+     * @throws \Exception
      */
     public function getNumberOfFreeSeats(bool $blnWaitingList = false): int
     {

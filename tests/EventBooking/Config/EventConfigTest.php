@@ -18,6 +18,7 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
@@ -67,6 +68,7 @@ class EventConfigTest extends ContaoTestCase
 
     /**
      * @dataProvider isWaitingListFullProvider
+     * @throws Exception
      */
     public function testIsWaitingListFull(bool $expected, array $input): void
     {
@@ -96,6 +98,7 @@ class EventConfigTest extends ContaoTestCase
 
     /**
      * @dataProvider isFullyBookedProvider
+     * @throws Exception
      */
     public function testIsFullyBooked(bool $expected, array $input): void
     {

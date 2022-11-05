@@ -36,7 +36,7 @@ final class ExportTable extends AbstractHook implements ListenerInterface
     }
 
     /**
-     * @param $varValue
+     * @param mixed $varValue
      *
      * @return mixed
      */

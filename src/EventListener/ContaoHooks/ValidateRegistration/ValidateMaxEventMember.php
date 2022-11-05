@@ -62,6 +62,7 @@ final class ValidateMaxEventMember extends AbstractHook
      * Check if the number of available seats is not exceeded (consider the waiting list).
      *
      * @throws Exception
+     * @throws \Exception
      */
     public function __invoke(EventRegistration $eventRegistration, EventConfig $eventConfig): bool
     {
@@ -132,7 +133,7 @@ final class ValidateMaxEventMember extends AbstractHook
             }
 
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, unlimited subscriptions to the waiting list possible
-            if ($eventConfig->hasWaitingList() && !$eventConfig->getWaitingListLimit()) {
+            if (!$eventConfig->getWaitingListLimit()) {
                 $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
                 $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossible', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
@@ -143,7 +144,8 @@ final class ValidateMaxEventMember extends AbstractHook
             }
 
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, waiting list is full.
-            if ($eventConfig->hasWaitingList() && 0 === $eventConfig->getNumberOfFreeSeats(true)) {
+            /** @noinspection PhpIfWithCommonPartsInspection */
+            if (0 === $eventConfig->getNumberOfFreeSeats(true)) {
                 $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
@@ -172,7 +174,7 @@ final class ValidateMaxEventMember extends AbstractHook
                 }
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, unlimited subscriptions to the waiting list possible
-                if ($eventConfig->hasWaitingList() && !$eventConfig->getWaitingListLimit()) {
+                if (!$eventConfig->getWaitingListLimit()) {
                     $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
                     $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossible', [], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));

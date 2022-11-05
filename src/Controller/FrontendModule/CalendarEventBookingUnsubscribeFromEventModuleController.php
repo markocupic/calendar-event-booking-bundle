@@ -181,6 +181,9 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         return parent::__invoke($request, $model, $section, $classes);
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         if ($this->blnHasUnsubscribed) {

@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration;
 
+use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FormModel;
 use Contao\FrontendUser;
-use Contao\StringUtil;
 use Contao\System;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
@@ -62,6 +62,9 @@ final class EventRegistration
         return null !== $this->model;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getModel(): ?CalendarEventsMemberModel
     {
         if (!$this->hasModel()) {
@@ -101,6 +104,9 @@ final class EventRegistration
         return true;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function subscribe(EventConfig $eventConfig, $module = null): void
     {
         $eventMember = $this->getModel();
@@ -139,6 +145,9 @@ final class EventRegistration
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function unsubscribe(): void
     {
         $eventMember = $this->getModel();
@@ -151,6 +160,9 @@ final class EventRegistration
         return null !== $this->form;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getForm(): Form
     {
         if (!$this->hasForm()) {
@@ -161,13 +173,11 @@ final class EventRegistration
     }
 
     /**
-     * @param $module
-     *
      * @throws \Exception
      */
-    public function createForm(int $formId, string $formSubmitId, EventConfig $eventConfig, $module = null): void
+    public function createForm(int $formId, string $formSubmitId, EventConfig $eventConfig, AbstractFrontendModuleController $module): void
     {
-        if (null === ($formModel = FormModel::findByPk($formId))) {
+        if (null === FormModel::findByPk($formId)) {
             throw new \Exception('Invalid or missing Contao form id.');
         }
 

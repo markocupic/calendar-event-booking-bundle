@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PreValidateBookingForm;
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Doctrine\DBAL\Exception;
 use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
@@ -37,6 +38,10 @@ final class HandleSubmitButtons extends AbstractHook
         $this->translator = $translator;
     }
 
+    /**
+     * @throws Exception
+     * @throws \Exception
+     */
     public function __invoke(CalendarEventBookingEventBookingModuleController $frontendModule): void
     {
         if (!self::isEnabled()) {

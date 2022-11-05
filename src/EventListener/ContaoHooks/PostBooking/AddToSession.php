@@ -57,6 +57,9 @@ final class AddToSession extends AbstractHook
         $this->addToSession($eventConfig, $eventRegistration);
     }
 
+    /**
+     * @throws \Exception
+     */
     private function addToSession(EventConfig $eventConfig, EventRegistration $eventRegistration): void
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();

@@ -43,7 +43,7 @@ class Version100Update extends AbstractMigration
     {
         $doMigration = false;
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         // If the database table itself does not exist we should do nothing
         if ($schemaManager->tablesExist(['tl_module'])) {
@@ -138,7 +138,7 @@ class Version100Update extends AbstractMigration
             $arrMessage[] = 'Renamed frontend module type "eventbooking" to "'.$set['type'].'". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
         }
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.cebb_memberListPartialTemplate
         if ($schemaManager->tablesExist(['tl_module'])) {

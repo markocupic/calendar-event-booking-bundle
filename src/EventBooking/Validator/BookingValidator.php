@@ -63,9 +63,6 @@ class BookingValidator
         return !($total + $numSeats > $seatsAvailable);
     }
 
-    /**
-     * @throws Exception
-     */
     public function validateBookingStartDate(EventConfig $eventConfig): bool
     {
         if (!$eventConfig->isBookable() || $eventConfig->getModel()->bookingStartDate > time()) {
@@ -91,6 +88,8 @@ class BookingValidator
      * - Event is not fully booked
      *   or
      * - Event is fully booked, but subscribing to the waiting list is still possible.
+     *
+     * @throws Exception
      */
     public function validateCanRegister(EventConfig $eventConfig): bool
     {

@@ -37,7 +37,7 @@ class Formatter
     }
 
     /**
-     * @param $varValue
+     * @param mixed $varValue
      *
      * @throws \Exception
      *

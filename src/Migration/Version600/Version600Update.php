@@ -37,6 +37,9 @@ class Version600Update extends AbstractMigration
         return 'Calendar Event Booking Bundle version 6.0.0 update';
     }
 
+    /**
+     * @throws Exception
+     */
     public function shouldRun(): bool
     {
         $doMigration = false;

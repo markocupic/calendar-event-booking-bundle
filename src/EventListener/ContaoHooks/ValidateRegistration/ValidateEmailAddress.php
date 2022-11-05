@@ -54,6 +54,8 @@ final class ValidateEmailAddress extends AbstractHook
     /**
      * Important! return false will make the validation fail
      * Validate email address.
+     *
+     * @throws \Exception
      */
     public function __invoke(EventRegistration $eventRegistration, EventConfig $eventConfig): bool
     {

@@ -41,7 +41,7 @@ class Notification
     private Adapter $system;
     private Adapter $userModel;
 
-    private $arrTokens = [];
+    private array $arrTokens = [];
 
     public function __construct(ContaoFramework $framework)
     {
