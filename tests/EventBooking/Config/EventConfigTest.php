@@ -66,7 +66,7 @@ class EventConfigTest extends ContaoTestCase
     }
 
     /**
-     * @dataProvider provideIsWaitingListFull
+     * @dataProvider isWaitingListFullProvider
      */
     public function testIsWaitingListFull(bool $expected, array $input): void
     {
@@ -95,7 +95,7 @@ class EventConfigTest extends ContaoTestCase
     }
 
     /**
-     * @dataProvider provideIsFullyBooked
+     * @dataProvider isFullyBookedProvider
      */
     public function testIsFullyBooked(bool $expected, array $input): void
     {
@@ -123,7 +123,7 @@ class EventConfigTest extends ContaoTestCase
         $this->assertSame($expected, $eventConfig->isFullyBooked());
     }
 
-    public function provideIsWaitingListFull(): \Generator
+    public function isWaitingListFullProvider(): \Generator
     {
         yield 'case #1' => [
             true, // expected
@@ -189,7 +189,7 @@ class EventConfigTest extends ContaoTestCase
         ];
     }
 
-    public function provideIsFullyBooked(): \Generator
+    public function isFullyBookedProvider(): \Generator
     {
         yield 'case #1' => [
             true, // expected
