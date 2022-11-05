@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Migration;
 
-use Contao\Controller;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
@@ -68,9 +66,6 @@ class AutogenerateBookingForm extends AbstractMigration
         return false;
     }
 
-    /**
-     * @return MigrationResult
-     */
     public function run(): MigrationResult
     {
         // Auto generate event booking form, if it doesn't exist
