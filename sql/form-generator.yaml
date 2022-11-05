@@ -90,6 +90,7 @@ form:
       tabindex: 10
       class: form-cal-event-booking-%s
       rgxp: digit
+      value: 0
     ## add a new form field
     - name: notes
       type: textarea
