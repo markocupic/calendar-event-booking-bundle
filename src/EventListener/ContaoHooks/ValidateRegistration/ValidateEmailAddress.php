@@ -83,7 +83,7 @@ final class ValidateEmailAddress extends AbstractHook
                     $objMember = $this->eventMember->findAll($arrOptions);
 
                     if (null !== $objMember) {
-                        $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$request->request->get('email')], 'contao_default');
+                        $errorMsg = $this->translator->trans('MSC.you_have_already_subscribed_to_this_event', [$request->request->get('email')], 'contao_default');
                         $objWidget->addError($errorMsg);
 
                         // Return false will make the validation fail

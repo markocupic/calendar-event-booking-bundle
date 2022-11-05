@@ -57,12 +57,12 @@ final class ValidateEscorts extends AbstractHook
             $widget = $form->getWidget('escorts');
 
             if ((int) $widget->value < 0) {
-                $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
+                $errorMsg = $this->translator->trans('MSC.enter_positive_integer', [], 'contao_default');
                 $widget->addError($errorMsg);
             }
 
             if ((int) $widget->value > (int) $eventConfig->get('maxEscortsPerMember')) {
-                $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$eventConfig->get('maxEscortsPerMember')], 'contao_default');
+                $errorMsg = $this->translator->trans('MSC.max_escorts_possible', [$eventConfig->get('maxEscortsPerMember')], 'contao_default');
                 $widget->addError($errorMsg);
             }
 

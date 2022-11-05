@@ -80,9 +80,9 @@ final class ValidateMaxEventMember extends AbstractHook
             $numSeats += (int) $objWidget->value;
         }
 
-        if (isset($_POST['addToWaitingListSubmit'])) {
+        if (isset($_POST['cebbBookingWaitingListSubmit'])) {
             if (!$eventConfig->hasWaitingList()) {
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventHasNoWaitingList', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_has_no_waiting_list', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 return false;
@@ -102,13 +102,13 @@ final class ValidateMaxEventMember extends AbstractHook
                 }
 
                 if ($numSeats > 1) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorWaitingListLimitExceededReduceNumEscorts', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_waiting_list_limit_exceeded_reduce_num_escorts', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     return false;
                 }
 
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorWaitingListFull', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_waiting_list_is_full', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 return false;
@@ -126,7 +126,7 @@ final class ValidateMaxEventMember extends AbstractHook
         if (1 === $numSeats) {
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, 1 seat required, no waiting list
             if (!$eventConfig->hasWaitingList()) {
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 return false;
@@ -134,8 +134,8 @@ final class ValidateMaxEventMember extends AbstractHook
 
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, unlimited subscriptions to the waiting list possible
             if (!$eventConfig->getWaitingListLimit()) {
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossible', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 $this->addToWaitingListSubmitButton($form);
@@ -146,15 +146,15 @@ final class ValidateMaxEventMember extends AbstractHook
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, waiting list is full.
             /** @noinspection PhpIfWithCommonPartsInspection */
             if (0 === $eventConfig->getNumberOfFreeSeats(true)) {
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 return false;
             }
 
             // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, 1 seat required, enough seats on the waiting list available
-            $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
-            $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossibleXSeatsLeft', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
+            $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
+            $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible_x_seats_left', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
             $this->message->addError(implode(' ', $arrMsg));
 
             $this->addToWaitingListSubmitButton($form);
@@ -167,7 +167,7 @@ final class ValidateMaxEventMember extends AbstractHook
             if (0 === $eventConfig->getNumberOfFreeSeats()) {
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, 1 seat required, waiting list is not available
                 if (!$eventConfig->hasWaitingList()) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     return false;
@@ -175,8 +175,8 @@ final class ValidateMaxEventMember extends AbstractHook
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, unlimited subscriptions to the waiting list possible
                 if (!$eventConfig->getWaitingListLimit()) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossible', [], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible', [], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     $this->addToWaitingListSubmitButton($form);
@@ -186,15 +186,15 @@ final class ValidateMaxEventMember extends AbstractHook
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, waiting list is full
                 if (0 === $eventConfig->getNumberOfFreeSeats(true)) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorEventFullyBooked', [], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_event_is_fully_booked', [], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     return false;
                 }
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is fully booked, > 1 seats required, waiting list possible
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossibleXSeatsLeft', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_not_enough_free_seats_x_seats_left', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible_x_seats_left', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 $this->addToWaitingListSubmitButton($form);
@@ -205,7 +205,7 @@ final class ValidateMaxEventMember extends AbstractHook
             if ($eventConfig->getNumberOfFreeSeats() > 0) {
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is not fully booked, $numSeats exceeds number of free seats, > 1 seats required, waiting list not available
                 if (!$eventConfig->hasWaitingList()) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_not_enough_free_seats_x_seats_left', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     return false;
@@ -213,8 +213,8 @@ final class ValidateMaxEventMember extends AbstractHook
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is not fully booked, $numSeats exceeds number of free seats, > 1 seats required, unlimited subscriptions to the waiting list possible
                 if ($eventConfig->hasWaitingList() && !$eventConfig->getWaitingListLimit()) {
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
-                    $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossible', [], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_error_not_enough_free_seats_x_seats_left', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
+                    $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible', [], 'contao_default');
                     $this->message->addError(implode(' ', $arrMsg));
 
                     $this->addToWaitingListSubmitButton($form);
@@ -223,8 +223,8 @@ final class ValidateMaxEventMember extends AbstractHook
                 }
 
                 // EVENT SUBSCRIPTION REQUEST NOT VALID: Event is not fully booked, $numSeats exceeds number of free seats, > 1 seats required, waiting list possible
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
-                $arrMsg[] = $this->translator->trans('MSC.subscriptionInfoWaitingListPossibleXSeatsLeft', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_error_not_enough_free_seats_x_seats_left', [$eventConfig->getNumberOfFreeSeats()], 'contao_default');
+                $arrMsg[] = $this->translator->trans('MSC.subscription_info_booking_on_waiting_list_possible_x_seats_left', [$eventConfig->getNumberOfFreeSeats(true)], 'contao_default');
                 $this->message->addError(implode(' ', $arrMsg));
 
                 $this->addToWaitingListSubmitButton($form);
@@ -240,17 +240,17 @@ final class ValidateMaxEventMember extends AbstractHook
 
     private function addToWaitingListSubmitButton(Form $form): void
     {
-        if (!$form->hasFormField('addToWaitingListSubmit')) {
+        if (!$form->hasFormField('cebbBookingWaitingListSubmit')) {
             $form->addSubmitFormField(
-                'addToWaitingListSubmit',
+                'cebbBookingWaitingListSubmit',
                 $this->translator->trans(
-                    'MSC.addToWaitingListBtnLbl',
+                    'BTN.cebb_booking_waiting_list_submit_lbl',
                     [],
                     'contao_default'
                 )
             );
 
-            $form->getWidget('addToWaitingListSubmit')->value = 'value';
+            $form->getWidget('cebbBookingWaitingListSubmit')->value = 'value';
         }
     }
 }

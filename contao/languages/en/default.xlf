@@ -23,28 +23,31 @@
             <trans-unit id="MSC.cebb_booking_state_on_waiting_list">
                 <source>waiting list</source>
             </trans-unit>
-            <trans-unit id="MSC.maxEscortsPossible">
+            <trans-unit id="MSC.max_escorts_possible">
                 <source>Maximum %s escorts per participant possible.</source>
             </trans-unit>
-            <trans-unit id="MSC.youHaveAlreadyBooked">
+            <trans-unit id="MSC.you_have_already_subscribed_to_this_event">
                 <source>We have already found a booking with the email address "%s". Booking process aborted.</source>
             </trans-unit>
-            <trans-unit id="MSC.enterPosIntVal">
+            <trans-unit id="MSC.enter_positive_integer">
                 <source>Please enter a positive number.</source>
             </trans-unit>
-            <trans-unit id="MSC.maxMemberLimitExceeded">
+            <trans-unit id="MSC.max_subscription_limit_exceeded">
                 <source>The total number of %s participants is exceeded. Please check the number of accompanying persons.</source>
             </trans-unit>
-            <trans-unit id="MSC.post_booking_confirm_not_confirmed">
+            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_not_confirmed">
                 <source>We have taken your booking for "%s" and will get in touch with you soon.</source>
             </trans-unit>
-            <trans-unit id="MSC.post_booking_confirm_confirmed">
+            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_cebb_booking_state_confirmed">
                 <source>We have successfully received your booking for "%s" and you have definitely been registered.</source>
             </trans-unit>
-            <trans-unit id="MSC.post_booking_confirm_waiting_list">
+            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_on_waiting_list">
                 <source>You have been successfully placed on the waiting list for "%s".</source>
             </trans-unit>
-            <trans-unit id="MSC.addToWaitingListBtnLbl">
+            <trans-unit id="BTN.cebb_booking_default_submit_lbl">
+                <source>Subscribe to the event</source>
+            </trans-unit>
+            <trans-unit id="BTN.cebb_booking_waiting_list_submit_lbl">
                 <source>Subscribe to the waiting list</source>
             </trans-unit>
             <trans-unit id="MSC.bookingNotYetPossible">
@@ -62,64 +65,61 @@
             <trans-unit id="MSC.bookingPossible">
                 <source>Booking possible</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorSubscribeOnRegularListInsteadOnWaitingLists">
-                <source>Your booking request to the waiting list failed. Subscribe to the regular list, please. The event is still not fully booked and there are still %d seats left.</source>
-            </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorWaitingListLimitExceededReduceNumEscorts">
+            <trans-unit id="MSC.subscription_error_waiting_list_limit_exceeded_reduce_num_escorts">
                 <source>Your booking request to the waiting list failed. There are only %d seats left on the waiting list. If possible, reduce the number of accompanying persons and then try again.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorEventHasNoWaitingList">
+            <trans-unit id="MSC.subscription_error_event_has_no_waiting_list">
                 <source>Your booking request failed. Registration on the waiting list is not possible for this event.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorWaitingListFull">
+            <trans-unit id="MSC.subscription_error_waiting_list_is_full">
                 <source>Your booking request failed. The waiting list is already fully booked.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorEventFullyBooked">
+            <trans-unit id="MSC.subscription_error_event_is_fully_booked">
                 <source>Your booking request failed. This event is fully booked.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionErrorNotEnoughFreeSeatsXSeatsLeft">
+            <trans-unit id="MSC.subscription_error_not_enough_free_seats_x_seats_left">
                 <source>Your booking request failed. There are only %d seats left.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionInfoWaitingListPossibleXSeatsLeft">
+            <trans-unit id="MSC.subscription_info_booking_on_waiting_list_possible_x_seats_left">
                 <source>Your booking request failed, but subscription to the waiting list is possible. %d seats available.</source>
             </trans-unit>
-            <trans-unit id="MSC.subscriptionInfoWaitingListPossible">
+            <trans-unit id="MSC.subscription_info_booking_on_waiting_list_possible">
                 <source>Subscription to the waiting list is possible.</source>
             </trans-unit>
-            <trans-unit id="MSC.adjustedBookingPeriodEndTime">
+            <trans-unit id="MSC.adjusted_booking_period_end_time">
                 <source>The end date for the booking period has been adjusted.</source>
             </trans-unit>
-            <trans-unit id="MSC.unsubscribeInfo">
+            <trans-unit id="MSC.unsubscribe_info">
                 <source>You've been successfully unsubscribed from event "%s".</source>
             </trans-unit>
-            <trans-unit id="MSC.unsubscribeConfirm">
+            <trans-unit id="MSC.unsubscribe_confirm">
                 <source><![CDATA[Dear <span class="event-member-name">%s %s</span><br>Are you sure you want to unsubscribe from event "%s"?]]></source>
             </trans-unit>
-            <trans-unit id="BTN.slabelUnsubscribeFromEvent">
+            <trans-unit id="BTN.unsubscribe_from_event_submit_lbl">
                 <source>Unsubscribe from event</source>
             </trans-unit>
-            <trans-unit id="BTN.slabelCancel">
+            <trans-unit id="BTN.cancel_submit_lbl">
                 <source>Cancel</source>
             </trans-unit>
-            <trans-unit id="ERR.unsubscriptionLimitExpired">
+            <trans-unit id="ERR.unsubscription_limit_expired">
                 <source>The unsubscription limit for event "%s" has expired.</source>
             </trans-unit>
-            <trans-unit id="ERR.eventNotFound">
+            <trans-unit id="ERR.event_not_found">
                 <source>Invalid booking token or could not find assigned event.</source>
             </trans-unit>
-            <trans-unit id="ERR.invalidBookingToken">
+            <trans-unit id="ERR.invalid_booking_token">
                 <source>Invalid booking token.</source>
             </trans-unit>
-            <trans-unit id="ERR.eventUnsubscriptionNotAllowed">
+            <trans-unit id="ERR.event_unsubscription_not_allowed">
                 <source>You're not allowed to unsubscribe from event "%s".</source>
             </trans-unit>
-            <trans-unit id="ERR.invalidUnsubscriptionLimit">
+            <trans-unit id="ERR.invalid_unsubscription_limit">
                 <source>This unsubscription limit is too far in the future (see event start and end date and time).</source>
             </trans-unit>
-            <trans-unit id="ERR.conflictingUnsubscribeLimits">
+            <trans-unit id="ERR.conflicting_unsubscribe_limits">
                 <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
             </trans-unit>
-            <trans-unit id="ERR.alreadyUnsubscribed">
+            <trans-unit id="ERR.already_unsubscribed">
                 <source>You have already been unsubscribed from the event "%s".</source>
             </trans-unit>
         </body>

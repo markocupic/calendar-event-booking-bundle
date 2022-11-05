@@ -21,6 +21,7 @@ use Contao\FormModel;
 use Contao\FrontendUser;
 use Contao\System;
 use Haste\Form\Form;
+use Haste\Util\ArrayPosition;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingType;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
@@ -29,6 +30,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class EventRegistration
 {
@@ -37,6 +39,7 @@ final class EventRegistration
     private ContaoFramework $framework;
     private RequestStack $requestStack;
     private Security $security;
+    private TranslatorInterface $translator;
 
     private ?Form $form = null;
     private ?CalendarEventsMemberModel $model = null;
@@ -46,11 +49,12 @@ final class EventRegistration
     private Adapter $systemAdapter;
     private Adapter $calendarEventsMemberAdapter;
 
-    public function __construct(ContaoFramework $framework, RequestStack $requestStack, Security $security)
+    public function __construct(ContaoFramework $framework, RequestStack $requestStack, Security $security, TranslatorInterface $translator)
     {
         $this->framework = $framework;
         $this->requestStack = $requestStack;
         $this->security = $security;
+        $this->translator = $translator;
 
         // Adapters
         $this->systemAdapter = $this->framework->getAdapter(System::class);
@@ -113,7 +117,7 @@ final class EventRegistration
         $eventMember->pid = $eventConfig->getModel()->id;
         $eventMember->tstamp = time();
         $eventMember->dateAdded = time();
-        $eventMember->bookingState = isset($_POST['addToWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
+        $eventMember->bookingState = isset($_POST['cebbBookingWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
         $eventMember->bookingToken = Uuid::uuid4()->toString();
 
         // Set the booking type
@@ -213,6 +217,8 @@ final class EventRegistration
                 return true;
             }
         );
+
+        $form->addSubmitFormField('cebbBookingDefaultSubmit', $this->translator->trans('BTN.cebb_booking_default_submit_lbl', [], 'contao_default'), ArrayPosition::last());
 
         $this->form = $form;
     }

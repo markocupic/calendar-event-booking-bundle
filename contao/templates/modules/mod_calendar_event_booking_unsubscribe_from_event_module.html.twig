@@ -3,7 +3,7 @@
 {% block content %}
 
     {% if blnHasUnsubscribed %}
-        <p class="unsubscribe_info">{{ 'MSC.unsubscribeInfo'|trans([event.title], 'contao_default') }}</p>
+        <p class="unsubscribe_info">{{ 'MSC.unsubscribe_info'|trans([event.title], 'contao_default') }}</p>
     {% else %}
         {% if hasError %}
             {% for error in errorMsg %}
@@ -18,11 +18,11 @@
                     <input type="hidden" name="REQUEST_TOKEN" value="{{ '{{request_token}}' }}">
 
                     <p class="unsubscribe_confirm">
-                        {{ 'MSC.unsubscribeConfirm'|trans([member.firstname,member.lastname,event.title], 'contao_default')|raw }}
+                        {{ 'MSC.unsubscribe_confirm'|trans([member.firstname,member.lastname,event.title], 'contao_default')|raw }}
                     </p>
 
                     <div class="widget widget-submit">
-                        <button type="submit" class="submit">{{ 'BTN.slabelUnsubscribeFromEvent'|trans({}, 'contao_default') }}</button>
+                        <button type="submit" class="submit">{{ 'BTN.unsubscribe_from_event_submit_lbl'|trans({}, 'contao_default') }}</button>
                     </div>
                     <p><a href="{{ '{{env::url}}' }}">{{ 'MSC.cancelBT'|trans({}, 'contao_default') }}</a></p>
                 </div>

@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PreVal
 
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Exception;
-use Haste\Form\Form;
+use Haste\Util\ArrayPosition;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -60,34 +60,15 @@ final class HandleSubmitButtons extends AbstractHook
 
         // Add the waiting list submit button
         if (CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
-            if (!$form->hasFormField('addToWaitingListSubmit')) {
-                $form->addSubmitFormField('addToWaitingListSubmit', $this->translator->trans('MSC.addToWaitingListBtnLbl', [], 'contao_default'));
+            if (!$form->hasFormField('cebbBookingWaitingListSubmit')) {
+                $form->addSubmitFormField('cebbBookingWaitingListSubmit', $this->translator->trans('BTN.cebb_booking_waiting_list_submit_lbl', [], 'contao_default'), ArrayPosition::last());
             }
         }
 
         // Remove default submit button
         if ($eventConfig->isFullyBooked()) {
-            $this->removeDefaultSubmitBtn($form);
-        }
-    }
-
-    private function removeDefaultSubmitBtn(Form $form): void
-    {
-        $arrFormFields = $form->getFormFields();
-
-        // Retrieving default submit button form element is a bit tedious, because it gets no name attribute
-        foreach ($arrFormFields as $name => $arrFormField) {
-            // Exclude the waiting list submit button
-            if ('addToWaitingListSubmit' === $name) {
-                continue;
-            }
-
-            if (isset($arrFormField['type'])) {
-                if ('submit' === $arrFormField['type']) {
-                    if ($form->hasFormField($name)) {
-                        $form->removeFormField($name);
-                    }
-                }
+            if ($form->hasFormField('cebbBookingDefaultSubmit')) {
+                $form->removeFormField('cebbBookingDefaultSubmit');
             }
         }
     }

@@ -95,32 +95,32 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 $eventMember = $this->eventMember->findOneByBookingToken($request->query->get('bookingToken'));
 
                 if (null === $eventMember) {
-                    $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
+                    $this->addError($translator->trans('ERR.invalid_booking_token', [], 'contao_default'));
                 }
 
                 $this->eventRegistration->setModel($eventMember);
 
                 if (!$this->hasError) {
                     if (null === ($this->objEvent = $this->eventRegistration->getModel()->getRelated('pid'))) {
-                        $this->addError($translator->trans('ERR.eventNotFound', [], 'contao_default'));
+                        $this->addError($translator->trans('ERR.event_not_found', [], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
                     if (BookingState::STATE_UNSUBSCRIBED === $this->eventRegistration->getModel()->bookingState) {
-                        $this->addError($translator->trans('ERR.alreadyUnsubscribed.', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($translator->trans('ERR.already_unsubscribed.', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
                     if (!$this->objEvent->activateDeregistration || (!empty($this->eventRegistration->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState)) {
-                        $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($translator->trans('ERR.event_unsubscription_not_allowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
                     if (BookingState::STATE_WAITING_LIST !== $this->eventRegistration->getModel()->bookingState && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState && BookingState::STATE_NOT_CONFIRMED !== $this->eventRegistration->getModel()->bookingState) {
-                        $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($translator->trans('ERR.event_unsubscription_not_allowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
@@ -142,7 +142,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                     }
 
                     if ($blnLimitExpired) {
-                        $this->addError($translator->trans('ERR.unsubscriptionLimitExpired', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($translator->trans('ERR.unsubscription_limit_expired', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 

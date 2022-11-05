@@ -78,7 +78,7 @@ class CalendarEvents
         if (!empty((int) $dc->activeRecord->bookingEndDate)) {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate) {
                 $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                $this->message->addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndTime']);
+                $this->message->addInfo($GLOBALS['TL_LANG']['MSC']['adjusted_booking_period_end_time']);
             }
         }
 
@@ -120,7 +120,7 @@ class CalendarEvents
             // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
             // have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
-                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits']);
+                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflicting_unsubscribe_limits']);
             }
 
             // Check whether the timestamp entered makes sense in relation to the event start and end times
@@ -140,7 +140,7 @@ class CalendarEvents
             }
 
             if ($intValue > $intMaxValue) {
-                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['invalidUnsubscriptionLimit']);
+                throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['invalid_unsubscription_limit']);
             }
         }
 
