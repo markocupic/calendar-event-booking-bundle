@@ -100,8 +100,3 @@ form:
       size:
         - 8
         - 40
-    ## add a new form field
-    - type: submit
-      slabel: Buchungsanfrage absenden
-      tabindex: 12
-      class: form-cal-event-booking-submit
