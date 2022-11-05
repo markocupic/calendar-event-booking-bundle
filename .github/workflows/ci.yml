@@ -36,4 +36,4 @@ jobs:
               run: composer install --no-interaction --no-suggest
 
             - name: Run the unit tests
-              run: vendor/bin/phpunit --colors=always --bootstrap=vendor/autoload.php
+              run: vendor/bin/phpunit --colors=always
