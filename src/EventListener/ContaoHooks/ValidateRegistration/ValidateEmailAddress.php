@@ -47,7 +47,7 @@ final class ValidateEmailAddress extends AbstractHook
         $this->translator = $translator;
         $this->eventRegistration = $eventRegistration;
 
-        // Adapers
+        // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
     }
 

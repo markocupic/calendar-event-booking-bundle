@@ -52,12 +52,12 @@ final class FormatInput extends AbstractHook
 
         $strTable = $this->eventRegistration->getTable();
 
-        foreach (array_keys($form->getFormFields()) as $strFieldname) {
-            $varValue = $eventMember->$strFieldname;
-            $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldname);
-            $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldname);
-            $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldname);
-            $eventMember->$strFieldname = $varValue;
+        foreach (array_keys($form->getFormFields()) as $strFieldName) {
+            $varValue = $eventMember->$strFieldName;
+            $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldName);
+            $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldName);
+            $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldName);
+            $eventMember->$strFieldName = $varValue;
             $eventMember->save();
         }
     }
