@@ -18,12 +18,11 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\ExportTable\Config\Config;
-use Markocupic\ExportTable\EventListener\ContaoHooks\ListenerInterface;
 
 /**
  * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
  */
-final class ExportTable extends AbstractHook implements ListenerInterface
+final class ExportTable extends AbstractHook
 {
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
