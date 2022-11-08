@@ -122,14 +122,14 @@ class EventConfig
             [$this->getModel()->id, $bookingState],
         );
 
-        $sumBookingTotal = $registrationCount;
+        $sumBookingTotal = (int) $registrationCount;
 
         if ($addEscortsToTotal) {
             $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
             $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
 
             if (false !== $sumEscorts) {
-                $sumBookingTotal += $sumEscorts;
+                $sumBookingTotal += (int) $sumEscorts;
             }
         }
 
