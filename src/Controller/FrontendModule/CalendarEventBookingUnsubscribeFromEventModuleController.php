@@ -58,12 +58,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     }
 
     /**
-     * @param Request $request
-     * @param ModuleModel $model
-     * @param string $section
-     * @param array|null $classes
-     * @param PageModel|null $page
-     * @return Response
      * @throws \Exception
      */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -76,26 +70,30 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-            $token = $request->query->get('bookingToken', false);
-
-            if ($token && 'true' !== $request->query->get('unsubscribedFromEvent')) {
-                $translator = $this->translator;
+            if ('true' !== $request->query->get('has_unsubscribed')) {
+                $token = $request->query->get('bookingToken', false);
 
                 $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($token);
 
-                if (null === $this->objEventMember) {
-                    $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
+                if (!$token) {
+                    $this->addError($this->translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
+                }
+
+                if (!$this->hasError) {
+                    if (null === $this->objEventMember) {
+                        $this->addError($this->translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
+                    }
                 }
 
                 if (!$this->hasError) {
                     if (null === ($this->objEvent = $this->objEventMember->getRelated('pid'))) {
-                        $this->addError($translator->trans('ERR.eventNotFound', [], 'contao_default'));
+                        $this->addError($this->translator->trans('ERR.eventNotFound', [], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
                     if (!$this->objEvent->enableDeregistration) {
-                        $this->addError($translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($this->translator->trans('ERR.eventUnsubscriptionNotAllowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
@@ -118,18 +116,18 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                     }
 
                     if ($blnLimitExpired) {
-                        $this->addError($translator->trans('ERR.unsubscriptionLimitExpired', [$this->objEvent->title], 'contao_default'));
+                        $this->addError($this->translator->trans('ERR.unsubscriptionLimitExpired', [$this->objEvent->title], 'contao_default'));
                     }
                 }
 
                 if (!$this->hasError) {
-                    // Delete entry and redirect
+                    // Delete data record and redirect
                     if ('tl_unsubscribe_from_event' === $request->request->get('FORM_SUBMIT')) {
                         $this->notify($this->objEventMember, $this->objEvent, $model);
                         $this->objEventMember->delete();
 
                         $href = sprintf(
-                            '%s?unsubscribedFromEvent=true&eid=%s',
+                            '%s?has_unsubscribed=true&eid=%s',
                             $page->getFrontendUrl(),
                             $this->objEvent->id
                         );
@@ -139,7 +137,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
             }
 
-            if ('true' === $request->query->get('unsubscribedFromEvent')) {
+            if ('true' === $request->query->get('has_unsubscribed')) {
                 $this->blnHasUnsubscribed = true;
             }
         }

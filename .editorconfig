@@ -13,6 +13,10 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 
+[*.{xlf}]
+indent_style = space
+indent_size = 2
+
 [*.{html5,svg,min.css,min.js}]
 insert_final_newline = false
 

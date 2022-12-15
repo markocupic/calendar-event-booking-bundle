@@ -29,15 +29,8 @@ final class ParseTemplate
     public const HOOK = 'parseTemplate';
     public const PRIORITY = 1000;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var AddTemplateData
-     */
-    private $addTemplateData;
+    private ContaoFramework $framework;
+    private AddTemplateData $addTemplateData;
 
     public function __construct(ContaoFramework $framework, AddTemplateData $addTemplateData)
     {

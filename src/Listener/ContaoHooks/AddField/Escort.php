@@ -30,10 +30,7 @@ final class Escort
     public const HOOK = 'calEvtBookingAddField';
     public const PRIORITY = 1000;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(TranslatorInterface $translator)
     {

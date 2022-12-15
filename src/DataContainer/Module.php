@@ -12,21 +12,15 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 
-class TlModule
+class Module
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private ContaoFramework $framework;
 
-    /**
-     * TlModule constructor.
-     */
     public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;

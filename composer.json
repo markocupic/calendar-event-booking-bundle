@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": "^7.4 || ^8.0",
-    "contao/core-bundle": "^4.9",
+    "contao/core-bundle": "^4.13",
     "contao/calendar-bundle": "^4.9",
     "markocupic/export_table": "^5.1",
     "ramsey/uuid": "^3.0 || ^4.0",
@@ -24,17 +24,7 @@
   "autoload": {
     "psr-4": {
       "Markocupic\\CalendarEventBookingBundle\\": "src/"
-    },
-    "classmap": [
-      "src/Resources/contao"
-    ],
-    "exclude-from-classmap": [
-      "src/Resources/contao/assets",
-      "src/Resources/contao/config",
-      "src/Resources/contao/dca",
-      "src/Resources/contao/languages",
-      "src/Resources/contao/templates"
-    ]
+    }
   },
   "extra": {
     "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"

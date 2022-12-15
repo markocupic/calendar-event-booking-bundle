@@ -31,15 +31,8 @@ final class LoadFormField
     public const HOOK = 'loadFormField';
     public const PRIORITY = 1000;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private ContaoFramework $framework;
+    private EventRegistration $eventRegistration;
 
     public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration)
     {

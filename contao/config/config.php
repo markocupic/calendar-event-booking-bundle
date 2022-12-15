@@ -17,11 +17,6 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 // Add child table tl_calendar_events_member to tl_calendar_events
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_member';
 
-if (TL_MODE === 'BE') {
-    // Add Backend CSS
-    $GLOBALS['TL_CSS'][] = 'bundles/markocupiccalendareventbooking/css/be_stylesheet.css';
-}
-
 // Register custom models
 $GLOBALS['TL_MODELS']['tl_calendar_events_member'] = CalendarEventsMemberModel::class;
 

@@ -7,5 +7,5 @@ services:
             $projectDir: '%kernel.project_dir%'
 
     Markocupic\CalendarEventBookingBundle\:
-        resource: ../../
-        exclude: ../../{Event,Model,DependencyInjection,Resources}
+        resource: ../src/
+        exclude: ../src/{Event,Model,DependencyInjection}

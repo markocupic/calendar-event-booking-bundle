@@ -29,10 +29,7 @@ final class ContaoLog
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1100;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
     public function __construct(Logger $logger)
     {

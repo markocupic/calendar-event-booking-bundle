@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Calendar;
 use Contao\Config;
@@ -22,7 +22,7 @@ use Contao\Date;
 use Contao\Message;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-class TlCalendarEvents
+class CalendarEvents
 {
     /**
      * Adjust bookingStartDate and bookingStartDate.
@@ -41,7 +41,7 @@ class TlCalendarEvents
         if (!empty((int) $dc->activeRecord->bookingEndDate)) {
             if ($dc->activeRecord->bookingEndDate < $dc->activeRecord->bookingStartDate) {
                 $arrSet['bookingEndDate'] = $dc->activeRecord->bookingStartDate;
-                Message::addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime'], TL_MODE);
+                Message::addInfo($GLOBALS['TL_LANG']['MSC']['adjustedBookingPeriodEndtime']);
             }
         }
 

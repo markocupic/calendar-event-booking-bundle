@@ -1,82 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/default.php" source-language="en" target-language="de">
+  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/default.php" source-language="en">
     <body>
       <trans-unit id="MSC.bookings">
         <source>bookings</source>
-        <target>Buchungen</target>
       </trans-unit>
       <trans-unit id="MSC.maxEscortsPossible">
         <source>Maximum %s escorts per participant possible.</source>
-        <target>Es sind maximal %s Begleitpersonen pro Teilnehmer möglich.</target>
       </trans-unit>
       <trans-unit id="MSC.youHaveAlreadyBooked">
         <source>We have already found a booking with the email address "%s". Booking process aborted.</source>
-        <target>Eine Buchungsanfrage mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.</target>
       </trans-unit>
       <trans-unit id="MSC.enterPosIntVal">
         <source>Please enter a positive number.</source>
-        <target>Bitte geben Sie eine positive natürliche Zahl ein.</target>
       </trans-unit>
       <trans-unit id="MSC.maxMemberLimitExceeded">
         <source>The total number of %s participants is exceeded. Please check the number of accompanying persons.</source>
-        <target>Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.</target>
       </trans-unit>
       <trans-unit id="MSC.bookingNotYetPossible">
         <source>Booking is only possible from %s .</source>
-        <target>Die Anmeldung für diesen Anlass ist erst ab %s möglich.</target>
       </trans-unit>
       <trans-unit id="MSC.bookingNoLongerPossible">
         <source>The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.</source>
-        <target>Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.</target>
       </trans-unit>
       <trans-unit id="MSC.eventFullyBooked">
         <source>Sorry, but unfortunately this event is already fully booked.</source>
-        <target>Der Anlass ist leider bereits ausgebucht.</target>
       </trans-unit>
       <trans-unit id="MSC.adjustedBookingPeriodEndtime">
         <source>The end date for the booking period has been adjusted.</source>
-        <target>Das Event-Enddatum für den Buchungszeitraum wurde angepasst.</target>
       </trans-unit>
       <trans-unit id="MSC.unsubscribeInfo">
         <source>You've been successfully unsubscribed from event "%s".</source>
-        <target>Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.</target>
       </trans-unit>
       <trans-unit id="MSC.unsubscribeConfirm">
-        <source>Dear &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;&amp;lt;br&gt;Are you sure you want to unsubscribe from event "%s"?</source>
-        <target>Liebe(r) &amp;lt;span class="event-member-name"&gt;%s %s&amp;lt;/span&gt;{{br}}Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?</target>
+        <source><![CDATA[Dear <span class="event-member-name">%s %s</span>{{br}}Are you sure you want to unsubscribe from event "%s"?]]>></source>
       </trans-unit>
       <trans-unit id="BTN.slabelUnsubscribeFromEvent">
         <source>Unsubscribe from event</source>
-        <target>Anmeldung stornieren</target>
       </trans-unit>
       <trans-unit id="BTN.slabelCancel">
         <source>Cancel</source>
-        <target>Abbrechen</target>
       </trans-unit>
       <trans-unit id="ERR.unsubscriptionLimitExpired">
         <source>The unsubscription limit for event "%s" has expired.</source>
-        <target>Die Stornierungsfrist für Event "%s" ist leider abgelaufen.</target>
       </trans-unit>
       <trans-unit id="ERR.eventNotFound">
         <source>Invalid booking token or could not find assigned event.</source>
-        <target>Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.</target>
       </trans-unit>
       <trans-unit id="ERR.invalidBookingToken">
         <source>Invalid booking token.</source>
-        <target>Ungültiges Buchungs-Token.</target>
       </trans-unit>
       <trans-unit id="ERR.eventUnsubscriptionNotAllowed">
         <source>You're not allowed to unsubscribe from event "%s".</source>
-        <target>Die Abmeldung vom Event "%s" ist nicht möglich.</target>
       </trans-unit>
       <trans-unit id="ERR.invalidUnsubscriptionLimit">
         <source>This unsubscription limit is too far in the future (see event start and end date and time).</source>
-        <target>Diese Abmeldezeit liegt zu weit in der Zukunft (siehe Eventstart und -ende).</target>
       </trans-unit>
       <trans-unit id="ERR.conflictingUnsubscribeLimits">
         <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
-        <target>Sie können nicht gleichzeitig eine Stornierungsfrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Stornierungsfrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.</target>
       </trans-unit>
     </body>
   </file>

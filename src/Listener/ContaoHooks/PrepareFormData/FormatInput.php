@@ -28,10 +28,7 @@ final class FormatInput
     public const HOOK = 'calEvtBookingPrepareFormData';
     public const PRIORITY = 1000;
 
-    /**
-     * @var Formatter
-     */
-    private $formatter;
+    private Formatter $formatter;
 
     public function __construct(Formatter $formatter)
     {

@@ -26,6 +26,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class AutogenerateBookingForm extends AbstractMigration
 {
+    private const MIGRATION_TEXT = 'Auto generated event booking form sample. Please check out the form generator in the contao backend.';
+
     private ContaoFramework $framework;
     private Connection $connection;
     private string $projectDir;
@@ -73,7 +75,7 @@ class AutogenerateBookingForm extends AbstractMigration
 
         return new MigrationResult(
             true,
-            'Auto generated event booking form sample. Please check out the form generator in the contao backend.'
+            self::MIGRATION_TEXT
         );
     }
 
@@ -84,7 +86,7 @@ class AutogenerateBookingForm extends AbstractMigration
     {
         // Initialize the contao framework
         $this->framework->initialize();
-        $arrYaml = Yaml::parseFile($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/src/Resources/sql/form-generator.yaml');
+        $arrYaml = Yaml::parseFile($this->projectDir.'/vendor/markocupic/calendar-event-booking-bundle/sql/form-generator.yaml');
         $arrForm = $arrYaml['form'];
         $arrFormFields = $arrYaml['form']['form_fields'];
 

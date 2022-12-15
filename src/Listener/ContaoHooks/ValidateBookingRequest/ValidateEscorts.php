@@ -29,15 +29,8 @@ final class ValidateEscorts
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1200;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private TranslatorInterface $translator;
+    private EventRegistration $eventRegistration;
 
     public function __construct(TranslatorInterface $translator, EventRegistration $eventRegistration)
     {

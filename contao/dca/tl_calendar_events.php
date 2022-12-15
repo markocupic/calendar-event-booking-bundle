@@ -13,14 +13,14 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents;
+use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEvents;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
 
 // Overwrite child record callback
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = [
-    'Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEvents',
+    CalendarEvents::class,
     'listEvents',
 ];
 
@@ -51,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] 
 
 // Callbacks
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = [
-    TlCalendarEvents::class,
+    CalendarEvents::class,
     'adjustBookingDate',
 ];
 
@@ -290,7 +290,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
     'inputType'     => 'text',
     'save_callback' => [
         [
-            TlCalendarEvents::class,
+            CalendarEvents::class,
             'saveUnsubscribeLimitTstamp',
         ],
     ],

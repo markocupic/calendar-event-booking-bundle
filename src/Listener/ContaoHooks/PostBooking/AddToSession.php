@@ -26,10 +26,7 @@ final class AddToSession
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1200;
 
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
+    private EventRegistration $eventRegistration;
 
     public function __construct(EventRegistration $eventRegistration)
     {

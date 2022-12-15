@@ -31,15 +31,8 @@ final class ValidateEmailAddress
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1000;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ContaoFramework $framework;
+    private TranslatorInterface $translator;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator)
     {

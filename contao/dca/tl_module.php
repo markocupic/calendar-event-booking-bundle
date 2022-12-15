@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
+use Markocupic\CalendarEventBookingBundle\DataContainer\Module;
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingEventBookingModuleController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{notification_center_legend:hide},enableNotificationCenter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -46,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartial
     'exclude'          => true,
     'inputType'        => 'select',
     'options_callback' => [
-        'Markocupic\CalendarEventBookingBundle\Contao\Dca\TlModule',
+        Module::class,
         'getCalendarEventBookingMemberListPartialTemplate',
     ],
     'sql'              => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'",

@@ -12,18 +12,15 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Contao\Dca;
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Input;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
 
-class TlCalendarEventsMember
+class CalendarEventsMember
 {
-    /**
-     * @var ExportTable
-     */
-    private $exportTable;
+    private ExportTable $exportTable;
 
     public function __construct(ExportTable $exportTable)
     {
@@ -33,10 +30,10 @@ class TlCalendarEventsMember
     /**
      * @throws \Exception
      */
-    public function downloadRegistrationList(): void
+    public function downloadEventRegistrations(): void
     {
         // Download the registration list as a csv spreadsheet
-        if ('downloadRegistrationList' === Input::get('action')) {
+        if ('downloadEventRegistrations' === Input::get('action')) {
             // Add fields
             $arrSkip = ['bookingToken'];
             $arrSelectedFields = [];

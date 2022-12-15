@@ -28,15 +28,8 @@ final class ExportTable implements ListenerInterface
     public const HOOK = 'exportTable';
     public const PRIORITY = 1000;
 
-    /**
-     * @var bool
-     */
-    public static $disableHook = false;
-
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    public static bool $disableHook = false;
+    private ContaoFramework $framework;
 
     public function __construct(ContaoFramework $framework)
     {

@@ -13,13 +13,14 @@ declare(strict_types=1);
  */
 
 // Global operations
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['new'] = ['New', 'Add a new member.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'] = ['Memberlist', 'Download memberlist.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['new'] = ['New', 'Add a new registration.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadEventRegistrations'] = ['Event registrations', 'Download event registrations.'];
 
 // Operations
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'] = ['Edit', 'Edit member with ID %s.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'] = ['Delete', 'Delete member with ID %s.'];
-$GLOBALS['TL_LANG']['tl_calendar_events_member']['show'] = ['Show', 'Show member with ID %s.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'] = ['Edit', 'Edit registration with ID %s.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['copy'] = ['Copy', 'Copy registration with ID %s.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'] = ['Delete', 'Delete registration with ID %s.'];
+$GLOBALS['TL_LANG']['tl_calendar_events_member']['show'] = ['Show', 'Show registration with ID %s.'];
 
 // References
 $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_male'] = 'Mr';

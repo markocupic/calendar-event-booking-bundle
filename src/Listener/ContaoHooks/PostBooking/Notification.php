@@ -26,10 +26,7 @@ final class Notification
     public const HOOK = 'calEvtBookingPostBooking';
     public const PRIORITY = 1000;
 
-    /**
-     * @var NotificationHelper
-     */
-    private $notificationHelper;
+    private NotificationHelper $notificationHelper;
 
     public function __construct(NotificationHelper $notificationHelper)
     {

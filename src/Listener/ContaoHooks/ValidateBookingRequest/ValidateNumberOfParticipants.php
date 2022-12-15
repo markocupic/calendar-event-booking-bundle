@@ -32,20 +32,9 @@ final class ValidateNumberOfParticipants
     public const HOOK = 'calEvtBookingValidateBookingRequest';
     public const PRIORITY = 1100;
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventRegistration
-     */
-    private $evenRegistration;
+    private ContaoFramework $framework;
+    private TranslatorInterface $translator;
+    private EventRegistration $eventRegistration;
 
     public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
     {

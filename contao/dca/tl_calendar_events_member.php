@@ -12,10 +12,10 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\Contao\Dca\TlCalendarEventsMember;
-use Ramsey\Uuid\Uuid;
 use Contao\DataContainer;
 use Contao\DC_Table;
+use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEventsMember;
+use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     // Config
@@ -26,8 +26,8 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         'onsubmit_callback' => [],
         'onload_callback'   => [
             [
-                TlCalendarEventsMember::class,
-                'downloadRegistrationList',
+                CalendarEventsMember::class,
+                'downloadEventRegistrations',
             ],
         ],
         'ondelete_callback' => [],
@@ -63,10 +63,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
                 'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
-            'downloadRegistrationList' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'],
-                'href'       => 'action=downloadRegistrationList',
-                'class'      => 'download_booking_list',
+            'downloadEventRegistrations' => [
+                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadEventRegistrations'],
+                'href'       => 'action=downloadEventRegistrations',
+                'class'      => 'download_registration_list',
                 'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.png',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],

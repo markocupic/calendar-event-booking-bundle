@@ -24,10 +24,7 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 
 class RenameFrontendModuleType extends AbstractMigration
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     public function __construct(Connection $connection)
     {
