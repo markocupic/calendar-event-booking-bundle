@@ -38,55 +38,16 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
 
-    /**
-     * @var NotificationHelper
-     */
-    protected $notificationHelper;
-
-    /**
-     * @var CalendarEventsModel
-     */
-    protected $objEvent;
-
-    /**
-     * @var CalendarEventsMemberModel
-     */
-    protected $objEventMember;
-
-    /**
-     * @var PageModel
-     */
-    protected $objPage;
-
-    /**
-     * @var bool
-     */
-    protected $hasError = false;
-
-    /**
-     * @var array
-     */
-    protected $errorMsg = [];
-
-    /**
-     * @var bool
-     */
-    protected $blnHasUnsubscribed = false;
-
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    protected ContaoFramework $framework;
+    protected ScopeMatcher $scopeMatcher;
+    protected NotificationHelper $notificationHelper;
+    protected TranslatorInterface $translator;
+    protected ?CalendarEventsModel $objEvent = null;
+    protected ?CalendarEventsMemberModel $objEventMember = null;
+    protected ?PageModel $objPage = null;
+    protected bool $hasError = false;
+    protected array $errorMsg = [];
+    protected bool $blnHasUnsubscribed = false;
 
     public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
     {
@@ -96,6 +57,15 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         $this->translator = $translator;
     }
 
+    /**
+     * @param Request $request
+     * @param ModuleModel $model
+     * @param string $section
+     * @param array|null $classes
+     * @param PageModel|null $page
+     * @return Response
+     * @throws \Exception
+     */
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Is frontend
@@ -106,10 +76,12 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
-            if ('true' !== $request->query->get('unsubscribedFromEvent')) {
+            $token = $request->query->get('bookingToken', false);
+
+            if ($token && 'true' !== $request->query->get('unsubscribedFromEvent')) {
                 $translator = $this->translator;
 
-                $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($request->query->get('bookingToken'));
+                $this->objEventMember = $calendarEventsMemberModelAdapter->findOneByBookingToken($token);
 
                 if (null === $this->objEventMember) {
                     $this->addError($translator->trans('ERR.invalidBookingToken', [], 'contao_default'));
@@ -136,7 +108,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                             $blnLimitExpired = true;
                         }
                     }
-                    // We only have a unsubscription limit expressed in days before event start date
+                    // We only have an unsubscription limit expressed in days before event start date
                     else {
                         $limit = !$this->objEvent->unsubscribeLimit > 0 ? 0 : $this->objEvent->unsubscribeLimit;
 
