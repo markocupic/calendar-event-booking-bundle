@@ -15,13 +15,13 @@ declare(strict_types=1);
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
         'dataContainer'    => DC_Table::class,
         'ptable'           => 'tl_calendar_events',
         'enableVersioning' => true,
-        'notCopyable'      => true,
         'sql'              => [
             'keys' => [
                 'id'        => 'primary',
@@ -60,6 +60,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.svg',
+            ],
+            'copy'   => [
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['copy'],
+                'href'  => 'act=copy',
+                'icon'  => 'copy.svg',
             ],
             'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'],
@@ -114,7 +119,8 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'bookingToken' => [
-            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'default'   => Uuid::uuid4()->toString(),
+            'eval'      => ['doNotCopy' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,

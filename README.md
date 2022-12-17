@@ -71,7 +71,7 @@ Sehr geehrte Frau ##member_firstname## ##member_lastname##
 Hallo ##member_firstname## ##member_lastname##
 {endif}
 
-Hiermit bestätigen wir den Eingang Ihrer Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
+Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
 
 Buchungsstatus: ##member_bookingState##.
 
@@ -84,8 +84,10 @@ Telefon: ##member_phone##
 E-Mail: ##member_email##
 Begleitpersonen: ##member_escorts##
 
+{if event_activateDeregistration=='1'}
 Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
 ##member_unsubscribeHref##
+{endif}
 
 Freundliche Grüsse
 

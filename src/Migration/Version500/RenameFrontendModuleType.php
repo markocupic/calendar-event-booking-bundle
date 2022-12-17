@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Migration\Version100;
+namespace Markocupic\CalendarEventBookingBundle\Migration\Version500;
 
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
@@ -22,7 +22,7 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEven
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
 
-class Version100Update extends AbstractMigration
+class RenameFrontendModuleType extends AbstractMigration
 {
     private Connection $connection;
 
@@ -33,7 +33,7 @@ class Version100Update extends AbstractMigration
 
     public function getName(): string
     {
-        return 'Calendar Event Booking Bundle version 1.0.0 update';
+        return 'Calendar Event Booking Bundle Version 5 update: Rename frontend module type.';
     }
 
     /**

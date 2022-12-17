@@ -112,31 +112,6 @@ class EventConfig
     }
 
     /**
-     * @throws Exception
-     */
-    private function countByEventAndBookingState(string $bookingState, bool $addEscortsToTotal = false): int
-    {
-        $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-        $registrationCount = $this->connection->fetchOne(
-            $query1,
-            [$this->getModel()->id, $bookingState],
-        );
-
-        $sumBookingTotal = (int) $registrationCount;
-
-        if ($addEscortsToTotal) {
-            $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
-            $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
-
-            if (false !== $sumEscorts) {
-                $sumBookingTotal += (int) $sumEscorts;
-            }
-        }
-
-        return $sumBookingTotal;
-    }
-
-    /**
      * Is fully booked means:
      * - Event has no free seats
      *   and
@@ -304,5 +279,30 @@ class EventConfig
         }
 
         return !empty($collection) ? new Collection($collection, $calendarEventsMemberModelAdapter->getTable()) : null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function countByEventAndBookingState(string $bookingState, bool $addEscortsToTotal = false): int
+    {
+        $query1 = 'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
+        $registrationCount = $this->connection->fetchOne(
+            $query1,
+            [$this->getModel()->id, $bookingState],
+        );
+
+        $sumBookingTotal = (int) $registrationCount;
+
+        if ($addEscortsToTotal) {
+            $query2 = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ? && bookingState = ?';
+            $sumEscorts = $this->connection->fetchOne($query2, [$this->getModel()->id, $bookingState]);
+
+            if (false !== $sumEscorts) {
+                $sumBookingTotal += (int) $sumEscorts;
+            }
+        }
+
+        return $sumBookingTotal;
     }
 }

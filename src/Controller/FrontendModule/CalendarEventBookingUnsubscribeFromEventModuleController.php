@@ -92,10 +92,20 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             if ('true' !== $request->query->get('unsubscribedFromEvent')) {
                 $translator = $this->translator;
 
-                $eventMember = $this->eventMember->findOneByBookingToken($request->query->get('bookingToken'));
+                $bookingToken = $request->query->get('bookingToken', false);
 
-                if (null === $eventMember) {
-                    $this->addError($translator->trans('ERR.invalid_booking_token', [], 'contao_default'));
+                if (!$this->hasError) {
+                    if (empty($bookingToken)) {
+                        $this->addError($translator->trans('ERR.invalid_booking_token', [], 'contao_default'));
+                    }
+                }
+
+                $eventMember = $this->eventMember->findOneByBookingToken($bookingToken);
+
+                if (!$this->hasError) {
+                    if (null === $eventMember) {
+                        $this->addError($translator->trans('ERR.invalid_booking_token', [], 'contao_default'));
+                    }
                 }
 
                 $this->eventRegistration->setModel($eventMember);

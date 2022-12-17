@@ -130,7 +130,11 @@ class Notification
         }
 
         // Generate unsubscribe href
+        $arrTokens['member_unsubscribeHref'] = '';
+
+        /** Backward compatibility */
         $arrTokens['event_unsubscribeHref'] = '';
+
 
         if ($eventConfig->get('activateDeregistration')) {
             $objCalendar = $eventConfig->getModel()->getRelated('pid');

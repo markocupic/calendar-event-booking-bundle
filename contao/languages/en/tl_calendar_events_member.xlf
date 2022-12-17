@@ -6,31 +6,37 @@
                 <source>New</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.new.1">
-                <source>Add a new member.</source>
+                <source>Add a new registration.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.downloadRegistrationList.0">
-                <source>Memberlist</source>
+                <source>Registrations</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.downloadRegistrationList.1">
-                <source>Download memberlist.</source>
+                <source>Download registration list.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.edit.0">
                 <source>Edit</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.edit.1">
-                <source>Edit member with ID %s.</source>
+                <source>Edit registration with ID %s.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.copy.0">
+                <source>Copy</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.copy.1">
+                <source>Copy registration with ID %s.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.delete.0">
                 <source>Delete</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.delete.1">
-                <source>Delete member with ID %s.</source>
+                <source>Delete registration with ID %s.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.show.0">
                 <source>Show</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.show.1">
-                <source>Show member with ID %s.</source>
+                <source>Show registration with ID %s.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.salutation_male">
                 <source>Mr</source>
@@ -48,7 +54,7 @@
                 <source>Personal legend</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.address_legend">
-                <source>Adress legend</source>
+                <source>Address legend</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.contact_legend">
                 <source>Contact legend</source>

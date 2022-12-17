@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Migration;
+namespace Markocupic\CalendarEventBookingBundle\Migration\Version600;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Migration\AbstractMigration;
@@ -24,7 +24,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\Yaml\Yaml;
 
-class AutogenerateBookingForm extends AbstractMigration
+class AutoGenerateBookingForm extends AbstractMigration
 {
     private ContaoFramework $framework;
     private Connection $connection;
@@ -35,6 +35,11 @@ class AutogenerateBookingForm extends AbstractMigration
         $this->framework = $framework;
         $this->connection = $connection;
         $this->projectDir = $projectDir;
+    }
+
+    public function getName(): string
+    {
+        return 'Calendar Event Booking Bundle Version 6 update: Auto generate booking form.';
     }
 
     /**

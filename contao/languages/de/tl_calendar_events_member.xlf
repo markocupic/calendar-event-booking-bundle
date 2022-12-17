@@ -7,40 +7,48 @@
                 <target>Neu</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.new.1">
-                <source>Add a new member.</source>
-                <target>Neuen Teilnehmer anlegen.</target>
+                <source>Add a new registration.</source>
+                <target>Neue Registrierung anlegen.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.downloadRegistrationList.0">
-                <source>Memberlist</source>
-                <target>Teilnehmerliste</target>
+                <source>Registrations</source>
+                <target>Registrierungen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.downloadRegistrationList.1">
-                <source>Download memberlist.</source>
-                <target>Teilnehmerliste herunterladen.</target>
+                <source>Download registrations.</source>
+                <target>Registrierungen herunterladen.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.edit.0">
                 <source>Edit</source>
                 <target>Bearbeiten</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.edit.1">
-                <source>Edit member with ID %s.</source>
-                <target>Teilnehmer mit ID %s bearbeiten.</target>
+                <source>Edit registration with ID %s.</source>
+                <target>Registrierung mit ID %s bearbeiten.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.copy.0">
+                <source>Copy</source>
+                <target>Bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events_member.copy.1">
+                <source>Copy registration with ID %s.</source>
+                <target>Registrierung mit ID %s kopieren.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.delete.0">
                 <source>Delete</source>
                 <target>Löschen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.delete.1">
-                <source>Delete member with ID %s.</source>
-                <target>Teilnehmer mit ID %s löschen.</target>
+                <source>Delete registration with ID %s.</source>
+                <target>Registrierung mit ID %s löschen.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.show.0">
                 <source>Show</source>
                 <target>Anzeigen</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.show.1">
-                <source>Show member with ID %s.</source>
-                <target>Teilnehmer mit ID %s anzeigen.</target>
+                <source>Show registration with ID %s.</source>
+                <target>Registrierung mit ID %s anzeigen.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events_member.salutation_male">
                 <source>Mr</source>

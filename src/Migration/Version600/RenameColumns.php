@@ -19,7 +19,7 @@ use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class Version600Update extends AbstractMigration
+class RenameColumns extends AbstractMigration
 {
     private const STRING_TO_INT_CONVERSION = 'string_to_int_conversion';
     private const ALTERATION_TYPE_RENAME_COLUMN = 'alteration_type_rename_column';
@@ -34,7 +34,7 @@ class Version600Update extends AbstractMigration
 
     public function getName(): string
     {
-        return 'Calendar Event Booking Bundle version 6.0.0 update';
+        return 'Calendar Event Booking Bundle Version 6 update: Rename columns.';
     }
 
     /**
@@ -100,83 +100,6 @@ class Version600Update extends AbstractMigration
         }
 
         return $doMigration;
-    }
-
-    private function getAlterationData(): array
-    {
-        return [
-            // tl_calendar_events
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'enableNotificationCenter',
-                'new' => 'activateBookingNotification',
-                'sql' => 'char(1)',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'addBookingForm',
-                'new' => 'activateBookingForm',
-                'sql' => 'char(1)',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'enableDeregistration',
-                'new' => 'activateDeregistration',
-                'sql' => 'char(1)',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'eventBookingNotificationCenterIds',
-                'new' => 'eventBookingNotification',
-                'sql' => 'blob',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'includeEscortsWhenCalculatingRegCount',
-                'new' => 'addEscortsToTotal',
-                'sql' => 'char(1)',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events',
-                'old' => 'enableMultiBookingWithSameAddress',
-                'new' => 'allowDuplicateEmail',
-                'sql' => 'char(1)',
-            ],
-            // tl_calendar_events_member
-            [
-                'type' => self::STRING_TO_INT_CONVERSION,
-                'table' => 'tl_calendar_events_member',
-                'field_value_old' => '',
-                'field_value_new' => '0',
-                'field' => 'addedOn',
-            ],
-            [
-                'type' => self::NULL_TO_0_CONVERSION,
-                'table' => 'tl_calendar_events_member',
-                'field' => 'escorts',
-            ],
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_calendar_events_member',
-                'old' => 'addedOn',
-                'new' => 'dateAdded',
-                'sql' => 'int(10)',
-            ],
-            // tl_module
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_module',
-                'old' => 'calendarEventBookingMemberListPartialTemplate',
-                'new' => 'cebb_memberListPartialTemplate',
-                'sql' => 'varchar(128)',
-            ],
-        ];
     }
 
     /**
@@ -268,5 +191,82 @@ class Version600Update extends AbstractMigration
         }
 
         return $this->createResult(true, $resultMessages ? implode("\n", $resultMessages) : null);
+    }
+
+    private function getAlterationData(): array
+    {
+        return [
+            // tl_calendar_events
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'enableNotificationCenter',
+                'new' => 'activateBookingNotification',
+                'sql' => 'char(1)',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'addBookingForm',
+                'new' => 'activateBookingForm',
+                'sql' => 'char(1)',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'enableDeregistration',
+                'new' => 'activateDeregistration',
+                'sql' => 'char(1)',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'eventBookingNotificationCenterIds',
+                'new' => 'eventBookingNotification',
+                'sql' => 'blob',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'includeEscortsWhenCalculatingRegCount',
+                'new' => 'addEscortsToTotal',
+                'sql' => 'char(1)',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events',
+                'old' => 'enableMultiBookingWithSameAddress',
+                'new' => 'allowDuplicateEmail',
+                'sql' => 'char(1)',
+            ],
+            // tl_calendar_events_member
+            [
+                'type' => self::STRING_TO_INT_CONVERSION,
+                'table' => 'tl_calendar_events_member',
+                'field_value_old' => '',
+                'field_value_new' => '0',
+                'field' => 'addedOn',
+            ],
+            [
+                'type' => self::NULL_TO_0_CONVERSION,
+                'table' => 'tl_calendar_events_member',
+                'field' => 'escorts',
+            ],
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_calendar_events_member',
+                'old' => 'addedOn',
+                'new' => 'dateAdded',
+                'sql' => 'int(10)',
+            ],
+            // tl_module
+            [
+                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
+                'table' => 'tl_module',
+                'old' => 'calendarEventBookingMemberListPartialTemplate',
+                'new' => 'cebb_memberListPartialTemplate',
+                'sql' => 'varchar(128)',
+            ],
+        ];
     }
 }
