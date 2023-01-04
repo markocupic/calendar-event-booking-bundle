@@ -12,15 +12,13 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Contao\DataContainer;
-use Contao\DC_Table;
 use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEventsMember;
 use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     // Config
     'config'   => [
-        'dataContainer'     => DC_Table::class,
+        'dataContainer'     => 'Table',
         'ptable'            => 'tl_calendar_events',
         'enableVersioning'  => true,
         'onsubmit_callback' => [],
@@ -42,9 +40,9 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     // List
     'list'     => [
         'sorting'           => [
-            'mode'        => DataContainer::MODE_SORTABLE,
+            'mode'        => '2',
             'fields'      => ['lastname'],
-            'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
+            'flag'        => '1',
             'panelLayout' => 'filter;sort,search',
         ],
         'label'             => [
@@ -57,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'showColumns' => true,
         ],
         'global_operations' => [
-            'all'                      => [
+            'all'                        => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',

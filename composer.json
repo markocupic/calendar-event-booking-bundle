@@ -1,32 +1,32 @@
 {
-  "name": "markocupic/calendar-event-booking-bundle",
-  "type": "contao-bundle",
-  "description": "Contao 4 Calendar Event Booking Bundle",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Marko Cupic",
-      "homepage": "https://github.com/markocupic"
+    "name": "markocupic/calendar-event-booking-bundle",
+    "type": "contao-bundle",
+    "description": "Contao 4 Calendar Event Booking Bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marko Cupic",
+            "homepage": "https://github.com/markocupic"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "contao/core-bundle": "^4.9",
+        "contao/calendar-bundle": "^4.9",
+        "markocupic/export_table": "^5.1",
+        "ramsey/uuid": "^3.0 || ^4.0",
+        "codefog/contao-haste": "^4.23",
+        "terminal42/notification_center": "^1.5"
+    },
+    "require-dev": {
+        "contao/easy-coding-standard": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Markocupic\\CalendarEventBookingBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
     }
-  ],
-  "require": {
-    "php": "^7.4 || ^8.0",
-    "contao/core-bundle": "^4.13",
-    "contao/calendar-bundle": "^4.9",
-    "markocupic/export_table": "^5.1",
-    "ramsey/uuid": "^3.0 || ^4.0",
-    "codefog/contao-haste": "^4.23",
-    "terminal42/notification_center": "^1.5"
-  },
-  "require-dev": {
-    "contao/easy-coding-standard": "^3.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Markocupic\\CalendarEventBookingBundle\\": "src/"
-    }
-  },
-  "extra": {
-    "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
-  }
 }
