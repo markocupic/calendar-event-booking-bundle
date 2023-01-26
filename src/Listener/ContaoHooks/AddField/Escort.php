@@ -14,28 +14,18 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
 
+use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Codefog haste "Add field Hook".
- *
- * @Hook(Escort::HOOK, priority=Escort::PRIORITY)
  */
+#[AsHook(Escort::HOOK, priority: 1000)]
 final class Escort
 {
     public const HOOK = 'calEvtBookingAddField';
-    public const PRIORITY = 1000;
-
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
 
     public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {

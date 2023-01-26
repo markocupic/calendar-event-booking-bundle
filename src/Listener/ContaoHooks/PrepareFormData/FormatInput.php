@@ -14,25 +14,20 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PrepareFormData;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;
+use Codefog\HasteBundle\Form\Form;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\Formatter;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
- * @Hook(FormatInput::HOOK, priority=FormatInput::PRIORITY)
- */
+#[AsHook(FormatInput::HOOK, priority: 1000)]
 final class FormatInput
 {
     public const HOOK = 'calEvtBookingPrepareFormData';
-    public const PRIORITY = 1000;
 
-    private Formatter $formatter;
-
-    public function __construct(Formatter $formatter)
-    {
-        $this->formatter = $formatter;
+    public function __construct(
+        private readonly Formatter $formatter,
+    ) {
     }
 
     /**

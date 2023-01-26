@@ -14,23 +14,18 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 
-/**
- * @Hook(Notification::HOOK, priority=Notification::PRIORITY)
- */
+#[AsHook(Notification::HOOK, priority: 1000)]
 final class Notification
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 1000;
 
-    private NotificationHelper $notificationHelper;
-
-    public function __construct(NotificationHelper $notificationHelper)
-    {
-        $this->notificationHelper = $notificationHelper;
+    public function __construct(
+        private readonly NotificationHelper $notificationHelper,
+    ) {
     }
 
     /**

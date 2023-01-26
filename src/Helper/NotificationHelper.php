@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
+use Codefog\HasteBundle\Formatter;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -21,17 +22,15 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
-use Haste\Util\Format;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification;
 
 class NotificationHelper
 {
-    private ContaoFramework $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Formatter $formatter,
+    ) {
     }
 
     /**
@@ -47,7 +46,6 @@ class NotificationHelper
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
-        $formatAdapter = $this->framework->getAdapter(Format::class);
 
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -62,7 +60,7 @@ class NotificationHelper
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
-                $arrTokens['member_'.$k] = $formatAdapter->dcaValue('tl_calendar_events_member', $k, $v);
+                $arrTokens['member_'.$k] = $this->formatter->dcaValue('tl_calendar_events_member', $k, $v);
             } else {
                 $arrTokens['member_'.$k] = html_entity_decode((string) $v);
             }
@@ -74,7 +72,7 @@ class NotificationHelper
         $row = $objEvent->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['event_'.$k] = $formatAdapter->dcaValue('tl_calendar_events', $k, $v);
+            $arrTokens['event_'.$k] = $this->formatter->dcaValue('tl_calendar_events', $k, $v);
         }
 
         // Prepare tokens for organizer_* (sender)
@@ -87,7 +85,7 @@ class NotificationHelper
                 if ('password' === $k || 'session' === $k) {
                     continue;
                 }
-                $arrTokens['organizer_'.$k] = $formatAdapter->dcaValue('tl_user', $k, $v);
+                $arrTokens['organizer_'.$k] = $this->formatter->dcaValue('tl_user', $k, $v);
             }
 
             // deprecated since version 4.2, to be removed in 5.0 Use organizer_name instead of organizer_senderName */
@@ -107,8 +105,7 @@ class NotificationHelper
                 $objPage = $pageModelAdapter->findByPk($objCalendar->eventUnsubscribePage);
 
                 if (null !== $objPage) {
-                    $url = $objPage->getFrontendUrl().'?bookingToken='.$objEventMember->bookingToken;
-                    $arrTokens['event_unsubscribeHref'] = $controllerAdapter->replaceInsertTags('{{env::url}}/').$url;
+                    $arrTokens['event_unsubscribeHref'] = $objPage->getAbsoluteUrl().'?bookingToken='.$objEventMember->bookingToken;
                 }
             }
         }
@@ -148,9 +145,7 @@ class NotificationHelper
                 foreach ($arrNotifications as $notificationId) {
                     $objNotification = $notificationAdapter->findByPk($notificationId);
 
-                    if (null !== $objNotification) {
-                        $objNotification->send($arrTokens, $objPage->language);
-                    }
+                    $objNotification?->send($arrTokens, $objPage->language);
                 }
             }
         }

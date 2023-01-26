@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
+use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -22,7 +23,6 @@ use Contao\FrontendUser;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,17 +32,12 @@ class EventRegistration
 {
     public const FLASH_KEY = '_event_registration';
 
-    protected ContaoFramework $framework;
-    private Connection $connection;
-    private Security $security;
-    private RequestStack $requestStack;
-
-    public function __construct(ContaoFramework $framework, Connection $connection, Security $security, RequestStack $requestStack)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->security = $security;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly Security $security,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function hasLoggedInFrontendUser(): bool
@@ -84,6 +79,9 @@ class EventRegistration
         return null;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getRegistrationState(?CalendarEventsModel $objEvent): string
     {
         if (!$objEvent->addBookingForm) {
@@ -101,6 +99,9 @@ class EventRegistration
         return $state;
     }
 
+    /**
+     * @throws Exception
+     */
     public function canRegister(CalendarEventsModel $objEvent): bool
     {
         return CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE === $this->getRegistrationState($objEvent);
@@ -126,8 +127,8 @@ class EventRegistration
      */
     public function getBookingCount(CalendarEventsModel $objEvent): int
     {
-        $calendarEventsMemberModelAdaper = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-        $memberCount = (int) $calendarEventsMemberModelAdaper->countBy('pid', $objEvent->id);
+        $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $memberCount = (int) $calendarEventsMemberModelAdapter->countBy('pid', $objEvent->id);
 
         if ($objEvent->includeEscortsWhenCalculatingRegCount) {
             $query = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ?';
@@ -151,10 +152,7 @@ class EventRegistration
         return (int) $objEvent->minMembers;
     }
 
-    /**
-     * @return int|string
-     */
-    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format = 'timestamp')
+    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format = 'timestamp'): int|string
     {
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
@@ -174,10 +172,7 @@ class EventRegistration
         return $varValue;
     }
 
-    /**
-     * @return int|string
-     */
-    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format = 'timestamp')
+    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format = 'timestamp'): int|string
     {
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);

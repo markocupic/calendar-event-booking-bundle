@@ -289,16 +289,13 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 
-/**
- * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
- */
+ #[AsHook(DoSomething::HOOK, priority: 1200)]
 final class DoSomething
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 1200;
 
     /**
      * @var EventRegistration

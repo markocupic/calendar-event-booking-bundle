@@ -17,62 +17,34 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\PDOStatement;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events")
- */
+#[AsFrontendModule(CalendarEventBookingMemberListModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_member_list_module')]
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
+    private ?CalendarEventsModel $objEvent = null;
 
-    /**
-     * @var ScopeMatcher
-     */
-    private $scopeMatcher;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
-
-    /**
-     * @var CalendarEventsModel
-     */
-    private $objEvent;
-
-    /**
-     * CalendarEventBookingMemberListModuleController constructor.
-     */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->connection = $connection;
-        $this->eventRegistration = $eventRegistration;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly Connection $connection,
+        private readonly EventRegistration $eventRegistration,
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -99,7 +71,10 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    /**
+     * @throws Exception
+     */
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
@@ -107,15 +82,13 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
-        /** @var PDOStatement $results */
         $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
         $intRowCount = $results->rowCount();
 
         $i = 0;
         $strRows = '';
 
-        while (false !== ($arrEventMember = $results->fetch())) {
-            /** @var FrontendTemplate $partial */
+        while (false !== ($arrEventMember = $results->fetchAssociative())) {
             $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
@@ -140,12 +113,15 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
     /**
      * Get signed up members of current event.
+     *
+     * @throws Exception
+     *
+     * @return Result
      */
     protected function getSignedUpMembers(int $id)
     {
         $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
 
-        /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
             ->from($t, 't')
@@ -156,7 +132,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             ->setParameter('pid', $id)
         ;
 
-        return $qb->execute();
+        return $qb->executeQuery();
     }
 
     protected function getRowClass(int $i, int $intRowsTotal): string

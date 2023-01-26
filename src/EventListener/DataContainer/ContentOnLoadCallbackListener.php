@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\DataContainer;
 
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 
-/**
- * @Callback(target="config.onload", table="tl_calendar_events_member")
- */
+#[AsCallback(table: 'tl_calendar_events_member', target: 'config.onload')]
 class ContentOnLoadCallbackListener
 {
     public function __invoke(): void

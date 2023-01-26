@@ -15,25 +15,20 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Logger\Logger;
 use Psr\Log\LogLevel;
 
-/**
- * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
- */
+#[AsHook(ContaoLog::HOOK, priority: 1100)]
 final class ContaoLog
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 1100;
 
-    private Logger $logger;
-
-    public function __construct(Logger $logger)
-    {
-        $this->logger = $logger;
+    public function __construct(
+        private readonly ?Logger $logger = null,
+    ) {
     }
 
     /**
@@ -50,6 +45,9 @@ final class ContaoLog
 
         $strText = 'New booking for event with title "'.$objEvent->title.'"';
         $level = LogLevel::INFO;
-        $this->logger->log($strText, $level, ContaoContext::GENERAL);
+
+        if (null !== $this->logger) {
+            $this->logger->log($strText, $level, ContaoContext::GENERAL);
+        }
     }
 }

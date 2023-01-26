@@ -14,23 +14,18 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
-/**
- * @Hook(AddToSession::HOOK, priority=AddToSession::PRIORITY)
- */
+#[AsHook(AddToSession::HOOK, priority: 1200)]
 final class AddToSession
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 1200;
 
-    private EventRegistration $eventRegistration;
-
-    public function __construct(EventRegistration $eventRegistration)
-    {
-        $this->eventRegistration = $eventRegistration;
+    public function __construct(
+        private readonly EventRegistration $eventRegistration,
+    ) {
     }
 
     /**

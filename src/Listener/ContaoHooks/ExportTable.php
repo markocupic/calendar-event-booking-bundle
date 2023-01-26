@@ -15,25 +15,21 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
 
-/**
- * @Hook(ExportTable::HOOK, priority=ExportTable::PRIORITY)
- */
+#[AsHook(ExportTable::HOOK, priority: 1000)]
 final class ExportTable implements ListenerInterface
 {
     public const HOOK = 'exportTable';
-    public const PRIORITY = 1000;
 
     public static bool $disableHook = false;
-    private ContaoFramework $framework;
 
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+    ) {
     }
 
     /**

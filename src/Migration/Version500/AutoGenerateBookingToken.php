@@ -24,11 +24,9 @@ class AutoGenerateBookingToken extends AbstractMigration
 {
     private const MIGRATION_TEXT = "Auto generate missing booking tokens in data table 'tl_calendar_events_member'.";
 
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        private readonly Connection $connection,
+    ) {
     }
 
     /**

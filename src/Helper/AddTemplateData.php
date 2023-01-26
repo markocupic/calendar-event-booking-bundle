@@ -20,11 +20,9 @@ use Contao\Template;
 
 class AddTemplateData
 {
-    private EventRegistration $eventRegistration;
-
-    public function __construct(EventRegistration $evenRegistration)
-    {
-        $this->eventRegistration = $evenRegistration;
+    public function __construct(
+        private readonly EventRegistration $evenRegistration,
+    ) {
     }
 
     /**

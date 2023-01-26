@@ -14,33 +14,26 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
 
+use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Exception;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Hook(ValidateNumberOfParticipants::HOOK, priority=ValidateNumberOfParticipants::PRIORITY)
- */
+#[AsHook(ValidateNumberOfParticipants::HOOK, priority: 1100)]
 final class ValidateNumberOfParticipants
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
-    public const PRIORITY = 1100;
 
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
-    private EventRegistration $eventRegistration;
-
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->translator = $translator;
-        $this->eventRegistration = $eventRegistration;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TranslatorInterface $translator,
+        private readonly EventRegistration $eventRegistration,
+    ) {
     }
 
     /**

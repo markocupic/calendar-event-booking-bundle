@@ -20,14 +20,17 @@ use Contao\Date;
 
 class Formatter
 {
-    private ContaoFramework $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+    ) {
     }
 
-    public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldName)
+    /**
+     * @param $varValue
+     *
+     * @throws \Exception
+     */
+    public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldName): mixed
     {
         /** @var Date $dateAdapter */
         $dateAdapter = $this->framework->getAdapter(Date::class);
@@ -39,7 +42,7 @@ class Formatter
             try {
                 $objDate = new Date($varValue, $dateAdapter->getFormatFromRgxp($rgxp));
                 $varValue = $objDate->tstamp;
-            } catch (\OutOfBoundsException $e) {
+            } catch (\OutOfBoundsException) {
                 throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
             }
         }

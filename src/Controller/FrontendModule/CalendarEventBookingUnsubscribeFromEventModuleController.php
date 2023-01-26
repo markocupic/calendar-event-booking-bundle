@@ -17,9 +17,9 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -31,30 +31,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events")
- */
+#[AsFrontendModule(CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_unsubscribe_from_event_module')]
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
 
-    protected ContaoFramework $framework;
-    protected ScopeMatcher $scopeMatcher;
-    protected NotificationHelper $notificationHelper;
-    protected TranslatorInterface $translator;
-    protected ?CalendarEventsModel $objEvent = null;
     protected ?CalendarEventsMemberModel $objEventMember = null;
+    protected ?CalendarEventsModel $objEvent = null;
     protected ?PageModel $objPage = null;
-    protected bool $hasError = false;
     protected array $errorMsg = [];
     protected bool $blnHasUnsubscribed = false;
+    protected bool $hasError = false;
 
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, NotificationHelper $notificationHelper, TranslatorInterface $translator)
-    {
-        $this->framework = $framework;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->notificationHelper = $notificationHelper;
-        $this->translator = $translator;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NotificationHelper $notificationHelper,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     /**
@@ -189,9 +183,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 foreach ($arrNotifications as $notificationId) {
                     $objNotification = $notificationAdapter->findByPk($notificationId);
 
-                    if (null !== $objNotification) {
-                        $objNotification->send($arrTokens, $this->objPage->language);
-                    }
+                    $objNotification?->send($arrTokens, $this->objPage->language);
                 }
             }
         }

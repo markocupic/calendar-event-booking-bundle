@@ -28,15 +28,11 @@ class AutogenerateBookingForm extends AbstractMigration
 {
     private const MIGRATION_TEXT = 'Auto generated event booking form sample. Please check out the form generator in the contao backend.';
 
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private string $projectDir;
-
-    public function __construct(ContaoFramework $framework, Connection $connection, string $projectDir)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly string $projectDir,
+    ) {
     }
 
     /**

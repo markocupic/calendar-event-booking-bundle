@@ -16,28 +16,22 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\Config;
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
-/**
- * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
- */
+#[AsHook(LoadFormField::HOOK, priority: 1000)]
 final class LoadFormField
 {
     public const HOOK = 'loadFormField';
-    public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
-    private EventRegistration $eventRegistration;
-
-    public function __construct(ContaoFramework $framework, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->eventRegistration = $eventRegistration;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly EventRegistration $eventRegistration,
+    ) {
     }
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget

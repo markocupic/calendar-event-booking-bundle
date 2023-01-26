@@ -16,26 +16,20 @@ namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 
-/**
- * @Hook(ParseTemplate::HOOK, priority=ParseTemplate::PRIORITY)
- */
+#[AsHook(ParseTemplate::HOOK, priority: 1000)]
 final class ParseTemplate
 {
     public const HOOK = 'parseTemplate';
-    public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
-    private AddTemplateData $addTemplateData;
-
-    public function __construct(ContaoFramework $framework, AddTemplateData $addTemplateData)
-    {
-        $this->framework = $framework;
-        $this->addTemplateData = $addTemplateData;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly AddTemplateData $addTemplateData,
+    ) {
     }
 
     /**
@@ -45,7 +39,7 @@ final class ParseTemplate
     {
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
-        if (empty($template->calendar) || 0 !== strpos($template->getName(), 'event')) {
+        if (empty($template->calendar) || !str_starts_with($template->getName(), 'event')) {
             return;
         }
 

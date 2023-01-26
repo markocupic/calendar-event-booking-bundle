@@ -14,30 +14,24 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
 
+use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Hook(ValidateEmailAddress::HOOK, priority=ValidateEmailAddress::PRIORITY)
- */
+#[AsHook(ValidateEmailAddress::HOOK, priority: 1000)]
 final class ValidateEmailAddress
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
-    public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
-
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator)
-    {
-        $this->framework = $framework;
-        $this->translator = $translator;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     /**

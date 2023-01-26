@@ -19,11 +19,9 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 
 class Module
 {
-    private ContaoFramework $framework;
-
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+    ) {
     }
 
     public function getCalendarEventBookingMemberListPartialTemplate(): array
