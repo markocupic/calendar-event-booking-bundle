@@ -14,20 +14,16 @@ declare(strict_types=1);
 
 use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEventsMember;
 use Ramsey\Uuid\Uuid;
+use Contao\DataContainer;
+use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     // Config
     'config'   => [
-        'dataContainer'     => 'Table',
+        'dataContainer'     => DC_Table::class,
         'ptable'            => 'tl_calendar_events',
         'enableVersioning'  => true,
         'onsubmit_callback' => [],
-        'onload_callback'   => [
-            [
-                CalendarEventsMember::class,
-                'downloadEventRegistrations',
-            ],
-        ],
         'ondelete_callback' => [],
         'sql'               => [
             'keys' => [
@@ -36,13 +32,12 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             ],
         ],
     ],
-
     // List
     'list'     => [
         'sorting'           => [
-            'mode'        => '2',
+            'mode'        => DataContainer::MODE_SORTABLE,
             'fields'      => ['lastname'],
-            'flag'        => '1',
+            'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search',
         ],
         'label'             => [
@@ -93,12 +88,17 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             ],
         ],
     ],
-
     // Palettes
     'palettes' => [
-        'default' => '{booking_date_legend},addedOn;{notes_legend},notes;{personal_legend},firstname,lastname,gender,dateOfBirth;{address_legend:hide},street,postal,city;{contact_legend},phone,email;{escort_legend},escorts',
+        'default' => '
+        {booking_date_legend},addedOn;
+        {notes_legend},notes;
+        {personal_legend},firstname,lastname,gender,dateOfBirth;
+        {address_legend:hide},street,postal,city;
+        {contact_legend},phone,email;
+        {escort_legend},escorts
+        ',
     ],
-
     // Fields
     'fields'   => [
         'id'           => [

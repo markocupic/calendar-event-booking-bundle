@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Input;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
@@ -30,6 +31,7 @@ class CalendarEventsMember
     /**
      * @throws \Exception
      */
+    #[AsCallback(table: 'tl_calendar_events_member', target: 'config.onload')]
     public function downloadEventRegistrations(): void
     {
         // Download the registration list as a csv spreadsheet

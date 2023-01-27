@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 
 class Module
@@ -23,7 +24,8 @@ class Module
         private readonly ContaoFramework $framework,
     ) {
     }
-
+    
+    #[AsCallback(table: 'tl_module', target: 'fields.calendarEventBookingMemberListPartialTemplate.options')]
     public function getCalendarEventBookingMemberListPartialTemplate(): array
     {
         /** @var Controller $controllerAdapter */

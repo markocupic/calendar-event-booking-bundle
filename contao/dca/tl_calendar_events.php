@@ -14,15 +14,10 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEvents;
+use Contao\DataContainer;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar']['config']['ctable'][] = 'tl_calendar_events_member';
-
-// Overwrite child record callback
-$GLOBALS['TL_DCA']['tl_calendar_events']['list']['sorting']['child_record_callback'] = [
-    CalendarEvents::class,
-    'listEvents',
-];
 
 // Palettes
 PaletteManipulator::create()
@@ -49,12 +44,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['addBookingForm'] = 'min
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableNotificationCenter'] = 'eventBookingNotificationCenterIds,eventBookingNotificationSender';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 
-// Callbacks
-$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = [
-    CalendarEvents::class,
-    'adjustBookingDate',
-];
-
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
@@ -70,7 +59,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = [
         'tl_class'  => 'w50',
     ],
     'exclude'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
@@ -96,7 +85,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
         'tl_class'  => 'w50',
     ],
     'exclude'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,

@@ -46,9 +46,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartial
     'eval'             => ['tl_class' => 'w50'],
     'exclude'          => true,
     'inputType'        => 'select',
-    'options_callback' => [
-        Module::class,
-        'getCalendarEventBookingMemberListPartialTemplate',
-    ],
     'sql'              => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'",
 ];

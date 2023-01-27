@@ -16,6 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Calendar;
 use Contao\Config;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\Date;
@@ -27,6 +28,7 @@ class CalendarEvents
     /**
      * Adjust bookingStartDate and bookingStartDate.
      */
+    #[AsCallback(table: 'tl_calendar_events', target: 'config.onsubmit')]
     public function adjustBookingDate(DataContainer $dc): void
     {
         // Return if there is no active record (override all)
@@ -52,10 +54,8 @@ class CalendarEvents
         ;
     }
 
-    /**
-     * @param array $arrRow
-     */
-    public function listEvents($arrRow): string
+    #[AsCallback(table: 'tl_calendar_events', target: 'list.sorting.child_record')]
+    public function listEvents(array $arrRow): string
     {
         if ('1' === $arrRow['addBookingForm']) {
             $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
