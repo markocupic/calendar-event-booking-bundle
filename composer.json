@@ -16,7 +16,7 @@
         "markocupic/export_table": "^5.1",
         "ramsey/uuid": "^3.0 || ^4.0",
         "codefog/contao-haste": "^5.0",
-        "terminal42/notification_center": "^1.5"
+        "terminal42/notification_center": "^1.7"
     },
     "require-dev": {
         "contao/easy-coding-standard": "^3.0"
