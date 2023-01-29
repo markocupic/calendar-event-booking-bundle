@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -25,11 +25,9 @@ class RenameColumns extends AbstractMigration
     private const ALTERATION_TYPE_RENAME_COLUMN = 'alteration_type_rename_column';
     private const NULL_TO_0_CONVERSION = 'null_to_0_conversion';
 
-    private Connection $connection;
-
-    public function __construct(Connection $connection)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        private readonly Connection $connection,
+    ) {
     }
 
     public function getName(): string

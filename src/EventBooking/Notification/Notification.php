@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\Notification;
 
+use Codefog\HasteBundle\Formatter;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\Adapter;
@@ -22,20 +23,16 @@ use Contao\Environment;
 use Contao\PageModel;
 use Contao\System;
 use Contao\UserModel;
-use Haste\Util\Format;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification as NotificationModel;
 
 class Notification
 {
-    private ContaoFramework $framework;
-
     // Adapters
     private Adapter $config;
     private Adapter $controller;
     private Adapter $environment;
-    private Adapter $format;
     private Adapter $notification;
     private Adapter $pageModel;
     private Adapter $system;
@@ -43,15 +40,14 @@ class Notification
 
     private array $arrTokens = [];
 
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Formatter $formatter,
+    ) {
         // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->environment = $this->framework->getAdapter(Environment::class);
-        $this->format = $this->framework->getAdapter(Format::class);
         $this->notification = $this->framework->getAdapter(NotificationModel::class);
         $this->pageModel = $this->framework->getAdapter(PageModel::class);
         $this->system = $this->framework->getAdapter(System::class);
@@ -66,7 +62,7 @@ class Notification
     /**
      * @throws \Exception
      */
-    public function setTokens(EventConfig $eventConfig, CalendarEventsMemberModel $objEventMember, ?int $senderId): void
+    public function setTokens(EventConfig $eventConfig, CalendarEventsMemberModel $objEventMember, int|null $senderId): void
     {
         $arrTokens = [];
 
@@ -85,7 +81,7 @@ class Notification
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA'][$strEventMemberTable]['fields'][$k])) {
-                $arrTokens['member_'.$k] = $this->format->dcaValue('tl_calendar_events_member', $k, $v);
+                $arrTokens['member_'.$k] = $this->formatter->dcaValue('tl_calendar_events_member', $k, $v);
             } else {
                 $arrTokens['member_'.$k] = html_entity_decode((string) $v);
             }
@@ -100,7 +96,7 @@ class Notification
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$k])) {
-                $arrTokens['event_'.$k] = $this->format->dcaValue('tl_calendar_events', $k, $v);
+                $arrTokens['event_'.$k] = $this->formatter->dcaValue('tl_calendar_events', $k, $v);
             } else {
                 $arrTokens['event_'.$k] = html_entity_decode((string) $v);
             }
@@ -121,7 +117,7 @@ class Notification
                     }
 
                     if (isset($GLOBALS['TL_DCA']['tl_user']['fields'][$k])) {
-                        $arrTokens['sender_'.$k] = $this->format->dcaValue('tl_user', $k, $v);
+                        $arrTokens['sender_'.$k] = $this->formatter->dcaValue('tl_user', $k, $v);
                     } else {
                         $arrTokens['sender'.$k] = html_entity_decode((string) $v);
                     }
@@ -132,9 +128,8 @@ class Notification
         // Generate unsubscribe href
         $arrTokens['member_unsubscribeHref'] = '';
 
-        /** Backward compatibility */
+        /* Backward compatibility */
         $arrTokens['event_unsubscribeHref'] = '';
-
 
         if ($eventConfig->get('activateDeregistration')) {
             $objCalendar = $eventConfig->getModel()->getRelated('pid');
@@ -172,9 +167,7 @@ class Notification
             foreach ($arrNotifications as $notificationId) {
                 $objNotification = $this->notification->findByPk($notificationId);
 
-                if (null !== $objNotification) {
-                    $objNotification->send($this->getTokens(), $objPage->language);
-                }
+                $objNotification?->send($this->getTokens(), $objPage->language);
             }
         }
     }

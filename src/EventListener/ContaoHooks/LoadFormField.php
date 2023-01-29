@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,8 +17,8 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Date;
 use Contao\Form;
 use Contao\Widget;
@@ -26,23 +26,16 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 
-/**
- * @Hook(LoadFormField::HOOK, priority=LoadFormField::PRIORITY)
- */
+#[AsHook(LoadFormField::HOOK, priority: 1000)]
 final class LoadFormField extends AbstractHook
 {
     public const HOOK = 'loadFormField';
-    public const PRIORITY = 1000;
 
-    private ContaoFramework $framework;
-    private EventFactory $eventFactory;
-    private EventRegistration $eventRegistration;
-
-    public function __construct(ContaoFramework $framework, EventFactory $eventFactory, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->eventFactory = $eventFactory;
-        $this->eventRegistration = $eventRegistration;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly EventFactory $eventFactory,
+        private readonly EventRegistration $eventRegistration,
+    ) {
     }
 
     public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget

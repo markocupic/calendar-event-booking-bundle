@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -36,20 +36,6 @@ class EventConfigTest extends ContaoTestCase
         $this->assertFalse($eventConfig->hasWaitingList());
     }
 
-    private function getEventConfig(): EventConfig
-    {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
-        $event->pid = 1;
-        $event->id = 42;
-        $event->alias = 'test-event';
-
-        $connection = $this->createMock(Connection::class);
-        $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
-
-        return $factory->create($event);
-    }
-
     public function testGetClassProperty(): void
     {
         $eventConfig = $this->getEventConfig();
@@ -68,6 +54,7 @@ class EventConfigTest extends ContaoTestCase
 
     /**
      * @dataProvider isWaitingListFullProvider
+     *
      * @throws Exception
      */
     public function testIsWaitingListFull(bool $expected, array $input): void
@@ -98,6 +85,7 @@ class EventConfigTest extends ContaoTestCase
 
     /**
      * @dataProvider isFullyBookedProvider
+     *
      * @throws Exception
      */
     public function testIsFullyBooked(bool $expected, array $input): void
@@ -247,5 +235,19 @@ class EventConfigTest extends ContaoTestCase
                 'expectsExactly' => 1,
             ],
         ];
+    }
+
+    private function getEventConfig(): EventConfig
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event->pid = 1;
+        $event->id = 42;
+        $event->alias = 'test-event';
+
+        $connection = $this->createMock(Connection::class);
+        $framework = $this->createMock(ContaoFramework::class);
+        $factory = new EventFactory($connection, $framework);
+
+        return $factory->create($event);
     }
 }

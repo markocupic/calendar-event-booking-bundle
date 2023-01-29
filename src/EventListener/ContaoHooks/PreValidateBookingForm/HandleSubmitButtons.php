@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,28 +14,24 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PreValidateBookingForm;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Codefog\HasteBundle\Util\ArrayPosition;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Doctrine\DBAL\Exception;
-use Haste\Util\ArrayPosition;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Add or hide submit buttons in the event booking form.
- *
- * @Hook(HandleSubmitButtons::HOOK, priority=HandleSubmitButtons::PRIORITY)
  */
+#[AsHook(HandleSubmitButtons::HOOK, priority: 1000)]
 final class HandleSubmitButtons extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM;
-    public const PRIORITY = 1000;
 
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     /**

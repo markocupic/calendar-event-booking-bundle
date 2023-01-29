@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -28,26 +28,21 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class EventConfig
 {
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private CalendarEventsModel $event;
-
     // Adapters
     private Adapter $config;
     private Adapter $date;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, CalendarEventsModel $event)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->event = $event;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly CalendarEventsModel $event,
+    ) {
         // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
         $this->date = $this->framework->getAdapter(Date::class);
     }
 
-    public static function getEventFromCurrentUrl(): ?CalendarEventsModel
+    public static function getEventFromCurrentUrl(): CalendarEventsModel|null
     {
         // Set the item from the auto_item parameter
         if (!isset($_GET['events']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
@@ -244,7 +239,7 @@ class EventConfig
         return (int) $this->get('minMembers');
     }
 
-    public function getRegistrationsAsArray(array $arrBookingStateFilter = []): ?array
+    public function getRegistrationsAsArray(array $arrBookingStateFilter = []): array|null
     {
         $arrReg = [];
 
@@ -257,7 +252,7 @@ class EventConfig
         return !empty($arrReg) ? $arrReg : null;
     }
 
-    public function getRegistrations(array $arrBookingStateFilter = []): ?Collection
+    public function getRegistrations(array $arrBookingStateFilter = []): Collection|null
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
 

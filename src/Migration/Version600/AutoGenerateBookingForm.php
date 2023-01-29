@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -26,15 +26,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class AutoGenerateBookingForm extends AbstractMigration
 {
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private string $projectDir;
-
-    public function __construct(ContaoFramework $framework, Connection $connection, string $projectDir)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly string $projectDir,
+    ) {
     }
 
     public function getName(): string
@@ -104,7 +100,7 @@ class AutoGenerateBookingForm extends AbstractMigration
         foreach ($arrFormFields as $ff) {
             $arrFormField = array_map(static fn ($value) => \is_array($value) ? serialize($value) : $value, $ff);
             // Set class
-            if (isset($arrFormField['name'], $arrFormField['class']) && false !== strpos($arrFormField['class'], '%s')) {
+            if (isset($arrFormField['name'], $arrFormField['class']) && str_contains($arrFormField['class'], '%s')) {
                 $arrFormField['class'] = sprintf($arrFormField['class'], $arrFormField['name']);
             }
 

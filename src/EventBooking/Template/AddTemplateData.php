@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\Template;
 
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
+use Contao\MemberModel;
 use Contao\Template;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
@@ -23,13 +26,15 @@ use Symfony\Component\Security\Core\Security;
 
 final class AddTemplateData
 {
-    private Security $security;
-    private BookingValidator $bookingValidator;
+    private Adapter $memberModelAdapter;
 
-    public function __construct(Security $security, BookingValidator $bookingValidator)
-    {
-        $this->security = $security;
-        $this->bookingValidator = $bookingValidator;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Security $security,
+        private readonly BookingValidator $bookingValidator,
+    ) {
+        // Adapters
+        $this->memberModelAdapter = $this->framework->getAdapter(MemberModel::class);
     }
 
     /**
@@ -83,12 +88,12 @@ final class AddTemplateData
         return $user instanceof FrontendUser;
     }
 
-    private function getLoggedInFrontendUser(): ?FrontendUser
+    private function getLoggedInFrontendUser(): MemberModel|null
     {
         $user = $this->security->getUser();
 
         if ($user instanceof FrontendUser) {
-            return $user;
+            return $this->memberModelAdapter->findByPk($user->id);
         }
 
         return null;

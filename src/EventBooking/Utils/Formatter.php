@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -21,29 +21,22 @@ use Contao\Date;
 
 class Formatter
 {
-    private ContaoFramework $framework;
-
     // Adapters
     private Adapter $controller;
     private Adapter $date;
 
-    public function __construct(ContaoFramework $framework)
-    {
-        $this->framework = $framework;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+    ) {
         // Adapters
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->date = $this->framework->getAdapter(Date::class);
     }
 
     /**
-     * @param mixed $varValue
-     *
      * @throws \Exception
-     *
-     * @return int|mixed|string
      */
-    public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldName)
+    public function convertDateFormatsToTimestamps(mixed $varValue, string $strTable, string $strFieldName): mixed
     {
         $rgxp = $this->getFieldRgxp($strTable, $strFieldName);
 
@@ -84,7 +77,7 @@ class Formatter
         return $varValue;
     }
 
-    private function getFieldRgxp(string $strTable, string $strFieldName): ?string
+    private function getFieldRgxp(string $strTable, string $strFieldName): string|null
     {
         $this->controller->loadDataContainer($strTable);
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\SessionConfig;
@@ -22,21 +22,15 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRe
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-/**
- * @Hook(AddToSession::HOOK, priority=AddToSession::PRIORITY)
- */
+#[AsHook(AddToSession::HOOK, priority: 1200)]
 final class AddToSession extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_POST_BOOKING;
-    public const PRIORITY = 1200;
 
-    private Connection $connection;
-    private RequestStack $requestStack;
-
-    public function __construct(Connection $connection, RequestStack $requestStack)
-    {
-        $this->connection = $connection;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     /**

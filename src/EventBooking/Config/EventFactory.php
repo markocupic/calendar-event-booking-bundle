@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -20,13 +20,10 @@ use Doctrine\DBAL\Connection;
 
 class EventFactory
 {
-    private Connection $connection;
-    private ContaoFramework $framework;
-
-    public function __construct(Connection $connection, ContaoFramework $framework)
-    {
-        $this->connection = $connection;
-        $this->framework = $framework;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly ContaoFramework $framework,
+    ) {
     }
 
     public function create(CalendarEventsModel $event): EventConfig

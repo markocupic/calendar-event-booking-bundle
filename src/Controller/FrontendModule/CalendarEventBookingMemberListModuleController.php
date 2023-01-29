@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,10 +17,10 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
@@ -34,35 +34,24 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @FrontendModule(type=CalendarEventBookingMemberListModuleController::TYPE, category="events")
- */
+#[AsFrontendModule(CalendarEventBookingMemberListModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_member_list_module')]
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    public ?CalendarEventsModel $objEvent = null;
-
-    private ContaoFramework $framework;
-    private ScopeMatcher $scopeMatcher;
-    private Connection $connection;
-    private EventRegistration $eventRegistration;
+    public CalendarEventsModel|null $objEvent = null;
 
     // Adapters
     private Adapter $controller;
     private Adapter $eventMember;
     private Adapter $stringUtil;
 
-    /**
-     * CalendarEventBookingMemberListModuleController constructor.
-     */
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Connection $connection, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->connection = $connection;
-        $this->eventRegistration = $eventRegistration;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly Connection $connection,
+        private readonly EventRegistration $eventRegistration,
+    ) {
         // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
@@ -96,7 +85,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * @throws Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         // Load language
         $this->controller->loadLanguageFile($this->eventRegistration->getTable());

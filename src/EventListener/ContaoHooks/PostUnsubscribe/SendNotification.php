@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,34 +14,27 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostUnsubscribe;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\StringUtil;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 
-/**
- * @Hook(SendNotification::HOOK, priority=SendNotification::PRIORITY)
- */
+#[AsHook(SendNotification::HOOK, priority: 1000)]
 final class SendNotification extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT;
-    public const PRIORITY = 1000;
-
-    private ContaoFramework $framework;
-    private Notification $notification;
 
     // Adapters
     private Adapter $stringUtil;
 
-    public function __construct(ContaoFramework $framework, Notification $notification)
-    {
-        $this->framework = $framework;
-        $this->notification = $notification;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Notification $notification,
+    ) {
         // Adapters
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }

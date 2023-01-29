@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\ValidateRegistration;
 
+use Codefog\HasteBundle\Form\Form;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Exception;
-use Haste\Form\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
@@ -32,28 +32,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Check if event has a bookable waiting list
  * Generate error messages
  * Add waiting list submit button, if available.
- *
- * @Hook(ValidateMaxEventMember::HOOK, priority=ValidateMaxEventMember::PRIORITY)
  */
+#[AsHook(ValidateMaxEventMember::HOOK, priority: 1100)]
 final class ValidateMaxEventMember extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
-    public const PRIORITY = 1100;
-
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
-    private BookingValidator $bookingValidator;
 
     // Adapters
     private Adapter $message;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, BookingValidator $bookingValidator)
-    {
-        $this->framework = $framework;
-        $this->translator = $translator;
-        $this->bookingValidator = $bookingValidator;
-
-        // Adapters
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TranslatorInterface $translator,
+        private readonly BookingValidator $bookingValidator,
+    ) {
         $this->message = $this->framework->getAdapter(Message::class);
     }
 

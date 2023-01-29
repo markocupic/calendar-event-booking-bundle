@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,10 +17,10 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -36,22 +36,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @FrontendModule(type=CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category="events")
- */
+#[AsFrontendModule(CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_unsubscribe_from_event_module')]
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
 
-    public ContaoFramework $framework;
-    public ScopeMatcher $scopeMatcher;
-    public TranslatorInterface $translator;
-    protected Notification $notification;
-    protected EventFactory $eventFactory;
-    protected EventRegistration $eventRegistration;
-
-    protected ?CalendarEventsModel $objEvent = null;
-    protected ?PageModel $objPage = null;
+    protected CalendarEventsModel|null $objEvent = null;
+    protected PageModel|null $objPage = null;
     protected bool $blnHasUnsubscribed = false;
     protected bool $hasError = false;
     protected array $errorMsg = [];
@@ -63,15 +54,14 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     private Adapter $stringUtil;
     private Adapter $system;
 
-    public function __construct(ContaoFramework $framework, ScopeMatcher $scopeMatcher, Notification $notification, TranslatorInterface $translator, EventFactory $eventFactory, EventRegistration $eventRegistration)
-    {
-        $this->framework = $framework;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->notification = $notification;
-        $this->translator = $translator;
-        $this->eventFactory = $eventFactory;
-        $this->eventRegistration = $eventRegistration;
-
+    public function __construct(
+        public ContaoFramework $framework,
+        public ScopeMatcher $scopeMatcher,
+        public TranslatorInterface $translator,
+        private readonly Notification $notification,
+        private readonly EventFactory $eventFactory,
+        private EventRegistration $eventRegistration,
+    ) {
         $this->calendarEvents = $this->framework->getAdapter(CalendarEventsModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -194,7 +184,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     /**
      * @throws \Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
@@ -25,27 +25,19 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRe
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @Hook(ContaoLog::HOOK, priority=ContaoLog::PRIORITY)
- */
+#[AsHook(GenerateMessage::HOOK, priority: 900)]
 final class GenerateMessage extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_POST_BOOKING;
-    public const PRIORITY = 900;
-
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private TranslatorInterface $translator;
 
     // Adapters
     private Adapter $message;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, TranslatorInterface $translator)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->translator = $translator;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly TranslatorInterface $translator,
+    ) {
         // Adapters
         $this->message = $this->framework->getAdapter(Message::class);
     }

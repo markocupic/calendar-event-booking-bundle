@@ -16,7 +16,6 @@ return static function (ECSConfig $ecsConfig): void {
         MethodChainingIndentationFixer::class => [
             '*/DependencyInjection/Configuration.php',
         ],
-        TypeHintOrderFixer::class,
     ]);
 
     $ecsConfig->ruleWithConfiguration(HeaderCommentFixer::class, [

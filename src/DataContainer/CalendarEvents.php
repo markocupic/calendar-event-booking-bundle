@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -16,9 +16,9 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Calendar;
 use Contao\Config;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Message;
@@ -32,10 +32,6 @@ class CalendarEvents
 {
     public const TABLE = 'tl_calendar_events';
 
-    private ContaoFramework $framework;
-    private Connection $connection;
-    private TranslatorInterface $translator;
-
     // Adapters
     private Adapter $calendar;
     private Adapter $calendarEventsMemberModel;
@@ -43,12 +39,11 @@ class CalendarEvents
     private Adapter $date;
     private Adapter $message;
 
-    public function __construct(ContaoFramework $framework, Connection $connection, TranslatorInterface $translator)
-    {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->translator = $translator;
-
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+        private readonly TranslatorInterface $translator,
+    ) {
         // Adapters
         $this->calendar = $this->framework->getAdapter(Calendar::class);
         $this->calendarEventsMemberModel = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -60,10 +55,9 @@ class CalendarEvents
     /**
      * Adjust bookingStartDate and bookingStartDate.
      *
-     * @Callback(table=CalendarEvents::TABLE, target="config.onsubmit")
-     *
      * @throws Exception
      */
+    #[AsCallback(table: self::TABLE, target: 'config.onsubmit')]
     public function adjustBookingDate(DataContainer $dc): void
     {
         // Return if there is no active record (override all)
@@ -87,9 +81,8 @@ class CalendarEvents
 
     /**
      * Override child record callback.
-     *
-     * @Callback(table=CalendarEvents::TABLE, target="list.sorting.child_record")
      */
+    #[AsCallback(table: self::TABLE, target: 'list.sorting.child_record')]
     public function listEvents(array $arrRow): string
     {
         if ('1' === $arrRow['activateBookingForm']) {
@@ -111,10 +104,8 @@ class CalendarEvents
         return (new \tl_calendar_events())->listEvents($arrRow);
     }
 
-    /**
-     * @Callback(table=CalendarEvents::TABLE, target="fields.text.save")
-     */
-    public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
+    #[AsCallback(table: self::TABLE, target: 'fields.text.save')]
+    public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
             // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
@@ -147,9 +138,7 @@ class CalendarEvents
         return $intValue;
     }
 
-    /**
-     * @Callback(table="tl_calendar_events", target="list.sorting.child_record", priority=100)
-     */
+    #[AsCallback(table: self::TABLE, target: 'list.sorting.child_record', priority: 100)]
     public function childRecordCallback(array $arrRow): string
     {
         $origClass = new \tl_calendar_events();

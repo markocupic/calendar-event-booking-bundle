@@ -339,21 +339,18 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Haste\Form\Form;
+use Codefog\HasteBundle\Form\Form;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking\Notification;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
- * @Hook(DoSomething::HOOK, priority=DoSomething::PRIORITY)
- */
+ #[AsHook(DoSomething::HOOK, priority: 9000)]
 final class DoSomething extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPostBooking';
-    public const PRIORITY = 9000;
 
     public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
     {

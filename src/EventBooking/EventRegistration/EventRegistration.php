@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration;
 
+use Codefog\HasteBundle\Form\Form;
+use Codefog\HasteBundle\Util\ArrayPosition;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FormModel;
 use Contao\FrontendUser;
 use Contao\System;
-use Haste\Form\Form;
-use Haste\Util\ArrayPosition;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingType;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
@@ -36,27 +36,20 @@ final class EventRegistration
 {
     public const TABLE = 'tl_calendar_events_member';
 
-    private ContaoFramework $framework;
-    private RequestStack $requestStack;
-    private Security $security;
-    private TranslatorInterface $translator;
-
-    private ?Form $form = null;
-    private ?CalendarEventsMemberModel $model = null;
+    private Form|null $form = null;
+    private CalendarEventsMemberModel|null $model = null;
     private array $moduleData = [];
 
-    // Adapter
+    // Adapters
     private Adapter $systemAdapter;
     private Adapter $calendarEventsMemberAdapter;
 
-    public function __construct(ContaoFramework $framework, RequestStack $requestStack, Security $security, TranslatorInterface $translator)
-    {
-        $this->framework = $framework;
-        $this->requestStack = $requestStack;
-        $this->security = $security;
-        $this->translator = $translator;
-
-        // Adapters
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly RequestStack $requestStack,
+        private readonly Security $security,
+        private readonly TranslatorInterface $translator,
+    ) {
         $this->systemAdapter = $this->framework->getAdapter(System::class);
         $this->calendarEventsMemberAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
     }
@@ -69,7 +62,7 @@ final class EventRegistration
     /**
      * @throws \Exception
      */
-    public function getModel(): ?CalendarEventsMemberModel
+    public function getModel(): CalendarEventsMemberModel|null
     {
         if (!$this->hasModel()) {
             throw new \Exception('Model not found. Please use the EventRegistration::setModel() method first.');
@@ -87,12 +80,12 @@ final class EventRegistration
         $this->model = $model;
     }
 
-    public function getModelFromBookingToken(string $strToken = ''): ?CalendarEventsMemberModel
+    public function getModelFromBookingToken(string $strToken = ''): CalendarEventsMemberModel|null
     {
         return $this->calendarEventsMemberAdapter->findOneByBookingToken($strToken);
     }
 
-    public function validateSubscription(EventConfig $eventConfig, $module = null): bool
+    public function validateSubscription(EventConfig $eventConfig): bool
     {
         // Trigger validate event booking request: Check if event is fully booked, if registration deadline has reached, duplicate entries, etc.
         if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_VALIDATE_REGISTRATION]) || \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_VALIDATE_REGISTRATION])) {
@@ -111,7 +104,7 @@ final class EventRegistration
     /**
      * @throws \Exception
      */
-    public function subscribe(EventConfig $eventConfig, $module = null): void
+    public function subscribe(EventConfig $eventConfig): void
     {
         $eventMember = $this->getModel();
         $eventMember->pid = $eventConfig->getModel()->id;
@@ -196,7 +189,7 @@ final class EventRegistration
         );
 
         // Bind the event member model to the form input
-        $form->bindModel($eventMember);
+        $form->setBoundModel($eventMember);
 
         // Add fields from form generator
         $form->addFieldsFromFormGenerator(
