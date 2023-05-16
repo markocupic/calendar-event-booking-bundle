@@ -156,6 +156,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             } else {
                 $template->formId = 'tl_unsubscribe_from_event';
                 $template->event = $this->objEvent;
+                $template->calendar = $this->objEvent->getRelated('pid');
                 $template->member = $this->objEventMember;
             }
         }

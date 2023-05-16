@@ -279,6 +279,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $template->bookingMin = $this->eventRegistration->getBookingMin($this->objEvent);
         $template->bookingMax = $this->eventRegistration->getBookingMax($this->objEvent);
         $template->event = $this->objEvent;
+        $template->calendar = $this->objEvent->getRelated('pid');
         $template->model = $this->model;
         $template->messages = $messageAdapter->hasMessages() ? $messageAdapter->generate('FE') : null;
 

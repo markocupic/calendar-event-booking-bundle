@@ -107,6 +107,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         // Add the event model to the parent template
         $template->event = $this->objEvent;
+        $template->calendar = $this->objEvent->getRelated('pid');
 
         return $template->getResponse();
     }

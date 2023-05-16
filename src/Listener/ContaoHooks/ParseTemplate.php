@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks;
 
 use Contao\CalendarEventsModel;
-use Contao\CalendarModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Template;
@@ -39,17 +38,19 @@ final class ParseTemplate
     {
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
-        if (empty($template->calendar) || !str_starts_with($template->getName(), 'event')) {
+        if (!str_starts_with($template->getName(), 'event') && !str_starts_with($template->getName(), 'mod_calendar_event_booking')) {
             return;
         }
 
-        if (!$template->calendar instanceof CalendarModel) {
-            return;
+        $event = null;
+
+        if (str_starts_with($template->getName(), 'mod_calendar_event_booking')) {
+            $event = $template->event;
+        } elseif (str_starts_with($template->getName(), 'event')) {
+            $event = $calendarEventsModelAdapter->findById($template->id);
         }
 
-        $event = $calendarEventsModelAdapter->findById($template->id);
-
-        if (null === $event) {
+        if (!$event instanceof CalendarEventsModel) {
             return;
         }
 

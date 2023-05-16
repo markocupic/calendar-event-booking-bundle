@@ -24,7 +24,7 @@ class Module
         private readonly ContaoFramework $framework,
     ) {
     }
-    
+
     #[AsCallback(table: 'tl_module', target: 'fields.calendarEventBookingMemberListPartialTemplate.options')]
     public function getCalendarEventBookingMemberListPartialTemplate(): array
     {
