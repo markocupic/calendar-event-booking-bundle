@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\ParseT
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Template;
 use Doctrine\DBAL\Exception;
@@ -28,11 +29,14 @@ class AddBookingDataListener
 {
     public const HOOK = 'parseTemplate';
 
+    private Adapter $calendarEventsModelAdapter;
+
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly AddTemplateData $addTemplateData,
         private readonly EventFactory $eventFactory,
     ) {
+        $this->calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
     }
 
     /**
@@ -42,21 +46,18 @@ class AddBookingDataListener
     public function __invoke(Template $template): void
     {
         if (str_starts_with($template->getName(), 'event_')) {
-            if (empty($template->calendar)) {
+            if (empty($template->calendar) || !$template->calendar instanceof CalendarModel) {
                 return;
             }
 
-            if (!$template->calendar instanceof CalendarModel) {
+            $event = $this->calendarEventsModelAdapter->findById($template->id);
+
+            if (!$event instanceof CalendarEventsModel) {
                 return;
             }
 
-            $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
-            $arrData = $template->getData();
-
-            if (null !== ($objEvent = $calendarEventsModelAdapter->findByPk($arrData['id'] ?? null))) {
-                $eventConfig = $this->eventFactory->create($objEvent);
-                $this->addTemplateData->addTemplateData($eventConfig, $template);
-            }
+            $eventConfig = $this->eventFactory->create($event);
+            $this->addTemplateData->addTemplateData($eventConfig, $template);
         }
     }
 }

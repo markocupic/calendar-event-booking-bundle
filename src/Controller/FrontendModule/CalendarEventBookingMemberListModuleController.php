@@ -26,10 +26,13 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +53,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         private readonly ContaoFramework $framework,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly Connection $connection,
+        private readonly EventFactory $eventFactory,
         private readonly EventRegistration $eventRegistration,
+        private readonly AddTemplateData $addTemplateData,
     ) {
         // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
@@ -107,7 +112,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         if (!empty($arrAllowedStates)) {
             $qb = $qb->andWhere('t.bookingState IN (:arrAllowedStates)');
-            $qb = $qb->setParameter('arrAllowedStates', $arrAllowedStates, Connection::PARAM_STR_ARRAY);
+            $qb = $qb->setParameter('arrAllowedStates', $arrAllowedStates, ArrayParameterType::STRING);
         }
 
         $result = $qb->executeQuery();
@@ -138,6 +143,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
         // Add the event model to the parent template
         $template->event = $this->objEvent;
+
+        // Augment template with more data
+        $this->addTemplateData->addTemplateData($this->eventFactory->create($this->objEvent), $template);
 
         return $template->getResponse();
     }

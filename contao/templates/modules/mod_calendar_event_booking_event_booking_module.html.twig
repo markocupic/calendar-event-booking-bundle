@@ -16,7 +16,7 @@
 
     {% if form is defined %}
         {% if canRegister %}
-            {{ form|raw }}
+            {{ form.generate()|raw }}
         {% endif %}
     {% endif %}
 

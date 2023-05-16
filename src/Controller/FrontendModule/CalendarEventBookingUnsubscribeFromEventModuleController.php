@@ -30,6 +30,7 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Notification\Notification;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         public TranslatorInterface $translator,
         private readonly Notification $notification,
         private readonly EventFactory $eventFactory,
+        private readonly AddTemplateData $addTemplateData,
         private EventRegistration $eventRegistration,
     ) {
         $this->calendarEvents = $this->framework->getAdapter(CalendarEventsModel::class);
@@ -190,16 +192,25 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
             $template->blnHasUnsubscribed = true;
 
             if (null !== ($objEvent = $this->calendarEvents->findByPk($request->query->get('eid')))) {
+                $eventConfig = $this->eventFactory->create($objEvent);
                 $template->event = $objEvent;
-                $template->eventConfig = $this->eventFactory->create($objEvent);
+                $template->eventConfig = $eventConfig;
+
+                // Augment template with more data
+                $this->addTemplateData->addTemplateData($eventConfig, $template);
             }
         } else {
             $template->blnHasUnsubscribed = false;
 
             if (!$this->hasError) {
+                $eventConfig = $this->eventFactory->create($this->objEvent);
+                $template->eventConfig = $eventConfig;
                 $template->formId = 'tl_unsubscribe_from_event';
                 $template->event = $this->objEvent;
                 $template->member = $this->eventRegistration->getModel();
+
+                // Augment template with more data
+                $this->addTemplateData->addTemplateData($eventConfig, $template);
             }
         }
 
