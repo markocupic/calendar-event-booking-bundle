@@ -292,26 +292,27 @@ Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, 
 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
 
-Tag | type | Erklärung
+Tag (TWIG) | type | Erklärung
 ------------ |------------- |--
-`event` | array | Enthält alle Event-Daten.
-`eventConfig` | object | Enthält das EventConfig-Objekt.
-`registrations` | array | Zeigt alle Daten zu den für den Event registierten Personen (das Daten-Array enthält auch die unbestätigten/stornierten Personen)
-`canRegister` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
-`isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
-`numberFreeSeats` | int | Zeigt, die noch verfügbaren Plätze an.
-`numberFreeSeatsWaitingList` | int | Zeigt, die noch verfügbaren Plätze auf der Warteliste an.
-`confirmedBookingsCount` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
-`bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
-`bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
-`bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
-`bookingStartDate` | string | Zeigt, die Buchungsstartzeit (date) an.
-`bookingStartDatim` | string | Zeigt, die Buchungsstartzeit (datim) an.
-`bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
-`bookingEndDate` | string | Zeigt, die Buchungsendzeit (date) an.
-`bookingEndDatim` | string | Zeigt, die Buchungsendzeit (datim) an.
-`hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
-`loggedInUser` | array | Enthält alle Daten zum eingeloggten FE User.
+`{{ event }}` | array | Enthält alle Event-Daten.
+`{{ eventConfig }}` | object | Enthält das EventConfig-Objekt.
+`{{ registrations.invoke([]) }}` | array | Zugriff auf alle Registrierungen (das Daten-Array enthält auch die unbestätigten/auf Warteliste/stornierten Personen)
+`{{ registrations.invoke(['cebb_booking_state_on_waiting_list', 'cebb_booking_state_confirmed']) }}` | array | Zugriff auf die Registrierungen mit Filter (auf Warteliste/und bestätigte Registrierungen)
+`{{ canRegister }}` | bool | Zeigt, ob eine Registrierung möglich ist. Auch auf Warteliste, wenn Event bereits ausgebucht ist.
+`{{ isFullyBooked }}` | bool | Zeigt, ob der Event ausgebucht ist.
+`{{ numberFreeSeats }}` | int | Zeigt, die noch verfügbaren Plätze an.
+`{{ numberFreeSeatsWaitingList }}` | int | Zeigt, die noch verfügbaren Plätze auf der Warteliste an.
+`{{ confirmedBookingsCount }}` | int | Zeigt, die Anzahl bestätigter Registrierungen an.
+`{{ bookingMin }}` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
+`{{ bookingMax }}` | int | Zeigt, die maximale Teilnehmerzahl an.
+`{{ bookingStartTimestamp }}` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
+`{{ bookingStartDate }}` | string | Zeigt, die Buchungsstartzeit (date) an.
+`{{ bookingStartDatim }}` | string | Zeigt, die Buchungsstartzeit (datim) an.
+`{{ bookingEndTimestamp }}` | int | Zeigt, die Buchungsendzeit (timestamp) an.
+`{{ bookingEndDate }}` | string | Zeigt, die Buchungsendzeit (date) an.
+`{{ bookingEndDatim }}` | string | Zeigt, die Buchungsendzeit (datim) an.
+`{{ hasLoggedInUser }}` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
+`{{ loggedInUser }}` | array | Enthält alle Daten zum eingeloggten FE User.
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
