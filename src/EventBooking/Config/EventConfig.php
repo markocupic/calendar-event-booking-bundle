@@ -174,10 +174,6 @@ class EventConfig
             $total = $this->getConfirmedBookingsCount();
             $available = $this->getBookingMax() - $total;
         } else {
-            if (!$this->getWaitingListLimit()) {
-                throw new \Exception('The waiting list has no member limit. Please correct this in your event settings.');
-            }
-
             $total = $this->getWaitingListCount();
             $available = $this->getWaitingListLimit() - $total;
         }
