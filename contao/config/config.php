@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-/**
+/*
  * Backend modules
  */
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_events_member';
 
-/**
+/*
  * Contao models
  */
 $GLOBALS['TL_MODELS']['tl_calendar_events_member'] = CalendarEventsMemberModel::class;

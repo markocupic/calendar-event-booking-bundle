@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $projectDir: '%kernel.project_dir%'
+
+    Markocupic\CalendarEventBookingBundle\:
+        resource: ../src/
+        exclude: [
+            '../src/{Event,Model,DependencyInjection}',
+            '../src/EventBooking/Config/EventConfig.php'
+        ]
+
+

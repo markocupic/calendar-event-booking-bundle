@@ -211,8 +211,7 @@ final class EventRegistration
             }
         );
 
-        if(!$form->hasFormField('cebbBookingDefaultSubmit'))
-        {
+        if (!$form->hasFormField('cebbBookingDefaultSubmit')) {
             $form->addSubmitFormField($this->translator->trans('BTN.cebb_booking_default_submit_lbl', [], 'contao_default'), 'cebbBookingDefaultSubmit', ArrayPosition::last());
         }
 

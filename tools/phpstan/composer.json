@@ -1,0 +1,14 @@
+{
+    "require": {
+        "phpstan/phpstan": "^1.10",
+        "contao/test-case": "^4.13",
+        "markocupic/sac-event-tool-bundle": "dev-master"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "contao/manager-plugin": false,
+            "contao-community-alliance/composer-plugin": false
+        }
+    }
+}

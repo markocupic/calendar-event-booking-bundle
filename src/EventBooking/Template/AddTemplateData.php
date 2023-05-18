@@ -81,7 +81,7 @@ final class AddTemplateData
         // In your twig template:
         // {{ registrations.invoke() }} {# all registrations #}
         // {{ registrations.invoke(['cebb_booking_state_on_waiting_list', 'cebb_booking_state_confirmed']) }} {# filtered #}
-        $template->registrations = static fn(array $filter = []): array => $eventConfig->getRegistrationsAsArray($filter);
+        $template->registrations = static fn (array $filter = []): array => $eventConfig->getRegistrationsAsArray($filter);
     }
 
     private function hasLoggedInFrontendUser(): bool

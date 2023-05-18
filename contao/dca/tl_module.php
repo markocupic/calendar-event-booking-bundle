@@ -43,5 +43,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['cebb_memberListAllowedBookingStates']
         BookingState::STATE_UNSUBSCRIBED,
         BookingState::STATE_UNDEFINED,
     ],
-    'sql'       => "varchar(512) NOT NULL default 'a:1:{i:0;s:".strlen(BookingState::STATE_CONFIRMED).":\"".BookingState::STATE_CONFIRMED."\";}'",
+    'sql'       => "varchar(512) NOT NULL default '".serialize([BookingState::STATE_CONFIRMED])."'",
 ];

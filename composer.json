@@ -18,13 +18,6 @@
         "codefog/contao-haste": "^5.0",
         "terminal42/notification_center": "^1.5"
     },
-    "require-dev": {
-        "contao/easy-coding-standard": "^5.0",
-        "contao/manager-plugin": "^2.3.1",
-        "contao/test-case": "^4.6",
-        "phpunit/phpunit": "^9.3",
-        "symfony/phpunit-bridge": "^5.4"
-    },
     "autoload": {
         "psr-4": {
             "Markocupic\\CalendarEventBookingBundle\\": "src/"
@@ -32,11 +25,15 @@
     },
     "config": {
         "allow-plugins": {
-            "contao-components/installer": true,
-            "contao/manager-plugin": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "contao-components/installer": false,
+            "contao/manager-plugin": false,
             "contao-community-alliance/composer-plugin": true
         }
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyse src tests",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
