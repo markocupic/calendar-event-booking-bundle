@@ -32,7 +32,6 @@ class CalendarEvents
 {
     public const TABLE = 'tl_calendar_events';
 
-    // Adapters
     private Adapter $calendar;
     private Adapter $calendarEventsMemberModel;
     private Adapter $config;
@@ -44,7 +43,6 @@ class CalendarEvents
         private readonly Connection $connection,
         private readonly TranslatorInterface $translator,
     ) {
-        // Adapters
         $this->calendar = $this->framework->getAdapter(Calendar::class);
         $this->calendarEventsMemberModel = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $this->config = $this->framework->getAdapter(Config::class);
@@ -53,7 +51,7 @@ class CalendarEvents
     }
 
     /**
-     * Adjust bookingStartDate and bookingStartDate.
+     * Adjust bookingStartDate and bookingEndDate.
      *
      * @throws Exception
      */
@@ -108,8 +106,7 @@ class CalendarEvents
     public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
-            // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
-            // have both
+            // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
                 throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflicting_unsubscribe_limits']);
             }
@@ -161,6 +158,7 @@ class CalendarEvents
         $intRejected = 0;
         $intWaitingList = 0;
         $intUnsubscribed = 0;
+        $intUndefined = 0;
 
         $eventsMemberModel = $this->calendarEventsMemberModel->findByPid($arrRow['id']);
 
@@ -168,43 +166,43 @@ class CalendarEvents
             while ($eventsMemberModel->next()) {
                 if (BookingState::STATE_NOT_CONFIRMED === $eventsMemberModel->bookingState) {
                     ++$intNotConfirmed;
-                }
-
-                if (BookingState::STATE_CONFIRMED === $eventsMemberModel->bookingState) {
+                } elseif (BookingState::STATE_CONFIRMED === $eventsMemberModel->bookingState) {
                     ++$intConfirmed;
-                }
-
-                if (BookingState::STATE_REJECTED === $eventsMemberModel->bookingState) {
+                } elseif (BookingState::STATE_REJECTED === $eventsMemberModel->bookingState) {
                     ++$intRejected;
-                }
-
-                if (BookingState::STATE_WAITING_LIST === $eventsMemberModel->bookingState) {
+                } elseif (BookingState::STATE_WAITING_LIST === $eventsMemberModel->bookingState) {
                     ++$intWaitingList;
-                }
-
-                if (BookingState::STATE_UNSUBSCRIBED === $eventsMemberModel->bookingState) {
+                } elseif (BookingState::STATE_UNSUBSCRIBED === $eventsMemberModel->bookingState) {
                     ++$intUnsubscribed;
+                } elseif (BookingState::STATE_UNDEFINED === $eventsMemberModel->bookingState) {
+                    ++$intUndefined;
+                } else {
+                    ++$intUndefined;
                 }
             }
 
             if ($intNotConfirmed > 0) {
-                $strRegistrationsBadges .= sprintf('<span class="subscription-badge not-confirmed blink" title="%dx %s">%sx</span>', $intNotConfirmed, $this->translator->trans('MSC.not_confirmed', [], 'contao_default'), $intNotConfirmed);
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge not-confirmed blink" title="%dx %s">%sx</span>', $intNotConfirmed, $this->translator->trans('MSC.'.BookingState::STATE_NOT_CONFIRMED, [], 'contao_default'), $intNotConfirmed);
             }
 
             if ($intConfirmed > 0) {
-                $strRegistrationsBadges .= sprintf('<span class="subscription-badge confirmed" title="%dx %s">%dx</span>', $intConfirmed, $this->translator->trans('MSC.confirmed', [], 'contao_default'), $intConfirmed);
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge confirmed" title="%dx %s">%dx</span>', $intConfirmed, $this->translator->trans('MSC.'.BookingState::STATE_CONFIRMED, [], 'contao_default'), $intConfirmed);
             }
 
             if ($intRejected > 0) {
-                $strRegistrationsBadges .= sprintf('<span class="subscription-badge rejected" title="%dx %s">%dx</span>', $intRejected, $this->translator->trans('MSC.rejected', [], 'contao_default'), $intRejected);
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge rejected" title="%dx %s">%dx</span>', $intRejected, $this->translator->trans('MSC.'.BookingState::STATE_REJECTED, [], 'contao_default'), $intRejected);
             }
 
             if ($intWaitingList > 0) {
-                $strRegistrationsBadges .= sprintf('<span class="subscription-badge waiting-list" title="%dx %s">%dx</span>', $intWaitingList, $this->translator->trans('MSC.waiting_list', [], 'contao_default'), $intWaitingList);
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge waiting-list" title="%dx %s">%dx</span>', $intWaitingList, $this->translator->trans('MSC.'.BookingState::STATE_WAITING_LIST, [], 'contao_default'), $intWaitingList);
             }
 
             if ($intUnsubscribed > 0) {
-                $strRegistrationsBadges .= sprintf('<span class="subscription-badge unsubscribed" title="%dx %s">%dx</span>', $intUnsubscribed, $this->translator->trans('MSC.unsubscribed', [], 'contao_default'), $intUnsubscribed);
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge unsubscribed" title="%dx %s">%dx</span>', $intUnsubscribed, $this->translator->trans('MSC.'.BookingState::STATE_UNSUBSCRIBED, [], 'contao_default'), $intUnsubscribed);
+            }
+
+            if ($intUndefined > 0) {
+                $strRegistrationsBadges .= sprintf('<span class="subscription-badge undefined" title="%dx %s">%sx</span>', $intUndefined, $this->translator->trans('MSC.'.BookingState::STATE_UNDEFINED, [], 'contao_default'), $intUndefined);
             }
         }
 
