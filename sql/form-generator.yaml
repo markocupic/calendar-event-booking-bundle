@@ -100,3 +100,9 @@ form:
       size:
         - 8
         - 40
+    ## add a new form field
+    -   name: cebbBookingDefaultSubmit
+        type: submit
+        label: Buchungsanfrage absenden
+        tabindex: 12
+        class: form-cal-event-booking-%s
