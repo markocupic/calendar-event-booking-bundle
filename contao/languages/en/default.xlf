@@ -57,7 +57,7 @@
                 <source>The registration period for this event has already expired. Registrations can no longer be accepted.</source>
             </trans-unit>
             <trans-unit id="MSC.eventFullyBooked">
-                <source>This event is already fully booked.</source>
+                <source>This event is fully booked.</source>
             </trans-unit>
             <trans-unit id="MSC.waitingListPossible">
                 <source>This event is fully booked. Subscription to the waiting list is possible.</source>

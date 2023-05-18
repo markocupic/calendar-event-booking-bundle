@@ -75,8 +75,8 @@
                 <target>Die Anmeldefrist für diesen Event ist bereits abgelaufen. Es können keine Anmeldungen mehr entgegengenommen werden.</target>
             </trans-unit>
             <trans-unit id="MSC.eventFullyBooked">
-                <source>This event is already fully booked.</source>
-                <target>Der Event ist bereits ausgebucht.</target>
+                <source>This event is fully booked.</source>
+                <target>Der Event ist ausgebucht.</target>
             </trans-unit>
             <trans-unit id="MSC.waitingListPossible">
                 <source>This event is fully booked. Subscription to the waiting list is possible.</source>
