@@ -1,8 +1,7 @@
 {
     "require": {
         "phpstan/phpstan": "^1.10",
-        "contao/test-case": "^4.13",
-        "markocupic/sac-event-tool-bundle": "dev-master"
+        "contao/test-case": "^4.13"
     },
     "config": {
         "allow-plugins": {
