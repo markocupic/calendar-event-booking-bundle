@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    {% if members is defined %}
+    {% if rows|default %}
         <div class="ce_table">
             <table class="all_records sortable">
                 <thead>
@@ -12,11 +12,22 @@
                     <th class="head col_2">{{ 'tl_calendar_events_member.street.0'|trans({}, 'contao_default') }}</th>
                     <th class="head col_3">{{ 'tl_calendar_events_member.postal.0'|trans({}, 'contao_default') }}</th>
                     <th class="head col_last col_4">{{ 'tl_calendar_events_member.city.0'|trans({}, 'contao_default') }}</th>
+                    <th class="head col_last col_5">{{ 'tl_calendar_events_member.escorts.0'|trans({}, 'contao_default') }}</th>
                     <th class="head col_last col_5">{{ 'tl_calendar_events_member.bookingState.0'|trans({}, 'contao_default') }}</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{ members|raw }}
+                {% for registration in rows %}
+                    <tr class="{{ registration.row_class }}">
+                        <td class="body col_0 col_first">{{ registration.model.firstname }}</td>
+                        <td class="body col_1">{{ registration.model.lastname }}</td>
+                        <td class="body col_2 col_last">{{ registration.model.street }}</td>
+                        <td class="body col_3 col_last">{{ registration.model.postal }}</td>
+                        <td class="body col_4 col_last">{{ registration.model.city }}</td>
+                        <td class="body col_5 col_last">{{ registration.model.escorts }}</td>
+                        <td class="body col_6 col_last">{{ ('MSC.' ~ registration.model.bookingState)|trans({}, 'contao_default') }}</td>
+                    </tr>
+                {% endfor %}
             </table>
         </div>
     {% endif %}

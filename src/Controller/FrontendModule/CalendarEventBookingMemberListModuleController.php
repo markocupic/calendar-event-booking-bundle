@@ -21,7 +21,6 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -120,25 +119,20 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $intRowCount = $result->rowCount();
 
         $i = 0;
-        $strRows = '';
+
+        $rows = [];
 
         while (!empty($arrAllowedStates) && false !== ($arrEventMember = $result->fetchAssociative())) {
-            $partial = new FrontendTemplate($model->cebb_memberListPartialTemplate);
-
-            $calendarEventsMemberModel = $this->eventMember->findByPk($arrEventMember['id']);
-            $partial->model = $calendarEventsMemberModel;
-
-            // Row class
-            $partial->rowClass = $this->getRowClass($i, $intRowCount);
-
-            $strRows .= $partial->parse();
+            $rows[] = [
+                'model' => $this->eventMember->findByPk($arrEventMember['id']),
+                'row_class' => $this->getRowClass($i, $intRowCount),
+            ];
 
             ++$i;
         }
 
-        // Add partial html to the parent template
         if ($i) {
-            $template->members = $strRows;
+            $template->rows = $rows;
         }
 
         // Add the event model to the parent template
