@@ -57,7 +57,7 @@ final class HandleSubmitButtons extends AbstractHook
         // Add the waiting list submit button
         if (CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
             if (!$form->hasFormField('cebbBookingWaitingListSubmit')) {
-                $form->addSubmitFormField('cebbBookingWaitingListSubmit', $this->translator->trans('BTN.cebb_booking_waiting_list_submit_lbl', [], 'contao_default'), ArrayPosition::last());
+                $form->addSubmitFormField($this->translator->trans('BTN.cebb_booking_waiting_list_submit_lbl', [], 'contao_default'), 'cebbBookingWaitingListSubmit', ArrayPosition::last());
             }
         }
 

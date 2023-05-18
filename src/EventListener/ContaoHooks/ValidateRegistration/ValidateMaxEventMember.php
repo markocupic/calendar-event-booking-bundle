@@ -234,12 +234,12 @@ final class ValidateMaxEventMember extends AbstractHook
     {
         if (!$form->hasFormField('cebbBookingWaitingListSubmit')) {
             $form->addSubmitFormField(
-                'cebbBookingWaitingListSubmit',
                 $this->translator->trans(
                     'BTN.cebb_booking_waiting_list_submit_lbl',
                     [],
                     'contao_default'
-                )
+                ),
+                'cebbBookingWaitingListSubmit',
             );
 
             $form->getWidget('cebbBookingWaitingListSubmit')->value = 'value';
