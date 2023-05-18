@@ -48,7 +48,6 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     protected bool $hasError = false;
     protected array $errorMsg = [];
 
-    // Adapters
     private Adapter $calendarEvents;
     private Adapter $controller;
     private Adapter $eventMember;

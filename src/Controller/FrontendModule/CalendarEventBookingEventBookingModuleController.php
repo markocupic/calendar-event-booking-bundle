@@ -29,7 +29,6 @@ use Contao\FormModel;
 use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\System;
 use Contao\Template;
 use Doctrine\DBAL\Exception;
@@ -60,14 +59,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     public ModuleModel|null $model = null;
     public string|null $case = null;
 
-    // Adapters
     private Adapter $config;
     private Adapter $controller;
     private Adapter $date;
     private Adapter $environment;
     private Adapter $formModel;
     private Adapter $message;
-    private Adapter $stringUtil;
     private Adapter $system;
 
     public function __construct(
@@ -79,14 +76,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         private readonly AddTemplateData $addTemplateData,
         private readonly EventRegistration $eventRegistration,
     ) {
-        // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->date = $this->framework->getAdapter(Date::class);
         $this->environment = $this->framework->getAdapter(Environment::class);
         $this->formModel = $this->framework->getAdapter(FormModel::class);
         $this->message = $this->framework->getAdapter(Message::class);
-        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
         $this->system = $this->framework->getAdapter(System::class);
     }
 
@@ -149,11 +144,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         if (null === $this->eventConfig) {
             throw new PageNotFoundException('Page not found: '.$this->environment->get('uri'));
-        }
-
-        // Override the page title (see #2853 and #4955)
-        if ('' !== $this->eventConfig->get('title')) {
-            $this->objPage->pageTitle = strip_tags($this->stringUtil->stripInsertTags($this->eventConfig->get('title')));
         }
 
         // Get case
