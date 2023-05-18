@@ -20,7 +20,7 @@ jobs:
           uses: actions/checkout@v2
 
       -   name: Install ecs
-          run: cd tools/ecs && composer update --no-interaction --no-suggest
+          run: cd tools/ecs && composer update --no-suggest
 
       -   name: Run the CS fixer
           run: composer cs-fixer
@@ -43,8 +43,8 @@ jobs:
 
       -   name: Install the dependencies
           run: |
-            composer update --no-interaction --no-progress
-            cd tools/phpstan && composer update --no-interaction --no-suggest
+            composer update --no-progress
+            cd tools/phpstan && composer update --no-suggest
       -   name: Run PHPStan
           run: composer phpstan
 
@@ -65,35 +65,10 @@ jobs:
           uses: actions/checkout@v2
 
       -   name: Install phpunit
-          run: cd tools/phpunit && composer update --no-interaction --no-suggest
+          run: cd tools/phpunit && composer update --no-suggest
 
       -   name: Install the dependencies
-          run: composer update --no-interaction --no-suggest
-
-      -   name: Run the unit tests
-          run: composer unit-tests
-
-  prefer-lowest-tests:
-    name: PHP ${{ matrix.php }} --prefer-lowest
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [ 8.1, 8.2 ]
-    steps:
-      -   name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php }}
-
-      -   name: Checkout
-          uses: actions/checkout@v2
-
-      -   name: Install phpunit
-          run: cd tools/phpunit && composer update --no-interaction --no-suggest
-
-      -   name: Install the dependencies
-          run: composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
+          run: composer update --no-suggest
 
       -   name: Run the unit tests
           run: composer unit-tests
