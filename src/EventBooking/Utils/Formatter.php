@@ -21,14 +21,12 @@ use Contao\Date;
 
 class Formatter
 {
-    // Adapters
     private Adapter $controller;
     private Adapter $date;
 
     public function __construct(
         private readonly ContaoFramework $framework,
     ) {
-        // Adapters
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->date = $this->framework->getAdapter(Date::class);
     }

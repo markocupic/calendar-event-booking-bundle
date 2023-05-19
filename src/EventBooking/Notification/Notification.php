@@ -29,7 +29,6 @@ use NotificationCenter\Model\Notification as NotificationModel;
 
 class Notification
 {
-    // Adapters
     private Adapter $config;
     private Adapter $controller;
     private Adapter $environment;
@@ -44,7 +43,6 @@ class Notification
         private readonly ContaoFramework $framework,
         private readonly Formatter $formatter,
     ) {
-        // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->environment = $this->framework->getAdapter(Environment::class);

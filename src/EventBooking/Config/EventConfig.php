@@ -28,7 +28,6 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class EventConfig
 {
-    // Adapters
     private Adapter $config;
     private Adapter $date;
 
@@ -37,7 +36,6 @@ class EventConfig
         private readonly Connection $connection,
         private readonly CalendarEventsModel $event,
     ) {
-        // Adapters
         $this->config = $this->framework->getAdapter(Config::class);
         $this->date = $this->framework->getAdapter(Date::class);
     }
@@ -235,11 +233,11 @@ class EventConfig
         return (int) $this->get('minMembers');
     }
 
-    public function getRegistrationsAsArray(array $arrBookingStateFilter = []): array|null
+    public function getRegistrationsAsArray(array $arrBookingStateFilter = [], array $arrOptions = []): array|null
     {
         $arrReg = [];
 
-        if (null !== ($collection = $this->getRegistrations($arrBookingStateFilter))) {
+        if (null !== ($collection = $this->getRegistrations($arrBookingStateFilter, $arrOptions))) {
             while ($collection->next()) {
                 $arrReg[] = $collection->row();
             }
@@ -263,7 +261,8 @@ class EventConfig
             $t.'.bookingState IN('.implode(',', array_fill(0, \count($arrBookingStateFilter), '?')).')',
         ];
 
-        $arrValues = [$this->getModel()->id,
+        $arrValues = [
+            $this->getModel()->id,
             ...$arrBookingStateFilter,
         ];
 

@@ -23,13 +23,11 @@ class Module
 {
     public const TABLE = 'tl_module';
 
-    // Adapters
     private Adapter $controller;
 
     public function __construct(
         private readonly ContaoFramework $framework,
     ) {
-        // Adapters
         $this->controller = $this->framework->getAdapter(Controller::class);
     }
 

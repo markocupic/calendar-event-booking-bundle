@@ -40,7 +40,6 @@ final class EventRegistration
     private CalendarEventsMemberModel|null $model = null;
     private array $moduleData = [];
 
-    // Adapters
     private Adapter $systemAdapter;
     private Adapter $calendarEventsMemberAdapter;
 

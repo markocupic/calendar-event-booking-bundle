@@ -29,7 +29,6 @@ final class ValidateEmailAddress extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
 
-    // Adapters
     private Adapter $eventMember;
 
     public function __construct(
@@ -38,7 +37,6 @@ final class ValidateEmailAddress extends AbstractHook
         private readonly TranslatorInterface $translator,
         private readonly EventRegistration $eventRegistration,
     ) {
-        // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
     }
 

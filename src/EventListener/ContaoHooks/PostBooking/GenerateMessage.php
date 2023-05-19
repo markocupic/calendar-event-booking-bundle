@@ -30,7 +30,6 @@ final class GenerateMessage extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_POST_BOOKING;
 
-    // Adapters
     private Adapter $message;
 
     public function __construct(
@@ -38,7 +37,6 @@ final class GenerateMessage extends AbstractHook
         private readonly Connection $connection,
         private readonly TranslatorInterface $translator,
     ) {
-        // Adapters
         $this->message = $this->framework->getAdapter(Message::class);
     }
 

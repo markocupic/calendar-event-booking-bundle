@@ -33,7 +33,6 @@ final class AddTemplateData
         private readonly Security $security,
         private readonly BookingValidator $bookingValidator,
     ) {
-        // Adapters
         $this->memberModelAdapter = $this->framework->getAdapter(MemberModel::class);
     }
 

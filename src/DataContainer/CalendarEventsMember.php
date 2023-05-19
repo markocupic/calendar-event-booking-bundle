@@ -31,7 +31,6 @@ class CalendarEventsMember
 {
     public const TABLE = 'tl_calendar_events_member';
 
-    // Adapters
     private Adapter $system;
 
     public function __construct(
@@ -40,7 +39,6 @@ class CalendarEventsMember
         private readonly RequestStack $requestStack,
         private readonly ExportTable $exportTable,
     ) {
-        // Adapters
         $this->system = $this->framework->getAdapter(System::class);
     }
 

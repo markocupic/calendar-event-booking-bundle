@@ -28,14 +28,12 @@ final class SendNotification extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_UNSUBSCRIBE_FROM_EVENT;
 
-    // Adapters
     private Adapter $stringUtil;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Notification $notification,
     ) {
-        // Adapters
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }
 

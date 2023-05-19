@@ -42,7 +42,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
     public CalendarEventsModel|null $objEvent = null;
 
-    // Adapters
     private Adapter $controller;
     private Adapter $eventMember;
     private Adapter $stringUtil;
@@ -55,7 +54,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         private readonly EventRegistration $eventRegistration,
         private readonly AddTemplateData $addTemplateData,
     ) {
-        // Adapters
         $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);

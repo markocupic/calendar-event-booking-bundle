@@ -38,7 +38,6 @@ final class ValidateMaxEventMember extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_VALIDATE_REGISTRATION;
 
-    // Adapters
     private Adapter $message;
 
     public function __construct(

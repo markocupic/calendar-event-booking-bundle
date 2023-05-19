@@ -29,7 +29,6 @@ final class SendNotification extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_POST_BOOKING;
 
-    // Adapters
     private Adapter $stringUtil;
 
     public function __construct(
@@ -37,7 +36,6 @@ final class SendNotification extends AbstractHook
         private readonly Connection $connection,
         private readonly Notification $notification,
     ) {
-        // Adapters
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }
 
