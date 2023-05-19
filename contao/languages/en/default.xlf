@@ -38,7 +38,7 @@
             <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_not_confirmed">
                 <source>We have taken your booking for "%s" and will get in touch with you soon.</source>
             </trans-unit>
-            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_cebb_booking_state_confirmed">
+            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_confirmed">
                 <source>We have successfully received your booking for "%s" and you have definitely been registered.</source>
             </trans-unit>
             <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_on_waiting_list">

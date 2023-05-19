@@ -50,7 +50,7 @@
                 <source>We have taken your booking for "%s" and will get in touch with you soon.</source>
                 <target>Wir haben Ihre Buchungsanfrage erhalten und werden Sie baldmöglichst kontaktieren um ihre Anfrage für die Teilnahme an "%s" definitiv zu bestätigen.</target>
             </trans-unit>
-            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_cebb_booking_state_confirmed">
+            <trans-unit id="MSC.post_booking_confirm_cebb_booking_state_confirmed">
                 <source>We have successfully received your booking for "%s" and you have definitely been registered.</source>
                 <target>Besten Dank für Ihre Buchungsanfrage. Gerne bestätigen wir Ihre Teilnahme an "%s".</target>
             </trans-unit>
