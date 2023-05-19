@@ -248,7 +248,7 @@ class EventConfig
         return !empty($arrReg) ? $arrReg : null;
     }
 
-    public function getRegistrations(array $arrBookingStateFilter = []): Collection|null
+    public function getRegistrations(array $arrBookingStateFilter = [], array $arrOptions = []): Collection|null
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
 
@@ -256,20 +256,18 @@ class EventConfig
             return $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
         }
 
-        $collection = [];
-        $registrations = $calendarEventsMemberModelAdapter->findByPid($this->getModel()->id);
+        $t = $calendarEventsMemberModelAdapter->getTable();
 
-        if (null === $registrations) {
-            return null;
-        }
+        $arrColumns = [
+            $t.'.pid = ?',
+            $t.'.bookingState IN('.implode(',', array_fill(0, \count($arrBookingStateFilter), '?')).')',
+        ];
 
-        while ($registrations->next()) {
-            if (\in_array($registrations->bookingState, $arrBookingStateFilter, true)) {
-                $collection[] = $registrations->current();
-            }
-        }
+        $arrValues = [$this->getModel()->id,
+            ...$arrBookingStateFilter,
+        ];
 
-        return !empty($collection) ? new Collection($collection, $calendarEventsMemberModelAdapter->getTable()) : null;
+        return $calendarEventsMemberModelAdapter->findBy($arrColumns, $arrValues, $arrOptions);
     }
 
     /**

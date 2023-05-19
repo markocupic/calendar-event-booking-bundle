@@ -25,7 +25,6 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
@@ -94,38 +93,28 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $this->controller->loadLanguageFile($this->eventRegistration->getTable());
 
+        // Get the event configuration
+        $eventConfig = $this->eventFactory->create($this->objEvent);
+
         $arrAllowedStates = $this->stringUtil->deserialize($model->cebb_memberListAllowedBookingStates, true);
+        $arrOptions = [
+            'order' => 'dateAdded ASC, firstname ASC, city ASC',
+        ];
 
-        $t = $this->eventRegistration->getTable();
+        $registrations = $eventConfig->getRegistrations($arrAllowedStates, $arrOptions);
 
-        // Get subscribed event members
-        $qb = $this->connection->createQueryBuilder();
-        $qb->select('id')
-            ->from($t, 't')
-            ->where('t.pid = :pid')
-            ->orderBy('t.dateAdded', 'ASC')
-            ->addOrderBy('t.firstname', 'ASC')
-            ->addOrderBy('t.city', 'ASC')
-            ->setParameter('pid', $this->objEvent->id)
-        ;
-
-        if (!empty($arrAllowedStates)) {
-            $qb = $qb->andWhere('t.bookingState IN (:arrAllowedStates)');
-            $qb = $qb->setParameter('arrAllowedStates', $arrAllowedStates, ArrayParameterType::STRING);
+        if (empty($registrations)) {
+            return null;
         }
 
-        $result = $qb->executeQuery();
-
-        $intRowCount = $result->rowCount();
-
         $i = 0;
-
+        $intRegCount = \count($registrations);
         $rows = [];
 
-        while (!empty($arrAllowedStates) && false !== ($arrEventMember = $result->fetchAssociative())) {
+        foreach ($registrations as $registration) {
             $rows[] = [
-                'model' => $this->eventMember->findByPk($arrEventMember['id']),
-                'row_class' => $this->getRowClass($i, $intRowCount),
+                'model' => $registration,
+                'row_class' => $this->getRowClass($i, $intRegCount),
             ];
 
             ++$i;
@@ -139,7 +128,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $template->event = $this->objEvent;
 
         // Augment template with more data
-        $this->addTemplateData->addTemplateData($this->eventFactory->create($this->objEvent), $template);
+        $this->addTemplateData->addTemplateData($eventConfig, $template);
 
         return $template->getResponse();
     }
