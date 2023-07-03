@@ -227,13 +227,12 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'escorts'      => [
-            'default'   => null,
             'eval'      => ['maxlength' => 3, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "int(3) unsigned NOT NULL default '0'",
+            'sql'       => "smallint(5) unsigned NOT NULL default 0",
         ],
     ],
 ];
