@@ -206,7 +206,7 @@ class RenameColumns extends AbstractMigration
                 'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
                 'table' => 'tl_calendar_events',
                 'old' => 'addBookingForm',
-                'new' => 'activateBookingForm',
+                'new' => 'enableBookingForm',
                 'sql' => 'char(1)',
             ],
             [
@@ -256,14 +256,6 @@ class RenameColumns extends AbstractMigration
                 'old' => 'addedOn',
                 'new' => 'dateAdded',
                 'sql' => 'int(10)',
-            ],
-            // tl_module
-            [
-                'type' => self::ALTERATION_TYPE_RENAME_COLUMN,
-                'table' => 'tl_module',
-                'old' => 'calendarEventBookingMemberListPartialTemplate',
-                'new' => 'cebb_memberListPartialTemplate',
-                'sql' => 'varchar(128)',
             ],
         ];
     }

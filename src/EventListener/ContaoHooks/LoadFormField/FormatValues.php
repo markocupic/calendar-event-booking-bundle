@@ -12,9 +12,8 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\LoadFormField;
 
-use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
@@ -25,9 +24,10 @@ use Contao\Widget;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 
-#[AsHook(LoadFormField::HOOK, priority: 1000)]
-final class LoadFormField extends AbstractHook
+#[AsHook(FormatValues::HOOK, priority: 1000)]
+final class FormatValues extends AbstractHook
 {
     public const HOOK = 'loadFormField';
 
@@ -38,16 +38,26 @@ final class LoadFormField extends AbstractHook
     ) {
     }
 
-    public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
+    public function __invoke(Widget $objWidget, string $formId, array $arrForm, Form $objForm): Widget
     {
         if (!self::isEnabled()) {
             return $objWidget;
         }
 
+        $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
+        $controllerAdapter = $this->framework->getAdapter(Controller::class);
+
         if ($objForm->isCalendarEventBookingForm) {
-            $dateAdapter = $this->framework->getAdapter(Date::class);
-            $configAdapter = $this->framework->getAdapter(Config::class);
-            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+            if (null === ($event = EventConfig::getEventFromRequest())) {
+                return $objWidget;
+            }
+
+            $eventConfig = $this->eventFactory->create($event);
+
+            if (!$eventConfig->get('enableBookingForm') || !$eventConfig->get('published')) {
+                return $objWidget;
+            }
 
             // Load DCA
             $controllerAdapter->loadDataContainer($this->eventRegistration->getTable());
@@ -70,11 +80,6 @@ final class LoadFormField extends AbstractHook
 
             // Fit select menu to max escorts per member
             if ('escorts' === $objWidget->name) {
-                /** @var CalendarEventsModel $objEvent */
-                $objEvent = EventConfig::getEventFromCurrentUrl();
-
-                $eventConfig = $this->eventFactory->create($objEvent);
-
                 $maxEscorts = $eventConfig->get('maxEscortsPerMember');
 
                 if ($maxEscorts > 0) {

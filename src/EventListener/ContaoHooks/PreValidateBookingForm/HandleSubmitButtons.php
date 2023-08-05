@@ -17,7 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PreVal
 use Codefog\HasteBundle\Util\ArrayPosition;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Doctrine\DBAL\Exception;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingController;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -38,11 +38,16 @@ final class HandleSubmitButtons extends AbstractHook
      * @throws Exception
      * @throws \Exception
      */
-    public function __invoke(CalendarEventBookingEventBookingModuleController $frontendModule): void
+    public function __invoke(EventBookingController $frontendModule): void
     {
         if (!self::isEnabled()) {
             return;
         }
+
+        /*
+         * Not used yet
+         */
+        return;
 
         $eventConfig = $frontendModule->eventConfig;
 
@@ -55,7 +60,7 @@ final class HandleSubmitButtons extends AbstractHook
         }
 
         // Add the waiting list submit button
-        if (CalendarEventBookingEventBookingModuleController::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
+        if (EventBookingController::CASE_WAITING_LIST_POSSIBLE === $frontendModule->case) {
             if (!$form->hasFormField('cebbBookingWaitingListSubmit')) {
                 $form->addSubmitFormField($this->translator->trans('BTN.cebb_booking_waiting_list_submit_lbl', [], 'contao_default'), 'cebbBookingWaitingListSubmit', ArrayPosition::last());
             }

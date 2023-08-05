@@ -17,17 +17,19 @@ namespace Markocupic\CalendarEventBookingBundle\EventBooking\Config;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 
 class EventFactory
 {
     public function __construct(
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
+        private readonly BookingValidator $bookingValidator,
     ) {
     }
 
     public function create(CalendarEventsModel $event): EventConfig
     {
-        return new EventConfig($this->framework, $this->connection, $event);
+        return new EventConfig($this->framework, $this->connection, $this->bookingValidator, $event);
     }
 }

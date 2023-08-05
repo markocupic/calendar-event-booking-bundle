@@ -37,7 +37,7 @@ final class ContaoLog extends AbstractHook
     /**
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration, array $formDetails): void
     {
         if (!self::isEnabled()) {
             return;

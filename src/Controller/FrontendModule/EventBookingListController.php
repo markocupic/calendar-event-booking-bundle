@@ -25,36 +25,31 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\Template;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(CalendarEventBookingMemberListModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_member_list_module')]
-class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
+#[AsFrontendModule(EventBookingListController::TYPE, category:'events', template: 'mod_event_booking_list')]
+class EventBookingListController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'calendar_event_booking_member_list_module';
+    public const TYPE = 'event_booking_list';
 
     public CalendarEventsModel|null $objEvent = null;
 
     private Adapter $controller;
-    private Adapter $eventMember;
     private Adapter $stringUtil;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly ScopeMatcher $scopeMatcher,
-        private readonly Connection $connection,
         private readonly EventFactory $eventFactory,
         private readonly EventRegistration $eventRegistration,
         private readonly AddTemplateData $addTemplateData,
     ) {
-        $this->eventMember = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }
@@ -65,11 +60,14 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->objEvent = EventConfig::getEventFromCurrentUrl();
+            $this->objEvent = EventConfig::getEventFromRequest();
 
-            // Get the current event && return empty string if activateBookingForm isn't set or event is not published
+            // Get the event configuration
+            $eventConfig = $this->eventFactory->create($this->objEvent);
+
+            // Get the current event && return empty string if enableBookingForm isn't set or event is not published
             if (null !== $this->objEvent) {
-                if ($this->objEvent->activateBookingForm && $this->objEvent->published) {
+                if ($eventConfig->get('enableBookingForm') && $eventConfig->get('published')) {
                     $showEmpty = false;
                 }
             }
@@ -118,12 +116,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             ++$i;
         }
 
-        if ($i) {
-            $template->rows = $rows;
-        }
-
-        // Add the event model to the parent template
-        $template->event = $this->objEvent;
+        $template->rows = $rows;
+        $template->eventConfig = $eventConfig;
 
         // Augment template with more data
         $this->addTemplateData->addTemplateData($eventConfig, $template);

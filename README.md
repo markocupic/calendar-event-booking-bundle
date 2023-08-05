@@ -137,7 +137,7 @@ Array
     [event_maxMembers] => 11
     [event_bookingStartDate] => 7. Juni 2021
     [event_bookingEndDate] => 15. September 2021
-    [event_activateBookingForm] => ja
+    [event_enableBookingForm] => ja
     [event_city] => Nothingham
     [event_postal] => 6666
     [event_street] => black corner 2
@@ -240,7 +240,7 @@ Array
     [event_maxMembers] => 11
     [event_bookingStartDate] => 7. Juni 2021
     [event_bookingEndDate] => 15. September 2021
-    [event_activateBookingForm] => ja
+    [event_enableBookingForm] => ja
     [event_city] => Nothingham
     [event_postal] => 6666
     [event_street] => black corner 2
@@ -316,7 +316,7 @@ Tag (TWIG) | type | Erklärung
 
 ## Mit Hooks Frontend Module erweitern/anpassen
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
-Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, hilft ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
+Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, hilft ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/EventBookingController.php).
 
 Folgende **zusätzliche HOOKS** stehen neben den Contao Hooks zusätzlich zur Verfügung:
 
@@ -324,7 +324,6 @@ Folgende **zusätzliche HOOKS** stehen neben den Contao Hooks zusätzlich zur Ve
 ------------ |--
 `calEvtBookingSetCase` | Mit diesem Hook kann auf den Modus (Case) im Buchungsmodul Einfluss genommen werden.
 `calEvtBookingAddField` | Mit diesem Hook kann auf die Sichtbarkeit der Buchungs-Formular- Felder Einfluss genommen werden.
-`calEvtBookingPrepareFormData` | Mit diesem Hook können die Eingaben im Buchungsformular vor dem Abspeichern in die Datenbank verändert werden. Z.B. Datum in einen Timestamp umwandeln
 `calEvtBookingPreBooking` | Dieser Hook wird unmittelbar vor dem Abspeichern der Buchungsdaten getriggert.
 `calEvtBookingPostBooking` | Dieser Hook wird unmittelbar nach dem Abspeichern der Buchungsdaten getriggert.
 `calEvtBookingPreValidate` | Dieser Hook wird unmittelbar vor dem Überprüfen der Buchungsformular-Feld-Eingaben getriggert.
@@ -342,7 +341,7 @@ namespace App\EventListener;
 
 use Codefog\HasteBundle\Form\Form;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingController;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking\Notification;
@@ -353,7 +352,7 @@ final class DoSomething extends AbstractHook
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
-    public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
+    public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember, array $formDetails): void
     {
         if (!self::isEnabled()) {
             return;

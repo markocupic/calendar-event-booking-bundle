@@ -18,7 +18,6 @@ abstract class AbstractHook
 {
     public const HOOK_SET_CASE = 'calEvtBookingSetCase';
     public const HOOK_ADD_FIELD = 'calEvtBookingAddField';
-    public const HOOK_PREPARE_FORM_DATA = 'calEvtBookingPrepareFormData';
     public const HOOK_PRE_BOOKING = 'calEvtBookingPreBooking';
     public const HOOK_POST_BOOKING = 'calEvtBookingPostBooking';
     public const HOOK_PRE_VALIDATE_BOOKING_FORM = 'calEvtBookingPreValidate';

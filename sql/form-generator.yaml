@@ -1,108 +1,117 @@
 form:
-  isCalendarEventBookingForm: 1
-  title: event booking form sample (auto generated on database migration)
-  alias: event-booking-form
+    isCalendarEventBookingForm: 1
+    title: event booking form sample (auto generated on database migration)
+    alias: event-booking-form
 
-  # Add the form fields
-  form_fields:
-    ## add a new form field
-    - name: gender
-      type: select
-      label: Anrede
-      mandatory: 1
-      tabindex: 1
-      class: form-cal-event-booking-%s
-      options:
-        - value: female
-          label: Frau
-          default: 1
-        - value: male
-          label: Herr
-    ## add a new form field
-    - name: firstname
-      type: text
-      label: Vorname
-      mandatory: 1
-      tabindex: 2
-      class: form-cal-event-booking-%s
-      rgxp: alnum
-    ## add a new form field
-    - name: lastname
-      type: text
-      label: Name
-      mandatory: 1
-      tabindex: 3
-      class: form-cal-event-booking-%s
-      rgxp: alnum
-    ## add a new form field
-    - name: street
-      type: text
-      label: Strasse
-      mandatory: 1
-      tabindex: 4
-      class: form-cal-event-booking-%s
-      rgxp: alnum
-    ## add a new form field
-    - name: postal
-      type: text
-      label: PLZ
-      mandatory: 1
-      tabindex: 5
-      class: form-cal-event-booking-%s
-      rgxp: digit
-    ## add a new form field
-    - name: city
-      type: text
-      label: Ort
-      mandatory: 1
-      tabindex: 6
-      class: form-cal-event-booking-%s
-      rgxp: alnum
-    ## add a new form field
-    - name: dateOfBirth
-      type: text
-      label: Geburtsdatum
-      mandatory: 1
-      tabindex: 7
-      class: form-cal-event-booking-%s
-      rgxp: date
-    ## add a new form field
-    - name: email
-      type: text
-      label: E-Mail-Adresse
-      mandatory: 1
-      tabindex: 8
-      class: form-cal-event-booking-%s
-      rgxp: email
-    ## add a new form field
-    - name: phone
-      type: text
-      label: Telefonnummer
-      mandatory: 1
-      tabindex: 9
-      class: form-cal-event-booking-%s
-      rgxp: phone
-    ## add a new form field
-    - name: escorts
-      type: text
-      label: Anzahl Begleitpersonen
-      mandatory: 1
-      tabindex: 10
-      class: form-cal-event-booking-%s
-      rgxp: digit
-      value: 0
-    ## add a new form field
-    - name: notes
-      type: textarea
-      label: Anmerkungen
-      tabindex: 11
-      class: form-cal-event-booking-%s
-      size:
-        - 8
-        - 40
-    ## add a new form field
-    -   name: cebbBookingDefaultSubmit
-        type: submit
-        label: Buchungsanfrage absenden
-        tabindex: 12
-        class: form-cal-event-booking-%s
+    # Add the form fields
+    form_fields:
+        ## add a new form field "eventStatus" (used for terminal42/contao-conditionalformfields)
+        -   name: eventStatus
+            type: hidden
+        ## open the fieldset
+        -   name: cebbBookingDefaultFieldsetStart
+            type: fieldsetStart
+        ## add a new form field "gender"
+        -   name: gender
+            type: select
+            label: Anrede
+            mandatory: 1
+            tabindex: 1
+            class: form-cal-event-booking-%s
+            options:
+                -   value: female
+                    label: Frau
+                    default: 1
+                -   value: male
+                    label: Herr
+        ## add a new form field "firstname"
+        -   name: firstname
+            type: text
+            label: Vorname
+            mandatory: 1
+            tabindex: 2
+            class: form-cal-event-booking-%s
+            rgxp: alnum
+        ## add a new form field "lastname"
+        -   name: lastname
+            type: text
+            label: Name
+            mandatory: 1
+            tabindex: 3
+            class: form-cal-event-booking-%s
+            rgxp: alnum
+        ## add a new form field "street"
+        -   name: street
+            type: text
+            label: Strasse
+            mandatory: 1
+            tabindex: 4
+            class: form-cal-event-booking-%s
+            rgxp: alnum
+        ## add a new form field "postal"
+        -   name: postal
+            type: text
+            label: PLZ
+            mandatory: 1
+            tabindex: 5
+            class: form-cal-event-booking-%s
+            rgxp: digit
+        ## add a new form field "city"
+        -   name: city
+            type: text
+            label: Ort
+            mandatory: 1
+            tabindex: 6
+            class: form-cal-event-booking-%s
+            rgxp: alnum
+        ## add a new form field "dateOfBirth"
+        -   name: dateOfBirth
+            type: text
+            label: Geburtsdatum
+            mandatory: 1
+            tabindex: 7
+            class: form-cal-event-booking-%s
+            rgxp: date
+        ## add a new form field "email"
+        -   name: email
+            type: text
+            label: E-Mail-Adresse
+            mandatory: 1
+            tabindex: 8
+            class: form-cal-event-booking-%s
+            rgxp: email
+        ## add a new form field "phone"
+        -   name: phone
+            type: text
+            label: Telefonnummer
+            mandatory: 1
+            tabindex: 9
+            class: form-cal-event-booking-%s
+            rgxp: phone
+        ## add a new form field "escorts"
+        -   name: escorts
+            type: text
+            label: Anzahl Begleitpersonen
+            mandatory: 1
+            tabindex: 10
+            class: form-cal-event-booking-%s
+            rgxp: digit
+            value: 0
+        ## add a new form field "notes"
+        -   name: notes
+            type: textarea
+            label: Anmerkungen
+            tabindex: 11
+            class: form-cal-event-booking-%s
+            size:
+                - 8
+                - 40
+        ## add a new form field "cebbBookingDefaultSubmit"
+        -   name: cebbBookingDefaultSubmit
+            type: submit
+            slabel: Buchungsanfrage absenden
+            tabindex: 12
+            class: form-cal-event-booking-%s
+        ## close the fieldset
+        -   name: cebbBookingDefaultFieldsetEnd
+            type: fieldsetStop

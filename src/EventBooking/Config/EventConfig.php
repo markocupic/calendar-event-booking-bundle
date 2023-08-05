@@ -15,15 +15,22 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\Config;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Database;
 use Contao\Date;
 use Contao\Input;
 use Contao\Model\Collection;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingController;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
+use Markocupic\CalendarEventBookingBundle\Exception\CalendarNotFoundException;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 class EventConfig
@@ -34,13 +41,14 @@ class EventConfig
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
+        private readonly BookingValidator $bookingValidator,
         private readonly CalendarEventsModel $event,
     ) {
         $this->config = $this->framework->getAdapter(Config::class);
         $this->date = $this->framework->getAdapter(Date::class);
     }
 
-    public static function getEventFromCurrentUrl(): CalendarEventsModel|null
+    public static function getEventFromRequest(): CalendarEventsModel|null
     {
         // Set the item from the auto_item parameter
         if (!isset($_GET['events']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
@@ -64,15 +72,40 @@ class EventConfig
         return (bool) $this->get('activateWaitingList');
     }
 
-    public function get($propertyName)
+    /**
+     * @return mixed|null
+     */
+    public function get(string $propertyName): mixed
     {
-        // @todo enable presetting values in tl_calendar
-        return $this->getModel()->$propertyName;
+        Controller::loadDataContainer('tl_calendar_events');
+        Controller::loadDataContainer('tl_calendar');
+
+        $arrEventFields = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'] ?? [];
+        $arrCalFields = $GLOBALS['TL_DCA']['tl_calendar']['fields'] ?? [];
+        $allowOverriding = $arrEventFields[$propertyName]['eval']['allowOverrideByParent'] ?? false;
+
+        if (true === $allowOverriding && !empty($arrCalFields[$propertyName])) {
+
+            $calendar = CalendarModel::findByPk($this->get('pid'));
+
+            if (null !== $calendar) {
+                if (Database::getInstance()->fieldExists($propertyName, 'tl_calendar')) {
+                    return $calendar->{$propertyName};
+                }
+            }
+        }
+
+        return $this->getModel()->{$propertyName};
     }
 
     public function getModel(): CalendarEventsModel
     {
         return $this->event;
+    }
+
+    public function getCalendar(): CalendarModel|null
+    {
+        return CalendarModel::findByPk($this->getModel()->pid);
     }
 
     /**
@@ -114,10 +147,22 @@ class EventConfig
      */
     public function isFullyBooked(): bool
     {
-        $confirmedBookingsCount = $this->getConfirmedBookingsCount();
+        $calendar = $this->getCalendar();
+
+        if (null === $calendar) {
+            throw new CalendarNotFoundException('Can not find a matching calendar for event with ID '.$this->getModel()->id.'.');
+        }
+
+        $bookingStates = StringUtil::deserialize($calendar->calculateTotalFrom, true);
+        $memberCount = 0;
+
+        foreach ($bookingStates as $bookingState) {
+            $memberCount += $this->countByEventAndBookingState($bookingState, (bool) $this->get('addEscortsToTotal'));
+        }
+
         $bookingMax = $this->getBookingMax();
 
-        if ($bookingMax > 0 && $confirmedBookingsCount >= $bookingMax) {
+        if ($bookingMax > 0 && $memberCount >= $bookingMax) {
             return true;
         }
 
@@ -181,12 +226,12 @@ class EventConfig
 
     public function isBookable(): bool
     {
-        return (bool) $this->get('activateBookingForm');
+        return (bool) $this->get('enableBookingForm');
     }
 
     public function getWaitingListLimit(): int
     {
-        return (int) $this->event->waitingListLimit;
+        return (int) $this->get('waitingListLimit');
     }
 
     public function isNotificationActivated(): bool
@@ -267,6 +312,25 @@ class EventConfig
         ];
 
         return $calendarEventsMemberModelAdapter->findBy($arrColumns, $arrValues, $arrOptions);
+    }
+
+    public function getEventStatus(): string
+    {
+        if (!$this->isBookable()) {
+            $status = EventBookingController::CASE_EVENT_NOT_BOOKABLE;
+        } elseif (!$this->bookingValidator->validateBookingStartDate($this)) {
+            $status = EventBookingController::CASE_BOOKING_NOT_YET_POSSIBLE;
+        } elseif (!$this->bookingValidator->validateBookingEndDate($this)) {
+            $status = EventBookingController::CASE_BOOKING_NO_LONGER_POSSIBLE;
+        } elseif ($this->bookingValidator->validateBookingMax($this, 1)) {
+            $status = EventBookingController::CASE_BOOKING_POSSIBLE;
+        } elseif ($this->bookingValidator->validateBookingMaxWaitingList($this, 1)) {
+            $status = EventBookingController::CASE_WAITING_LIST_POSSIBLE;
+        } else {
+            $status = EventBookingController::CASE_EVENT_FULLY_BOOKED;
+        }
+
+        return $status;
     }
 
     /**

@@ -14,18 +14,16 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PrepareFormData;
 
-use Codefog\HasteBundle\Form\Form;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
+use Contao\Form;
 use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRegistration;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Utils\Formatter;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
 #[AsHook(FormatInput::HOOK, priority: 1000)]
 final class FormatInput extends AbstractHook
 {
-    public const HOOK = AbstractHook::HOOK_PREPARE_FORM_DATA;
+    public const HOOK = 'prepareFormData';
 
     public function __construct(
         private readonly Formatter $formatter,
@@ -38,7 +36,7 @@ final class FormatInput extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(Form $form, EventConfig $eventConfig, CalendarEventsMemberModel $eventMember): void
+    public function __invoke(array &$submittedData, array $labels, array $fields, Form $form): void
     {
         if (!self::isEnabled()) {
             return;
@@ -46,13 +44,12 @@ final class FormatInput extends AbstractHook
 
         $strTable = $this->eventRegistration->getTable();
 
-        foreach (array_keys($form->getFormFields()) as $strFieldName) {
-            $varValue = $eventMember->$strFieldName;
+        foreach ($submittedData as $strFieldName => $varValue) {
             $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldName);
             $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldName);
             $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldName);
-            $eventMember->$strFieldName = $varValue;
-            $eventMember->save();
+
+            $submittedData[$strFieldName] = $varValue;
         }
     }
 }

@@ -22,6 +22,7 @@ use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 
 class EventConfigTest extends ContaoTestCase
 {
@@ -77,7 +78,9 @@ class EventConfigTest extends ContaoTestCase
         ;
 
         $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
+        $bookingValidator = $this->createMock(BookingValidator::class);
+
+        $factory = new EventFactory($connection, $framework, $bookingValidator);
         $eventConfig = $factory->create($event);
 
         $this->assertSame($expected, $eventConfig->isWaitingListFull());
@@ -108,7 +111,9 @@ class EventConfigTest extends ContaoTestCase
         ;
 
         $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
+        $bookingValidator = $this->createMock(BookingValidator::class);
+
+        $factory = new EventFactory($connection, $framework, $bookingValidator);
         $eventConfig = $factory->create($event);
 
         $this->assertSame($expected, $eventConfig->isFullyBooked());
@@ -246,7 +251,9 @@ class EventConfigTest extends ContaoTestCase
 
         $connection = $this->createMock(Connection::class);
         $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
+        $bookingValidator = $this->createMock(BookingValidator::class);
+
+        $factory = new EventFactory($connection, $framework, $bookingValidator);
 
         return $factory->create($event);
     }

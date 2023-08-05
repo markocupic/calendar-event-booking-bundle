@@ -3,8 +3,12 @@
     <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/contao/languages/en/tl_calendar.php" source-language="en" target-language="de">
         <body>
             <trans-unit id="tl_calendar.event_unsubscribe_legend">
-                <source>Event unsubscription settings</source>
-                <target>Event-Stornierung-Einstellungen</target>
+                <source>Event unsubscription settings (the highlighted fields can be used to override the settings in the child events)</source>
+                <target>Event-Stornierung-Einstellungen (die farbig hervorgehobenen Felder können zum Überschreiben der Einstellungen in den Kind-Events genutzt werden)</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.booking_options_legend">
+                <source>Booking settings (the highlighted fields can be used to override the settings in the child events)</source>
+                <target>Buchungseinstellungen (die farbig hervorgehobenen Felder können zum Überschreiben der Einstellungen in den Kind-Events genutzt werden)</target>
             </trans-unit>
             <trans-unit id="tl_calendar.eventUnsubscribePage.0">
                 <source>Page containing the event unsubscription module</source>
@@ -14,6 +18,79 @@
                 <source>Please choose the page to which users are redirected when clicking the unsubscription link</source>
                 <target>Wählen Sie die Seite mit dem Event-Stornierungsformular-Modul aus.</target>
             </trans-unit>
+            <trans-unit id="tl_calendar.calculateTotalFrom.0">
+                <source>Calculate total from</source>
+                <target>Berechne das Teilnehmertotal aus</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.calculateTotalFrom.1">
+                <source>Specify which booking status should be used to calculate the total number of participants. Is required to calculate whether the event is fully booked.</source>
+                <target>Geben Sie an welche Buchungsstatus für die Berechnung der totalen Teilnehmerzahl herangezogen werden sollen. Wird benötigt, um zu berechnen, ob der Event ausgebucht ist.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.addEscortsToTotal.0">
+                <source>Add accompanying persons to the total number of participants</source>
+                <target>Begleitpersonen zur totalen Teilnehmerzahl addieren</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.addEscortsToTotal.1">
+                <source>Determine whether the accompanying persons should be added to the total number of participants.</source>
+                <target>Legen Sie fest, ob die Begleitpersonen zur totalen Teilnehmerzahl dazugerechnet werden sollen.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.waitingListLimit.0">
+                <source>Waiting list limit</source>
+                <target>Platzlimit Warteliste</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.waitingListLimit.1">
+                <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
+                <target>Setzen sie ein Limit für die Anzahl Plätze auf der Warteliste. Wählen die "0", wenn Sie kein Platzlimit möchten.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotification.0">
+                <source>Choose one or more notifications</source>
+                <target>Benachrichtigungen bei Buchung</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotification.1">
+                <source>Choose one or more notifications.</source>
+                <target>Wählen Sie hier eine oder mehrere Benachrichtigungen aus.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotificationSender.0">
+                <source>Booking notification sender</source>
+                <target>Absender der Benachrichtigung bei Buchung auswählen</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotificationSender.1">
+                <source>Please choose the sender of the booking notification.</source>
+                <target>Wählen Sie hier einen Absender für die Benachrichtigung aus.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotification.0">
+                <source>Choose one or more notifications</source>
+                <target>Benachrichtigungen bei Stornierung</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotification.1">
+                <source>Choose one or more notifications.</source>
+                <target>Wählen Sie hier eine oder mehrere Benachrichtigungen aus.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotificationSender.0">
+                <source>Unsubscribe notification sender</source>
+                <target>Absender der Benachrichtigung bei Buchung</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotificationSender.1">
+                <source>Please choose the sender of the unsubscribe notification.</source>
+                <target>Wählen Sie einen Absender für die Benachrichtigung aus.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.allowDuplicateEmail.0">
+                <source>Enable multiple bookings with same email address</source>
+                <target>Mehrfachbuchung mit gleicher E-Mail-Adresse ermöglichen</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.allowDuplicateEmail.1">
+                <source>Please choose if multiple bookings with same email address should be allowed.</source>
+                <target>Geben Sie an, ob die Buchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollte.</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.bookingState.0">
+                <source>Booking state</source>
+                <target>Buchungs-Status bei Neuanmeldung</target>
+            </trans-unit>
+            <trans-unit id="tl_calendar.bookingState.1">
+                <source>Select the state that is automatically assigned to a new booking.</source>
+                <target>Wähle Sie den Buchungs-Status, der automatisch nach dem Absenden des Buchungsformulars gesetzt werden soll, aus.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
+

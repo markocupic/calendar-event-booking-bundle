@@ -16,6 +16,8 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Calendar;
 use Contao\Config;
+use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -25,6 +27,7 @@ use Contao\Message;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -37,10 +40,12 @@ class CalendarEvents
     private Adapter $config;
     private Adapter $date;
     private Adapter $message;
+    private Adapter $controller;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
+        private readonly EventFactory $eventFactory,
         private readonly TranslatorInterface $translator,
     ) {
         $this->calendar = $this->framework->getAdapter(Calendar::class);
@@ -48,6 +53,47 @@ class CalendarEvents
         $this->config = $this->framework->getAdapter(Config::class);
         $this->date = $this->framework->getAdapter(Date::class);
         $this->message = $this->framework->getAdapter(Message::class);
+        $this->controller = $this->framework->getAdapter(Controller::class);
+    }
+
+    /**
+     * Remove some fields if reg settings
+     * should be taken from parent.
+     *
+     * @throws Exception
+     */
+    #[AsCallback(table: self::TABLE, target: 'config.onload')]
+    public function adjustSubPalettes(DataContainer $dc): void
+    {
+
+        $arrRemove = [];
+
+        $overrideByParent = (bool) $this->connection->fetchOne('SELECT overrideByParent FROM tl_calendar_events WHERE id = ?', [$dc->id]);
+
+        if ($overrideByParent) {
+            $this->controller->loadDataContainer('tl_calendar_events');
+            $arrFields = array_keys($GLOBALS['TL_DCA']['tl_calendar_events']['fields']);
+
+            foreach ($arrFields as $fieldName) {
+                $allowOverriding = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$fieldName]['eval']['allowOverrideByParent'] ?? false;
+
+                if (true === $allowOverriding) {
+                    $arrRemove[] = $fieldName;
+                }
+            }
+        }
+
+        if (!empty($arrRemove)) {
+            $arrSubPal = array_keys($GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes'] ?? []);
+
+            $pm = PaletteManipulator::create()
+                ->removeField($arrRemove)
+            ;
+
+            foreach ($arrSubPal as $subPalName) {
+                $pm->applyToSubPalette($subPalName, 'tl_calendar_events');
+            }
+        }
     }
 
     /**
@@ -58,6 +104,7 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'config.onsubmit')]
     public function adjustBookingDate(DataContainer $dc): void
     {
+
         // Return if there is no active record (override all)
         if (!$dc->activeRecord) {
             return;
@@ -77,34 +124,10 @@ class CalendarEvents
         $this->connection->update(self::TABLE, $arrSet, ['id' => $dc->id]);
     }
 
-    /**
-     * Override child record callback.
-     */
-    #[AsCallback(table: self::TABLE, target: 'list.sorting.child_record')]
-    public function listEvents(array $arrRow): string
-    {
-        if ('1' === $arrRow['activateBookingForm']) {
-            $countBookings = $this->calendarEventsMemberModel->countBy('pid', $arrRow['id']);
-
-            $span = $this->calendar->calculateSpan($arrRow['startTime'], $arrRow['endTime']);
-
-            if ($span > 0) {
-                $date = $this->date->parse($this->config->get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].$this->date->parse($this->config->get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
-            } elseif ($arrRow['startTime'] === $arrRow['endTime']) {
-                $date = $this->date->parse($this->config->get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.$this->date->parse($this->config->get('timeFormat'), $arrRow['startTime']) : '');
-            } else {
-                $date = $this->date->parse($this->config->get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.$this->date->parse($this->config->get('timeFormat'), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].$this->date->parse($this->config->get('timeFormat'), $arrRow['endTime']) : '');
-            }
-
-            return '<div class="tl_content_left">'.$arrRow['title'].' <span style="color:#999;padding-left:3px">['.$date.']</span><span style="color:#999;padding-left:3px">['.$GLOBALS['TL_LANG']['MSC']['bookings'].': '.$countBookings.'x]</span></div>';
-        }
-
-        return (new \tl_calendar_events())->listEvents($arrRow);
-    }
-
     #[AsCallback(table: self::TABLE, target: 'fields.text.save')]
     public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
+
         if (!empty($intValue)) {
             // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
@@ -138,6 +161,7 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'list.sorting.child_record', priority: 100)]
     public function childRecordCallback(array $arrRow): string
     {
+
         $origClass = new \tl_calendar_events();
 
         $strRegistrationsBadges = $this->getBookingStateBadgesString($arrRow);
@@ -151,6 +175,7 @@ class CalendarEvents
 
     private function getBookingStateBadgesString(array $arrRow): string
     {
+
         $strRegistrationsBadges = '';
 
         $intNotConfirmed = 0;

@@ -89,62 +89,55 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ',
     ],
     'fields'   => [
-        'id'           => [
-            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+        'id'             => [
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'autoincrement' => true],
         ],
-        'pid'          => [
+        'pid'            => [
             'eval'       => ['readonly' => true],
             'foreignKey' => 'tl_calendar_events.title',
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
-            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'sql'        => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
-        'tstamp'       => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+        'tstamp'         => [
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
-        'dateAdded'    => [
+        'dateAdded'      => [
             'default'   => time(),
             'eval'      => ['doNotCopy' => true, 'rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'flag'      => DataContainer::SORT_DAY_DESC,
             'inputType' => 'text',
             'sorting'   => true,
-            'sql'       => 'int(10) unsigned NOT NULL default 0',
+            'sql'       => ['type' => 'integer', 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
-        'bookingType'  => [
+        'bookingType'    => [
             'eval'      => ['includeBlankOption' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'select',
             'options'   => ['bookingTypeGuest', 'bookingTypeMember', 'bookingTypeManually'],
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'bookingToken' => [
+        'bookingToken'   => [
             'default'   => Uuid::uuid4()->toString(),
             'eval'      => ['doNotCopy' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'bookingState' => [
+        'bookingState'   => [
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => [
-                BookingState::STATE_UNDEFINED,
-                BookingState::STATE_NOT_CONFIRMED,
-                BookingState::STATE_CONFIRMED,
-                BookingState::STATE_WAITING_LIST,
-                BookingState::STATE_REJECTED,
-                BookingState::STATE_UNSUBSCRIBED,
-            ],
+            'options'   => BookingState::ALL,
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_CONFIRMED."'",
+            'sql'       => ['type' => 'string', 'length' => 64, 'notnull' => true, 'default' => BookingState::STATE_CONFIRMED],
         ],
-        'notes'        => [
+        'notes'          => [
             'default'   => null,
             'eval'      => ['tl_class' => 'clr', 'mandatory' => false],
             'exclude'   => true,
@@ -152,23 +145,23 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'search'    => true,
             'sql'       => 'text NULL',
         ],
-        'firstname'    => [
+        'firstname'      => [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'lastname'     => [
+        'lastname'       => [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'gender'       => [
+        'gender'         => [
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'select',
@@ -176,63 +169,82 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(32) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
-        'dateOfBirth'  => [
+        'dateOfBirth'    => [
             'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(11) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 11, 'notnull' => true, 'default' => ''],
         ],
-        'street'       => [
+        'street'         => [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'postal'       => [
+        'postal'         => [
             'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(32) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
-        'city'         => [
+        'city'           => [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'phone'        => [
+        'phone'          => [
             'eval'      => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(64) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 64, 'notnull' => true, 'default' => ''],
         ],
-        'email'        => [
+        'email'          => [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true, 'default' => ''],
         ],
-        'escorts'      => [
+        'escorts'        => [
             'eval'      => ['maxlength' => 3, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "smallint(5) unsigned NOT NULL default 0",
+            'sql'       => ['type' => 'integer', 'unsigned' => true, 'notnull' => true, 'default' => 0],
+        ],
+        'formData'       => [
+            'inputType' => 'textarea',
+            'eval'      => ['readonly' => true],
+            'sql'       => ['type' => 'blob', 'notnull' => false],
+        ],
+        'confirmedOn'    => [
+            'filter'  => true,
+            'sorting' => true,
+            'flag'    => DataContainer::SORT_DAY_DESC,
+            'eval'    => ['rgxp' => 'datim'],
+            'sql'     => ['type' => 'integer', 'unsigned' => true, 'notnull' => true, 'default' => 0],
+        ],
+        'unsubscribedOn' => [
+            'filter'  => true,
+            'sorting' => true,
+            'flag'    => DataContainer::SORT_DAY_DESC,
+            'eval'    => ['rgxp' => 'datim'],
+            'sql'     => ['type' => 'integer', 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
     ],
 ];

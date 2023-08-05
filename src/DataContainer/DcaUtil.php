@@ -15,14 +15,12 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\Controller;
-use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Markocupic\CalendarEventBookingBundle\Exception\DcaFieldNotFoundException;
 
-class Module
+class DcaUtil
 {
-    public const TABLE = 'tl_module';
-
     private Adapter $controller;
 
     public function __construct(
@@ -31,4 +29,16 @@ class Module
         $this->controller = $this->framework->getAdapter(Controller::class);
     }
 
+    public function pushClass(string $fieldName, string $tableName, string $class): void
+    {
+        $this->controller->loadDataContainer($tableName);
+
+        if (!isset($GLOBALS['TL_DCA'][$tableName]['fields'][$fieldName])) {
+            throw new DcaFieldNotFoundException(sprintf('DCA field "%s.%s" not found.', $fieldName, 'tl_calendar'));
+        }
+
+        $strClass = $GLOBALS['TL_DCA']['tl_calendar']['fields'][$fieldName]['eval']['tl_class'] ?? '';
+
+        $GLOBALS['TL_DCA']['tl_calendar']['fields'][$fieldName]['eval']['tl_class'] = $strClass.' '.$class;
+    }
 }

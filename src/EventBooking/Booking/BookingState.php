@@ -22,4 +22,12 @@ class BookingState
     public const STATE_WAITING_LIST = 'cebb_booking_state_on_waiting_list';
     public const STATE_REJECTED = 'cebb_booking_state_rejected';
     public const STATE_UNSUBSCRIBED = 'cebb_booking_state_unsubscribed';
+    public const ALL = [
+        self::STATE_UNDEFINED,
+        self::STATE_NOT_CONFIRMED,
+        self::STATE_CONFIRMED,
+        self::STATE_WAITING_LIST,
+        self::STATE_REJECTED,
+        self::STATE_UNSUBSCRIBED,
+    ];
 }

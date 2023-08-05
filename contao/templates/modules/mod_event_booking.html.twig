@@ -2,22 +2,20 @@
 
 {% block content %}
 
-    {% if caseText is defined %}
+    {% if caseText|default %}
         <div class="cebb-case-text">
             {{ caseText }}
         </div>
     {% endif %}
 
-    {% if messages is defined %}
+    {% if messages|default %}
         <div class="cebb-messages">
             {{ messages|raw }}
         </div>
     {% endif %}
 
-    {% if form is defined %}
-        {% if canRegister %}
-            {{ form.generate()|raw }}
-        {% endif %}
+    {% if form|default and canRegister|default(false) %}
+        {{ form|raw }}
     {% endif %}
 
 {% endblock %}

@@ -8,6 +8,12 @@
             <trans-unit id="tl_calendar_events.booking_options_legend">
                 <source>Booking settings</source>
             </trans-unit>
+            <trans-unit id="tl_calendar_events.overrideByParent.0">
+                <source>Inherit booking settings from calendar</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar_events.overrideByParent.1">
+                <source>Inherit booking settings from parent calendar.</source>
+            </trans-unit>
             <trans-unit id="tl_calendar_events.street.0">
                 <source>Street</source>
             </trans-unit>
@@ -26,10 +32,10 @@
             <trans-unit id="tl_calendar_events.city.1">
                 <source>Please add the city.</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.0">
+            <trans-unit id="tl_calendar_events.enableBookingForm.0">
                 <source>Activate the booking form</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.1">
+            <trans-unit id="tl_calendar_events.enableBookingForm.1">
                 <source>Activate the booking form and set the options.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.maxEscortsPerMember.0">

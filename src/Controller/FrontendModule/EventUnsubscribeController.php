@@ -37,10 +37,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[AsFrontendModule(CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_unsubscribe_from_event_module')]
-class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
+#[AsFrontendModule(EventUnsubscribeController::TYPE, category:'events', template: 'mod_event_unsubscribe')]
+class EventUnsubscribeController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
+    public const TYPE = 'event_unsubscribe';
 
     protected CalendarEventsModel|null $objEvent = null;
     protected PageModel|null $objPage = null;
@@ -104,6 +104,8 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 if (!$this->hasError) {
                     if (null === ($this->objEvent = $this->eventRegistration->getModel()->getRelated('pid'))) {
                         $this->addError($translator->trans('ERR.event_not_found', [], 'contao_default'));
+                    }else{
+                        $eventConfig = $this->eventFactory->create($this->objEvent);
                     }
                 }
 
@@ -114,7 +116,8 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 }
 
                 if (!$this->hasError) {
-                    if (!$this->objEvent->activateDeregistration || (!empty($this->eventRegistration->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState)) {
+
+                    if ((isset($eventConfig) && !$eventConfig->get('activateDeregistration')) || (!empty($this->eventRegistration->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState)) {
                         $this->addError($translator->trans('ERR.event_unsubscription_not_allowed', [$this->objEvent->title], 'contao_default'));
                     }
                 }
@@ -224,14 +227,20 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
      */
     protected function sendNotifications(CalendarEventsMemberModel $eventMember, CalendarEventsModel $objEvent, ModuleModel $model): void
     {
+        $eventConfig = $this->eventFactory->create($objEvent);
+
+        if(!$eventConfig->get('activateUnsubscribeNotification')){
+            return;
+        }
+
         // Multiple notifications possible
-        $arrNotificationIds = $this->stringUtil->deserialize($objEvent->eventUnsubscribeNotification, true);
+        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->get('eventUnsubscribeNotification'), true);
 
         if (!empty($arrNotificationIds)) {
             // Get notification tokens
             $eventConfig = $this->eventFactory->create($objEvent);
 
-            $this->notification->setTokens($eventConfig, $eventMember, (int) $eventConfig->getModel()->eventUnsubscribeNotificationSender);
+            $this->notification->setTokens($eventConfig, $eventMember, (int) $eventConfig->get('eventUnsubscribeNotificationSender'));
             $this->notification->notify($arrNotificationIds);
         }
     }

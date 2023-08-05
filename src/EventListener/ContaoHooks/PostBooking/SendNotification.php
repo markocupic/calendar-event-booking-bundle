@@ -44,7 +44,7 @@ final class SendNotification extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration, array $formDetails): void
     {
         if (!self::isEnabled()) {
             return;
@@ -61,7 +61,7 @@ final class SendNotification extends AbstractHook
         $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->get('eventBookingNotification'), true);
 
         if (!empty($arrNotificationIds)) {
-            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->getModel()->eventBookingNotificationSender);
+            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->get('eventBookingNotificationSender'));
             $this->notification->notify($arrNotificationIds);
         }
     }

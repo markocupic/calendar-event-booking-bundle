@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
-use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
@@ -24,7 +23,6 @@ use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Date;
-use Contao\Environment;
 use Contao\FormModel;
 use Contao\Message;
 use Contao\ModuleModel;
@@ -38,15 +36,15 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRe
 use Markocupic\CalendarEventBookingBundle\EventBooking\Template\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\Exception\FormNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[AsFrontendModule(CalendarEventBookingEventBookingModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_event_booking_module')]
-class CalendarEventBookingEventBookingModuleController extends AbstractFrontendModuleController
+#[AsFrontendModule(EventBookingController::TYPE, category:'events', template: 'mod_event_booking')]
+class EventBookingController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'calendar_event_booking_event_booking_module';
-    public const FORM_SUBMIT_ID = 'event_subscription_form_%s';
+    public const TYPE = 'event_booking_form';
     public const CASE_EVENT_NOT_BOOKABLE = 'eventNotBookable';
     public const CASE_BOOKING_POSSIBLE = 'bookingPossible';
     public const CASE_EVENT_FULLY_BOOKED = 'eventFullyBooked';
@@ -63,7 +61,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private Adapter $controller;
     private Adapter $date;
     private Adapter $environment;
-    private Adapter $formModel;
     private Adapter $message;
     private Adapter $system;
 
@@ -79,8 +76,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->config = $this->framework->getAdapter(Config::class);
         $this->controller = $this->framework->getAdapter(Controller::class);
         $this->date = $this->framework->getAdapter(Date::class);
-        $this->environment = $this->framework->getAdapter(Environment::class);
-        $this->formModel = $this->framework->getAdapter(FormModel::class);
         $this->message = $this->framework->getAdapter(Message::class);
         $this->system = $this->framework->getAdapter(System::class);
     }
@@ -89,7 +84,6 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     {
         $this->model = $model;
 
-        // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $this->objPage = $page;
 
@@ -97,12 +91,12 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
             // Get the current event
             // Return an empty string, if...
-            // - activateBookingForm isn't set or
+            // - enableBookingForm isn't set or
             // - event is not published
-            if (null !== ($event = EventConfig::getEventFromCurrentUrl())) {
+            if (null !== ($event = EventConfig::getEventFromRequest())) {
                 $this->eventConfig = $this->eventFactory->create($event);
 
-                if ($this->eventConfig->get('activateBookingForm') && $this->eventConfig->get('published')) {
+                if ($this->eventConfig->get('enableBookingForm') && $this->eventConfig->get('published')) {
                     $showEmpty = false;
                 }
             }
@@ -116,38 +110,26 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         return parent::__invoke($request, $this->model, $section, $classes);
     }
 
-    public function getEventRegistrationHelper(): EventRegistration|null
-    {
-        return $this->eventRegistration;
-    }
-
-    public function getEvent(): CalendarEventsModel|null
-    {
-        return $this->eventConfig?->getModel();
-    }
-
-    public function getCase(): string|null
-    {
-        return $this->case;
-    }
-
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        $contaoFormId = (int) $this->model->form;
-        $formSubmitId = sprintf(static::FORM_SUBMIT_ID, $contaoFormId);
+        $form = FormModel::findByPk($this->model->form);
+
+        if (null === $form) {
+            throw new FormNotFoundException('No event booking form assigned to the frontend module. Please check the settings for the frontend module with ID: '.$model->id);
+        }
+
+        if (null === $this->eventConfig) {
+            throw new PageNotFoundException('Page not found: '.$request->getUri());
+        }
 
         // Load language file
         $this->system->loadLanguageFile($this->eventRegistration->getTable());
 
-        if (null === $this->eventConfig) {
-            throw new PageNotFoundException('Page not found: '.$this->environment->get('uri'));
-        }
-
         // Get case
-        $this->case = $this->getRegistrationCase($this->eventConfig);
+        $this->case = $this->eventConfig->getEventStatus();
         $template->caseText = null;
 
         // Trigger set case hook: manipulate case
@@ -156,6 +138,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 $this->system->importStatic($callback[0])->{$callback[1]}($this);
             }
         }
+
+        $formSubmitId = $form->formID ? 'auto_'.$form->formID : 'auto_form_'.$form->id;
 
         // Display messages
         if (self::CASE_BOOKING_NOT_YET_POSSIBLE === $this->case) {
@@ -200,17 +184,9 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
             }
         }
 
-        $template->form = null;
-
         // If display booking form (regular subscription or subscription to the waiting list is possible)
         if ($this->bookingValidator->validateCanRegister($this->eventConfig)) {
             $this->eventRegistration->setModuleData($model->row());
-
-            // Create a new CalendarEventsMember model
-            $this->eventRegistration->setModel();
-
-            // Create the form
-            $this->eventRegistration->createForm($contaoFormId, $formSubmitId, $this->eventConfig, $this);
 
             // Trigger pre validate hook: e.g. add custom field validators.';
             if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_VALIDATE_BOOKING_FORM])) {
@@ -219,61 +195,16 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                 }
             }
 
-            if ($this->eventRegistration->getForm()->validate()) {
-                // Use an event registration helper class to
-                // validate subscriptions and
-                // write the new event subscription to the database
-                if ($this->eventRegistration->validateSubscription($this->eventConfig)) {
-                    $this->eventRegistration->subscribe($this->eventConfig);
-
-                    // Reload or redirect to the jumpTo page
-                    if (null !== ($formModel = $this->formModel->findByPk($this->model->form))) {
-                        /** @var PageModel $jumpTo */
-                        $jumpTo = $this->objPage->findByPk($formModel->jumpTo);
-
-                        if (null !== $jumpTo) {
-                            $request->query->add(['bookingToken' => $this->eventRegistration->getModel()->bookingToken]);
-                            $request->overrideGlobals();
-                            $this->controller->redirect($request->getUri());
-                        }
-                    }
-
-                    $this->controller->reload();
-                }
-            }
-
-            $template->form = $this->eventRegistration->getForm();
+            $template->form = $this->controller->getForm($model->form);
         }
 
+        // Will not be processed if the form has been submitted and a redirecting has been set on the form.
         $template->case = $this->case;
         $template->model = $this->model;
         $template->messages = $this->message->hasMessages() ? $this->message->generate('FE') : null;
 
-        // Augment template with more data
         $this->addTemplateData->addTemplateData($this->eventConfig, $template);
 
         return $template->getResponse();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getRegistrationCase(EventConfig $eventConfig): string
-    {
-        if (!$eventConfig->isBookable()) {
-            $state = self::CASE_EVENT_NOT_BOOKABLE;
-        } elseif (!$this->bookingValidator->validateBookingStartDate($eventConfig)) {
-            $state = self::CASE_BOOKING_NOT_YET_POSSIBLE;
-        } elseif (!$this->bookingValidator->validateBookingEndDate($eventConfig)) {
-            $state = self::CASE_BOOKING_NO_LONGER_POSSIBLE;
-        } elseif ($this->bookingValidator->validateBookingMax($eventConfig, 1)) {
-            $state = self::CASE_BOOKING_POSSIBLE;
-        } elseif ($this->bookingValidator->validateBookingMaxWaitingList($eventConfig, 1)) {
-            $state = self::CASE_WAITING_LIST_POSSIBLE;
-        } else {
-            $state = self::CASE_EVENT_FULLY_BOOKED;
-        }
-
-        return $state;
     }
 }

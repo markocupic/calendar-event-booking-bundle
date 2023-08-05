@@ -42,4 +42,7 @@
     background-color: darkorange;
 }
 
+.override_event > .tl_checkbox_single_container > label, .override_event h3 > label:not(.error) {
+    color: darkorange;
+}
 

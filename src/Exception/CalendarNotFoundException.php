@@ -12,9 +12,8 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-// Legends
-$GLOBALS['TL_LANG']['tl_module']['form_legend'] = 'Booking form settings';
-$GLOBALS['TL_LANG']['tl_module']['notification_legend'] = 'Notification settings';
+namespace Markocupic\CalendarEventBookingBundle\Exception;
 
-// Fields
-$GLOBALS['TL_LANG']['tl_module']['cebb_memberListAllowedBookingStates'] = ['Allowed booking states', 'Please choose the allowed booking states.'];
+class CalendarNotFoundException extends \RuntimeException
+{
+}

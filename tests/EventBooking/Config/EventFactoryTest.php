@@ -20,6 +20,7 @@ use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventFactory;
+use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 
 class EventFactoryTest extends ContaoTestCase
 {
@@ -28,7 +29,8 @@ class EventFactoryTest extends ContaoTestCase
         $event = $this->createMock(CalendarEventsModel::class);
         $connection = $this->createMock(Connection::class);
         $framework = $this->createMock(ContaoFramework::class);
-        $factory = new EventFactory($connection, $framework);
+        $bookingValidator = $this->createMock(BookingValidator::class);
+        $factory = new EventFactory($connection, $framework, $bookingValidator);
 
         $this->assertInstanceOf(EventConfig::class, $factory->create($event));
     }

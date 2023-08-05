@@ -3,7 +3,10 @@
     <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/contao/languages/en/tl_calendar.php" source-language="en">
         <body>
             <trans-unit id="tl_calendar.event_unsubscribe_legend">
-                <source>Event unsubscription settings</source>
+                <source>Event unsubscription settings (the highlighted fields can be used to override the settings in the child events)</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.booking_options_legend">
+                <source>Booking settings (the highlighted fields can be used to override the settings in the child events)</source>
             </trans-unit>
             <trans-unit id="tl_calendar.eventUnsubscribePage.0">
                 <source>Page containing the event unsubscription module</source>
@@ -11,6 +14,67 @@
             <trans-unit id="tl_calendar.eventUnsubscribePage.1">
                 <source>Please choose the page to which users are redirected when clicking the unsubscription link</source>
             </trans-unit>
+            <trans-unit id="tl_calendar.calculateTotalFrom.0">
+                <source>Calculate total from</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.calculateTotalFrom.1">
+                <source>Specify which booking status should be used to calculate the total number of participants. Is required to calculate whether the event is fully booked.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.addEscortsToTotal.0">
+                <source>Add accompanying persons to the total number of participants</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.addEscortsToTotal.1">
+                <source>Determine whether the accompanying persons should be added to the total number of participants.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.waitingListLimit.0">
+                <source>Waiting list limit</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.waitingListLimit.1">
+                <source>Set the waiting list limit. Choose 0 to allow unlimited subscriptions.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotification.0">
+                <source>Choose one or more notifications</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotification.1">
+                <source>Choose one or more notifications.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotificationSender.0">
+                <source>Booking notification sender</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventBookingNotificationSender.1">
+                <source>Please choose the sender of the booking notification.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.activateUnsubscribeNotification.0">
+                <source>Unsubscribe notification</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.activateUnsubscribeNotification.1">
+                <source>Enable unsubscribe notifications.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotification.0">
+                <source>Choose one or more notifications</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotification.1">
+                <source>Choose one or more notifications.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotificationSender.0">
+                <source>Unsubscribe notification sender</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.eventUnsubscribeNotificationSender.1">
+                <source>Please choose the sender of the unsubscribe notification.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.allowDuplicateEmail.0">
+                <source>Enable multiple bookings with same email address</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.allowDuplicateEmail.1">
+                <source>Please choose if multiple bookings with same email address should be allowed.</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.bookingState.0">
+                <source>Booking state</source>
+            </trans-unit>
+            <trans-unit id="tl_calendar.bookingState.1">
+                <source>Select the state that is automatically assigned to a new booking.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
+

@@ -10,14 +10,6 @@
                 <source>Notification settings</source>
                 <target>Benachrichtigungs-Einstellungen</target>
             </trans-unit>
-            <trans-unit id="tl_module.cebb_memberListPartialTemplate.0">
-                <source>Event member list partial template</source>
-                <target>Event Teilnehmer-Listen-Partial-Template</target>
-            </trans-unit>
-            <trans-unit id="tl_module.cebb_memberListPartialTemplate.1">
-                <source>Here you can select the event meber list partial template.</source>
-                <target>Hier können Sie das Event-Teilnehmer-Listen-Partial-Template auswählen.</target>
-            </trans-unit>
             <trans-unit id="tl_module.cebb_memberListAllowedBookingStates.0">
                 <source>Allowed booking states</source>
                 <target>Zur Anzeige freigegeben Buchungen</target>

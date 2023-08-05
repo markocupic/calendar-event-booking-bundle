@@ -47,11 +47,11 @@ final class SendNotification extends AbstractHook
         }
 
         // Multiple notifications possible
-        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->getModel()->eventUnsubscribeNotification, true);
+        $arrNotificationIds = $this->stringUtil->deserialize($eventConfig->get('eventUnsubscribeNotification'), true);
 
         if (!empty($arrNotificationIds)) {
             // Get notification tokens
-            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->getModel()->eventUnsubscribeNotificationSender);
+            $this->notification->setTokens($eventConfig, $eventRegistration->getModel(), (int) $eventConfig->get('eventUnsubscribeNotificationSender'));
             $this->notification->notify($arrNotificationIds);
         }
     }

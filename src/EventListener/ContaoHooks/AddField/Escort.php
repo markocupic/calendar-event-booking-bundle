@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AddFie
 
 use Codefog\HasteBundle\Form\Form;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingController;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 
@@ -25,7 +25,7 @@ final class Escort extends AbstractHook
 {
     public const HOOK = AbstractHook::HOOK_ADD_FIELD;
 
-    public function __invoke(Form $form, string $strField, array $arrDca, EventConfig $eventConfig, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(Form $form, string $strField, array $arrDca, EventConfig $eventConfig, EventBookingController $moduleInstance): bool
     {
         if (!self::isEnabled()) {
             return true;

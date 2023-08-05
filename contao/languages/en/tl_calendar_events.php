@@ -19,10 +19,11 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['registrations'] = 'Show participants 
 $GLOBALS['TL_LANG']['tl_calendar_events']['booking_options_legend'] = 'Booking settings';
 
 // Fields
+$GLOBALS['TL_LANG']['tl_calendar_events']['overrideByParent'] = ['Inherit booking settings from calendar', 'Inherit booking settings from parent calendar.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['street'] = ['Street', 'Please add the street.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['postal'] = ['PLZ', 'Please add the postal code.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['city'] = ['Ort', 'Please add the city.'];
-$GLOBALS['TL_LANG']['tl_calendar_events']['activateBookingForm'] = ['Activate the booking form', 'Activate the booking form and set the options.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableBookingForm'] = ['Activate the booking form', 'Activate the booking form and set the options.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['maxEscortsPerMember'] = ['Maximum escorts per participant', 'Please set the maximum number of escorts per participant.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['addEscortsToTotal'] = ['Add accompanying persons to the total number of participants', 'Determine whether the accompanying persons should be added to the total number of participants.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['bookingStartDate'] = ['Booking start date', 'Set the booking start time, please.'];

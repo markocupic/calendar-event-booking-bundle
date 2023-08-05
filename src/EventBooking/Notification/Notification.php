@@ -90,13 +90,13 @@ class Notification
         // Prepare tokens for event and use "event_*" as prefix
         $this->controller->loadDataContainer('tl_calendar_events');
 
-        $row = $eventConfig->getModel()->row();
+        $arrFields = array_keys($eventConfig->getModel()->row());
 
-        foreach ($row as $k => $v) {
-            if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$k])) {
-                $arrTokens['event_'.$k] = $this->formatter->dcaValue('tl_calendar_events', $k, $v);
+        foreach ($arrFields as $fieldName) {
+            if (isset($GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$fieldName])) {
+                $arrTokens['event_'.$fieldName] = $this->formatter->dcaValue('tl_calendar_events', $fieldName, $eventConfig->get($fieldName));
             } else {
-                $arrTokens['event_'.$k] = html_entity_decode((string) $v);
+                $arrTokens['event_'.$fieldName] = html_entity_decode((string) $eventConfig->get($fieldName));
             }
         }
 
@@ -115,7 +115,7 @@ class Notification
                     }
 
                     if (isset($GLOBALS['TL_DCA']['tl_user']['fields'][$k])) {
-                        $arrTokens['sender_'.$k] = $this->formatter->dcaValue('tl_user', $k, $v);
+                        $arrTokens['sender_'.$k] = html_entity_decode((string) $this->formatter->dcaValue('tl_user', $k, $v));
                     } else {
                         $arrTokens['sender'.$k] = html_entity_decode((string) $v);
                     }

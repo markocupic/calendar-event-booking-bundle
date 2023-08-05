@@ -38,7 +38,7 @@ final class AddToSession extends AbstractHook
      *
      * @throws \Exception
      */
-    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration): void
+    public function __invoke(EventConfig $eventConfig, EventRegistration $eventRegistration, array $formDetails): void
     {
         if (!self::isEnabled()) {
             return;
@@ -48,13 +48,13 @@ final class AddToSession extends AbstractHook
             return;
         }
 
-        $this->addToSession($eventConfig, $eventRegistration);
+        $this->addToSession($eventConfig, $eventRegistration, $formDetails);
     }
 
     /**
      * @throws \Exception
      */
-    private function addToSession(EventConfig $eventConfig, EventRegistration $eventRegistration): void
+    private function addToSession(EventConfig $eventConfig, EventRegistration $eventRegistration, array $formDetails): void
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
@@ -65,9 +65,10 @@ final class AddToSession extends AbstractHook
         $flashBag = $session->getFlashBag();
         $arrSession = [];
 
-        $arrSession['eventData'] = $eventConfig->getModel()->row();
-        $arrSession['memberData'] = $eventRegistration->getModel()->row();
-        $arrSession['formData'] = $eventRegistration->getForm()->fetchAll();
+        $arrSession['bookingUuid'] = $eventRegistration->getModel()->bookingToken;
+        $arrSession['event'] = $eventConfig->getModel()->row();
+        $arrSession['registration'] = $eventRegistration->getModel()->row();
+        $arrSession['form'] = $formDetails['form']->getModel()->row();
 
         $flashBag->set(SessionConfig::FLASH_KEY, $arrSession);
     }

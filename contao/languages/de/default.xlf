@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="MSC.cebb_booking_state_not_confirmed">
                 <source>not confirmed</source>
-                <target>Buchungsanfrage noch nicht beantwortet</target>
+                <target>Buchungsanfrage noch nicht bestätigt</target>
             </trans-unit>
             <trans-unit id="MSC.cebb_booking_state_confirmed">
                 <source>confirmed</source>

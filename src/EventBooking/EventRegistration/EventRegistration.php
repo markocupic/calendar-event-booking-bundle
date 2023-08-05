@@ -15,19 +15,13 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration;
 
 use Codefog\HasteBundle\Form\Form;
-use Codefog\HasteBundle\Util\ArrayPosition;
-use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\FormModel;
-use Contao\FrontendUser;
 use Contao\System;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
-use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingType;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Config\EventConfig;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -103,118 +97,12 @@ final class EventRegistration
     /**
      * @throws \Exception
      */
-    public function subscribe(EventConfig $eventConfig): void
-    {
-        $eventMember = $this->getModel();
-        $eventMember->pid = $eventConfig->getModel()->id;
-        $eventMember->tstamp = time();
-        $eventMember->dateAdded = time();
-        $eventMember->bookingState = isset($_POST['cebbBookingWaitingListSubmit']) ? BookingState::STATE_WAITING_LIST : $eventConfig->get('bookingState');
-        $eventMember->bookingToken = Uuid::uuid4()->toString();
-
-        // Set the booking type
-        $user = $this->security->getUser();
-        $eventMember->bookingType = $user instanceof FrontendUser ? BookingType::TYPE_MEMBER : BookingType::TYPE_GUEST;
-
-        // Trigger format form data hook: format/manipulate user input. E.g. convert formatted dates to timestamps, etc.';
-        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA])) {
-            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PREPARE_FORM_DATA] as $callback) {
-                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $eventMember);
-            }
-        }
-
-        // Trigger pre-booking hook: add your custom code here.
-        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING])) {
-            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_PRE_BOOKING] as $callback) {
-                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($this->getForm(), $eventConfig, $eventMember);
-            }
-        }
-
-        // Save to Database
-        $eventMember->save();
-
-        // Trigger post-booking hook: add data to the session, send notifications, log things, etc.
-        if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING])) {
-            foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_POST_BOOKING] as $callback) {
-                $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($eventConfig, $this);
-            }
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
     public function unsubscribe(): void
     {
         $eventMember = $this->getModel();
         $eventMember->bookingState = BookingState::STATE_UNSUBSCRIBED;
+        $eventMember->unsubscribedOn = time();
         $eventMember->save();
-    }
-
-    public function hasForm(): bool
-    {
-        return null !== $this->form;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function getForm(): Form
-    {
-        if (!$this->hasForm()) {
-            throw new \Exception('Form not found. Please use the EventRegistration::createForm() method first.');
-        }
-
-        return $this->form;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function createForm(int $formId, string $formSubmitId, EventConfig $eventConfig, AbstractFrontendModuleController $module): void
-    {
-        if (null === FormModel::findByPk($formId)) {
-            throw new \Exception('Invalid or missing Contao form id.');
-        }
-
-        $eventMember = $this->getModel();
-
-        $request = $this->requestStack->getCurrentRequest();
-
-        $form = new Form(
-            $formSubmitId,
-            'POST',
-            static fn ($objHaste) => $request->request->get('FORM_SUBMIT') === $objHaste->getFormId()
-        );
-
-        // Bind the event member model to the form input
-        $form->setBoundModel($eventMember);
-
-        // Add fields from form generator
-        $form->addFieldsFromFormGenerator(
-            $formId,
-            function (&$strField, &$arrDca) use ($form, $eventConfig, $module) {
-                // Trigger add field hook
-                if (isset($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD]) && \is_array($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD])) {
-                    foreach ($GLOBALS['TL_HOOKS'][AbstractHook::HOOK_ADD_FIELD] as $callback) {
-                        $blnShow = $this->systemAdapter->importStatic($callback[0])->{$callback[1]}($form, $strField, $arrDca, $eventConfig, $module);
-
-                        if (!$blnShow) {
-                            return false;
-                        }
-                    }
-                }
-
-                // Return "true", otherwise the field will be skipped
-                return true;
-            }
-        );
-
-        if (!$form->hasFormField('cebbBookingDefaultSubmit')) {
-            $form->addSubmitFormField($this->translator->trans('BTN.cebb_booking_default_submit_lbl', [], 'contao_default'), 'cebbBookingDefaultSubmit', ArrayPosition::last());
-        }
-
-        $this->form = $form;
     }
 
     public function getModuleData(): array

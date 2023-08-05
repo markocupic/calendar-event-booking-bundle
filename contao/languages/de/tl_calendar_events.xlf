@@ -10,13 +10,13 @@
                 <source>Booking settings</source>
                 <target>Buchungseinstellungen</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.street.0">
-                <source>Street</source>
-                <target>Strasse</target>
+            <trans-unit id="tl_calendar_events.overrideByParent.0">
+                <source>Inherit booking settings from calendar</source>
+                <target>Buchungseinstellungen von Kalender erben</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.street.1">
-                <source>Please add the street.</source>
-                <target>Geben Sie bitte eine Strasse ein.</target>
+            <trans-unit id="tl_calendar_events.overrideByParent.1">
+                <source>Inherit booking settings from parent calendar.</source>
+                <target>Buchungseinstellungen vom übergeordneten Kalender erben.</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.postal.0">
                 <source>PLZ</source>
@@ -34,11 +34,11 @@
                 <source>Please add the city.</source>
                 <target>Geben Sie bitte einen Ort ein.</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.0">
+            <trans-unit id="tl_calendar_events.enableBookingForm.0">
                 <source>Activate the booking form</source>
                 <target>Buchungsformular aktivieren</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.activateBookingForm.1">
+            <trans-unit id="tl_calendar_events.enableBookingForm.1">
                 <source>Activate the booking form and set the options.</source>
                 <target>Aktivieren Sie das Buchungsformular und legen Sie die Optionen fest.</target>
             </trans-unit>
@@ -108,7 +108,7 @@
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateBookingNotification.0">
                 <source>Booking notification</source>
-                <target>Benachrichtigung bei Buchung</target>
+                <target>Benachrichtigung bei Buchung aktivieren</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateBookingNotification.1">
                 <source>Enable booking notifications.</source>
@@ -156,7 +156,7 @@
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateUnsubscribeNotification.0">
                 <source>Unsubscribe notification</source>
-                <target>Benachrichtigung bei Stornierung</target>
+                <target>Benachrichtigung bei Stornierung aktivieren</target>
             </trans-unit>
             <trans-unit id="tl_calendar_events.activateUnsubscribeNotification.1">
                 <source>Enable unsubscribe notifications.</source>

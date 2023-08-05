@@ -13,4 +13,6 @@ services:
             '../src/EventBooking/Config/EventConfig.php'
         ]
 
+    Markocupic\CalendarEventBookingBundle\DataContainer\DcaUtil:
+        public: true
 

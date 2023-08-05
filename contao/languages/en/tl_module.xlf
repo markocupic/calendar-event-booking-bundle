@@ -8,12 +8,6 @@
             <trans-unit id="tl_module.notification_legend">
                 <source>Notification settings</source>
             </trans-unit>
-            <trans-unit id="tl_module.cebb_memberListPartialTemplate.0">
-                <source>Event member list partial template</source>
-            </trans-unit>
-            <trans-unit id="tl_module.cebb_memberListPartialTemplate.1">
-                <source>Here you can select the event meber list partial template.</source>
-            </trans-unit>
             <trans-unit id="tl_module.cebb_memberListAllowedBookingStates.0">
                 <source>Allowed booking states</source>
             </trans-unit>
