@@ -69,7 +69,7 @@ class CalendarEventsMember
 
                 $exportConfig->convertEncoding(true, $convertFrom, $convertTo);
             }
-            
+
             $this->exportTable->run($exportConfig);
         }
     }
