@@ -33,6 +33,22 @@ Erstellen Sie das entsprechende Modul und binden Sie es auf einer neuen Seite in
 Diese Seite sollten Sie sinnvollerweise in der Navigation nicht anzeigen lassen.
 In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das Event-Abmeldeformular liegt.
 
+#### Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
+Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) herunterladen.
+In der `config/config.yaml` lässt sich das Encoding einstellen.
+Standardmässig werden die Daten im Format **UTF-8** exportiert.
+Es kann sein, dass Excel (bei entsprechender Einstellung), dann Umlaute falsch darstellt.
+Das Problem kann behoben werden, wenn die `config/config.yaml` dahingehend anpasst wird,
+dass die Inhalte vor dem Export von **UTF-8** nach **ISO-8859-1** konvertiert werden.
+
+```
+markocupic_calendar_event_booking:
+  member_list_export:
+    enable_output_conversion: true
+    convert_from: 'UTF-8'
+    convert_to: 'ISO-8859-1'
+```
+
 ## Einrichtung (Ablauf)
 1. Kalender und Events anlegen.
 2. "Eventliste" und "Eventleser" Frontend-Module anlegen.
