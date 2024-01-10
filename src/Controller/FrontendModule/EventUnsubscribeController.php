@@ -104,7 +104,7 @@ class EventUnsubscribeController extends AbstractFrontendModuleController
                 if (!$this->hasError) {
                     if (null === ($this->objEvent = $this->eventRegistration->getModel()->getRelated('pid'))) {
                         $this->addError($translator->trans('ERR.event_not_found', [], 'contao_default'));
-                    }else{
+                    } else {
                         $eventConfig = $this->eventFactory->create($this->objEvent);
                     }
                 }
@@ -116,7 +116,6 @@ class EventUnsubscribeController extends AbstractFrontendModuleController
                 }
 
                 if (!$this->hasError) {
-
                     if ((isset($eventConfig) && !$eventConfig->get('activateDeregistration')) || (!empty($this->eventRegistration->getModel()->bookingState) && BookingState::STATE_CONFIRMED !== $this->eventRegistration->getModel()->bookingState)) {
                         $this->addError($translator->trans('ERR.event_unsubscription_not_allowed', [$this->objEvent->title], 'contao_default'));
                     }
@@ -229,7 +228,7 @@ class EventUnsubscribeController extends AbstractFrontendModuleController
     {
         $eventConfig = $this->eventFactory->create($objEvent);
 
-        if(!$eventConfig->get('activateUnsubscribeNotification')){
+        if (!$eventConfig->get('activateUnsubscribeNotification')) {
             return;
         }
 

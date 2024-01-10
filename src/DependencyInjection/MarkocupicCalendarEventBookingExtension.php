@@ -28,11 +28,23 @@ class MarkocupicCalendarEventBookingExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../../config')
         );
 
         $loader->load('services.yaml');
+
+        $container->setParameter($this->getAlias().'.member_list_export.enable_output_conversion', $config['member_list_export']['enable_output_conversion']);
+        $container->setParameter($this->getAlias().'.member_list_export.convert_from', $config['member_list_export']['convert_from']);
+        $container->setParameter($this->getAlias().'.member_list_export.convert_to', $config['member_list_export']['convert_to']);
+    }
+
+    public function getAlias(): string
+    {
+        return Configuration::ROOT_KEY;
     }
 }

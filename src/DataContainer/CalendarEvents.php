@@ -65,7 +65,6 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'config.onload')]
     public function adjustSubPalettes(DataContainer $dc): void
     {
-
         $arrRemove = [];
 
         $overrideByParent = (bool) $this->connection->fetchOne('SELECT overrideByParent FROM tl_calendar_events WHERE id = ?', [$dc->id]);
@@ -104,7 +103,6 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'config.onsubmit')]
     public function adjustBookingDate(DataContainer $dc): void
     {
-
         // Return if there is no active record (override all)
         if (!$dc->activeRecord) {
             return;
@@ -127,7 +125,6 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'fields.text.save')]
     public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
-
         if (!empty($intValue)) {
             // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
@@ -161,7 +158,6 @@ class CalendarEvents
     #[AsCallback(table: self::TABLE, target: 'list.sorting.child_record', priority: 100)]
     public function childRecordCallback(array $arrRow): string
     {
-
         $origClass = new \tl_calendar_events();
 
         $strRegistrationsBadges = $this->getBookingStateBadgesString($arrRow);
@@ -175,7 +171,6 @@ class CalendarEvents
 
     private function getBookingStateBadgesString(array $arrRow): string
     {
-
         $strRegistrationsBadges = '';
 
         $intNotConfirmed = 0;

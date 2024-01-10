@@ -71,6 +71,18 @@ class CalendarEventsMember
                 ->setOutputBom(ByteSequence::BOM['UTF-8'])
                 ;
 
+            // Handle output conversion
+            if ($this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.enable_output_conversion')) {
+                $convertFrom = $this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.convert_from');
+                $convertTo = $this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.convert_to');
+
+                if ('utf-8' !== strtolower($convertTo)) {
+                    $exportConfig->setOutputBom('');
+                }
+
+                $exportConfig->convertEncoding(true, $convertFrom, $convertTo);
+            }
+
             $this->exportTable->run($exportConfig);
         }
     }
