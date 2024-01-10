@@ -1,7 +1,9 @@
 # Events buchen mit Contao
+
 ### Achtung: Bei der Migration von Version 3.x nach 4.x gab es mehrere Änderungen in der Benennung der Modul-Typen und Template-Namen. Dies bitte bei einer allfälligen Migration berücksichtigen.
 
 ## Events buchen
+
 Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
 Das Anmeldeformular kann im Contao Formulargenerator erstellt werden.
 Die Erweiterung stellt während des Installationsprozesses ein Sample Anmeldeformular bereit, welches Grundansprüchen genügen sollte.
@@ -9,10 +11,13 @@ Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abg
 und sind im Backend einsehbar und über eine CSV-Datei exportierbar.
 
 ## Benachrichtigung
+
 Event-Organisator und Teilnehmer können bei Event-Anmeldung und Event-Abmeldung über das Notification Center benachrichtigt werden.
 
 ## Frontend Module
+
 #### Event Anmeldeformular
+
 Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anmeldeformular einblenden.
 Verlinken Sie in den Moduleinstellungen mit dem entsprechenden Formular aus dem Contao Formulargenerator.
 Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url.
@@ -20,19 +25,39 @@ Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der 
 Das Anmeldeformular sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
 
 #### Angemeldete Mitglieder im Frontend auflisten
+
 Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen aufgelistet werden.
 Wichtig! Das Auflistungsmodul zieht den Eventnamen aus der Url.
 Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
 Das Mitgliederauflistungs-Modul sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
 
 #### Von Event abmelden
+
 Die Erweiterung stellt auch eine Möglichkeit sich von einem Event wieder abzumelden.
 Via Notification Center kann dem Teilnehmer ein Abmeldelink (##event_unsubscribeHref##) zugeschickt werden.
 Erstellen Sie das entsprechende Modul und binden Sie es auf einer neuen Seite in der Seitenstruktur ein.
 Diese Seite sollten Sie sinnvollerweise in der Navigation nicht anzeigen lassen.
 In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das Event-Abmeldeformular liegt.
 
+#### Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
+
+Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) herunterladen.
+In der `config/config.yaml` lässt sich das Encoding einstellen.
+Standardmässig werden die Daten im Format **UTF-8** exportiert.
+Es kann sein, dass Excel (bei entsprechender Einstellung), dann Umlaute falsch darstellt.
+Das Problem kann behoben werden, wenn die `config/config.yaml` dahingehend anpasst wird,
+dass die Inhalte vor dem Export von **UTF-8** nach **ISO-8859-1** konvertiert werden.
+
+```
+markocupic_calendar_event_booking:
+  member_list_export:
+    enable_output_conversion: true
+    convert_from: 'UTF-8'
+    convert_to: 'ISO-8859-1'
+```
+
 ## Einrichtung (Ablauf)
+
 1. Kalender und Events anlegen.
 2. "Eventliste" und "Eventleser" Frontend-Module anlegen.
 3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen.
@@ -47,6 +72,7 @@ In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das E
 12. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
 
 #### Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
+
 Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator
 und nutzen Sie dabei die **Simple Tokens**.
 
@@ -55,20 +81,20 @@ Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt u
 ![Notification Center](docs/notification_center.jpg)
 
 ##### Gebrauch der Simple Tokens im Notification Center
+
 Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
 
 Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
 
 Organisator/Email-Absender: ##organizer_name##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
-
 #### Punkt 5: Event-Buchungsformular erstellen
+
 Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
 **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
 ![Formulargenerator-Einstellung](docs/form_generator.png)
 Folgende Felder können im Formular erstellt werden:
 firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
-
 
 Werden weitere Felder gewünscht, so müssen diese im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` definiert werden.
 Danach Cache neu aufbauen und via Installtool die Felder in der Datenbank anlegen.
@@ -100,8 +126,8 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 
 ```
 
-
 #### Punkt 11: E-Mail Buchungsbestätigung im Event aktivieren
+
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
 ![Benachrichtigung im Event aktivieren](docs/benachrichtigung-aktivieren.png)
 
@@ -124,9 +150,8 @@ Tag | type | Erklärung
 `$this->hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
 `$this->loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
 
-
-
 ### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
+
 ```
 Array
 (
@@ -277,9 +302,9 @@ Array
 ```
 
 ## Mit Hooks Frontend Module erweitern/anpassen
+
 Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
 Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
-
 
 ```php
 <?php
@@ -319,33 +344,31 @@ final class DoSomething
 
 ```
 
-
 ## Mehrfaches Absenden des Buchungsformulars unterbinden
 
 Mit etwas Javascript Code, den man im Buchungs-Template einbindet,
-  lässt sich durch Deaktivierung des Absende-Buttons beim ersten Absenden des Formulars,
-  eine mehrfache Anmeldung durch Doppelklick o.Ä unterbinden.
-
+lässt sich durch Deaktivierung des Absende-Buttons beim ersten Absenden des Formulars,
+eine mehrfache Anmeldung durch Doppelklick o.Ä unterbinden.
 
 ```javascript
 
 <script>
-/**
-  * vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates/modules/mod_calendar_event_booking_event_booking_module.html5
-  * Prevent sending forms multiple times
-  */
-document.addEventListener("DOMContentLoaded", function(event) {
-let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
-if(elForms.length){
-  elForms.forEach((elForm, index, nodeList) => {
+    /**
+    * vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates/modules/mod_calendar_event_booking_event_booking_module.html5
+    * Prevent sending forms multiple times
+    */
+    document.addEventListener("DOMContentLoaded", function(event) {
+    let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
+    if(elForms.length){
+    elForms.forEach((elForm, index, nodeList) => {
     elForm.addEventListener('submit', (event) => {
-      let elBtn = elForm.querySelector('.submit[type="submit"]');
-      if(elBtn)
-      {
-        elBtn.disabled = true;
-      }
-    });
-  });
+    let elBtn = elForm.querySelector('.submit[type="submit"]');
+    if(elBtn)
+{
+    elBtn.disabled = true;
+}
+});
+});
 }
 });
 </script>

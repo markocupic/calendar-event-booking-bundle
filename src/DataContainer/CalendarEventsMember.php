@@ -15,17 +15,21 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
+use Contao\System;
 use Markocupic\ExportTable\Config\Config;
 use Markocupic\ExportTable\Export\ExportTable;
 
 class CalendarEventsMember
 {
-    private ExportTable $exportTable;
 
-    public function __construct(ExportTable $exportTable)
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly ExportTable $exportTable,
+    )
     {
-        $this->exportTable = $exportTable;
+        $this->system = $this->framework->getAdapter(System::class);
     }
 
     /**
@@ -54,6 +58,18 @@ class CalendarEventsMember
                 ->setHeadlineFields($arrSelectedFields)
                 ;
 
+            // Handle output conversion
+            if ($this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.enable_output_conversion')) {
+                $convertFrom = $this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.convert_from');
+                $convertTo = $this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.convert_to');
+
+                if ('utf-8' !== strtolower($convertTo)) {
+                    $exportConfig->setOutputBom('');
+                }
+
+                $exportConfig->convertEncoding(true, $convertFrom, $convertTo);
+            }
+            
             $this->exportTable->run($exportConfig);
         }
     }
