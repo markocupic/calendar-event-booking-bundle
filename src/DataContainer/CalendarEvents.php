@@ -67,16 +67,16 @@ class CalendarEvents
     {
         $arrRemove = [];
 
-        $overrideByParent = (bool) $this->connection->fetchOne('SELECT overrideByParent FROM tl_calendar_events WHERE id = ?', [$dc->id]);
+        $inheritFromCal = (bool) $this->connection->fetchOne('SELECT inheritFromCal FROM tl_calendar_events WHERE id = ?', [$dc->id]);
 
-        if ($overrideByParent) {
+        if ($inheritFromCal) {
             $this->controller->loadDataContainer('tl_calendar_events');
             $arrFields = array_keys($GLOBALS['TL_DCA']['tl_calendar_events']['fields']);
 
             foreach ($arrFields as $fieldName) {
-                $allowOverriding = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$fieldName]['eval']['allowOverrideByParent'] ?? false;
+                $inheritFromCal = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$fieldName]['eval']['inheritFromCal'] ?? false;
 
-                if (true === $allowOverriding) {
+                if (true === $inheritFromCal) {
                     $arrRemove[] = $fieldName;
                 }
             }

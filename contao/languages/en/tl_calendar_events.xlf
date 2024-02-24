@@ -8,10 +8,10 @@
             <trans-unit id="tl_calendar_events.booking_options_legend">
                 <source>Booking settings</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.overrideByParent.0">
+            <trans-unit id="tl_calendar_events.inheritFromCal.0">
                 <source>Inherit booking settings from calendar</source>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.overrideByParent.1">
+            <trans-unit id="tl_calendar_events.inheritFromCal.1">
                 <source>Inherit booking settings from parent calendar.</source>
             </trans-unit>
             <trans-unit id="tl_calendar_events.street.0">

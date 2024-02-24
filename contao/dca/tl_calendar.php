@@ -18,8 +18,8 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 PaletteManipulator::create()
     ->addLegend('booking_options_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('event_unsubscribe_legend', 'booking_options_legend', PaletteManipulator::POSITION_AFTER)
-    ->addField(['eventUnsubscribePage', 'calculateTotalFrom', 'eventUnsubscribeNotification', 'eventUnsubscribeNotificationSender'], 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['allowDuplicateEmail', 'bookingState', 'addEscortsToTotal', 'waitingListLimit', 'eventBookingNotification', 'eventBookingNotificationSender'], 'booking_options_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField(['eventUnsubscribePage', 'eventUnsubscribeNotification', 'eventUnsubscribeNotificationSender'], 'event_unsubscribe_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField(['allowDuplicateEmail', 'bookingState', 'calculateTotalFrom', 'addEscortsToTotal', 'waitingListLimit', 'eventBookingNotification', 'eventBookingNotificationSender'], 'booking_options_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar');
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
@@ -36,88 +36,88 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['calculateTotalFrom'] = [
     'inputType' => 'select',
     'options'   => [BookingState::STATE_NOT_CONFIRMED, BookingState::STATE_CONFIRMED, BookingState::STATE_UNDEFINED],
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
-    'eval'      => ['mandatory' => true, 'multiple' => true, 'chosen' => true],
+    'eval'      => ['mandatory' => true, 'multiple' => true, 'chosen' => true, 'tl_class' => 'clr w50'],
     'sql'       => "varchar(255) NOT NULL default '".serialize([BookingState::STATE_CONFIRMED])."'",
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['allowDuplicateEmail'] = [
-    'eval'      => ['isBoolean' => true, 'tl_class' => 'clr m12 override_event'],
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['addEscortsToTotal'] = [
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
+    'eval'      => ['isBoolean' => true, 'tl_class' => 'w50 m12 override_event'],
+    'sql'       => "char(1) NOT NULL default ''",
+];
+
+// This field is used to override the twin input field in tl_calendar_events
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['allowDuplicateEmail'] = [
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'eval'      => ['isBoolean' => true, 'tl_class' => 'clr m12 override_event'],
     'sql'       => "char(1) NOT NULL default ''",
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['bookingState'] = [
-    'eval'      => ['tl_class' => 'w50 override_event', 'mandatory' => true],
     'filter'    => true,
     'inputType' => 'select',
     'options'   => BookingState::ALL,
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
     'search'    => true,
     'sorting'   => true,
+    'eval'      => ['tl_class' => 'clr w50 override_event', 'mandatory' => true],
     'sql'       => "varchar(64) NOT NULL default '".BookingState::STATE_CONFIRMED."'",
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['addEscortsToTotal'] = [
-    'eval'      => ['isBoolean' => true, 'tl_class' => 'clr m12 override_event'],
-    'exclude'   => true,
-    'filter'    => true,
-    'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
-];
-
-// This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['waitingListLimit'] = [
-    'eval'      => ['rgxp' => 'digit', 'tl_class' => 'clr w50 override_event'],
     'exclude'   => true,
     'inputType' => 'text',
+    'eval'      => ['rgxp' => 'digit', 'tl_class' => 'clr w50 override_event'],
     'sql'       => "smallint(3) unsigned NOT NULL default '0'",
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventBookingNotification'] = [
-    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50 override_event'],
     'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
+    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50 override_event'],
     'sql'        => 'blob NULL',
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventBookingNotificationSender'] = [
-    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 override_event'],
     'exclude'    => true,
     'foreignKey' => 'tl_user.name',
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
+    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 override_event'],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribeNotification'] = [
-    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50 override_event'],
     'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
+    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50 override_event'],
     'sql'        => 'blob NULL',
 ];
 
 // This field is used to override the twin input field in tl_calendar_events
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribeNotificationSender'] = [
-    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 override_event'],
     'exclude'    => true,
     'foreignKey' => 'tl_user.name',
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
+    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50 override_event'],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
 ];

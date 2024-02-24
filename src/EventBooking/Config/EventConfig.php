@@ -82,9 +82,9 @@ class EventConfig
 
         $arrEventFields = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'] ?? [];
         $arrCalFields = $GLOBALS['TL_DCA']['tl_calendar']['fields'] ?? [];
-        $allowOverriding = $arrEventFields[$propertyName]['eval']['allowOverrideByParent'] ?? false;
+        $inheritFromCal = $arrEventFields[$propertyName]['eval']['inheritFromCal'] ?? false;
 
-        if (true === $allowOverriding && !empty($arrCalFields[$propertyName])) {
+        if (true === $inheritFromCal && !empty($arrCalFields[$propertyName])) {
             $calendar = CalendarModel::findByPk($this->get('pid'));
 
             if (null !== $calendar) {

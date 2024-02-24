@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activa
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'activateUnsubscribeNotification';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableBookingForm'] = 'overrideByParent,minMembers,maxMembers,maxEscortsPerMember,addEscortsToTotal,bookingStartDate,bookingEndDate,allowDuplicateEmail,bookingState,,activateWaitingList,activateBookingNotification,activateDeregistration';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableBookingForm'] = 'inheritFromCal,minMembers,maxMembers,maxEscortsPerMember,addEscortsToTotal,bookingStartDate,bookingEndDate,allowDuplicateEmail,bookingState,activateWaitingList,activateBookingNotification,activateDeregistration';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateWaitingList'] = 'waitingListLimit';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateBookingNotification'] = 'eventBookingNotification,eventBookingNotificationSender';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp,activateUnsubscribeNotification';
@@ -87,7 +87,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableBookingForm'] = [
     'sql'       => "char(1) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['overrideByParent'] = [
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['inheritFromCal'] = [
     'eval'      => ['submitOnChange' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
@@ -96,7 +96,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['overrideByParent'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allowDuplicateEmail'] = [
-    'eval'      => ['allowOverrideByParent' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['inheritFromCal' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -104,7 +104,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['allowDuplicateEmail'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingState'] = [
-    'eval'      => ['allowOverrideByParent' => true, 'tl_class' => 'w50', 'mandatory' => true],
+    'eval'      => ['inheritFromCal' => true, 'tl_class' => 'w50', 'mandatory' => true],
     'filter'    => true,
     'inputType' => 'select',
     'options'   => BookingState::ALL,
@@ -158,7 +158,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addEscortsToTotal'] = [
-    'eval'      => ['allowOverrideByParent' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
+    'eval'      => ['inheritFromCal' => true, 'isBoolean' => true, 'tl_class' => 'clr m12'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
@@ -173,7 +173,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateWaitingList'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['waitingListLimit'] = [
-    'eval'      => ['allowOverrideByParent' => true, 'rgxp' => 'digit', 'tl_class' => 'clr w50'],
+    'eval'      => ['inheritFromCal' => true, 'rgxp' => 'digit', 'tl_class' => 'clr w50'],
     'exclude'   => true,
     'inputType' => 'text',
     'sql'       => "smallint(3) unsigned NOT NULL default '0'",
@@ -188,7 +188,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateBookingNotification'
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotification'] = [
-    'eval'       => ['allowOverrideByParent' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50'],
+    'eval'       => ['inheritFromCal' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50'],
     'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
     'inputType'  => 'select',
@@ -198,7 +198,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotification'] =
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = [
-    'eval'       => ['allowOverrideByParent' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
+    'eval'       => ['inheritFromCal' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
     'exclude'    => true,
     'foreignKey' => 'tl_user.name',
     'inputType'  => 'select',
@@ -243,7 +243,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateUnsubscribeNotificat
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribeNotification'] = [
-    'eval'       => ['allowOverrideByParent' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50'],
+    'eval'       => ['inheritFromCal' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr w50'],
     'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
     'inputType'  => 'select',
@@ -253,7 +253,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribeNotification
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventUnsubscribeNotificationSender'] = [
-    'eval'       => ['allowOverrideByParent' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
+    'eval'       => ['inheritFromCal' => true, 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'],
     'exclude'    => true,
     'foreignKey' => 'tl_user.name',
     'inputType'  => 'select',

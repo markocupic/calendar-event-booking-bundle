@@ -10,11 +10,11 @@
                 <source>Booking settings</source>
                 <target>Buchungseinstellungen</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.overrideByParent.0">
+            <trans-unit id="tl_calendar_events.inheritFromCal.0">
                 <source>Inherit booking settings from calendar</source>
                 <target>Buchungseinstellungen von Kalender erben</target>
             </trans-unit>
-            <trans-unit id="tl_calendar_events.overrideByParent.1">
+            <trans-unit id="tl_calendar_events.inheritFromCal.1">
                 <source>Inherit booking settings from parent calendar.</source>
                 <target>Buchungseinstellungen vom übergeordneten Kalender erben.</target>
             </trans-unit>

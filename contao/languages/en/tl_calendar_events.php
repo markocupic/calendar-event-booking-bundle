@@ -19,7 +19,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['registrations'] = 'Show participants 
 $GLOBALS['TL_LANG']['tl_calendar_events']['booking_options_legend'] = 'Booking settings';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar_events']['overrideByParent'] = ['Inherit booking settings from calendar', 'Inherit booking settings from parent calendar.'];
+$GLOBALS['TL_LANG']['tl_calendar_events']['inheritFromCal'] = ['Inherit booking settings from calendar', 'Inherit booking settings from parent calendar.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['street'] = ['Street', 'Please add the street.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['postal'] = ['PLZ', 'Please add the postal code.'];
 $GLOBALS['TL_LANG']['tl_calendar_events']['city'] = ['Ort', 'Please add the city.'];
