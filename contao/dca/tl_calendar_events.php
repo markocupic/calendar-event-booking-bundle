@@ -45,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['activateUnsubscribeNoti
 // Operations
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['registrations'] = [
     'href'  => 'do=calendar&table=tl_calendar_events_member',
-    'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.png',
+    'icon'  => 'bundles/markocupiccalendareventbooking/icons/group.svg',
     'label' => &$GLOBALS['TL_LANG']['tl_calendar_events']['registrations'],
 ];
 

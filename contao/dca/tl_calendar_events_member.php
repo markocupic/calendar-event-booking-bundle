@@ -51,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadRegistrationList'],
                 'href'       => 'action=downloadRegistrationList',
                 'class'      => 'download_booking_list',
-                'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.png',
+                'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.svg',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],

@@ -1,8 +1,3 @@
-#tl_buttons .header_icon.download_booking_list {
-    padding-left: 42px;
-    margin-left: 1px;
-}
-
 /** tl_calendar_events Show subscription state **/
 
 @keyframes blinker {
@@ -45,4 +40,3 @@
 .override_event > .tl_checkbox_single_container > label, .override_event h3 > label:not(.error) {
     color: darkorange;
 }
-
