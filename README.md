@@ -56,21 +56,74 @@ markocupic_calendar_event_booking:
     convert_from: 'UTF-8'
     convert_to: 'ISO-8859-1'
 ```
+## Installation
+
+### Über Composer
+Ausführen: "composer require markocupic/calendar-event-booking-bundle"
+
+### Über den Contao-Manager
+Suche nach: "markocupic/calendar-event-booking-bundle"
 
 ## Einrichtung: empfohlener Ablauf
 
-1. Kalender und Events anlegen.
-2. "Eventliste" und "Eventleser" Frontend-Module anlegen.
-3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen.
-4. Gegebenenfalls Benachrichtigung des Typs "Benachrichtigung bei Event Buchung" anlegen (Notification Center)
-5. Gegebenenfalls Benachrichtigung des Typs "Benachrichtigung bei Event Stornierung" anlegen (Notification Center)
-6. Im Contao Formulargenerator das automatisch generierte Formular anpassen und die benötigten Felder bereitstellen (evtl. DCA-Anpassung nötig).
-7. Im Formular keine Weiterleitungsseite angeben. Diese muss im Frontend-Modul (nächster Schritt) gesetzt werden.
-8. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 6 erstellte Formular auswählen und die Weiterleitungsseite angeben.
-9. Die 3 erstellten Module (Eventliste, Eventleser und Event-Buchungsformular) in der Contao Seiten- und Artikelstruktur einbinden (Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite).
-10. Optional das Frontend Modul "Event-Stornierungsformular" erstellen und dieses in einer extra dafür erstellten Seite einbinden. Die Seite mit dem Stornierungsformular muss bei der Kalendereinstellung hinterlegt werden.
-11. Optional das Frontend Modul "Event-Mitglieder-Auflistung" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
+1. Kalender und Events anlegen:
+
+![Contao-Eventkalender-anlegen](docs/events-calendar.png)
+
+![Contao-Events-anlegen](docs/events-calendar-events.png)
+
+2. "Eventliste" und "Eventleser" Frontend-Module anlegen:
+
+![Frontendmodule-Eventleser-und-Liste-anlegen](docs/frontend-module-eventleser-eventliste.png)
+
+3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen:
+
+![E-Mail-Gateway-anlegen](docs/email-gateway.png)
+
+4. Gegebenenfalls Benachrichtigung des Typs "Nachricht bei Eventbuchung" anlegen (Notification Center):
+
+![Benachrichtigung-bei-Eventbuchung-anlegen](docs/benachrichtigung-event-buchung.png)
+
+![Benachrichtigung-bei-Eventbuchung-anlegen](docs/nachricht-bei-eventbuchung.png)
+
+5. Gegebenenfalls Benachrichtigung des Typs "Nachricht bei Event-Stornierung" anlegen (Notification Center):
+
+![Benachrichtigung-bei-Eventstornierung-anlegen](docs/benachrichtigung-event-stornierung.png)
+
+![Benachrichtigung-bei-Eventstornierung-anlegen](docs/nachricht-bei-event-stornierung.png)
+
+6. Im Contao Formulargenerator das automatisch generierte Formular anpassen und die benötigten Felder bereitstellen (evtl. DCA-Anpassung nötig):
+
+![Formulargenerator-Beispielformular-anpassen](docs/buchungsformular.png)
+
+![Formulargenerator-Beispielformular-anpassen](docs/formulargenerator-formular-anpassen.png)
+
+7. **Im Formular keine Weiterleitungsseite angeben. Diese muss im Frontend-Modul (nächster Schritt) gesetzt werden.**
+
+8. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 6 erstellte Formular auswählen und die Weiterleitungsseite angeben:
+
+![Frontendmodul-Event-Buchungsformular-anlegen](docs/frontend-modul-buchungsformular.png)
+
+![Frontendmodul-Event-Buchungsformular-konfigurieren](docs/frontend-modul-buchungsformular-config.png)
+
+9. **Optional** das Frontend Modul "Event-Stornierungsformular" erstellen und dieses in einer extra dafür erstellten Seite einbinden. Die Seite mit dem Stornierungsformular muss bei der Kalendereinstellung hinterlegt werden.
+
+![Formulargenerator-Weiterleitung-zur-Stornierungsseite](docs/formulargenerator-weiterleitung-zur-stornierungsseite.png)
+
+10. **Optional** das Frontend Modul "Event-Teilnehmer-Liste" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
+
+![Frontendmodul-Event-Teilnehmerliste](docs/frontend-modul-teilnehmerliste.png)
+
+11. Die erstellten Module (Event-Buchungsformular, Eventleser und, falls vorhanden,die Eventliste) in der Contao Seiten- und Artikelstruktur einbinden 
+**(Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite).**
+
+![Artikel-mit-Frontendmodulen](docs/artikel-mit-frontendmodulen.png)
+
 12. Bei allen Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren.
+
+![Event-Optionen-konfigurieren](docs/event-optionen-config-1.png)
+![Event-Optionen-konfigurieren](docs/event-optionen-config-2.png)
+
 13. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
 
 #### Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
@@ -81,13 +134,27 @@ und nutzen Sie dabei die **Simple Tokens**.
 Mit ##member_cancelRegistrationUrl## kann ein tokengesicherter Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Stornierung erlaubt werden.
 Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt und in einer Seite eingebunden worden sein.
 
+**Beispiel einer Stornierungsbenachrichtigung:**
+
+![Stornierungsnachricht-Beispiel](docs/notification-center-stornierungsnachricht-1.png)
+![Stornierungsnachricht-Beispiel](docs/notification-center-stornierungsnachricht-2.png)
+![Stornierungsnachricht-Beispiel](docs/notification-center-stornierungsnachricht-3.png)
+
 ##### Gebrauch der Simple Tokens im Notification Center
 
-Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_cebb_registration)
+**Teilnehmer:** 
 
-Event: ##event_title##, ##event_street##, ##event_postal##, ##event_location##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
+* ##member_gender## (Männlich, Weiblich oder Divers)
+* ##member_salutation## (Übersetzt: Herr oder Frau)
+* ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_cebb_registration)
 
-Email-Absender: ##sender_name##, ##sender_email, etc. (Feldnamen aus tl_user)
+**Event:**
+
+* ##event_title##, ##event_street##, ##event_postal##, ##event_location##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
+
+**Email-Absender:** 
+
+* ##sender_name##, ##sender_email, etc. (Feldnamen aus tl_user)
 
 #### Beispieltext Notification Center
 
@@ -188,20 +255,21 @@ Array
 )
 
 ```
-
 #### Punkt 5: Event-Buchungsformular erstellen
 
-Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
+Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular "event booking form sample (auto generated on database migration)" mit allen benötigten Feldern generiert.
 **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
-![Formulargenerator-Einstellung](docs/form_generator.png)
-Folgende Felder sind standardmässig im bereitgestellte Formular vorhanden und auch in der Datenbanktabelle `tl_cebb_registration` eingerichtet:
+
+![Formulargenerator-Buchungsfunktion-aktiviren](docs/buchungsformular-funktion-aktivieren.png)
+
+**Folgende Felder sind standardmässig im bereitgestellte Formular vorhanden und auch in der Datenbanktabelle `tl_cebb_registration` eingerichtet:**
 `firstname`,`lastname`,`gender`,`dateOfBirth`,`street`,`postal`,`city`,`phone`,`email`,`quantity`<sup>1</sup>,`escorts`<sup>2</sup>,`notes`
 
-1 Benutzen Sie das Feld `quantity`, wenn Sie möchten, dass die im Feld eingetragene Ganzzahl zum Teilnehmertotal addiert wird.
+**1** Benutzen Sie das Feld `quantity`, wenn Sie möchten, dass die im Feld eingetragene Ganzzahl zum Teilnehmertotal addiert wird.
 Standardmässig (auch wenn das Feld im Formular weggelassen wird) ist dieser Wert 1.
 Das Feld macht in einem Szenario Sinn, wo es möglich sein sollte, dass eine Person mehrere Tickets buchen darf.
 
-2 Benutzen Sie das Feld `escorts`, wenn es sich um Begleitpersonen handelt, welche **nicht zum Teilnehmertotal addiert** werden sollen.
+**2** Benutzen Sie das Feld `escorts`, wenn es sich um Begleitpersonen handelt, welche **nicht zum Teilnehmertotal addiert** werden sollen.
 
 Werden weitere Felder gebraucht, so müssen diese unter `contao/dca/tl_cebb_registration.php` definiert werden.
 
@@ -334,7 +402,7 @@ Contao\CoreBundle\DataContainer\PaletteManipulator::create()
 #### Punkt 11: E-Mail Buchungsbestätigung im Event aktivieren
 
 Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
-![Benachrichtigung im Event aktivieren](docs/benachrichtigung-aktivieren.png)
+![Benachrichtigung im Event aktivieren](docs/benachrichtigung-event-aktivieren.png)
 
 ### Template Variablen
 
