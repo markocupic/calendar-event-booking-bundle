@@ -268,6 +268,8 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
                                 return new RedirectResponse($strRedirectUrl);
                             }
                         }
+
+                        return $this->redirect($request->getUri());
                     }
                 }
                 $template->form = $this->objForm->generate();
