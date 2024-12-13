@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -72,8 +72,8 @@ class EventRegistration
 
         // Return an empty string if "events" is not set
         if (!empty($eventIdOrAlias)) {
-            if (null !== ($objEvent = $calendarEventsModelAdapter->findByIdOrAlias($eventIdOrAlias))) {
-                return $objEvent;
+            if (null !== ($event = $calendarEventsModelAdapter->findByIdOrAlias($eventIdOrAlias))) {
+                return $event;
             }
         }
 
@@ -83,15 +83,15 @@ class EventRegistration
     /**
      * @throws Exception
      */
-    public function getRegistrationState(?CalendarEventsModel $objEvent): string
+    public function getRegistrationState(?CalendarEventsModel $event): string
     {
-        if (!$objEvent->addBookingForm) {
+        if (!$event->addBookingForm) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
-        } elseif ($objEvent->bookingStartDate > time()) {
+        } elseif ($event->bookingStartDate > time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NOT_YET_POSSIBLE;
-        } elseif (is_numeric($objEvent->bookingEndDate) && $objEvent->bookingEndDate < time()) {
+        } elseif (is_numeric($event->bookingEndDate) && $event->bookingEndDate < time()) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_NO_LONGER_POSSIBLE;
-        } elseif ($this->isFullyBooked($objEvent)) {
+        } elseif ($this->isFullyBooked($event)) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_EVENT_FULLY_BOOKED;
         } else {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE;
@@ -103,18 +103,18 @@ class EventRegistration
     /**
      * @throws Exception
      */
-    public function canRegister(CalendarEventsModel $objEvent): bool
+    public function canRegister(CalendarEventsModel $event): bool
     {
-        return CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE === $this->getRegistrationState($objEvent);
+        return CalendarEventBookingEventBookingModuleController::CASE_BOOKING_POSSIBLE === $this->getRegistrationState($event);
     }
 
     /**
      * @throws Exception
      */
-    public function isFullyBooked(CalendarEventsModel $objEvent): bool
+    public function isFullyBooked(CalendarEventsModel $event): bool
     {
-        $bookingCount = $this->getBookingCount($objEvent);
-        $bookingMax = $this->getBookingMax($objEvent);
+        $bookingCount = $this->getBookingCount($event);
+        $bookingMax = $this->getBookingMax($event);
 
         if ($bookingMax > 0 && $bookingCount >= $bookingMax) {
             return true;
@@ -126,14 +126,14 @@ class EventRegistration
     /**
      * @throws Exception
      */
-    public function getBookingCount(CalendarEventsModel $objEvent): int
+    public function getBookingCount(CalendarEventsModel $event): int
     {
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
-        $memberCount = (int) $calendarEventsMemberModelAdapter->countBy('pid', $objEvent->id);
+        $memberCount = (int) $calendarEventsMemberModelAdapter->countBy('pid', $event->id);
 
-        if ($objEvent->includeEscortsWhenCalculatingRegCount) {
+        if ($event->includeEscortsWhenCalculatingRegCount) {
             $query = 'SELECT SUM(escorts) FROM tl_calendar_events_member WHERE pid = ?';
-            $sum = $this->connection->fetchOne($query, [$objEvent->id]);
+            $sum = $this->connection->fetchOne($query, [$event->id]);
 
             if (false !== $sum) {
                 $memberCount = $sum + $memberCount;
@@ -143,22 +143,22 @@ class EventRegistration
         return $memberCount;
     }
 
-    public function getBookingMax(CalendarEventsModel $objEvent): int
+    public function getBookingMax(CalendarEventsModel $event): int
     {
-        return (int) $objEvent->maxMembers;
+        return (int) $event->maxMembers;
     }
 
-    public function getBookingMin(CalendarEventsModel $objEvent): int
+    public function getBookingMin(CalendarEventsModel $event): int
     {
-        return (int) $objEvent->minMembers;
+        return (int) $event->minMembers;
     }
 
-    public function getBookingStartDate(CalendarEventsModel $objEvent, string $format = 'timestamp'): int|string
+    public function getBookingStartDate(CalendarEventsModel $event, string $format = 'timestamp'): int|string
     {
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-        $tstamp = empty($objEvent->bookingStartDate) ? 0 : (int) $objEvent->bookingStartDate;
+        $tstamp = empty($event->bookingStartDate) ? 0 : (int) $event->bookingStartDate;
 
         if ('timestamp' === $format) {
             $varValue = $tstamp;
@@ -173,12 +173,12 @@ class EventRegistration
         return $varValue;
     }
 
-    public function getBookingEndDate(CalendarEventsModel $objEvent, string $format = 'timestamp'): int|string
+    public function getBookingEndDate(CalendarEventsModel $event, string $format = 'timestamp'): int|string
     {
         $dateAdapter = $this->framework->getAdapter(Date::class);
         $configAdapter = $this->framework->getAdapter(Config::class);
 
-        $tstamp = empty($objEvent->bookingEndDate) ? 0 : $objEvent->bookingEndDate;
+        $tstamp = empty($event->bookingEndDate) ? 0 : $event->bookingEndDate;
 
         if ('timestamp' === $format) {
             $varValue = (int) $tstamp;
@@ -193,7 +193,7 @@ class EventRegistration
         return $varValue;
     }
 
-    public function addToSession(CalendarEventsModel $objEvent, CalendarEventsMemberModel $objEventMember, Form $objForm): void
+    public function addToSession(CalendarEventsModel $event, CalendarEventsMemberModel $registration, Form $form): void
     {
         $session = $this->requestStack->getCurrentRequest()->getSession();
 
@@ -204,9 +204,9 @@ class EventRegistration
         $flashBag = $session->getFlashBag();
         $arrSession = [];
 
-        $arrSession['eventData'] = $objEvent->row();
-        $arrSession['memberData'] = $objEventMember->row();
-        $arrSession['formData'] = $objForm->fetchAll();
+        $arrSession['eventData'] = $event->row();
+        $arrSession['memberData'] = $registration->row();
+        $arrSession['formData'] = $form->fetchAll();
 
         $flashBag->set(self::FLASH_KEY, $arrSession);
     }

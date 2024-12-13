@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -100,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = [
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAddress'] = [
@@ -108,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableMultiBookingWithSameAd
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [
@@ -189,7 +189,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['includeEscortsWhenCalculatin
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] = [
@@ -200,7 +200,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableNotificationCenter'] =
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCenterIds'] = [
@@ -238,7 +238,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
         'load' => 'lazy',
     ],
     'search'     => true,
-    'sql'        => "int(10) unsigned NOT NULL default '0'",
+    'sql'        => 'int(10) unsigned NOT NULL default 0',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = [
@@ -249,7 +249,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = [
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => "char(1) NOT NULL default ''",
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
@@ -264,7 +264,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
     'inputType' => 'select',
     'options'   => range(0, 720),
     'sorting'   => true,
-    'sql'       => "int(10) unsigned NOT NULL default '0'",
+    'sql'       => 'int(10) unsigned NOT NULL default 0',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [

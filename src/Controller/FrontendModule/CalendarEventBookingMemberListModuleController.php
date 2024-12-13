@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -37,7 +37,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    private ?CalendarEventsModel $objEvent = null;
+    private ?CalendarEventsModel $event = null;
 
     public function __construct(
         private readonly ContaoFramework $framework,
@@ -47,17 +47,17 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     ) {
     }
 
-    public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
+    public function __invoke(Request $request, ModuleModel $model, string $section, ?array $classes = null, ?PageModel $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->objEvent = $this->eventRegistration->getEventFromCurrentUrl();
+            $this->event = $this->eventRegistration->getEventFromCurrentUrl();
 
             // Get the current event && return empty string if addBookingForm isn't set or event is not published
-            if (null !== $this->objEvent) {
-                if ($this->objEvent->addBookingForm && $this->objEvent->published) {
+            if (null !== $this->event) {
+                if ($this->event->addBookingForm && $this->event->published) {
                     $showEmpty = false;
                 }
             }
@@ -82,7 +82,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
-        $results = $this->getSignedUpMembers((int) ($this->objEvent->id));
+        $results = $this->getSignedUpMembers((int) ($this->event->id));
         $intRowCount = $results->rowCount();
 
         $i = 0;
@@ -106,8 +106,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $template->members = $strRows;
 
         // Add the event model to the parent template
-        $template->event = $this->objEvent;
-        $template->calendar = $this->objEvent->getRelated('pid');
+        $template->event = $this->event;
+        $template->calendar = $this->event->getRelated('pid');
 
         return $template->getResponse();
     }

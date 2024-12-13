@@ -58,7 +58,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     private ?CalendarEventsModel $event = null;
     private ?Form $form = null;
     private ?ModuleModel $model = null;
-    private ?PageModel$objPage = null;
+    private ?PageModel $page = null;
     private ?string $case = null;
     private array $disabledHooks = [];
 
@@ -79,7 +79,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
-            $this->objPage = $page;
+            $this->page = $page;
             $this->event = $this->eventRegistration->getEventFromCurrentUrl();
 
             $showEmpty = true;
@@ -174,7 +174,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
         // Override the page title (see #2853 and #4955)
         if ('' !== $this->event->title) {
-            $this->objPage->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->event->title));
+            $this->page->pageTitle = strip_tags($stringUtilAdapter->stripInsertTags($this->event->title));
         }
 
         // Get case
@@ -261,13 +261,13 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
 
                         // Redirect to the jumpTo page
                         if (null !== $formModel && $formModel->jumpTo) {
-                            /** @var PageModel $objPageModel */
-                            $objPageModel = $pageModelAdapter->findByPk($formModel->jumpTo);
+                            /** @var PageModel $pageModel */
+                            $pageModel = $pageModelAdapter->findByPk($formModel->jumpTo);
 
-                            if (null !== $objPageModel) {
+                            if (null !== $pageModel) {
                                 $strRedirectUrl = $this->urlParser->addQueryString(
                                     'bookingToken='.$this->registration->bookingToken,
-                                    $objPageModel->getAbsoluteUrl()
+                                    $pageModel->getAbsoluteUrl()
                                 );
 
                                 return new RedirectResponse($strRedirectUrl);
@@ -301,13 +301,13 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
         $this->form = new Form(
             !empty($formModel->formID) ? $formModel->formID : 'event_booking_form_'.$formModel->id,
             'POST',
-            static fn ($objHaste) => $inputAdapter->post('FORM_SUBMIT') === $objHaste->getFormId()
+            static fn ($hasteForm) => $inputAdapter->post('FORM_SUBMIT') === $hasteForm->getFormId()
         );
 
-        if($formModel->novalidate){
+        if ($formModel->novalidate) {
             $this->form->setDisableHtmlValidation(true);
         }
-        
+
         // Bind the event member model to the form input
         $this->registration = new CalendarEventsMemberModel();
         $this->form->setBoundModel($this->registration);

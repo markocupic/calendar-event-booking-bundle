@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -47,29 +47,29 @@ final class ValidateEmailAddress
         $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
         $inputAdapter = $this->framework->getAdapter(Input::class);
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        /** @var Form $form */
+        $form = $moduleInstance->getForm();
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var CalendarEventsModel $event */
+        $event = $moduleInstance->getEvent();
 
         // Check if user with submitted email has already booked
-        if ($objForm->hasFormField('email')) {
-            $objWidget = $objForm->getWidget('email');
+        if ($form->hasFormField('email')) {
+            $widget = $form->getWidget('email');
 
-            if (!empty($objWidget->value)) {
-                if (!$objEvent->enableMultiBookingWithSameAddress) {
+            if (!empty($widget->value)) {
+                if (!$event->enableMultiBookingWithSameAddress) {
                     $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
                     $arrOptions = [
                         'column' => [$t.'.email = ?', $t.'.pid = ?'],
-                        'value' => [strtolower($objWidget->value), $objEvent->id],
+                        'value' => [strtolower($widget->value), $event->id],
                     ];
 
-                    $objMember = $calendarEventsMemberModelAdapter->findAll($arrOptions);
+                    $registration = $calendarEventsMemberModelAdapter->findAll($arrOptions);
 
-                    if (null !== $objMember) {
+                    if (null !== $registration) {
                         $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
-                        $objWidget->addError($errorMsg);
+                        $widget->addError($errorMsg);
 
                         // Return false will make the validation fail
                         return false;

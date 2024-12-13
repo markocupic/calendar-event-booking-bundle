@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
-use Codefog\HasteBundle\Formatter;
 use Codefog\HasteBundle\UrlParser;
 use Contao\CalendarEventsModel;
 use Contao\Controller;
@@ -31,7 +30,6 @@ class NotificationHelper
 {
     public function __construct(
         private readonly ContaoFramework $framework,
-        private readonly Formatter $formatter,
         private readonly NotificationCenter $notificationCenter,
         private readonly RequestStack $requestStack,
         private readonly UrlParser $urlParser,
@@ -41,16 +39,18 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function getNotificationTokens(CalendarEventsMemberModel $objEventMember): array
+    public function getNotificationTokens(CalendarEventsMemberModel $registration): array
     {
-        if (null === ($objEvent = $objEventMember->getRelated('pid'))) {
-            throw new \Exception(sprintf('Event with ID %s not found.', $objEventMember->pid));
+        if (null === ($event = $registration->getRelated('pid'))) {
+            throw new \Exception(sprintf('Event with ID %s not found.', $registration->pid));
         }
 
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+
 
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -61,50 +61,50 @@ class NotificationHelper
         $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
 
         // Prepare tokens for event member and use "member_" as prefix
-        $row = $objEventMember->row();
+        $row = $registration->row();
 
         foreach ($row as $k => $v) {
             if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
-                $arrTokens['member_'.$k] = $this->formatter->dcaValue('tl_calendar_events_member', $k, $v);
+                $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
             } else {
-                $arrTokens['member_'.$k] = html_entity_decode((string) $v);
+                $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
             }
         }
 
-        $arrTokens['member_salutation'] = html_entity_decode((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$objEventMember->gender]);
+        $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$registration->gender]);
 
         // Prepare tokens for event and use "event_" as prefix
-        $row = $objEvent->row();
+        $row = $event->row();
 
         foreach ($row as $k => $v) {
-            $arrTokens['event_'.$k] = $this->formatter->dcaValue('tl_calendar_events', $k, $v);
+            $arrTokens['event_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
         }
 
         // Prepare tokens for organizer_* (sender)
-        $objOrganizer = $userModelAdapter->findByPk($objEvent->eventBookingNotificationSender);
+        $organizer = $userModelAdapter->findByPk($event->eventBookingNotificationSender);
 
-        if (null !== $objOrganizer) {
-            $row = $objOrganizer->row();
+        if (null !== $organizer) {
+            $row = $organizer->row();
 
             foreach ($row as $k => $v) {
                 if ('password' === $k || 'session' === $k) {
                     continue;
                 }
-                $arrTokens['organizer_'.$k] = $this->formatter->dcaValue('tl_user', $k, $v);
+                $arrTokens['organizer_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
             }
         }
 
         // Generate unsubscribe href
         $arrTokens['event_unsubscribeHref'] = '';
 
-        if ($objEvent->enableDeregistration) {
-            $objCalendar = $objEvent->getRelated('pid');
+        if ($event->enableDeregistration) {
+            $calendar = $event->getRelated('pid');
 
-            if (null !== $objCalendar) {
-                $objPage = $pageModelAdapter->findByPk($objCalendar->eventUnsubscribePage);
+            if (null !== $calendar) {
+                $page = $pageModelAdapter->findByPk($calendar->eventUnsubscribePage);
 
-                if (null !== $objPage) {
-                    $arrTokens['event_unsubscribeHref'] = $this->urlParser->addQueryString('bookingToken='.$objEventMember->bookingToken, $objPage->getAbsoluteUrl());
+                if (null !== $page) {
+                    $arrTokens['event_unsubscribeHref'] = $this->urlParser->addQueryString('bookingToken='.$registration->bookingToken, $page->getAbsoluteUrl());
                 }
             }
         }
@@ -112,7 +112,7 @@ class NotificationHelper
         // Trigger calEvtBookingGetNotificationTokens hook
         if (isset($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback) {
-                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($objEventMember, $objEvent, $arrTokens);
+                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($registration, $event, $arrTokens);
             }
         }
 
@@ -122,18 +122,18 @@ class NotificationHelper
     /**
      * @throws \Exception
      */
-    public function notify(CalendarEventsMemberModel $objEventMember, CalendarEventsModel $objEvent): void
+    public function notify(CalendarEventsMemberModel $registration, CalendarEventsModel $event): void
     {
         /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
 
-        if ($objEvent->enableNotificationCenter) {
+        if ($event->enableNotificationCenter) {
             // Multiple notifications possible
-            $arrNotifications = $stringUtilAdapter->deserialize($objEvent->eventBookingNotificationCenterIds);
+            $arrNotifications = $stringUtilAdapter->deserialize($event->eventBookingNotificationCenterIds);
 
             if (!empty($arrNotifications) && \is_array($arrNotifications)) {
                 // Get $arrToken from helper
-                $arrTokens = $this->getNotificationTokens($objEventMember);
+                $arrTokens = $this->getNotificationTokens($registration);
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {

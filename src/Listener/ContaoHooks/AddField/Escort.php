@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -27,7 +27,7 @@ final class Escort
 {
     public const HOOK = 'calEvtBookingAddField';
 
-    public function __invoke(Form $objForm, string $strField, array $arrDca, CalendarEventsModel $objEvent, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
+    public function __invoke(Form $form, string $strField, array $arrDca, CalendarEventsModel $event, CalendarEventBookingEventBookingModuleController $moduleInstance): bool
     {
         $arrDisabledHooks = $moduleInstance->getProperty('disabledHooks');
 
@@ -37,7 +37,7 @@ final class Escort
 
         // Skip input field "escorts" if escorts are not allowed
         if ('escorts' === $strField) {
-            if ($objEvent->maxEscortsPerMember < 1) {
+            if ($event->maxEscortsPerMember < 1) {
                 return false;
             }
         }

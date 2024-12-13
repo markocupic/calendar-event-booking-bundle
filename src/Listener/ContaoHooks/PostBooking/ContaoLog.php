@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -40,10 +40,10 @@ final class ContaoLog
             return;
         }
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var CalendarEventsModel $event */
+        $event = $moduleInstance->getEvent();
 
-        $strText = 'New booking for event with title "'.$objEvent->title.'"';
+        $strText = 'New booking for event with title "'.$event->title.'"';
         $level = LogLevel::INFO;
 
         if (null !== $this->logger) {

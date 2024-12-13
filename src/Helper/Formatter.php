@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -40,8 +40,8 @@ class Formatter
         // Convert date formats into timestamps
         if (null !== $varValue && '' !== $varValue && \in_array($rgxp, ['date', 'time', 'datim'], true)) {
             try {
-                $objDate = new Date($varValue, $dateAdapter->getFormatFromRgxp($rgxp));
-                $varValue = $objDate->tstamp;
+                $date = new Date($varValue, $dateAdapter->getFormatFromRgxp($rgxp));
+                $varValue = $date->tstamp;
             } catch (\OutOfBoundsException) {
                 throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
             }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -28,29 +28,29 @@ class AddTemplateData
     /**
      * Augment template with more event properties.
      */
-    public function addTemplateData(Template $template, CalendarEventsModel $objEvent): void
+    public function addTemplateData(Template $template, CalendarEventsModel $event): void
     {
-        $template->canRegister = fn (): bool => $this->eventRegistration->canRegister($objEvent);
+        $template->canRegister = fn (): bool => $this->eventRegistration->canRegister($event);
 
-        $template->isFullyBooked = fn (): bool => $this->eventRegistration->isFullyBooked($objEvent);
+        $template->isFullyBooked = fn (): bool => $this->eventRegistration->isFullyBooked($event);
 
-        $template->bookingCount = fn (): int => $this->eventRegistration->getBookingCount($objEvent);
+        $template->bookingCount = fn (): int => $this->eventRegistration->getBookingCount($event);
 
-        $template->bookingMin = fn (): int => $this->eventRegistration->getBookingMin($objEvent);
+        $template->bookingMin = fn (): int => $this->eventRegistration->getBookingMin($event);
 
-        $template->bookingMax = fn (): int => $this->eventRegistration->getBookingMax($objEvent);
+        $template->bookingMax = fn (): int => $this->eventRegistration->getBookingMax($event);
 
-        $template->bookingStartDate = fn (): string => $this->eventRegistration->getBookingStartDate($objEvent, 'date');
+        $template->bookingStartDate = fn (): string => $this->eventRegistration->getBookingStartDate($event, 'date');
 
-        $template->bookingStartDatim = fn (): string => $this->eventRegistration->getBookingStartDate($objEvent, 'datim');
+        $template->bookingStartDatim = fn (): string => $this->eventRegistration->getBookingStartDate($event, 'datim');
 
-        $template->bookingStartTimestamp = fn (): int => $this->eventRegistration->getBookingStartDate($objEvent, 'timestamp');
+        $template->bookingStartTimestamp = fn (): int => $this->eventRegistration->getBookingStartDate($event, 'timestamp');
 
-        $template->bookingEndDate = fn (): string => $this->eventRegistration->getBookingEndDate($objEvent, 'date');
+        $template->bookingEndDate = fn (): string => $this->eventRegistration->getBookingEndDate($event, 'date');
 
-        $template->bookingEndDatim = fn (): string => $this->eventRegistration->getBookingEndDate($objEvent, 'datim');
+        $template->bookingEndDatim = fn (): string => $this->eventRegistration->getBookingEndDate($event, 'datim');
 
-        $template->bookingEndTimestamp = fn (): int => $this->eventRegistration->getBookingEndDate($objEvent, 'timestamp');
+        $template->bookingEndTimestamp = fn (): int => $this->eventRegistration->getBookingEndDate($event, 'timestamp');
 
         $template->hasLoggedInUser = fn (): bool => $this->eventRegistration->hasLoggedInFrontendUser();
 

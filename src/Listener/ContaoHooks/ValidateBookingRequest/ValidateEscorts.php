@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -42,29 +42,33 @@ final class ValidateEscorts
             return true;
         }
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        /** @var Form $form */
+        $form = $moduleInstance->getForm();
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var CalendarEventsModel $event */
+        $event = $moduleInstance->getEvent();
 
-        if ($objForm->hasFormField('escorts')) {
-            $objWidget = $objForm->getWidget('escorts');
+        if ($form->hasFormField('escorts')) {
+            $widget = $form->getWidget('escorts');
 
-            if ((int) $objWidget->value < 0) {
+            if (empty($widget->value)) {
+                $widget->value = 0;
+            }
+
+            if ((int) $widget->value < 0 || (string) $widget->value !== (string) (int) ($widget->value)) {
                 $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
-                $objWidget->addError($errorMsg);
-            } elseif ($this->eventRegistration->isFullyBooked($objEvent)) {
-                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
-                $objWidget->addError($errorMsg);
-            } elseif ((int) $objWidget->value > 0) {
-                if ((int) $objWidget->value > (int) $objEvent->maxEscortsPerMember) {
-                    $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$objEvent->maxEscortsPerMember], 'contao_default');
-                    $objWidget->addError($errorMsg);
+                $widget->addError($errorMsg);
+            } elseif ($this->eventRegistration->isFullyBooked($event)) {
+                $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$event->maxMembers], 'contao_default');
+                $widget->addError($errorMsg);
+            } elseif ((int) $widget->value > 0) {
+                if ((int) $widget->value > (int) $event->maxEscortsPerMember) {
+                    $errorMsg = $this->translator->trans('MSC.maxEscortsPossible', [$event->maxEscortsPerMember], 'contao_default');
+                    $widget->addError($errorMsg);
                 }
             }
 
-            if ($objWidget->hasErrors()) {
+            if ($widget->hasErrors()) {
                 // return false will make the validation fail
                 return false;
             }

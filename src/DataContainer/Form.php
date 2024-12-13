@@ -26,11 +26,11 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function removeFieldsFromPalette(DataContainer $dc): void
     {
-        if (null === ($objForm = FormModel::findByPk($dc->id))) {
+        if (null === ($form = FormModel::findByPk($dc->id))) {
             return;
         }
 
-        if (!$objForm->isCalendarEventBookingForm) {
+        if (!$form->isCalendarEventBookingForm) {
             return;
         }
 
@@ -43,11 +43,11 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function manipulateFieldsDca(DataContainer $dc): void
     {
-        if (null === ($objForm = FormModel::findByPk($dc->id))) {
+        if (null === ($form = FormModel::findByPk($dc->id))) {
             return;
         }
 
-        if (!$objForm->isCalendarEventBookingForm) {
+        if (!$form->isCalendarEventBookingForm) {
             return;
         }
 

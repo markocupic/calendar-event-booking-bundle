@@ -99,8 +99,6 @@ Hallo ##member_firstname## ##member_lastname##
 
 Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
 
-Buchungsstatus: ##member_bookingState##.
-
 Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
 
 Ihre Angaben:
@@ -366,9 +364,9 @@ final class DoSomething
             return;
         }
 
-        $objEvent = $moduleInstance->getProperty('objEvent');
-        $objEventMember = $moduleInstance->getProperty('objEventMember');
-        $objForm = $moduleInstance->getProperty('objForm');
+        $event = $moduleInstance->getEvent();
+        $registration = $moduleInstance->getEventRegistration();
+        $form = $moduleInstance->getForm();
 
         // Do something
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -111,10 +111,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
                 'type' => 'belongsTo',
                 'load' => 'eager',
             ],
-            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'sql'        => 'int(10) unsigned NOT NULL default 0',
         ],
         'tstamp'       => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
+            'sql' => 'int(10) unsigned NOT NULL default 0',
         ],
         'addedOn'      => [
             'eval'      => [

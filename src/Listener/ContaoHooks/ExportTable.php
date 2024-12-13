@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -37,16 +37,16 @@ final class ExportTable implements ListenerInterface
      *
      * @return mixed
      */
-    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $objConfig)
+    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $config)
     {
         if ('tl_calendar_events_member' === $strTableName) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
             if ('pid' === $strFieldName) {
-                $objModel = $calendarEventsModelAdapter->findByPk($varValue);
+                $event = $calendarEventsModelAdapter->findByPk($varValue);
 
-                if (null !== $objModel) {
-                    $varValue = $objModel->title;
+                if (null !== $event) {
+                    $varValue = $event->title;
                 }
             }
         }

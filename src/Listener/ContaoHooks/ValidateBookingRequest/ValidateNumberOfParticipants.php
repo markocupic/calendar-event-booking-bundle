@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -50,30 +50,30 @@ final class ValidateNumberOfParticipants
 
         $messageAdapter = $this->framework->getAdapter(Message::class);
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        /** @var Form $form */
+        $form = $moduleInstance->getForm();
 
-        /** @var CalendarEventsModel $objEvent */
-        $objEvent = $moduleInstance->getProperty('objEvent');
+        /** @var CalendarEventsModel $event */
+        $event = $moduleInstance->getEvent();
 
         // Check if user with submitted email has already booked
         $escorts = 0;
 
-        if ($objEvent->includeEscortsWhenCalculatingRegCount && $objForm->hasFormField('escorts')) {
-            $objWidget = $objForm->getWidget('escorts');
-            $escorts = (int) $objWidget->value;
+        if ($event->includeEscortsWhenCalculatingRegCount && $form->hasFormField('escorts')) {
+            $widget = $form->getWidget('escorts');
+            $escorts = (int) $widget->value;
         }
 
         $countTotal = array_sum(
             [
-                $this->eventRegistration->getBookingCount($objEvent),
+                $this->eventRegistration->getBookingCount($event),
                 $escorts,
                 1,
             ]
         );
 
-        if ($this->eventRegistration->getBookingMax($objEvent) < $countTotal && (int) $objEvent->maxMembers > 0) {
-            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$objEvent->maxMembers], 'contao_default');
+        if ($this->eventRegistration->getBookingMax($event) < $countTotal && (int) $event->maxMembers > 0) {
+            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$event->maxMembers], 'contao_default');
             $messageAdapter->addInfo($errorMsg);
 
             return false;

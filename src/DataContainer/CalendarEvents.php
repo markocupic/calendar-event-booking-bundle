@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -57,7 +57,7 @@ class CalendarEvents
     #[AsCallback(table: 'tl_calendar_events', target: 'list.sorting.child_record')]
     public function listEvents(array $arrRow): string
     {
-        if ('1' === $arrRow['addBookingForm']) {
+        if ($arrRow['addBookingForm']) {
             $countBookings = CalendarEventsMemberModel::countBy('pid', $arrRow['id']);
 
             $span = Calendar::calculateSpan($arrRow['startTime'], $arrRow['endTime']);

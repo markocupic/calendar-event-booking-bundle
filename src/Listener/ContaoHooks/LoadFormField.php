@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -34,9 +34,9 @@ final class LoadFormField
     ) {
     }
 
-    public function __invoke(Widget $objWidget, string $strForm, array $arrForm, Form $objForm): Widget
+    public function __invoke(Widget $widget, string $strForm, array $arrForm, Form $form): Widget
     {
-        if ($objForm->isCalendarEventBookingForm) {
+        if ($form->isCalendarEventBookingForm) {
             $dateAdapter = $this->framework->getAdapter(Date::class);
             $configAdapter = $this->framework->getAdapter(Config::class);
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
@@ -46,25 +46,25 @@ final class LoadFormField
             $dca = $GLOBALS['TL_DCA']['tl_calendar_events_member'];
 
             // Convert timestamps to formatted date strings
-            if (isset($dca['fields'][$objWidget->name]['eval']['rgxp'])) {
-                if (!empty($objWidget->value)) {
-                    if (is_numeric($objWidget->value)) {
-                        if ('date' === $dca['fields'][$objWidget->name]['eval']['rgxp']) {
-                            $objWidget->value = $dateAdapter->parse($configAdapter->get('dateFormat'), $objWidget->value);
+            if (isset($dca['fields'][$widget->name]['eval']['rgxp'])) {
+                if (!empty($widget->value)) {
+                    if (is_numeric($widget->value)) {
+                        if ('date' === $dca['fields'][$widget->name]['eval']['rgxp']) {
+                            $widget->value = $dateAdapter->parse($configAdapter->get('dateFormat'), $widget->value);
                         }
 
-                        if ('datim' === $dca['fields'][$objWidget->name]['eval']['rgxp']) {
-                            $objWidget->value = $dateAdapter->parse($configAdapter->get('datimFormat'), $objWidget->value);
+                        if ('datim' === $dca['fields'][$widget->name]['eval']['rgxp']) {
+                            $widget->value = $dateAdapter->parse($configAdapter->get('datimFormat'), $widget->value);
                         }
                     }
                 }
             }
 
-            if ('escorts' === $objWidget->name) {
-                $objEvent = $this->eventRegistration->getEventFromCurrentUrl();
+            if ('escorts' === $widget->name) {
+                $event = $this->eventRegistration->getEventFromCurrentUrl();
 
-                if (null !== $objEvent) {
-                    $maxEscorts = $objEvent->maxEscortsPerMember;
+                if (null !== $event) {
+                    $maxEscorts = $event->maxEscortsPerMember;
 
                     if ($maxEscorts > 0) {
                         $opt = [];
@@ -75,12 +75,12 @@ final class LoadFormField
                                 'label' => $i,
                             ];
                         }
-                        $objWidget->options = serialize($opt);
+                        $widget->options = serialize($opt);
                     }
                 }
             }
         }
 
-        return $objWidget;
+        return $widget;
     }
 }

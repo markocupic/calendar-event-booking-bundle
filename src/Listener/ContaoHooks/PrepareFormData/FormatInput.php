@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Calendar Event Booking Bundle.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -41,21 +41,21 @@ final class FormatInput
             return;
         }
 
-        /** @var CalendarEventsMemberModel $objEventMember */
-        $objEventMember = $moduleInstance->getProperty('objEventMember');
+        /** @var CalendarEventsMemberModel $registration */
+        $registration = $moduleInstance->getEventRegistration();
 
-        /** @var Form $objForm */
-        $objForm = $moduleInstance->getProperty('objForm');
+        /** @var Form $form */
+        $form = $moduleInstance->getForm();
 
         $strTable = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
 
-        foreach (array_keys($objForm->getFormFields()) as $strFieldname) {
-            $varValue = $objEventMember->$strFieldname;
-            $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldname);
-            $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldname);
-            $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldname);
-            $objEventMember->$strFieldname = $varValue;
-            $objEventMember->save();
+        foreach (array_keys($form->getFormFields()) as $strFieldName) {
+            $varValue = $registration->$strFieldName;
+            $varValue = $this->formatter->convertDateFormatsToTimestamps($varValue, $strTable, $strFieldName);
+            $varValue = $this->formatter->formatEmail($varValue, $strTable, $strFieldName);
+            $varValue = $this->formatter->getCorrectEmptyValue($varValue, $strTable, $strFieldName);
+            $registration->$strFieldName = $varValue;
+            $registration->save();
         }
     }
 }
