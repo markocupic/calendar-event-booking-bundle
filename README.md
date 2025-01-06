@@ -89,15 +89,15 @@ Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##ev
 Organisator/Email-Absender: ##organizer_name##, ##organizer_email, etc. (Feldnamen aus tl_user)
 
 ```
-{if member_gender=='Männlich'}
+{if member_gender=='male'}
 Sehr geehrter Herr ##member_firstname## ##member_lastname##
-{elseif member_gender=='Weiblich'}
+{elseif member_gender=='female'}
 Sehr geehrte Frau ##member_firstname## ##member_lastname##
 {else}
 Hallo ##member_firstname## ##member_lastname##
 {endif}
 
-Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDate##.
+Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDateFormatted## ##event_startTimeFormatted## bis ##event_endDateFormatted## ##event_endTimeFormatted## .
 
 Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
 
@@ -107,9 +107,11 @@ Adresse: ##member_street##, ##member_postal##, ##member_city##
 Telefon: ##member_phone##
 E-Mail: ##member_email##
 Begleitpersonen: ##member_escorts##
+Geschlech: ##member_gender##
+Event-Stornierung erlauben: {if event_enableDeregistration=='1'}Ja{else}Nein{endif}
 
 
-{if event_enableDeregistration=='ja'}
+{if event_enableDeregistration=='1'}
 Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
 ##event_unsubscribeHref##
 {endif}
@@ -216,8 +218,10 @@ Array
     [event_addTime] => nein
     [event_startTime] => 00:00
     [event_endTime] => 23:59
-    [event_startDate] => 16. September 2021
-    [event_endDate] => 8. September 2021
+    [event_startDateFormatted] => 16. September 2021
+    [event_endDateFormatted] => 18. September 2021
+    [event_startTimeFormatted] => 08:00
+    [event_endTimeFormatted] => 18:00
     [event_location] =>
     [event_teaser] =>
     [event_addImage] => nein

@@ -16,8 +16,10 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 
 use Codefog\HasteBundle\UrlParser;
 use Contao\CalendarEventsModel;
+use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Date;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -50,7 +52,8 @@ class NotificationHelper
         $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-
+        $dateAdapter = $this->framework->getAdapter(Date::class);
+        $configAdapter = $this->framework->getAdapter(Config::class);
 
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -79,6 +82,11 @@ class NotificationHelper
         foreach ($row as $k => $v) {
             $arrTokens['event_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
         }
+
+        $arrTokens['event_startDateFormatted'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $event->startDate);
+        $arrTokens['event_endDateFormatted'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $event->endDate);
+        $arrTokens['event_startTimeFormatted'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $event->startTime);
+        $arrTokens['event_endTimeFormatted'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $event->endTime);
 
         // Prepare tokens for organizer_* (sender)
         $organizer = $userModelAdapter->findByPk($event->eventBookingNotificationSender);

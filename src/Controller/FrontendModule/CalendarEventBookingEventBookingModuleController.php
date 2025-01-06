@@ -73,7 +73,7 @@ class CalendarEventBookingEventBookingModuleController extends AbstractFrontendM
     ) {
     }
 
-    public function __invoke(Request $request, ModuleModel $model, string $section, ?array $classes = null, ?PageModel $page = null): Response
+    public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         $this->model = $model;
 
