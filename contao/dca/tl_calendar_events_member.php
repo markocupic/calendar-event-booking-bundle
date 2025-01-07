@@ -12,7 +12,6 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEventsMember;
 use Ramsey\Uuid\Uuid;
 use Contao\DataContainer;
 use Contao\DC_Table;
