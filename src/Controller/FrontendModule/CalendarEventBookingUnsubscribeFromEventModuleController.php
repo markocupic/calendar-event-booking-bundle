@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 
-#[AsFrontendModule(CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_unsubscribe_from_event_module')]
+#[AsFrontendModule(CalendarEventBookingUnsubscribeFromEventModuleController::TYPE, category: 'events', template: 'mod_calendar_event_booking_unsubscribe_from_event_module')]
 class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
@@ -95,18 +95,23 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                 if (!$this->hasError) {
                     $blnLimitExpired = false;
 
-                    // User has set a specific unsubscription limit timestamp, this has precedence
                     if (!empty($this->event->unsubscribeLimitTstamp)) {
+                        // User has set a specific unsubscription limit timestamp, this has precedence
                         if (time() > $this->event->unsubscribeLimitTstamp) {
                             $blnLimitExpired = true;
                         }
-                    }
-                    // We only have an unsubscription limit expressed in days before event start date
-                    else {
+                    } else {
+                        // We only have an unsubscription limit expressed in days before event start date
                         $limit = !$this->event->unsubscribeLimit > 0 ? 0 : $this->event->unsubscribeLimit;
 
-                        if (time() + $limit * 3600 * 24 > $this->event->startDate) {
-                            $blnLimitExpired = true;
+                        if ($this->event->startTime > $this->event->startDate) {
+                            if (time() + $limit * 3600 * 24 > $this->event->startTime) {
+                                $blnLimitExpired = true;
+                            }
+                        } else {
+                            if (strtotime('Y-m-d') + $limit * 3600 * 24 > $this->event->startDate) {
+                                $blnLimitExpired = true;
+                            }
                         }
                     }
 
@@ -186,7 +191,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 
                 // Send notification (multiple notifications possible)
                 foreach ($arrNotifications as $notificationId) {
-                    $this->notificationCenter->sendNotification((int) $notificationId, $arrTokens);
+                    $this->notificationCenter->sendNotification((int)$notificationId, $arrTokens);
                 }
             }
         }
