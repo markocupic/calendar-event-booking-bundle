@@ -24,6 +24,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         'enableVersioning'  => true,
         'onsubmit_callback' => [],
         'ondelete_callback' => [],
+        'doNotCopyRecords'  => true,
         'sql'               => [
             'keys' => [
                 'id'        => 'primary',
