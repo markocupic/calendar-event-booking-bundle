@@ -76,6 +76,9 @@ class CalendarEvents
         return (new \tl_calendar_events())->listEvents($arrRow);
     }
 
+    /**
+     * Check whether the timestamp entered makes sense in relation to the event start and end times.
+     */
     public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
     {
         if (!empty($intValue)) {
@@ -85,21 +88,18 @@ class CalendarEvents
                 throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits']);
             }
 
-            // Check whether the timestamp entered makes sense in relation to the event start and end times
-            $intMaxValue = null;
-
             // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
             if ($dc->activeRecord->endDate) {
                 if ($dc->activeRecord->addTime) {
                     $intMaxValue = (int) strtotime(date('Y-m-d', (int) $dc->activeRecord->endDate).' '.date('H:i:s', (int) $dc->activeRecord->endTime));
                 } else {
-                    $intMaxValue = (int) $dc->activeRecord->endDate;
+                    $intMaxValue = (int) $dc->activeRecord->endDate + 86400;
                 }
             } else {
                 if ($dc->activeRecord->addTime) {
                     $intMaxValue = (int) strtotime(date('Y-m-d', (int) $dc->activeRecord->startDate).' '.date('H:i:s', (int) $dc->activeRecord->startTime));
                 } else {
-                    $intMaxValue = (int) $dc->activeRecord->startDate;
+                    $intMaxValue = (int) $dc->activeRecord->startDate + 86400;
                 }
             }
 
