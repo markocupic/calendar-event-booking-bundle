@@ -12,24 +12,27 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking;
 
+use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\Logger\Logger;
+use Psr\Log\LogLevel;
 
-#[AsHook(AddToSession::HOOK, priority: 1200)]
-final class AddToSession
+#[AsHook(ContaoLog::HOOK, priority: 1100)]
+final class ContaoLog
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
     public function __construct(
-        private readonly EventRegistration $eventRegistration,
+        private readonly ?Logger $logger = null,
     ) {
     }
 
     /**
-     * Add registration to the session.
+     * @throws \Exception
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
@@ -37,10 +40,14 @@ final class AddToSession
             return;
         }
 
+        /** @var CalendarEventsModel $event */
         $event = $moduleInstance->getEvent();
-        $registration = $moduleInstance->getEventRegistration();
-        $form = $moduleInstance->getForm();
 
-        $this->eventRegistration->addToSession($event, $registration, $form);
+        $strText = 'New booking for event with title "'.$event->title.'"';
+        $level = LogLevel::INFO;
+
+        if (null !== $this->logger) {
+            $this->logger->log($strText, $level, ContaoContext::GENERAL);
+        }
     }
 }

@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\AddField;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AddField;
 
 use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;

@@ -12,35 +12,31 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\ValidateBookingRequest;
 
 use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Message;
-use Doctrine\DBAL\Exception;
+use Contao\Input;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[AsHook(ValidateNumberOfParticipants::HOOK, priority: 1100)]
-final class ValidateNumberOfParticipants
+#[AsHook(ValidateEmailAddress::HOOK, priority: 1000)]
+final class ValidateEmailAddress
 {
     public const HOOK = 'calEvtBookingValidateBookingRequest';
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly TranslatorInterface $translator,
-        private readonly EventRegistration $eventRegistration,
     ) {
     }
 
     /**
      * Important! return false will make the validation fail
-     * Validate if number of participants exceeds max member limit.
-     *
-     * @throws Exception
+     * Validate email address.
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
@@ -48,7 +44,8 @@ final class ValidateNumberOfParticipants
             return true;
         }
 
-        $messageAdapter = $this->framework->getAdapter(Message::class);
+        $calendarEventsMemberModelAdapter = $this->framework->getAdapter(CalendarEventsMemberModel::class);
+        $inputAdapter = $this->framework->getAdapter(Input::class);
 
         /** @var Form $form */
         $form = $moduleInstance->getForm();
@@ -57,26 +54,28 @@ final class ValidateNumberOfParticipants
         $event = $moduleInstance->getEvent();
 
         // Check if user with submitted email has already booked
-        $escorts = 0;
+        if ($form->hasFormField('email')) {
+            $widget = $form->getWidget('email');
 
-        if ($event->includeEscortsWhenCalculatingRegCount && $form->hasFormField('escorts')) {
-            $widget = $form->getWidget('escorts');
-            $escorts = (int) $widget->value;
-        }
+            if (!empty($widget->value)) {
+                if (!$event->enableMultiBookingWithSameAddress) {
+                    $t = CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE;
+                    $arrOptions = [
+                        'column' => [$t.'.email = ?', $t.'.pid = ?'],
+                        'value' => [strtolower($widget->value), $event->id],
+                    ];
 
-        $countTotal = array_sum(
-            [
-                $this->eventRegistration->getBookingCount($event),
-                $escorts,
-                1,
-            ]
-        );
+                    $registration = $calendarEventsMemberModelAdapter->findAll($arrOptions);
 
-        if ($this->eventRegistration->getBookingMax($event) < $countTotal && (int) $event->maxMembers > 0) {
-            $errorMsg = $this->translator->trans('MSC.maxMemberLimitExceeded', [$event->maxMembers], 'contao_default');
-            $messageAdapter->addInfo($errorMsg);
+                    if (null !== $registration) {
+                        $errorMsg = $this->translator->trans('MSC.youHaveAlreadyBooked', [$inputAdapter->post('email')], 'contao_default');
+                        $widget->addError($errorMsg);
 
-            return false;
+                        // Return false will make the validation fail
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;

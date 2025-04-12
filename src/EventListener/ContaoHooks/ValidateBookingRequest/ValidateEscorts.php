@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\ValidateBookingRequest;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\ValidateBookingRequest;
 
 use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;

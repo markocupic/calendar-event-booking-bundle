@@ -12,26 +12,24 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
+use Markocupic\CalendarEventBookingBundle\Helper\EventRegistration;
 
-#[AsHook(Notification::HOOK, priority: 1000)]
-final class Notification
+#[AsHook(AddToSession::HOOK, priority: 1200)]
+final class AddToSession
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
     public function __construct(
-        private readonly NotificationHelper $notificationHelper,
+        private readonly EventRegistration $eventRegistration,
     ) {
     }
 
     /**
-     * Run post booking notification.
-     *
-     * @throws \Exception
+     * Add registration to the session.
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
     {
@@ -39,6 +37,10 @@ final class Notification
             return;
         }
 
-        $this->notificationHelper->notify($moduleInstance->getEventRegistration(), $moduleInstance->getEvent());
+        $event = $moduleInstance->getEvent();
+        $registration = $moduleInstance->getEventRegistration();
+        $form = $moduleInstance->getForm();
+
+        $this->eventRegistration->addToSession($event, $registration, $form);
     }
 }

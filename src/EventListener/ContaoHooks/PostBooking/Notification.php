@@ -12,26 +12,25 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\Listener\ContaoHooks\PostBooking;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\PostBooking;
 
-use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Contao\CoreBundle\Monolog\ContaoContext;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Logger\Logger;
-use Psr\Log\LogLevel;
+use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 
-#[AsHook(ContaoLog::HOOK, priority: 1100)]
-final class ContaoLog
+#[AsHook(Notification::HOOK, priority: 1000)]
+final class Notification
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
     public function __construct(
-        private readonly ?Logger $logger = null,
+        private readonly NotificationHelper $notificationHelper,
     ) {
     }
 
     /**
+     * Run post booking notification.
+     *
      * @throws \Exception
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
@@ -40,14 +39,6 @@ final class ContaoLog
             return;
         }
 
-        /** @var CalendarEventsModel $event */
-        $event = $moduleInstance->getEvent();
-
-        $strText = 'New booking for event with title "'.$event->title.'"';
-        $level = LogLevel::INFO;
-
-        if (null !== $this->logger) {
-            $this->logger->log($strText, $level, ContaoContext::GENERAL);
-        }
+        $this->notificationHelper->notify($moduleInstance->getEventRegistration(), $moduleInstance->getEvent());
     }
 }
