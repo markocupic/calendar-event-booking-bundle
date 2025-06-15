@@ -24,20 +24,11 @@ $GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingMemberListModule
 
 // Fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds'] = [
-    'eval'       => [
-        'mandatory'          => false,
-        'includeBlankOption' => true,
-        'chosen'             => true,
-        'multiple'           => true,
-        'tl_class'           => 'clr',
-    ],
+    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'],
     'exclude'    => true,
     'foreignKey' => 'tl_nc_notification.title',
     'inputType'  => 'select',
-    'relation'   => [
-        'type' => 'hasOne',
-        'load' => 'lazy',
-    ],
+    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
     'sql'        => 'blob NULL',
 ];

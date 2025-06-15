@@ -31,10 +31,7 @@ PaletteManipulator::create()
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_form']['fields']['isCalendarEventBookingForm'] = [
-    'eval'      => [
-        'submitOnChange' => true,
-        'tl_class'       => 'clr',
-    ],
+    'eval'      => [        'submitOnChange' => true,        'tl_class'       => 'clr'    ],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'checkbox',
