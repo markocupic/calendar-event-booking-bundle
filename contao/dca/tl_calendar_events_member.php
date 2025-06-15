@@ -111,12 +111,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'waiting'      => [
-            'inputType' => 'checkbox',
-            'exclude'   => true,
-            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
-            'sql'       => ['type' => 'boolean', 'default' => false],
-        ],
         'notes'        => [
             'default'   => null,
             'eval'      => ['tl_class' => 'clr', 'mandatory' => false],
