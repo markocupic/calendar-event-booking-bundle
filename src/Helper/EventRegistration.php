@@ -18,6 +18,7 @@ use Codefog\HasteBundle\Form\Form;
 use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Date;
 use Contao\FrontendUser;
 use Contao\Input;
@@ -26,7 +27,6 @@ use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
 
 class EventRegistration
 {
@@ -35,30 +35,26 @@ class EventRegistration
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
-        private readonly Security $security,
+        private readonly TokenChecker $tokenChecker,
         private readonly RequestStack $requestStack,
     ) {
     }
 
     public function hasLoggedInFrontendUser(): bool
     {
-        $user = $this->security->getUser();
-
-        return $user instanceof FrontendUser;
+        return $this->tokenChecker->hasFrontendUser();
     }
 
-    public function getLoggedInFrontendUser(): ?FrontendUser
+    public function getLoggedInFrontendUser(): FrontendUser|null
     {
-        $user = $this->security->getUser();
-
-        if ($user instanceof FrontendUser) {
-            return $user;
+        if (!$this->tokenChecker->hasFrontendUser()) {
+            return null;
         }
 
-        return null;
+        return FrontendUser::getInstance();
     }
 
-    public function getEventFromCurrentUrl(): ?CalendarEventsModel
+    public function getEventFromCurrentUrl(): CalendarEventsModel|null
     {
         $inputAdapter = $this->framework->getAdapter(Input::class);
         $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
@@ -83,7 +79,7 @@ class EventRegistration
     /**
      * @throws Exception
      */
-    public function getRegistrationState(?CalendarEventsModel $event): string
+    public function getRegistrationState(CalendarEventsModel|null $event): string
     {
         if (!$event->addBookingForm) {
             $state = CalendarEventBookingEventBookingModuleController::CASE_BOOKING_FORM_DISABLED;
