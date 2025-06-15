@@ -52,7 +52,7 @@ class AutogenerateBookingForm extends AbstractMigration
         if (isset($columns['iscalendareventbookingform'], $columns['alias'])) {
             $count = $this->connection->fetchOne(
                 'SELECT COUNT(id) FROM tl_form WHERE isCalendarEventBookingForm = ? OR alias = ?',
-                ['1', 'event-booking-form']
+                ['1', 'event-booking-form'],
             );
 
             if (!$count > 0) {
@@ -71,7 +71,7 @@ class AutogenerateBookingForm extends AbstractMigration
 
         return new MigrationResult(
             true,
-            self::MIGRATION_TEXT
+            self::MIGRATION_TEXT,
         );
     }
 
@@ -97,8 +97,8 @@ class AutogenerateBookingForm extends AbstractMigration
         foreach ($arrFormFields as $ff) {
             $arrFormField = array_map(static fn ($value) => \is_array($value) ? serialize($value) : $value, $ff);
             // Set class
-            if (isset($arrFormField['name'], $arrFormField['class']) && false !== strpos($arrFormField['class'], '%s')) {
-                $arrFormField['class'] = sprintf($arrFormField['class'], $arrFormField['name']);
+            if (isset($arrFormField['name'], $arrFormField['class']) && str_contains($arrFormField['class'], '%s')) {
+                $arrFormField['class'] = \sprintf($arrFormField['class'], $arrFormField['name']);
             }
 
             $arrFormField['pid'] = $form->id;

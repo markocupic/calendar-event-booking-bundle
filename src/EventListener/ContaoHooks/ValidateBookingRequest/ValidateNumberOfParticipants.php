@@ -37,8 +37,8 @@ final class ValidateNumberOfParticipants
     }
 
     /**
-     * Important! return false will make the validation fail
-     * Validate if number of participants exceeds max member limit.
+     * Important! return false will make the validation fail Validate if number of
+     * participants exceeds max member limit.
      *
      * @throws Exception
      */
@@ -69,7 +69,7 @@ final class ValidateNumberOfParticipants
                 $this->eventRegistration->getBookingCount($event),
                 $escorts,
                 1,
-            ]
+            ],
         );
 
         if ($this->eventRegistration->getBookingMax($event) < $countTotal && (int) $event->maxMembers > 0) {

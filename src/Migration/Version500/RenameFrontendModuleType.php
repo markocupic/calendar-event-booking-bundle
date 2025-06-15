@@ -73,7 +73,8 @@ class RenameFrontendModuleType extends AbstractMigration
                     $doMigration = true;
                 }
             }
-            // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
+            // #4 Rename tl_module.calendar_event_booking_member_list_partial_template
+            // to tl_module.calendarEventBookingMemberListPartialTemplate
             if (isset($columns['calendar_event_booking_member_list_partial_template'])) {
                 $doMigration = true;
             }
@@ -133,7 +134,8 @@ class RenameFrontendModuleType extends AbstractMigration
 
         $schemaManager = $this->connection->getSchemaManager();
 
-        // #4 Rename tl_module.calendar_event_booking_member_list_partial_template to tl_module.calendarEventBookingMemberListPartialTemplate
+        // #4 Rename tl_module.calendar_event_booking_member_list_partial_template
+        // to tl_module.calendarEventBookingMemberListPartialTemplate
         if ($schemaManager->tablesExist(['tl_module'])) {
             $columns = $schemaManager->listTableColumns('tl_module');
 
@@ -145,7 +147,7 @@ class RenameFrontendModuleType extends AbstractMigration
 
         return new MigrationResult(
             true,
-            implode(' ', $arrMessage)
+            implode(' ', $arrMessage),
         );
     }
 }

@@ -37,10 +37,14 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
 {
     public const TYPE = 'calendar_event_booking_unsubscribe_from_event_module';
 
-    protected ?CalendarEventsMemberModel $registration = null;
-    protected ?CalendarEventsModel $event = null;
+    protected CalendarEventsMemberModel|null $registration = null;
+
+    protected CalendarEventsModel|null $event = null;
+
     protected array $errorMsg = [];
+
     protected bool $blnHasUnsubscribed = false;
+
     protected bool $hasError = false;
 
     public function __construct(
@@ -56,7 +60,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
     /**
      * @throws \Exception
      */
-    public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
+    public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
@@ -126,10 +130,10 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
                         $this->notify($this->registration, $this->event, $model);
                         $this->registration->delete();
 
-                        $href = sprintf(
+                        $href = \sprintf(
                             '%s?has_unsubscribed=true&eid=%s',
                             $page->getFrontendUrl(),
-                            $this->event->id
+                            $this->event->id,
                         );
 
                         $controllerAdapter->redirect($href);
@@ -156,7 +160,7 @@ class CalendarEventBookingUnsubscribeFromEventModuleController extends AbstractF
         if ($this->blnHasUnsubscribed) {
             $template->blnHasUnsubscribed = true;
 
-            if (null !== ($event = $calendarEventsModelAdapter->findByPk($request->query->get('eid')))) {
+            if (null !== ($event = $calendarEventsModelAdapter->findById($request->query->get('eid')))) {
                 $template->event = $event;
             }
         } else {

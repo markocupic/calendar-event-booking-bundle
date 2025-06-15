@@ -35,8 +35,7 @@ final class ValidateEmailAddress
     }
 
     /**
-     * Important! return false will make the validation fail
-     * Validate email address.
+     * Important! return false will make the validation fail Validate email address.
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {

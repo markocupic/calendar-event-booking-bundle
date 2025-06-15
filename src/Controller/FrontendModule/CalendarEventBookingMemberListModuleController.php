@@ -32,12 +32,12 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(CalendarEventBookingMemberListModuleController::TYPE, category:'events', template: 'mod_calendar_event_booking_member_list_module')]
+#[AsFrontendModule(CalendarEventBookingMemberListModuleController::TYPE, category: 'events', template: 'mod_calendar_event_booking_member_list_module')]
 class CalendarEventBookingMemberListModuleController extends AbstractFrontendModuleController
 {
     public const TYPE = 'calendar_event_booking_member_list_module';
 
-    private ?CalendarEventsModel $event = null;
+    private CalendarEventsModel|null $event = null;
 
     public function __construct(
         private readonly ContaoFramework $framework,
@@ -47,7 +47,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     ) {
     }
 
-    public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
+    public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
     {
         // Is frontend
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
@@ -55,7 +55,8 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
 
             $this->event = $this->eventRegistration->getEventFromCurrentUrl();
 
-            // Get the current event && return empty string if addBookingForm isn't set or event is not published
+            // Get the current event && return empty string if addBookingForm isn't set or
+            // event is not published
             if (null !== $this->event) {
                 if ($this->event->addBookingForm && $this->event->published) {
                     $showEmpty = false;
@@ -82,7 +83,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventBookingEventBookingModuleController::EVENT_SUBSCRIPTION_TABLE);
 
-        $results = $this->getSignedUpMembers((int) ($this->event->id));
+        $results = $this->getSignedUpMembers((int) $this->event->id);
         $intRowCount = $results->rowCount();
 
         $i = 0;
@@ -92,7 +93,7 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
             $partial = new FrontendTemplate($model->calendarEventBookingMemberListPartialTemplate);
 
             /** @var CalendarEventsMemberModel $calendarEventsMemberModel */
-            $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findByPk($arrEventMember['id']);
+            $calendarEventsMemberModel = $calendarEventsMemberModelAdapter->findById($arrEventMember['id']);
             $partial->model = $calendarEventsMemberModel;
 
             // Row class
@@ -115,9 +116,9 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
     /**
      * Get signed up members of current event.
      *
-     * @throws Exception
-     *
      * @return Result
+     *
+     * @throws Exception
      */
     protected function getSignedUpMembers(int $id)
     {
@@ -142,6 +143,6 @@ class CalendarEventBookingMemberListModuleController extends AbstractFrontendMod
         $rowLast = $i === $intRowsTotal - 1 ? ' row_last' : '';
         $evenOrOdd = $i % 2 ? ' odd' : ' even';
 
-        return sprintf('row_%s%s%s%s', $i, $rowFirst, $rowLast, $evenOrOdd);
+        return \sprintf('row_%s%s%s%s', $i, $rowFirst, $rowLast, $evenOrOdd);
     }
 }

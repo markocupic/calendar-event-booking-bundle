@@ -32,18 +32,13 @@ final class ExportTable implements ListenerInterface
     ) {
     }
 
-    /**
-     * @param $varValue
-     *
-     * @return mixed
-     */
     public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $config)
     {
         if ('tl_calendar_events_member' === $strTableName) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
             if ('pid' === $strFieldName) {
-                $event = $calendarEventsModelAdapter->findByPk($varValue);
+                $event = $calendarEventsModelAdapter->findById($varValue);
 
                 if (null !== $event) {
                     $varValue = $event->title;

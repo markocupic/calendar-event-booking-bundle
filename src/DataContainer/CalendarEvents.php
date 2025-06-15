@@ -63,7 +63,7 @@ class CalendarEvents
             $span = Calendar::calculateSpan($arrRow['startTime'], $arrRow['endTime']);
 
             if ($span > 0) {
-                $date = Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].Date::parse(Config::get(($arrRow['addTime'] ? 'datimFormat' : 'dateFormat')), $arrRow['endTime']);
+                $date = Date::parse(Config::get($arrRow['addTime'] ? 'datimFormat' : 'dateFormat'), $arrRow['startTime']).$GLOBALS['TL_LANG']['MSC']['cal_timeSeparator'].Date::parse(Config::get($arrRow['addTime'] ? 'datimFormat' : 'dateFormat'), $arrRow['endTime']);
             } elseif ($arrRow['startTime'] === $arrRow['endTime']) {
                 $date = Date::parse(Config::get('dateFormat'), $arrRow['startTime']).($arrRow['addTime'] ? ' '.Date::parse(Config::get('timeFormat'), $arrRow['startTime']) : '');
             } else {
@@ -77,18 +77,20 @@ class CalendarEvents
     }
 
     /**
-     * Check whether the timestamp entered makes sense in relation to the event start and end times.
+     * Check whether the timestamp entered makes sense in relation to the event start
+     * and end times.
      */
-    public function saveUnsubscribeLimitTstamp(?int $intValue, DataContainer $dc): ?int
+    public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
-            // Check whether we have an unsubscribeLimit (in days) set as well, notify the user that we cannot
-            // have both
+            // Check whether we have an unsubscribeLimit (in days) set as well, notify the
+            // user that we cannot have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
                 throw new \InvalidArgumentException($GLOBALS['TL_LANG']['ERR']['conflictingUnsubscribeLimits']);
             }
 
-            // If the event has an end date (and optional time) that's the last sensible time unsubscription makes sense
+            // If the event has an end date (and optional time) that's the last sensible time
+            // unsubscription makes sense
             if ($dc->activeRecord->endDate) {
                 if ($dc->activeRecord->addTime) {
                     $intMaxValue = (int) strtotime(date('Y-m-d', (int) $dc->activeRecord->endDate).' '.date('H:i:s', (int) $dc->activeRecord->endTime));

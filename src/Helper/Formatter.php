@@ -26,8 +26,6 @@ class Formatter
     }
 
     /**
-     * @param $varValue
-     *
      * @throws \Exception
      */
     public function convertDateFormatsToTimestamps($varValue, string $strTable, string $strFieldName): mixed
@@ -43,7 +41,7 @@ class Formatter
                 $date = new Date($varValue, $dateAdapter->getFormatFromRgxp($rgxp));
                 $varValue = $date->tstamp;
             } catch (\OutOfBoundsException) {
-                throw new \Exception(sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
+                throw new \Exception(\sprintf($GLOBALS['TL_LANG']['ERR']['invalidDate'], $varValue));
             }
         }
 
@@ -77,7 +75,7 @@ class Formatter
         return $varValue;
     }
 
-    private function getFieldRgxp(string $strTable, string $strFieldName): ?string
+    private function getFieldRgxp(string $strTable, string $strFieldName): string|null
     {
         /** @var Controller $controllerAdapter */
         $controllerAdapter = $this->framework->getAdapter(Controller::class);

@@ -26,7 +26,7 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function removeFieldsFromPalette(DataContainer $dc): void
     {
-        if (null === ($form = FormModel::findByPk($dc->id))) {
+        if (null === ($form = FormModel::findById($dc->id))) {
             return;
         }
 
@@ -43,7 +43,7 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function manipulateFieldsDca(DataContainer $dc): void
     {
-        if (null === ($form = FormModel::findByPk($dc->id))) {
+        if (null === ($form = FormModel::findById($dc->id))) {
             return;
         }
 
@@ -52,8 +52,8 @@ class Form
         }
 
         if (
-            !isset($GLOBALS['TL_DCA']['tl_form']['fields']['novalidate']['eval']['tl_class']) ||
-            !\is_string($GLOBALS['TL_DCA']['tl_form']['fields']['novalidate']['eval']['tl_class'])
+            !isset($GLOBALS['TL_DCA']['tl_form']['fields']['novalidate']['eval']['tl_class'])
+            || !\is_string($GLOBALS['TL_DCA']['tl_form']['fields']['novalidate']['eval']['tl_class'])
         ) {
             return;
         }

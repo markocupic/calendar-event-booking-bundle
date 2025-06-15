@@ -44,7 +44,7 @@ class NotificationHelper
     public function getNotificationTokens(CalendarEventsMemberModel $registration): array
     {
         if (null === ($event = $registration->getRelated('pid'))) {
-            throw new \Exception(sprintf('Event with ID %s not found.', $registration->pid));
+            throw new \Exception(\sprintf('Event with ID %s not found.', $registration->pid));
         }
 
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
@@ -89,7 +89,7 @@ class NotificationHelper
         $arrTokens['event_endTimeFormatted'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $event->endTime);
 
         // Prepare tokens for organizer_* (sender)
-        $organizer = $userModelAdapter->findByPk($event->eventBookingNotificationSender);
+        $organizer = $userModelAdapter->findById($event->eventBookingNotificationSender);
 
         if (null !== $organizer) {
             $row = $organizer->row();
@@ -109,7 +109,7 @@ class NotificationHelper
             $calendar = $event->getRelated('pid');
 
             if (null !== $calendar) {
-                $page = $pageModelAdapter->findByPk($calendar->eventUnsubscribePage);
+                $page = $pageModelAdapter->findById($calendar->eventUnsubscribePage);
 
                 if (null !== $page) {
                     $arrTokens['event_unsubscribeHref'] = $this->urlParser->addQueryString('bookingToken='.$registration->bookingToken, $page->getAbsoluteUrl());

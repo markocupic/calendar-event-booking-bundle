@@ -54,6 +54,6 @@ class AddTemplateData
 
         $template->hasLoggedInUser = fn (): bool => $this->eventRegistration->hasLoggedInFrontendUser();
 
-        $template->loggedInUser = fn (): ?FrontendUser => $this->eventRegistration->getLoggedInFrontendUser();
+        $template->loggedInUser = fn (): FrontendUser|null => $this->eventRegistration->getLoggedInFrontendUser();
     }
 }

@@ -56,6 +56,6 @@ class Configuration implements ConfigurationInterface
                     ->example('ISO-8859-1')
                 ->end()
             ->end()
-            ;
+        ;
     }
 }

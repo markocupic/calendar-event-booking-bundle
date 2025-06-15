@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 class Logger
 {
     public function __construct(
-        private readonly ?LoggerInterface $logger = null,
+        private readonly LoggerInterface|null $logger = null,
     ) {
     }
 
@@ -32,7 +32,7 @@ class Logger
                 $strText,
                 [
                     'contao' => new ContaoContext(__METHOD__, $strContaoLevel),
-                ]
+                ],
             );
         }
     }

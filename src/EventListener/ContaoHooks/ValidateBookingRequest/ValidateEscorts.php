@@ -33,8 +33,7 @@ final class ValidateEscorts
     }
 
     /**
-     * Important! return false will make the validation fail
-     * Validate escorts.
+     * Important! return false will make the validation fail Validate escorts.
      */
     public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): bool
     {
@@ -55,7 +54,7 @@ final class ValidateEscorts
                 $widget->value = 0;
             }
 
-            if ((int) $widget->value < 0 || (string) $widget->value !== (string) (int) ($widget->value)) {
+            if ((int) $widget->value < 0 || (string) $widget->value !== (string) (int) $widget->value) {
                 $errorMsg = $this->translator->trans('MSC.enterPosIntVal', [], 'contao_default');
                 $widget->addError($errorMsg);
             } elseif ($this->eventRegistration->isFullyBooked($event)) {

@@ -77,7 +77,7 @@ class AutoGenerateBookingToken extends AbstractMigration
 
         return new MigrationResult(
             true,
-            self::MIGRATION_TEXT
+            self::MIGRATION_TEXT,
         );
     }
 }

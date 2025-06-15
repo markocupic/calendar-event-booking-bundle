@@ -54,7 +54,7 @@ class CalendarEventsMember
                 ->setFields($arrSelectedFields)
                 ->setAddHeadline(true)
                 ->setHeadlineFields($arrSelectedFields)
-                ;
+            ;
 
             // Handle output conversion
             if ($this->system->getContainer()->getParameter('markocupic_calendar_event_booking.member_list_export.enable_output_conversion')) {
