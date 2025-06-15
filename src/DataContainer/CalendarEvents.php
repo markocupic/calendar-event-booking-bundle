@@ -80,6 +80,7 @@ class CalendarEvents
      * Check whether the timestamp entered makes sense in relation to the event start
      * and end times.
      */
+    #[AsCallback(table: 'tl_calendar_events', target: 'fields.unsubscribeLimitTstamp.save')]
     public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
