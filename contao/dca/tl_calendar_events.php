@@ -56,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql' => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+    'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = [
@@ -200,14 +200,10 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
-    'default'       => null,
-    'eval'          => ['rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-    'exclude'       => true,
-    'inputType'     => 'text',
-    'save_callback' => [
-        [
-            CalendarEvents::class, 'saveUnsubscribeLimitTstamp'],
-    ],
-    'sorting'       => true,
-    'sql'           => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => false],
+    'default'   => null,
+    'eval'      => ['rgxp' => 'datim', 'doNotCopy' => true, 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+    'exclude'   => true,
+    'inputType' => 'text',
+    'sorting'   => true,
+    'sql'       => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => false],
 ];
