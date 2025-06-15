@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Ramsey\Uuid\Uuid;
 use Contao\DataContainer;
 use Contao\DC_Table;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
@@ -94,22 +95,22 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     ],
     'fields'   => [
         'id'           => [
-            'sql' => 'int(10) unsigned NOT NULL auto_increment',
+            'sql' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'autoincrement' => true],
         ],
         'pid'          => [
             'eval'       => ['readonly' => true],
             'foreignKey' => 'tl_calendar_events.title',
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
-            'sql'        => 'int(10) unsigned NOT NULL default 0',
+            'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
         'tstamp'       => [
-            'sql' => 'int(10) unsigned NOT NULL default 0',
+            'sql' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
         'addedOn'      => [
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'inputType' => 'text',
             'sorting'   => true,
-            'sql'       => "varchar(10) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 10, 'notnull' => true, 'default' => ''],
         ],
         'notes'        => [
             'default'   => null,
@@ -117,23 +118,23 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'exclude'   => true,
             'inputType' => 'textarea',
             'search'    => true,
-            'sql'       => 'text NULL',
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT, 'notnull' => false],
         ],
         'firstname'    => [
-            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'lastname'     => [
-            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'gender'       => [
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -143,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(32) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
         'dateOfBirth'  => [
             'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
@@ -151,15 +152,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(11) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 11, 'notnull' => true, 'default' => ''],
         ],
         'street'       => [
-            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'postal'       => [
             'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
@@ -167,15 +168,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(32) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
         'city'         => [
-            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'phone'        => [
             'eval'      => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
@@ -183,15 +184,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(64) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => 64, 'notnull' => true, 'default' => ''],
         ],
         'email'        => [
-            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'escorts'      => [
             'default'   => null,
@@ -200,15 +201,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => 'int(3) unsigned NULL',
+            'sql'       => ['type' => 'integer', 'length' => 3, 'unsigned' => true, 'notnull' => false],
         ],
         'bookingToken' => [
-            'eval'      => ['doNotCopy' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => ['doNotCopy' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'default'   => Uuid::uuid4()->toString(),
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
     ],
 ];

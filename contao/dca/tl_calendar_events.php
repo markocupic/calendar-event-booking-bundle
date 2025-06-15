@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Markocupic\CalendarEventBookingBundle\DataContainer\CalendarEvents;
 use Contao\DataContainer;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['ctable'][] = 'tl_calendar_events_member';
@@ -55,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['street'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "varchar(255) NOT NULL default ''",
+    'sql' => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = [
@@ -64,7 +65,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['postal'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "varchar(32) NOT NULL default ''",
+    'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
@@ -74,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['city'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "varchar(255) NOT NULL default ''",
+    'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['addBookingForm'] = [
@@ -99,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingStartDate'] = [
     'exclude'   => true,
     'inputType' => 'text',
     'sorting'   => true,
-    'sql'       => 'int(10) unsigned NULL',
+    'sql'       => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = [
@@ -108,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['bookingEndDate'] = [
     'exclude'   => true,
     'inputType' => 'text',
     'sorting'   => true,
-    'sql'       => 'int(10) unsigned NULL',
+    'sql'       => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = [
@@ -118,7 +119,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['minMembers'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+    'sql'       => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = [
@@ -128,7 +129,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxMembers'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+    'sql'       => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
@@ -138,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerMember'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "smallint(5) unsigned NOT NULL default '0'",
+    'sql'       => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['includeEscortsWhenCalculatingRegCount'] = [
@@ -165,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationCent
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
-    'sql'        => 'blob NULL',
+    'sql'        => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSender'] = [
@@ -176,7 +177,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['eventBookingNotificationSend
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
-    'sql'        => 'int(10) unsigned NOT NULL default 0',
+    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableDeregistration'] = [
@@ -195,7 +196,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimit'] = [
     'inputType' => 'select',
     'options'   => range(0, 720),
     'sorting'   => true,
-    'sql'       => 'int(10) unsigned NOT NULL default 0',
+    'sql'       => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
@@ -208,5 +209,5 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['unsubscribeLimitTstamp'] = [
             CalendarEvents::class, 'saveUnsubscribeLimitTstamp'],
     ],
     'sorting'       => true,
-    'sql'           => 'int(10) unsigned NULL',
+    'sql'           => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => false],
 ];

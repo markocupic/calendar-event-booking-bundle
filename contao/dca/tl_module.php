@@ -30,12 +30,12 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds']
     'inputType'  => 'select',
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
     'search'     => true,
-    'sql'        => 'blob NULL',
+    'sql'        => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartialTemplate'] = [
     'eval'      => ['tl_class' => 'w50'],
     'exclude'   => true,
     'inputType' => 'select',
-    'sql'       => "varchar(128) NOT NULL default 'calendar_event_booking_member_list_partial'",
+    'sql'       => ['type' => 'string', 'length' => 128, 'notnull' => true, 'default' => 'calendar_event_booking_member_list_partial'],
 ];
