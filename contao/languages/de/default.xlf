@@ -72,7 +72,7 @@
       </trans-unit>
       <trans-unit id="ERR.invalidUnsubscriptionLimit">
         <source>This unsubscription limit is too far in the future (see event start and end date and time).</source>
-        <target>Diese Abmeldezeit liegt zu weit in der Zukunft (siehe Eventstart und -ende).</target>
+        <target>Diese Abmeldezeit liegt zu weit in der Zukunft (siehe Event-Startdatum und Event-Enddatum).</target>
       </trans-unit>
       <trans-unit id="ERR.conflictingUnsubscribeLimits">
         <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
