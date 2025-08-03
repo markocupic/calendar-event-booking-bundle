@@ -71,7 +71,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
-            ;
+        ;
     }
 
     private function addMemberListNode(): NodeDefinition

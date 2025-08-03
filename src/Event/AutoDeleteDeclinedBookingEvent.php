@@ -18,7 +18,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class AutoDeleteExpiredBookingEvent extends Event
+class AutoDeleteDeclinedBookingEvent extends Event
 {
     private bool $shouldDelete = true;
 

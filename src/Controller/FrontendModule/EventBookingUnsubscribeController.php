@@ -114,6 +114,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             if (null === $booking) {
                 $template->class = ' error booking-not-found';
+
                 throw new EventBookingUnsubscribeException('Booking not found.', $this->translator->trans('mod_unsubscribe.error.invalid_uuid', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
@@ -123,6 +124,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             if (null === $event) {
                 $template->class = ' error event-not-found';
+
                 throw new EventBookingUnsubscribeException('Event not found.', $this->translator->trans('mod_unsubscribe.error.event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
@@ -143,16 +145,18 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             if (!$event->enableDeregistration) {
                 $template->class = ' error unsubscription-not-allowed';
+
                 throw new EventBookingUnsubscribeException('Unsubscription not allowed.', $this->translator->trans('mod_unsubscribe.error.unsubscription_not_allowed', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
             if ($this->isUnsubscriptionLimitExpired($event)) {
                 $template->class = ' error unsubscription-limit-expired';
+
                 throw new EventBookingUnsubscribeException('Unsubscription limit has expired.', $this->translator->trans('mod_unsubscribe.error.unsubscription_limit_expired', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
             if (self::FORM_ID === $request->request->get('FORM_SUBMIT')) {
-                $this->processUnsubscription($booking,$event,$request);
+                $this->processUnsubscription($booking, $event, $request);
                 $this->connection->commit();
                 $redirectUrl = $this->urlParser->addQueryString(self::QUERY_PARAM_UNSUBSCRIBED.'=true');
                 $this->framework->getAdapter(Controller::class)->redirect($redirectUrl);
@@ -192,7 +196,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
     /**
      * @throws \Exception
      */
-    private function notify(CalendarEventsMemberModel $booking,CalendarEventsModel $event): void
+    private function notify(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
     {
         $calendar = $event->getRelated('pid');
 
@@ -226,10 +230,10 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         $booking->temporaryReserved = false;
         $booking->save();
 
-        $event =new CancelBookingEvent($booking,self::class,$request);
+        $event = new CancelBookingEvent($booking, self::class, $request);
         $this->eventDispatcher->dispatch($event);
 
-        $this->notify($booking,$calendarEvent);;
+        $this->notify($booking, $calendarEvent);
         $this->contaoGeneralLogger?->info(\sprintf('Booking for event "%s" ID %d has been unsubscribed by link.', $calendarEvent->title, $booking->id));
     }
 }
