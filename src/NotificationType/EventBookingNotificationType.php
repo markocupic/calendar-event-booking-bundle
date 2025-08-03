@@ -50,29 +50,6 @@ class EventBookingNotificationType implements NotificationTypeInterface
 
     private function getTokenConfig(): array
     {
-        return [
-            'email_token' => [
-                'organizer_email',
-                'member_email',
-                'admin_email',
-            ],
-            'text_token' => [
-                'event_*',
-                'event_title',
-                'event_unsubscribeLimitTstamp',
-                'event_unsubscribeHref',
-                'event_startDateFormatted',
-                'event_endDateFormatted',
-                'event_startTimeFormatted',
-                'event_endTimeFormatted',
-                'member_*',
-                'member_dateOfBirth',
-                'member_salutation',
-                'organizer_*',
-                'organizer_name',
-                'organizer_email',
-                'admin_email',
-            ],
-        ];
+        return DefaultTokenConfig::getDefaultTokenConfig();
     }
 }

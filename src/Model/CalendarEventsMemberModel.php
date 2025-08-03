@@ -16,6 +16,14 @@ namespace Markocupic\CalendarEventBookingBundle\Model;
 
 use Contao\Model;
 
+/**
+ * @property bool $enableWaitingList
+ * @property int  $maxBookings
+ * @property bool $requireOptIn
+ * @property int  $waitingListAdvancementNotification
+ *
+ * @method static CalendarEventsMemberModel|null findOneByBookingToken($bookingToken)
+ */
 class CalendarEventsMemberModel extends Model
 {
     /**

@@ -1,0 +1,30 @@
+{% trans_default_domain "mc_calendar_event_booking" %}
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    {% if messages %}
+        {{ messages|raw }}
+    {% endif %}
+    {% set event_data = event.row() %}
+    <ul>
+        <li>{{ 'mod_form.form.event_status'|trans }}: {{ eventStatus }}</li>
+        <li>{{ 'mod_form.form.logged_in_user'|trans }}: {{ hasLoggedInUser ? loggedInUser.firstname ~ ' ' ~ loggedInUser.lastname : '---' }}</li>
+        <li>{{ 'mod_form.form.event_name'|trans }}: {{ event_data.title }}</li>
+        <li>{{ 'mod_form.form.event_start_date'|trans }}: {{ event_data.startDate|date(page.dateFormat) }}</li>
+        <li>{{ 'mod_form.form.booking_start_date'|trans }}: {{ event_data.bookingStartDate|date(page.dateFormat) }}</li>
+        <li>{{ 'mod_form.form.booking_end_date'|trans }}: {{ event_data.bookingEndDate|date(page.dateFormat) }}</li>
+        <li>{{ 'mod_form.form.booking_end_date'|trans }}: {{ canRegister ? 'Yes' : 'No' }}</li>
+        <li>{{ 'mod_form.form.is_fully_booked'|trans }}: {{ isFullyBooked ? 'Yes' : 'No' }}</li>
+        <li>{{ 'mod_form.form.is_waiting_list_open'|trans }}: {{ waitingListOpen ? 'Yes' : 'No' }}</li>
+        <li>{{ 'mod_form.form.booking_count'|trans }}: {{ bookingCount }}x</li>
+        <li>{{ 'mod_form.form.free_spots_count'|trans }}: {{ freeSpotsCount }}x</li>
+    </ul>
+    {% if eventStatusText|default %}
+        <div class="booking-status-text {{ eventStatus }}">
+            {{ eventStatusText|raw }}
+        </div>
+    {% endif %}
+    {% if form_markup|default %}
+        {{ form_markup|raw }}
+    {% endif %}
+{% endblock %}

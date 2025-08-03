@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events_member.php" source-language="en">
+  <file datatype="php" original="contao/languages/en/tl_calendar_events_member.php" source-language="en">
     <body>
       <trans-unit id="tl_calendar_events_member.new.0">
         <source>New</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.new.1">
-        <source>Add a new registration.</source>
+        <source>Add a new booking.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_member.downloadEventRegistrations.0">
-        <source>Event registrations</source>
+      <trans-unit id="tl_calendar_events_member.downloadEventBookings.0">
+        <source>Event bookings</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_member.downloadEventRegistrations.1">
-        <source>Download event registrations.</source>
+      <trans-unit id="tl_calendar_events_member.downloadEventBookings.1">
+        <source>Download event bookings.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.edit.0">
         <source>Edit</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.edit.1">
-        <source>Edit registration with ID %s.</source>
+        <source>Edit booking with ID %s.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.copy.0">
         <source>Copy</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.copy.1">
-        <source>Copy registration with ID %s.</source>
+        <source>Copy booking with ID %s.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.delete.0">
         <source>Delete</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.delete.1">
-        <source>Delete registration with ID %s.</source>
+        <source>Delete booking with ID %s.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.show.0">
         <source>Show</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.show.1">
-        <source>Show registration with ID %s.</source>
+        <source>Show booking with ID %s.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.payment.0">
+        <source>Payments</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.payment.1">
+        <source>Show payments for booking with ID %s.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.salutation_male">
         <source>Mr</source>
@@ -47,26 +53,68 @@
       <trans-unit id="tl_calendar_events_member.booking_date_legend">
         <source>Booking date</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.booking_legend">
+        <source>Booking state</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_member.notes_legend">
         <source>Notes</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.personal_legend">
-        <source>Personal legend</source>
+        <source>Personal details</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.address_legend">
-        <source>Adress legend</source>
+        <source>Address</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.contact_legend">
-        <source>Contact legend</source>
+        <source>Contact data</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.escort_legend">
-        <source>Escort legend</source>
+        <source>Escort</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.form_legend">
+        <source>Form</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.addedOn.0">
         <source>Booking date</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.addedOn.1">
         <source>Please enter the booking date.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.temporaryReserved.0">
+        <source>Temporary reserved</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.temporaryReserved.1">
+        <source>The booking is held for a limited time, potentially waiting for user action before confirming.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.waitingList.0">
+        <source>Waitinglist</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.waitingList.1">
+        <source>Put on waiting list.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.paid.0">
+        <source>Paid</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.paid.1">
+        <source>Indicates whether the booking has been paid.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.optIn.0">
+        <source>Confirmed (Double Opt-In)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.optIn.1">
+        <source>Indicates whether the booking has been confirmed.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.canceled.0">
+        <source>Canceled</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.canceled.1">
+        <source>Indicates whether the booking has been canceled.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.expired.0">
+        <source>Booking expired</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.expired.1">
+        <source>The booking has been expired.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.notes.0">
         <source>Notes</source>
@@ -128,6 +176,12 @@
       <trans-unit id="tl_calendar_events_member.email.1">
         <source>Please enter the email address.</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.ticketAmount.0">
+        <source>Ticket amount</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.ticketAmount.1">
+        <source>Indicate how many tickets you would like to book. The ticket number will be added to the total number of bookings!</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_member.escorts.0">
         <source>Escorts</source>
       </trans-unit>
@@ -139,6 +193,24 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.bookingToken.1">
         <source>Add a booking token please.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.form.0">
+        <source>Booking-Form (Contao Form-Generator)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.form.1">
+        <source>Select a form from the Contao form generator.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.formSubmit.0">
+        <source>Submitted form data</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.formSubmit.1">
+        <source>Here you can see the submitted form data (JSON).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.checkoutHandler.0">
+        <source>Checkout handler</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.checkoutHandler.1">
+        <source>Here you can see the checkout handler.</source>
       </trans-unit>
     </body>
   </file>

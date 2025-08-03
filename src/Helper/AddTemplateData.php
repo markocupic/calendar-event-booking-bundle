@@ -15,45 +15,41 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
 use Contao\CalendarEventsModel;
-use Contao\FrontendUser;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 class AddTemplateData
 {
     public function __construct(
-        private readonly EventRegistration $eventRegistration,
+        private readonly EventBooking $eventBooking,
+        private readonly ContaoFramework $framework,
     ) {
     }
 
     /**
-     * Augment template with more event properties.
+     * Augment template with more properties.
      */
-    public function addTemplateData(Template $template, CalendarEventsModel $event): void
+    public function addTemplateData(Template $template, CalendarEventsModel $event, Request $request): void
     {
-        $template->canRegister = fn (): bool => $this->eventRegistration->canRegister($event);
+        $this->framework->initialize();
 
-        $template->isFullyBooked = fn (): bool => $this->eventRegistration->isFullyBooked($event);
+        $template->event = $event;
 
-        $template->bookingCount = fn (): int => $this->eventRegistration->getBookingCount($event);
+        $template->calendar = $event->getRelated('pid');
 
-        $template->bookingMin = fn (): int => $this->eventRegistration->getBookingMin($event);
+        $template->canRegister = $this->eventBooking->canRegister($event, $request);
 
-        $template->bookingMax = fn (): int => $this->eventRegistration->getBookingMax($event);
+        $template->isFullyBooked = $this->eventBooking->isFullyBooked($event);
 
-        $template->bookingStartDate = fn (): string => $this->eventRegistration->getBookingStartDate($event, 'date');
+        $template->freeSpotsCount = $this->eventBooking->getFreeSpotsCount($event);
 
-        $template->bookingStartDatim = fn (): string => $this->eventRegistration->getBookingStartDate($event, 'datim');
+        $template->bookingCount = $this->eventBooking->getBookingCount($event);
 
-        $template->bookingStartTimestamp = fn (): int => $this->eventRegistration->getBookingStartDate($event, 'timestamp');
+        $template->hasLoggedInUser = $this->eventBooking->hasLoggedInFrontendUser();
 
-        $template->bookingEndDate = fn (): string => $this->eventRegistration->getBookingEndDate($event, 'date');
+        $template->loggedInUser = $this->eventBooking->getLoggedInFrontendUser();
 
-        $template->bookingEndDatim = fn (): string => $this->eventRegistration->getBookingEndDate($event, 'datim');
-
-        $template->bookingEndTimestamp = fn (): int => $this->eventRegistration->getBookingEndDate($event, 'timestamp');
-
-        $template->hasLoggedInUser = fn (): bool => $this->eventRegistration->hasLoggedInFrontendUser();
-
-        $template->loggedInUser = fn (): FrontendUser|null => $this->eventRegistration->getLoggedInFrontendUser();
+        $template->page = $request->attributes->get('pageModel');
     }
 }

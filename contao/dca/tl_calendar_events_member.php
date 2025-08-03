@@ -19,108 +19,156 @@ use Doctrine\DBAL\Platforms\MySQLPlatform;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
-        'dataContainer'     => DC_Table::class,
-        'ptable'            => 'tl_calendar_events',
-        'enableVersioning'  => true,
-        'onsubmit_callback' => [],
-        'ondelete_callback' => [],
-        'doNotCopyRecords'  => true,
-        'sql'               => [
+        'dataContainer'    => DC_Table::class,
+        'ptable'           => 'tl_calendar_events',
+        'ctable'           => ['tl_calendar_events_payment'],
+        'enableVersioning' => true,
+        'doNotCopyRecords' => true,
+        'sql'              => [
             'keys' => [
                 'id'        => 'primary',
                 'email,pid' => 'index',
             ],
         ],
     ],
-    // List
     'list'     => [
         'sorting'           => [
             'mode'        => DataContainer::MODE_SORTABLE,
-            'fields'      => ['lastname'],
-            'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
-            'panelLayout' => 'filter;sort,search',
+            'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
-            'fields'      => ['firstname', 'lastname', 'street', 'city'],
+            'fields'      => ['addedOn', 'ticketAmount', 'gender', 'firstname', 'lastname', 'street', 'city', 'temporaryReserved', 'expired', 'canceled', 'optIn', 'waitingList', 'paid'],
             'showColumns' => true,
         ],
         'global_operations' => [
-            'all'                        => [
+            'all'                   => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
-            'downloadEventRegistrations' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadEventRegistrations'],
-                'href'       => 'action=downloadEventRegistrations',
-                'class'      => 'download_registration_list',
-                'icon'       => 'bundles/markocupiccalendareventbooking/icons/excel.png',
+            'downloadEventBookings' => [
+                'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['downloadEventBookings'],
+                'href'       => 'action=downloadEventBookings',
+                'class'      => 'download_event_bookings',
+                'icon'       => 'bundles/markocupiccalendareventbooking/icons/file-down.svg',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
         'operations'        => [
-            'edit'   => [
+            'edit'    => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.svg',
             ],
-            'copy'   => [
+            'copy'    => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.svg',
             ],
-            'delete' => [
+            'delete'  => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'   => [
+            'show'    => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.svg',
+            ],
+            'payment' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['payment'],
+                'href'  => 'do=calendar&table=tl_calendar_events_payment',
+                'icon'  => 'bundles/markocupiccalendareventbooking/icons/circle-dollar-sign.svg',
             ],
         ],
     ],
     'palettes' => [
         'default' => '
         {booking_date_legend},addedOn;
+        {booking_legend},temporaryReserved,optIn,canceled,expired,waitingList,paid,ticketAmount,escorts,checkoutHandler;
         {notes_legend},notes;
         {personal_legend},firstname,lastname,gender,dateOfBirth;
         {address_legend:hide},street,postal,city;
         {contact_legend},phone,email;
-        {escort_legend},escorts
+        {form_legend:hide},form,formSubmit;
         ',
     ],
     'fields'   => [
-        'id'           => [
+        'id'                => [
             'sql' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'autoincrement' => true],
         ],
-        'pid'          => [
+        'pid'               => [
             'eval'       => ['readonly' => true],
             'foreignKey' => 'tl_calendar_events.title',
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
             'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
-        'tstamp'       => [
+        'tstamp'            => [
             'sql' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
         ],
-        'addedOn'      => [
+        'addedOn'           => [
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'flag'      => DataContainer::SORT_DAY_BOTH,
             'inputType' => 'text',
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => 10, 'notnull' => true, 'default' => ''],
         ],
-        'notes'        => [
-            'default'   => null,
-            'eval'      => ['tl_class' => 'clr', 'mandatory' => false],
+        'member'            => [
+            'foreignKey' => 'tl_member.CONCAT(firstname," ",lastname)',
+            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
+            'sql'        => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
+        ],
+        'waitingList'       => [
+            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
             'exclude'   => true,
-            'inputType' => 'textarea',
-            'search'    => true,
-            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT, 'notnull' => false],
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
         ],
-        'firstname'    => [
+        'optIn'             => [
+            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'canceled'          => [
+            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'temporaryReserved' => [
+            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'expired'          => [
+            'eval'      => ['tl_class' => 'w50', 'disabled' => true],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'paid'              => [
+            'eval'      => ['disabled' => true, 'tl_class' => 'w50'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'sorting'   => true,
+            'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'firstname'         => [
             'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -128,7 +176,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'lastname'     => [
+        'lastname'          => [
             'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -136,7 +184,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'gender'       => [
+        'gender'            => [
             'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'select',
@@ -146,7 +194,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
-        'dateOfBirth'  => [
+        'dateOfBirth'       => [
             'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'filter'    => true,
             'inputType' => 'text',
@@ -154,7 +202,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => 11, 'notnull' => true, 'default' => ''],
         ],
-        'street'       => [
+        'street'            => [
             'eval'      => ['maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -162,7 +210,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'postal'       => [
+        'postal'            => [
             'eval'      => ['maxlength' => 32, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -170,7 +218,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => 32, 'notnull' => true, 'default' => ''],
         ],
-        'city'         => [
+        'city'              => [
             'eval'      => ['maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -178,7 +226,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'phone'        => [
+        'phone'             => [
             'eval'      => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -186,7 +234,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => 64, 'notnull' => true, 'default' => ''],
         ],
-        'email'        => [
+        'email'             => [
             'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
             'filter'    => true,
             'inputType' => 'text',
@@ -194,22 +242,63 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'escorts'      => [
-            'default'   => null,
-            'eval'      => ['maxlength' => 3, 'tl_class' => 'w50'],
+        'ticketAmount'      => [
+            'default'   => 1,
+            'eval'      => ['maxlength' => 3, 'rgxp' => 'natural', 'tl_class' => 'clr w50'],
             'filter'    => true,
-            'inputType' => 'text',
+            'inputType' => 'select',
+            'options'   => range(1, 100),
             'search'    => true,
             'sorting'   => true,
-            'sql'       => ['type' => 'integer', 'length' => 3, 'unsigned' => true, 'notnull' => false],
+            'sql'       => ['type' => 'integer', 'length' => 3, 'unsigned' => true, 'notnull' => true, 'default' => 1],
         ],
-        'bookingToken' => [
+        'escorts'           => [
+            'default'   => 0,
+            'eval'      => ['maxlength' => 3, 'rgxp' => 'natural', 'tl_class' => 'w50'],
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => range(0, 100),
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => ['type' => 'integer', 'length' => 3, 'unsigned' => true, 'notnull' => true, 'default' => 0],
+        ],
+        'bookingToken'      => [
             'eval'      => ['doNotCopy' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'default'   => Uuid::uuid4()->toString(),
             'filter'    => true,
             'inputType' => 'text',
             'search'    => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+        ],
+        'form'              => [
+            'eval'       => ['readonly' => true, 'tl_class' => 'w50'],
+            'foreignKey' => 'tl_form.title',
+            'inputType'  => 'select',
+            'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
+            'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
+        ],
+        'formSubmit'        => [
+            'eval'      => ['mandatory' => false, 'readonly' => true, 'tl_class' => 'clr w50'],
+            'exclude'   => true,
+            'inputType' => 'textarea',
+            'search'    => true,
+            'sql'       => "mediumtext NOT NULL default ''",
+        ],
+        'notes'             => [
+            'default'   => null,
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => false],
+            'exclude'   => true,
+            'inputType' => 'textarea',
+            'search'    => true,
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT, 'notnull' => false],
+        ],
+        'checkoutHandler'   => [
+            'eval'      => ['readonly' => true, 'doNotCopy' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
+            'default'   => Uuid::uuid4()->toString(),
+            'filter'    => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => 'default'],
         ],
     ],
 ];

@@ -1,0 +1,23 @@
+{% trans_default_domain "mc_calendar_event_booking" %}
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    {% if messages|default %}
+        {{ messages|raw }}
+    {% endif %}
+    {% if hasForm|default %}
+        <form action="{{ app.request.getRequestUri() }}" id="{{ formId }}" method="post">
+            <div class="formbody">
+                <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
+                <p class="unsubscribe_confirm">
+                    {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%title%': event.title})|raw }}
+                </p>
+                <div class="widget widget-submit">
+                    <button type="submit" class="submit">{{ 'mod_unsubscribe.unsubscribe_btn_label'|trans }}</button>
+                </div>
+                <p><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscribtion_btn_label'|trans }}</a></p>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

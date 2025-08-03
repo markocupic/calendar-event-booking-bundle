@@ -1,7 +1,7 @@
 {
     "name": "markocupic/calendar-event-booking-bundle",
     "type": "contao-bundle",
-    "description": "Contao 4 Calendar Event Booking Bundle",
+    "description": "Contao Calendar Event Booking Bundle",
     "license": "MIT",
     "authors": [
         {
@@ -16,7 +16,9 @@
         "markocupic/export_table": "^5.1",
         "ramsey/uuid": "^3.0 || ^4.0",
         "codefog/contao-haste": "^5.0",
-        "terminal42/notification_center": "^2.0"
+        "terminal42/notification_center": "^2.0",
+        "symfony/lock": "^5.4 || ^6.4 || ^7.1",
+        "symfony/rate-limiter": "^5.4 || ^6.4 || ^7.1"
     },
     "require-dev": {
         "contao/easy-coding-standard": "^6.13"
@@ -28,5 +30,6 @@
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
-    }
+    },
+    "version": "6.0"
 }

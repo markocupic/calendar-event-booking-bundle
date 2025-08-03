@@ -5,7 +5,26 @@ services:
         public: true
         bind:
             $projectDir: '%kernel.project_dir%'
+            $autoExpireReservedBookings: '%markocupic_calendar_event_booking.auto_expire_reserved_bookings%'
+            $autoExpireTimeLimit: '%markocupic_calendar_event_booking.auto_expire_time_limit%'
+            $autoDeleteExpiredBookings: '%markocupic_calendar_event_booking.auto_delete_expired_bookings%'
+            $autoDeleteCanceledBookings: '%markocupic_calendar_event_booking.auto_delete_canceled_bookings%'
+            $rateLimiterFactory: '@markocupic_calendar_event_booking.rate_limit.event_booking_factory'
 
     Markocupic\CalendarEventBookingBundle\:
         resource: ../src/
-        exclude: ../src/{Event,Model,DependencyInjection}
+        exclude: [
+            ../src/CheckoutHandler/CheckoutData.php,
+            ../src/DependencyInjection,
+            ../src/Event,
+            ../src/Exception,
+            ../src/Model,
+        ]
+
+    markocupic_calendar_event_booking.rate_limit.event_booking_factory:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        public: true
+        arguments:
+            - { id: markocupic_calendar_event_booking.event_booking, policy: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.policy%', limit: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.limit%', interval: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.interval%' }
+            - '@contao.rate_limit.member_password_storage'
+            - '@?lock_factory'

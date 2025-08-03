@@ -1,0 +1,47 @@
+{% trans_default_domain "mc_calendar_event_booking" %}
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    {% if bookings|default %}
+        <div class="ce_table">
+            <table class="all_records sortable">
+                <thead>
+                <tr>
+                    <th class="head col_first col_0" data-name="firstname">{{ 'mod_member_list.firstname'|trans }}</th>
+                    <th class="head col_1" data-name="lastname">{{ 'mod_member_list.lastname'|trans }}</th>
+                    <th class="head col_2" data-name="street">{{ 'mod_member_list.street'|trans }}</th>
+                    <th class="head col_3" data-name="postal">{{ 'mod_member_list.postal'|trans }}</th>
+                    <th class="head col_last col_4" data-name="city">{{ 'mod_member_list.city'|trans }}</th>
+                    <th class="head col_last col_5" data-name="temporaryReserved">{{ 'mod_member_list.temporaryReserved'|trans }}</th>
+                    <th class="head col_last col_6" data-name="waitingList">{{ 'mod_member_list.waitingList'|trans }}</th>
+                    <th class="head col_last col_7" data-name="optIn">{{ 'mod_member_list.optIn'|trans }}</th>
+                    <th class="head col_last col_8" data-name="canceled">{{ 'mod_member_list.canceled'|trans }}</th>
+                    <th class="head col_last col_9" data-name="expired">{{ 'mod_member_list.expired'|trans }}</th>
+                    <th class="head col_last col_10" data-name="ticketAmount">{{ 'mod_member_list.ticketAmount'|trans }}</th>
+                    <th class="head col_last col_11" data-name="escorts">{{ 'mod_member_list.escorts'|trans }}</th>
+                    <th class="head col_last col_12" data-name="paid">{{ 'mod_member_list.paid'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for booking in bookings %}
+                    <tr class="{{ booking.rowClass }}">
+                        <td class="body col_0 col_first" data-name="firstname">{{ booking.firstname }}</td>
+                        <td class="body col_1" data-name="lastname">{{ booking.lastname }}</td>
+                        <td class="body col_2 col_last" data-name="street">{{ booking.street }}</td>
+                        <td class="body col_3 col_last" data-name="postal">{{ booking.postal }}</td>
+                        <td class="body col_4 col_last" data-name="city">{{ booking.city }}</td>
+                        <td class="body col_5 col_last" data-name="temporaryReserved">{{ booking.temporaryReserved ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                        <td class="body col_6 col_last" data-name="waitingList">{{ booking.waitingList ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                        <td class="body col_7 col_last" data-name="optIn">{{ booking.optIn ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                        <td class="body col_8 col_last" data-name="canceled">{{ booking.canceled ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                        <td class="body col_9 col_last" data-name="expired">{{ booking.expired ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                        <td class="body col_10 col_last" data-name="ticketAmount">{{ booking.ticketAmount }}</td>
+                        <td class="body col_11 col_last" data-name="escorts">{{ booking.escorts }}</td>
+                        <td class="body col_12 col_last" data-name="escorts">{{ booking.paid ? 'mod_member_list.yes'|trans : 'mod_member_list.no'|trans }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_module.php" source-language="en">
+  <file datatype="php" original="contao/languages/en/tl_module.php" source-language="en">
     <body>
       <trans-unit id="tl_module.form_legend">
         <source>Booking form settings</source>
       </trans-unit>
-      <trans-unit id="tl_module.notification_center_legend">
-        <source>Notification settings</source>
+      <trans-unit id="tl_module.ceb_modMemberList_enableBookingStatusFilter.0">
+        <source>Enable the booking status filter</source>
       </trans-unit>
-      <trans-unit id="tl_module.unsubscribeFromEventNotificationIds.0">
-        <source>Event unsubscribe notifications</source>
+      <trans-unit id="tl_module.ceb_modMemberList_enableBookingStatusFilter.1">
+        <source>Here you can choose whether to apply the booking status filter.</source>
       </trans-unit>
-      <trans-unit id="tl_module.unsubscribeFromEventNotificationIds.1">
-        <source>Please choose one or more notifications.</source>
+      <trans-unit id="tl_module.ceb_modMemberList_bookingStatusFilter.0">
+        <source>Booking status filter</source>
       </trans-unit>
-      <trans-unit id="tl_module.calendarEventBookingMemberListPartialTemplate.0">
-        <source>Event member list partial template</source>
+      <trans-unit id="tl_module.ceb_modMemberList_bookingStatusFilter.1">
+        <source>Select which bookings you want to display. If you leave the filter blank, all bookings will be displayed.</source>
       </trans-unit>
-      <trans-unit id="tl_module.calendarEventBookingMemberListPartialTemplate.1">
-        <source>Here you can select the event meber list partial template.</source>
+      <trans-unit id="tl_module.ceb_modMemberList_sorting.0">
+        <source>Sorting</source>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modMemberList_sorting.1">
+        <source>Select the field by which the entries are to be sorted.</source>
       </trans-unit>
     </body>
   </file>

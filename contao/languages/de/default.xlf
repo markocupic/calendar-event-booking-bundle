@@ -1,81 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/default.php" source-language="en" target-language="de">
+  <file datatype="php" original="contao/languages/en/default.php" source-language="en" target-language="de">
     <body>
       <trans-unit id="MSC.bookings">
-        <source>bookings</source>
+        <source>Bookings</source>
         <target>Buchungen</target>
       </trans-unit>
-      <trans-unit id="MSC.maxEscortsPossible">
-        <source>Maximum %s escorts per participant possible.</source>
+      <trans-unit id="ERR.max_tickets_per_booking">
+        <source>A maximum of %s tickets can be booked per booking.</source>
+        <target>Es sind maximal %s Tickets pro Buchung möglich.</target>
+      </trans-unit>
+      <trans-unit id="ERR.max_escorts_per_booking">
+        <source>Each participant may bring up to %s escorts.</source>
         <target>Es sind maximal %s Begleitpersonen pro Teilnehmer möglich.</target>
       </trans-unit>
-      <trans-unit id="MSC.youHaveAlreadyBooked">
-        <source>We have already found a booking with the email address "%s". Booking process aborted.</source>
-        <target>Eine Buchungsanfrage mit der E-Mail-Adresse "%s" ist bereits eingegangen. Der Anmeldevorgang wurde abgebrochen.</target>
+      <trans-unit id="ERR.duplicate_email">
+        <source>A booking has already been made using the email address "%s". Please use another email address.</source>
+        <target>Eine Buchungsanfrage mit der E-Mail-Adresse "%s" ist bereits eingegangen. Bitte benutzen Sie eine andere E-Mail-Adresse.</target>
       </trans-unit>
-      <trans-unit id="MSC.enterPosIntVal">
+      <trans-unit id="ERR.enter_positive_integer">
         <source>Please enter a positive number.</source>
         <target>Bitte geben Sie eine positive natürliche Zahl ein.</target>
       </trans-unit>
-      <trans-unit id="MSC.maxMemberLimitExceeded">
-        <source>The total number of %s participants is exceeded. Please check the number of accompanying persons.</source>
-        <target>Die Gesamtzahl von %s Teilnehmern wird überschritten. Bitte überprüfen Sie die Anzahl der Begleitpersonen.</target>
+      <trans-unit id="ERR.not_enough_spots_reduce_ticket_amount">
+        <source>There are not enough spots left. Please reduce the number of tickets, if possible.</source>
+        <target>Es hat nicht mehr genügend Plätze frei. Bitte reduzieren Sie, wenn möglich, die Anzahl Tickets.</target>
       </trans-unit>
-      <trans-unit id="MSC.bookingNotYetPossible">
-        <source>Booking is only possible from %s .</source>
+      <trans-unit id="ERR.not_enough_spots_reduce_ticket_amount_or_book_to_waiting_list">
+        <source>There are not enough spots left. Please reduce the number of tickets or add your booking to the waiting list.</source>
+        <target>Es gibt nicht mehr genügend Plätze. Bitte reduzieren Sie die Anzahl der Tickets oder tragen Sie sich in die Warteliste ein.</target>
+      </trans-unit>
+      <trans-unit id="ERR.not_enough_spots_on_waiting_list_reduce_ticket_amount">
+        <source>There are not enough spots left on the waiting list. Please reduce the number of tickets, if possible.</source>
+        <target>Es hat nicht mehr genügend Plätze auf der Warteliste. Bitte reduzieren Sie, wenn möglich, die Anzahl Tickets.</target>
+      </trans-unit>
+      <trans-unit id="MSC.event_and_waiting_list_fully_booked">
+        <source>The event and the waiting list are both fully booked.</source>
+        <target>Der Event ist ausgebucht und die Warteliste ist bereits voll.</target>
+      </trans-unit>
+      <trans-unit id="MSC.booking_on_waiting_list_possible_set_the_waiting_list_flag_please">
+        <source>Only booking on the waiting list is still possible. Please select the option "On waiting list" if you would like to be added.</source>
+        <target>Nur noch Anmeldung auf Warteliste möglich. Bitte wählen Sie die Option ‘Auf Warteliste’, wenn Sie auf die Warteliste gesetzt werden möchten.</target>
+      </trans-unit>
+      <trans-unit id="MSC.not_bookable">
+        <source>The event is not bookable.</source>
+        <target>Der Event ist nicht buchbar.</target>
+      </trans-unit>
+      <trans-unit id="MSC.draft">
+        <source>The event is not accessible.</source>
+        <target>Der Event kann nicht angezeigt werden.</target>
+      </trans-unit>
+      <trans-unit id="MSC.waiting_list_open">
+        <source>Unfortunately, the event is already fully booked. If you submit the form, your booking will be placed on the waiting list.</source>
+        <target>Der Event ist leider ausgebucht. Falls Sie das Formular absenden wird Ihre Anmeldung auf die Warteliste gesetzt.</target>
+      </trans-unit>
+      <trans-unit id="MSC.booking_open">
+        <source>Booking is open. Free spots are available.</source>
+        <target>Buchung möglich. Es sind freie Plätze verfügbar.</target>
+      </trans-unit>
+      <trans-unit id="MSC.not_yet_bookable">
+        <source>Booking is only possible starting from %s.</source>
         <target>Die Anmeldung für diesen Anlass ist erst ab %s möglich.</target>
       </trans-unit>
-      <trans-unit id="MSC.bookingNoLongerPossible">
-        <source>The registration period for this event has already expired. Unfortunately, registrations can no longer be accepted.</source>
+      <trans-unit id="MSC.booking_closed">
+        <source>The booking period for this event has expired. Unfortunately, bookings can no longer be accepted.</source>
         <target>Die Anmeldefrist für diesen Anlass ist bereits abgelaufen. Es können leider keine Anmeldungen mehr entgegengenommen werden.</target>
       </trans-unit>
-      <trans-unit id="MSC.eventFullyBooked">
-        <source>Sorry, but unfortunately this event is already fully booked.</source>
-        <target>Der Anlass ist leider bereits ausgebucht.</target>
+      <trans-unit id="MSC.fully_booked">
+        <source>Sorry, this event is fully booked.</source>
+        <target>Der Anlass ist ausgebucht.</target>
       </trans-unit>
-      <trans-unit id="MSC.adjustedBookingPeriodEndtime">
-        <source>The end date for the booking period has been adjusted.</source>
+      <trans-unit id="MSC.adjusted_booking_period_end_time">
+        <source>The booking period end date has been adjusted.</source>
         <target>Das Event-Enddatum für den Buchungszeitraum wurde angepasst.</target>
       </trans-unit>
-      <trans-unit id="MSC.unsubscribeInfo">
-        <source>You've been successfully unsubscribed from event "%s".</source>
-        <target>Ihre Anmeldung zu Event "%s" wurde erfolgreich storniert.</target>
-      </trans-unit>
-      <trans-unit id="MSC.unsubscribeConfirm">
-        <source><![CDATA[Dear <span class="event-member-name">%s %s</span>{{br}}Are you sure you want to unsubscribe from event "%s"?]]>></source>
-        <target><![CDATA[Liebe(r) <span class="event-member-name">%s %s</span>{{br}}Möchten Sie Ihre Anmeldung zu Event "%s" stornieren?]]></target>
-      </trans-unit>
-      <trans-unit id="BTN.slabelUnsubscribeFromEvent">
-        <source>Unsubscribe from event</source>
-        <target>Anmeldung stornieren</target>
-      </trans-unit>
-      <trans-unit id="BTN.slabelCancel">
-        <source>Cancel</source>
-        <target>Abbrechen</target>
-      </trans-unit>
-      <trans-unit id="ERR.unsubscriptionLimitExpired">
-        <source>The unsubscription limit for event "%s" has expired.</source>
-        <target>Die Stornierungsfrist für Event "%s" ist leider abgelaufen.</target>
-      </trans-unit>
-      <trans-unit id="ERR.eventNotFound">
-        <source>Invalid booking token or could not find assigned event.</source>
-        <target>Ungültiges Token oder zugewiesene Event konnte nicht gefunden werden.</target>
-      </trans-unit>
-      <trans-unit id="ERR.invalidBookingToken">
-        <source>Invalid booking token.</source>
-        <target>Ungültiges Buchungs-Token.</target>
-      </trans-unit>
-      <trans-unit id="ERR.eventUnsubscriptionNotAllowed">
-        <source>You're not allowed to unsubscribe from event "%s".</source>
-        <target>Die Abmeldung vom Event "%s" ist nicht möglich.</target>
-      </trans-unit>
-      <trans-unit id="ERR.invalidUnsubscriptionLimit">
-        <source>This unsubscription limit is too far in the future (see event start and end date and time).</source>
+      <trans-unit id="ERR.invalid_unsubscription_deadline">
+        <source>This unsubscription limit is too far in the future (check the event’s start and end dates).</source>
         <target>Diese Abmeldezeit liegt zu weit in der Zukunft (siehe Event-Startdatum und Event-Enddatum).</target>
       </trans-unit>
-      <trans-unit id="ERR.conflictingUnsubscribeLimits">
-        <source>You cannot indicate both an unsubscription limit in days before the event and fixed limit at the same time. Please set unsubscription limit in days to 0 or delete the fixed limit.</source>
+      <trans-unit id="ERR.conflicting_unsubscribe_deadlines">
+        <source>You cannot set both an unsubscription limit in days before the event and a fixed limit. Please set the day limit to 0 or delete the fixed date.</source>
         <target>Sie können nicht gleichzeitig eine Stornierungsfrist in Tagen und einen Zeitpunkt angeben. Bitte setzen Sie die Stornierungsfrist in Tagen auf 0 oder löschen Sie den Zeitpunkt.</target>
       </trans-unit>
     </body>

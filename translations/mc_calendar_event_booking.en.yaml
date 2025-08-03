@@ -1,0 +1,74 @@
+mod_opt_in:
+    error:
+        booking_not_found: 'Confirmation unfortunately not possible! Your booking could not be found. This may be due to exceeding the allowed time frame for confirming the booking.'
+        corresponding_event_not_found: 'Confirmation unfortunately not possible! No event matching the booking was found.'
+        corresponding_calendar_not_found: 'Confirmation unfortunately not possible! No calendar matching the booking was found.'
+        confirm_no_more_possible: 'Confirmation is no longer possible at this time.'
+        booking_canceled: 'Confirmation unfortunately not possible! Your booking has been canceled and can no longer be confirmed.'
+        cannot_confirm: 'Confirmation unfortunately not possible! The allowed time frame for confirming the booking has been exceeded.'
+        unexpected_error: 'Confirmation unfortunately not possible! An unexpected error occurred while trying to process your request.'
+        confirm_expired: 'Confirmation not possible! The booking was canceled because it was not confirmed in time.'
+    info:
+        opt_in_not_required: 'Confirmation of your booking is not required or intended for this event.'
+        already_confirmed: 'Your booking has already been confirmed.'
+        opt_in_success: 'Your booking has been successfully confirmed.'
+
+mod_unsubscribe:
+    error:
+        invalid_uuid: 'Cancellation not possible! The cancellation link is invalid.'
+        event_not_found: 'Cancellation not possible! No event was found for your booking.'
+        unsubscription_not_allowed: 'Cancellation for the event "%title%" is not possible!'
+        unsubscription_limit_expired: 'Cancellation not possible! The cancellation deadline for event "%title%" has unfortunately passed.'
+        unexpected_error: 'Cancellation of the event is unfortunately not possible due to an unexpected error.'
+    info:
+        already_unsubscribed: 'Your booking for event "%title%" has already been canceled.'
+        unsubscribe_success: 'Your registration for event "%title%" has been successfully canceled.'
+    unsubscribe_btn_label: 'Cancel booking'
+    unsubscribe_confirm: 'Would you like to cancel your booking for event "%title%"?'
+    unsubscribe_success: 'Your booking has been canceled.'
+
+mod_form:
+    error:
+        unexpected_error: 'An unexpected error occurred while trying to process your request. Please contact the administrator of this website.'
+        too_many_requests: 'Too many requests – please try again shortly. You have exceeded the allowed request limit for this service. This helps prevent abuse and ensures system stability. Please wait a few minutes and try again.'
+    form:
+        event_status: 'Event Status'
+        logged_in_user: 'Logged-in User'
+        event_name: 'Event Name'
+        event_start_date: 'Event Start Date'
+        booking_start_date: 'Booking Possible From'
+        booking_end_date: 'Booking Possible Until'
+        can_register: 'Booking Possible (regular or on waiting list)'
+        is_fully_booked: 'Fully Booked'
+        is_waiting_list_open: 'Waiting List Available'
+        booking_count: 'Number of Bookings'
+        free_spots_count: 'Free Spots'
+    checkout:
+        registration_successful: 'You have successfully registered for "%event_title%".'
+        name: 'Name'
+        email_address: 'Email Address'
+        on_waiting_list: 'On Waiting List'
+        yes: 'Yes'
+        booking_confirmed: 'Booking confirmed'
+        booking_not_confirmed: 'No! Please confirm your booking using the link provided in the email notification.'
+        booking_expired_title: 'Booking expired!'
+        booking_expired_text: 'Your booking has been expired! This usually happens if you did not confirm your booking within the required time or your payment was not received.'
+        booking_canceled_title: 'Booking canceled!'
+        booking_canceled_text: 'Your booking has been canceled!'
+
+mod_member_list:
+    firstname: 'First name'
+    lastname: 'Last name'
+    postal: 'Postal code'
+    street: 'Street'
+    city: 'City'
+    temporaryReserved: 'Temporary reserved'
+    waitingList: 'Waiting list'
+    optIn: 'Double-Opt-In'
+    canceled: 'Booking canceled'
+    expired: 'Booking expired'
+    ticketAmount: 'Tickets'
+    escorts: 'Escorts'
+    paid: 'Paid'
+    yes: 'Yes'
+    no: 'No'

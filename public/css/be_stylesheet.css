@@ -1,4 +1,9 @@
-#tl_buttons .header_icon.download_registration_list {
-    padding-left: 42px;
-    margin-left: 1px;
+#tl_buttons .header_icon.download_event_bookings {
+    background-color: transparent;
+    background-position: 0;
+    background-repeat: no-repeat;
+    border: none;
+    display: inline-block;
+    margin-left: 15px;
+    padding: 3px 0 3px 22px;
 }

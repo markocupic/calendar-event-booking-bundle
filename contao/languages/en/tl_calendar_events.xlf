@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_calendar_events.php" source-language="en">
+  <file datatype="php" original="contao/languages/en/tl_calendar_events.php" source-language="en">
     <body>
-      <trans-unit id="tl_calendar_events.registrations">
-        <source>Show participants from event with ID %s</source>
+      <trans-unit id="tl_calendar_events.bookings">
+        <source>Show bookings from event with ID %s</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.booking_options_legend">
         <source>Booking settings</source>
@@ -32,23 +32,29 @@
       <trans-unit id="tl_calendar_events.city.1">
         <source>Please add the city.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.addBookingForm.0">
+      <trans-unit id="tl_calendar_events.enableBookingForm.0">
         <source>Activate the booking form</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.addBookingForm.1">
+      <trans-unit id="tl_calendar_events.enableBookingForm.1">
         <source>Activate the booking form and set the options.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.maxEscortsPerMember.0">
-        <source>Maximum escorts per participant</source>
+      <trans-unit id="tl_calendar_events.requireOptIn.0">
+        <source>Confirmation of booking required (Double Opt-In)</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.maxEscortsPerMember.1">
-        <source>Please set the maximum number of escorts per participant.</source>
+      <trans-unit id="tl_calendar_events.requireOptIn.1">
+        <source>Only confirmed bookings are counted towards the number of participants. Unconfirmed bookings automatically receive the status ‘expired’ after a configurable deadline has expired.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.includeEscortsWhenCalculatingRegCount.0">
-        <source>Add accompanying persons to the total number of participants</source>
+      <trans-unit id="tl_calendar_events.maxTicketsPerBooking.0">
+        <source>Maximum number of bookable tickets per booking</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.includeEscortsWhenCalculatingRegCount.1">
-        <source>Determine whether the accompanying persons should be added to the total number of participants.</source>
+      <trans-unit id="tl_calendar_events.maxTicketsPerBooking.1">
+        <source>Please set the maximum number of bookable tickets per booking. The number of tickets is added to the total number of bookings.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxEscortsPerBooking.0">
+        <source>Maximum number of escorts per booking</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxEscortsPerBooking.1">
+        <source>Please set the maximum number of escorts per booking. The number of escorts is not added to the total number of bookings.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.bookingStartDate.0">
         <source>Booking startdate</source>
@@ -62,35 +68,35 @@
       <trans-unit id="tl_calendar_events.bookingEndDate.1">
         <source>Set the booking endtime, please.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.minMembers.0">
+      <trans-unit id="tl_calendar_events.minBookings.0">
         <source>Minimum participants</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.minMembers.1">
+      <trans-unit id="tl_calendar_events.minBookings.1">
         <source>Please set the minimum participant number.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.maxMembers.0">
+      <trans-unit id="tl_calendar_events.maxBookings.0">
         <source>Maximum participants</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.maxMembers.1">
+      <trans-unit id="tl_calendar_events.maxBookings.1">
         <source>Please set the maximum participant number.</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.enableNotificationCenter.0">
-        <source>Select message for booking confirmation</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.enableNotificationCenter.1">
-        <source>Select a message (Notification Center) for the booking confirmation.</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.eventBookingNotificationCenterIds.0">
-        <source>Choose one or more notifications</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.eventBookingNotificationCenterIds.1">
-        <source>Choose one or more notifications.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.eventBookingNotificationSender.0">
         <source>Booking notification sender</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.eventBookingNotificationSender.1">
         <source>Please choose the sender of the booking notification.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.enableWaitingList.0">
+        <source>Enable waiting list</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.enableWaitingList.1">
+        <source>Enables bookings even after the maximum possible number of participants has been exceeded.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxWaitingList.0">
+        <source>Waiting list limit</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.maxWaitingList.1">
+        <source>Please enter the limit of the waiting list. 0 for no limit.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.enableDeregistration.0">
         <source>Enable event unsubscription</source>
@@ -110,11 +116,32 @@
       <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.1">
         <source>Fixed time limit for unsubscriptions from this event (overrides subscription limit in days)</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.enableMultiBookingWithSameAddress.0">
-        <source>Enable mutiple bookings with same email address</source>
+      <trans-unit id="tl_calendar_events.emailUnique.0">
+        <source>Enable multiple bookings with same email address</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.enableMultiBookingWithSameAddress.1">
+      <trans-unit id="tl_calendar_events.emailUnique.1">
         <source>Please choose if multiple bookings with same email address should be allowed.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.cost_legend">
+        <source>Costs</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.netPrice.0">
+        <source>Net price</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.netPrice.1">
+        <source>Add the net price (e.g. 215.00).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.taxValue.0">
+        <source>Tax value (percent)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.taxValue.1">
+        <source>Enter the tax as a percent value (e.g. 7.50)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.currencyCode.0">
+        <source>Currency code</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events.currencyCode.1">
+        <source>Enter the currency code (e.g. EUR).</source>
       </trans-unit>
     </body>
   </file>

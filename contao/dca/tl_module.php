@@ -12,30 +12,46 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
-use Markocupic\CalendarEventBookingBundle\DataContainer\Module;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingMemberListController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingUnsubscribeController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingOptInController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingCheckoutController;
 
 // Palettes
-$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingEventBookingModuleController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{notification_center_legend:hide},enableNotificationCenter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingUnsubscribeFromEventModuleController::TYPE] = '{title_legend},name,headline,type;{notification_center_legend:hide},unsubscribeFromEventNotificationIds;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][CalendarEventBookingMemberListModuleController::TYPE] = '{title_legend},name,headline,type;{template_legend},calendarEventBookingMemberListPartialTemplate,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingFormController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingUnsubscribeController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMemberListController::TYPE] = '{title_legend},name,headline,type;{config_legend:hide},ceb_modMemberList_enableBookingStatusFilter,ceb_modMemberList_sorting;{template_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingOptInController::TYPE] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingCheckoutController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+
+// Subpalettes
+$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'ceb_modMemberList_enableBookingStatusFilter';
+
+// Selectors
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['ceb_modMemberList_enableBookingStatusFilter'] = 'ceb_modMemberList_bookingStatusFilter';
 
 // Fields
-$GLOBALS['TL_DCA']['tl_module']['fields']['unsubscribeFromEventNotificationIds'] = [
-    'eval'       => ['mandatory' => false, 'includeBlankOption' => true, 'chosen' => true, 'multiple' => true, 'tl_class' => 'clr'],
-    'exclude'    => true,
-    'foreignKey' => 'tl_nc_notification.title',
-    'inputType'  => 'select',
-    'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
-    'search'     => true,
-    'sql'        => ['type' => 'blob', 'notnull' => false],
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_enableBookingStatusFilter'] = [
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr cbx m12'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['calendarEventBookingMemberListPartialTemplate'] = [
-    'eval'      => ['tl_class' => 'w50'],
-    'exclude'   => true,
-    'inputType' => 'select',
-    'sql'       => ['type' => 'string', 'length' => 128, 'notnull' => true, 'default' => 'calendar_event_booking_member_list_partial'],
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_bookingStatusFilter'] = [
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'options'   => ['waitingList::true', 'waitingList::false', 'optIn::true', 'optIn::false', 'temporaryReserved::true', 'temporaryReserved::false', 'expired::true', 'expired::false', 'canceled::true', 'canceled::false', 'paid::true', 'paid::false'],
+    'eval'      => ['multiple' => true],
+    'sql'       => "blob NULL",
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_sorting'] = [
+    'filter'    => true,
+    'inputType' => 'checkboxWizard',
+    'options'   => ['addedOn::DESC', 'addedOn::ASC', 'lastname::DESC', 'lastname::ASC'],
+    'eval'      => ['multiple' => true],
+    'sql'       => "blob NULL",
 ];

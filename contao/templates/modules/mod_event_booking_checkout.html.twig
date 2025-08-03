@@ -1,0 +1,9 @@
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
+        {% block checkout %}
+            {% include checkout.getTemplateName() with checkout.getData() only %}
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -28,11 +28,50 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
+                ->booleanNode('auto_expire_reserved_bookings')
+                    ->info('If set to true, unconfirmed bookings are expired after a configurable time has elapsed.')
+                    ->defaultTrue()
+                ->end()
+                ->integerNode('auto_expire_time_limit')
+                    ->info('The time in seconds Contao should wait until an unconfirmed booking is automatically expired by a cronjob.')
+                    ->defaultValue(24 * 60 * 60)
+                ->end()
+                ->booleanNode('auto_delete_expired_bookings')
+                    ->info('If set to true, expired bookings are deleted from the database automatically by a cronjob.')
+                    ->defaultFalse()
+                ->end()
+                ->booleanNode('auto_delete_canceled_bookings')
+                    ->info('If set to true, canceled bookings are deleted from the database automatically by a cronjob.')
+                    ->defaultFalse()
+                ->end()
+                ->booleanNode('auto_delete_canceled_bookings')
+                    ->info('If set to true, canceled bookings are deleted from the database automatically by a cronjob.')
+                    ->defaultFalse()
+                ->end()
+                ->append($this->addRateLimitNode())
                 ->append($this->addMemberListNode())
              ->end()
         ;
 
         return $treeBuilder;
+    }
+
+    private function addRateLimitNode(): NodeDefinition
+    {
+        return (new TreeBuilder('rate_limit'))
+            ->getRootNode()
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('event_booking_form')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('policy')->cannotBeEmpty()->defaultValue('fixed_window')->end()
+                        ->integerNode('limit')->defaultValue(5)->end()
+                        ->scalarNode('interval')->cannotBeEmpty()->defaultValue('15 minutes')->end()
+                    ->end()
+                ->end()
+            ->end()
+            ;
     }
 
     private function addMemberListNode(): NodeDefinition

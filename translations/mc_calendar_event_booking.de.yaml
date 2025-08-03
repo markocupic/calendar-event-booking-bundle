@@ -1,0 +1,74 @@
+mod_opt_in:
+    error:
+        booking_not_found: 'Bestätigung leider nicht möglich! Ihre Buchung konnte leider nicht gefunden werden. Es kann damit zusammenhängen, dass Se die erlaubte zeitliche Frist zum Bestätigen der Buchung überschritten haben.'
+        corresponding_event_not_found: 'Bestätigung leider nicht möglich! Es wurde kein zur Buchung passender Event gefunden.'
+        corresponding_calendar_not_found: 'Bestätigung leider nicht möglich! Es wurde kein zur Buchung passender Kalender gefunden.'
+        confirm_no_more_possible: 'Bestätigung zu diesem Zeitpunkt nicht mehr möglich.'
+        booking_canceled: 'Bestätigung leider nicht möglich! Ihre Buchung wurde storniert und kann nicht mehr bestätigt werden.'
+        cannot_confirm: 'Bestätigung leider nicht möglich! Die erlaubte zeitliche Frist zum Bestätigen der Buchung wurde überschritten.'
+        unexpected_error: 'Bestätigung leider nicht möglich! Beim Versuch Ihre Anfrage zu verarbeiten ist es zu einem unerwarteten Fehler gekommen.'
+        confirm_expired: 'Bestätigung nicht möglich! Die Buchung wurde annuliert, weil diese nicht rechtzeitig bestätigt wurde.'
+    info:
+        opt_in_not_required: 'Eine Bestätigung Ihrer Buchung ist für diesen Event nicht nötig/vorgesehen.'
+        already_confirmed: 'Ihre Buchung wurde bereits bestätigt.'
+        opt_in_success: 'Ihre Buchung wurde erfolgreich bestätigt.'
+
+mod_unsubscribe:
+    error:
+        invalid_uuid: 'Stornierung nicht möglich! Der Stornierungslink ist ungültig.'
+        event_not_found: 'Stornierung nicht möglich! Zu Ihrer Buchung wurde kein Event gefunden.'
+        unsubscription_not_allowed: 'Stornierung beim Event "%title%" nicht möglich!'
+        unsubscription_limit_expired: 'Stornierung nicht möglich! Die Stornierungsfrist für Event "%title%" ist leider abgelaufen.'
+        unexpected_error: 'Die Stornierung des Events ist leider nicht möglich, weil es zu einem unerwarteten Fehler gekommen ist.'
+    info:
+        already_unsubscribed: 'Ihre Buchung für Event "%title%" wurde bereits storniert.'
+        unsubscribe_success: 'Ihre Anmeldung zu Event "%title%" wurde erfolgreich storniert.'
+    stop_unsubscribtion_btn_label: 'Stornierung abbrechen'
+    unsubscribe_btn_label: 'Buchung stornieren'
+    unsubscribe_confirm: 'Liebe(r) <span class="event-member-name">%firstname% %lastname%</span>{{br}}Möchten Sie Ihre Anmeldung zu Event "%title%" stornieren?'
+
+mod_form:
+    error:
+        unexpected_error: 'Beim Versuch Ihre Anfrage zu verarbeiten ist es zu einem unerwarteten Fehler gekommen. Bitte kontaktieren Sie den Administrator dieser Webseite.'
+        too_many_requests: 'Zu viele Anfragen – bitte versuchen Sie es in Kürze erneut. Sie haben das erlaubte Anfrage-Limit für diesen Dienst überschritten. Dies dient dem Schutz vor Missbrauch und zur Sicherstellung der Systemstabilität. Bitte warten Sie ein paar Minuten und versuchen Sie es dann erneut.'
+    form:
+        event_status: 'Event-Status'
+        logged_in_user: 'Angemeldeter Benutzer'
+        event_name: 'Event-Name'
+        event_start_date: 'Event Startdatum'
+        booking_start_date: 'Buchung möglich ab'
+        booking_end_date: 'Buchung möglich bis'
+        can_register: 'Buchung möglich (regulär oder auf Warteliste)'
+        is_fully_booked: 'Ausgebucht'
+        is_waiting_list_open: 'Warteliste verfügbar'
+        booking_count: 'Anzahl Buchungen'
+        free_spots_count: 'Freie Plätze'
+    checkout:
+        registration_successful: 'Sie haben sich erfolgreich für "%event_title%" registriert.'
+        name: 'Name'
+        email_address: 'E-Mail-Adresse'
+        on_waiting_list: 'Auf Warteliste'
+        yes: 'Ja'
+        booking_confirmed: 'Buchung bestätigt'
+        booking_not_confirmed: 'Nein! Bitte bestätigen Sie Ihre Buchung mit dem Link, den Sie in der E-Mail-Benachrichtigung erhalten haben.'
+        booking_expired_title: 'Buchung abgelaufen!'
+        booking_expired_text: 'Ihre Buchung ist abgelaufen! Dies passiert meistens, wenn Sie Ihre Buchung nicht rechtzeitig bestätigt haben oder Ihre Zahlung nicht rechtzeitig eingegangen ist.'
+        booking_canceled_title: 'Buchung storniert!'
+        booking_canceled_text: 'Ihre Buchung wurde storniert!'
+
+mod_member_list:
+    firstname: 'Vorname'
+    lastname: 'Familienname'
+    postal: 'Postleitzahl'
+    street: 'Strasse'
+    city: 'Ort'
+    temporaryReserved: 'Temporär reserviert'
+    waitingList: 'Warteliste'
+    optIn: 'Double-Opt-In'
+    canceled: 'Buchung storniert'
+    expired: 'Buchung abgelaufen'
+    ticketAmount: 'Tickets'
+    escorts: 'Begleitpersonen'
+    paid: 'Bezahlt'
+    yes: 'Ja'
+    no: 'Nein'

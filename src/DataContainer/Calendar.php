@@ -1,0 +1,92 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
+ */
+
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
+
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
+use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerInterface;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingPaymentSuccessNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventUnsubscribeNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\WaitingListAdvancementNotificationType;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+
+class Calendar
+{
+    public function __construct(
+        private readonly Connection $connection,
+        #[TaggedIterator('cebb.checkout_handler')]
+        private readonly iterable $checkoutHandlers,
+    ) {
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.eventBookingCheckoutHandler.options')]
+    public function getCheckoutHandlers(): array
+    {
+        return array_map(static fn (CheckoutHandlerInterface $handler) => $handler->getIdentifier(), iterator_to_array($this->checkoutHandlers->getIterator()));
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.subscribeNotification.options')]
+    public function getEventSubscribeNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.paymentSuccessNotification.options')]
+    public function getPaymentSuccessNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingPaymentSuccessNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.waitingListAdvancementNotification.options')]
+    public function getWaitingListAdvancementNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [WaitingListAdvancementNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.unsubscribeNotification.options')]
+    public function getUnsubscribeNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventUnsubscribeNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.optInNotification.options')]
+    public function getOptInNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingOptInNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+}

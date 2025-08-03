@@ -14,46 +14,60 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
-use Codefog\HasteBundle\UrlParser;
-use Contao\CalendarEventsModel;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Date;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
+use Markocupic\CalendarEventBookingBundle\Event\SendNotificationEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsPaymentModel;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
+use Terminal42\NotificationCenterBundle\Receipt\ReceiptCollection;
 
 class NotificationHelper
 {
     public function __construct(
         private readonly ContaoFramework $framework,
+        private readonly EventBooking $eventBooking,
+        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly NotificationCenter $notificationCenter,
         private readonly RequestStack $requestStack,
-        private readonly UrlParser $urlParser,
+        private readonly ScopeMatcher $scopeMatcher,
     ) {
+    }
+
+    public function sendNotification(int $notificationId, array $tokens, CalendarEventsMemberModel $booking): ReceiptCollection|null
+    {
+        $event = new SendNotificationEvent($notificationId, $tokens, $booking, $this->requestStack->getCurrentRequest());
+
+        $this->eventDispatcher->dispatch($event);
+
+        if (false === $event->shouldSend()) {
+            return null;
+        }
+
+        return $this->notificationCenter->sendNotification($event->getNotificationId(), $event->getTokens());
     }
 
     /**
      * @throws \Exception
      */
-    public function getNotificationTokens(CalendarEventsMemberModel $registration): array
+    public function getNotificationTokens(CalendarEventsMemberModel $booking, CalendarEventsPaymentModel|null $payment = null): array
     {
-        if (null === ($event = $registration->getRelated('pid'))) {
-            throw new \Exception(\sprintf('Event with ID %s not found.', $registration->pid));
+        if (null === ($event = $booking->getRelated('pid'))) {
+            throw new \Exception(\sprintf('Event with ID %s not found.', $booking->pid));
         }
 
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
-        $pageModelAdapter = $this->framework->getAdapter(PageModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-        $dateAdapter = $this->framework->getAdapter(Date::class);
-        $configAdapter = $this->framework->getAdapter(Config::class);
 
         // Load language file
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
@@ -61,20 +75,16 @@ class NotificationHelper
         $arrTokens = [];
 
         // Get admin email
-        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
+        $arrTokens['admin_email'] = $this->getAdminEmail();
 
         // Prepare tokens for event member and use "member_" as prefix
-        $row = $registration->row();
+        $row = $booking->row();
 
         foreach ($row as $k => $v) {
-            if (isset($GLOBALS['TL_DCA']['tl_calendar_events_member']['fields'][$k])) {
-                $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
-            } else {
-                $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
-            }
+            $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
         }
 
-        $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$registration->gender]);
+        $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$booking->gender]);
 
         // Prepare tokens for event and use "event_" as prefix
         $row = $event->row();
@@ -82,11 +92,6 @@ class NotificationHelper
         foreach ($row as $k => $v) {
             $arrTokens['event_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
         }
-
-        $arrTokens['event_startDateFormatted'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $event->startDate);
-        $arrTokens['event_endDateFormatted'] = $dateAdapter->parse($configAdapter->get('dateFormat'), $event->endDate);
-        $arrTokens['event_startTimeFormatted'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $event->startTime);
-        $arrTokens['event_endTimeFormatted'] = $dateAdapter->parse($configAdapter->get('timeFormat'), $event->endTime);
 
         // Prepare tokens for organizer_* (sender)
         $organizer = $userModelAdapter->findById($event->eventBookingNotificationSender);
@@ -102,56 +107,50 @@ class NotificationHelper
             }
         }
 
-        // Generate unsubscribe href
-        $arrTokens['event_unsubscribeHref'] = '';
+        // Generate opt-in link
+        $arrTokens['member_optInLink'] = $this->eventBooking->getOptInLink($booking);
 
-        if ($event->enableDeregistration) {
-            $calendar = $event->getRelated('pid');
+        // Generate unsubscribe link
+        $arrTokens['member_unsubscribeLink'] = $this->eventBooking->getUnsubscribeLink($booking);
 
-            if (null !== $calendar) {
-                $page = $pageModelAdapter->findById($calendar->eventUnsubscribePage);
-
-                if (null !== $page) {
-                    $arrTokens['event_unsubscribeHref'] = $this->urlParser->addQueryString('bookingToken='.$registration->bookingToken, $page->getAbsoluteUrl());
-                }
+        // Add payment tokens
+        if (null !== $payment) {
+            foreach ($payment->row() as $k => $v) {
+                $arrTokens['payment_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
             }
         }
 
         // Trigger calEvtBookingGetNotificationTokens hook
         if (isset($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens']) && \is_array($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'])) {
             foreach ($GLOBALS['TL_HOOKS']['calEvtBookingGetNotificationTokens'] as $callback) {
-                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($registration, $event, $arrTokens);
+                $arrTokens = $systemAdapter->importStatic($callback[0])->{$callback[1]}($booking, $event, $arrTokens);
             }
         }
 
         return $arrTokens;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function notify(CalendarEventsMemberModel $registration, CalendarEventsModel $event): void
+    private function getAdminEmail(): string
     {
-        /** @var StringUtil $stringUtilAdapter */
-        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $request = $this->requestStack->getCurrentRequest();
 
-        if ($event->enableNotificationCenter) {
-            // Multiple notifications possible
-            $arrNotifications = $stringUtilAdapter->deserialize($event->eventBookingNotificationCenterIds);
+        if ($request && $this->scopeMatcher->isFrontendRequest()) {
+            /** @var PageModel $pageModel */
+            $pageModel = $request->attributes->get('pageModel');
 
-            if (!empty($arrNotifications) && \is_array($arrNotifications)) {
-                // Get $arrToken from helper
-                $arrTokens = $this->getNotificationTokens($registration);
-
-                // Send notification (multiple notifications possible)
-                foreach ($arrNotifications as $notificationId) {
-                    $request = $this->requestStack->getCurrentRequest();
-                    /** @var PageModel $page */
-                    $page = $request->attributes->get('page');
-
-                    $this->notificationCenter->sendNotification((int) $notificationId, $arrTokens, $page?->language);
-                }
+            if (null !== $pageModel && $adminEmail = $pageModel->adminEmailget) {
+                return $adminEmail;
             }
         }
+
+        if (!empty($GLOBALS['TL_ADMIN_EMAIL'])) {
+            return $GLOBALS['TL_ADMIN_EMAIL'];
+        }
+
+        if ($email = Config::get('adminEmail')) {
+            return $email;
+        }
+
+        return '';
     }
 }

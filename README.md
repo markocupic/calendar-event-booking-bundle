@@ -1,45 +1,193 @@
 # Events buchen mit Contao
 
-### Achtung: Bei der Migration von Version 3.x nach 4.x gab es mehrere Änderungen in der Benennung der Modul-Typen und Template-Namen. Dies bitte bei einer allfälligen Migration berücksichtigen.
+### Achtung: Bei der Migration von Version 5.x nach 6.x kam es zu vielen ![Änderungen](https://github.com/markocupic/calendar-event-booking-bundle/blob/6.x/UPGRADE.md.
 
 ## Events buchen
 
 Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
-Das Anmeldeformular kann im Contao Formulargenerator erstellt werden.
-Die Erweiterung stellt während des Installationsprozesses ein Sample Anmeldeformular bereit, welches Grundansprüchen genügen sollte.
-Die Werte des Formulars werden in der Datenbank in tl_calendar_events_member abgelegt
-und sind im Backend einsehbar und über eine CSV-Datei exportierbar.
+Das Anmeldeformular kann im Contao Formulargenerator erstellt werden. Während des Installationsprozesses wird ein Sample Anmeldeformular generiert.
+Beim Absenden des Formulars werden die Werte in der Datenbank in der Tabelle tl_calendar_events_member abgelegt. Die Buchungen sind im Backend einsehbar und über eine CSV-Datei exportierbar.
+Optional ist eine Buchung auf Warteliste möglich. Die Personen auf der Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden.
 
-## Benachrichtigung
+## Bezahlfunktion
 
-Event-Organisator und Teilnehmer können bei Event-Anmeldung und Event-Abmeldung über das Notification Center benachrichtigt werden.
+Die Bezahlfunktion ist zahlungspflichtig (Bitte Autor der Extension per E-Mail kontaktieren)
 
-## Frontend Module
+Im Moment sind folgende **Zahlungsmethoden** vorhanden:
 
-#### Event Anmeldeformular
+- PayPal
 
-Mit einem Frontend Modul lässt sich auf einer Event-Reader Seite ein Event-Anmeldeformular einblenden.
-Verlinken Sie in den Moduleinstellungen mit dem entsprechenden Formular aus dem Contao Formulargenerator.
-Wichtig! Das Anmeldeformular zieht den Eventnamen aus der Url.
-Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
-Das Anmeldeformular sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
+Event-Organisator und Teilnehmer können bei jedem Prozess automatisch benachrichtigt werden (Notification Cecnter).
 
-#### Angemeldete Mitglieder im Frontend auflisten
+## Warteliste
 
-Mit einem weiteren Frontend Modul können zu einem Event bereits angemeldete Personen aufgelistet werden.
-Wichtig! Das Auflistungsmodul zieht den Eventnamen aus der Url.
-Der Event-Alias oder die Event-Id müssen deshalb zwingend als Parameter in der Url enthalten sein.
-Das Mitgliederauflistungs-Modul sollte deshalb idealerweise immer in Kombination mit dem Event-Reader-Modul eingebunden werden.
+Es kann eine Warteliste aktiviert werden. Und Personen rücken automatisch nach, wenn Plätze durch Stornierung frei werden. Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
 
-#### Von Event abmelden
+## Double-Opt-In
 
-Die Erweiterung stellt auch eine Möglichkeit sich von einem Event wieder abzumelden.
-Via Notification Center kann dem Teilnehmer ein Abmeldelink (##event_unsubscribeHref##) zugeschickt werden.
-Erstellen Sie das entsprechende Modul und binden Sie es auf einer neuen Seite in der Seitenstruktur ein.
-Diese Seite sollten Sie sinnvollerweise in der Navigation nicht anzeigen lassen.
-In der Kalendereinstellung legen Sie anschliessend fest, auf welcher Seite das Event-Abmeldeformular liegt.
+Bei den Buchungseinstellungen kann optional eine Bestätigung der Buchungsanfrage aktiviert werden. Dabei wird mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) ein Link versandt. Dazu muss das Modul "Event Buchung: Benachrichtigung nach der
+Bestätigung der Buchung mit Link" erstellt werden.
+Wenn der Kunde/User seine Buchungsanfrage nicht bestätigt, wird nach einer konfigurierbaren Zeit seine Anfrage abgelehnt und sein Platz wieder für andere frei.
+Abschnitt "Konfiguration" beachten!
 
-#### Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
+## Frontend-Module
+
+| Frontend-Modul                                    | Erklärung                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|---------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Event-Buchungsformular                            | Wird benötigt, um das Event-Buchungsformular auszugeben. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                            |
+| Event-Buchungs-Checkout (Zusammenfassung/Zahlung) | Dieses Modul sollte auf der Weiterleitungsseite eingerichtet werden, auf die Kunden nach dem Absenden des Buchungsformulars geleitet werden. Es zeigt eine kurze Bestätigung der Buchung an. Oder löst den Zahlungscheckout aus (kostenpflichtig).                                                                                                                                                                                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Event-Buchungs-Bestätigung (Double-Opt-In)        | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungsbestätigungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden. Dieses Modul sollte nicht in Zusammenhang mit einem Bezahlungs-Checkout berwendet werden. |
+| Event-Stornierungsformular                        | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungs-Stornierungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden.                                                                                          |
+| Event-Teilnehmer-Liste                            | Optional! Dieses Modul listet die vorhandenen Buchungen auf. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                        |
+
+## Einrichtung (Ablauf)
+
+1. Kalender und Events anlegen.
+2. Formular auf Basis des automatisch generierten Formulars im Formulargenerator erstellen/anpassen/mit zusätzlichen Feldern erweitern. Im Formular die Option **"Aktiviere Event-Buchungsformular-Funktion"** aktivieren! Im Formular **keine Weiterleitungsseite** eingeben.
+3. Frontend Module Event-Buchungsformular und Event-Buchungs-Checkout (Zusammenfassung/Zahlung) anlegen
+4. Seite und Artikel mit dem Module **Buchungsformular** und Seite und Artikel mit dem Modul **Event-Buchungs-Checkout** einrichten. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
+5. Alle Benachrichtigungen anlegen.
+6. Im Backend unter **Formulare** (Formulargenerator) die Weiterleitungsseite einrichten und die Option "Aktiviere Event-Buchungsformular-Funktion" anwählen. Hier keine Benachrichtigung auswählen.
+7. In den Kalendereinstellungen alle Weiterleitungsseiten einrichten.
+8. In den Kalendereinstellungen alle gewünschten Benachrichtigungen auswählen.
+
+### Punkt 2: Event-Buchungsformular erstellen
+
+Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
+
+- **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.**
+- Zudem kann optional die Weiterleitungsseite ausgewählt werden.
+- **Bei der Benutzung eines Zahlungscheckouts sollte keine Weiterleitungsseite eingerichtet werden!**
+- Weitere Einstellungen müssen keine zwingend gemacht werden. Es sollte keine Benachrichtigung ausgewählt werden. Diese wird beim Event ausgewählt.
+- Folgende Felder werden im Beispielformular mitgeliefert und deren Inhalt beim Absenden des Formulars wird in der Datenbank (tl_calendar_events_member) gespeichert:
+  `waitingList`, `gender`, `firstname`, `lastname`, `dateOfBirth`, `street`, `postal`, `city`, `phone`, `email`, `ticketAmount`, `escorts`, `notes`
+- Benutzen Sie das Feld `ticketAmount`, wenn für jedes Ticket ein Platz von der Gesamtzahl der maximal möglichen Teilnehmerzahl abgezogen werden soll.
+- Benutzen Sie das Feld `escorts`, wenn es Begleitpersonen gibt. Begleitpersonen werden **nicht** zur Gesamtzahl der Teilnehmerzahl dazugezählt.
+- Es können zusätzliche Felder im Formulargenerator erstellt werden. Damit die Daten in der Datenbank gespeichert werden, muss die DCA im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` erweitert werden. Danach muss via Shell der Cache neu aufgebaut `composer install` und die
+  Datenbankmigration ausgeführt werden. `vendor/bin/contao-console contao:migrate`
+
+[Dokumentation](https://docs.contao.org/dev/getting-started/starting-development/#contao-configuration-translations)
+
+```php
+<?php
+// Put this in TL_ROOT/contao/dca/tl_calendar_events_member.php
+
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
+// Add an additional field to tl_calendar_events_member
+$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
+    'exclude'   => true,
+    'search'    => true,
+    'sorting'   => true,
+    'inputType' => 'select',
+    'options'   => ['vegetarian', 'vegan'],
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+    'sql'       => ['type' => 'string', 'length' => 255, 'notnull' => true],
+];
+
+// Add a new legend and custom field to the default.
+PaletteManipulator::create()
+    ->addLegend('food_legend', 'personal_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField(['foodHabilities'], 'food_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_calendar_events_member');
+```
+
+### Punkt 5: Benachrichtigungen mit Notification Center
+
+| Benachrichtigungen (Notification Center)                                                  |
+|-------------------------------------------------------------------------------------------|
+| Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars            |
+| Event Buchung: Benachrichtigung nach der Bestätigung der Buchung mit Link (Double-Opt-In) |
+| Event Buchung: Benachrichtigung nach der Event-Stornierung                                |
+| Event Buchung: Benachrichtigung nach dem Nachrücken von der Warteliste                    |
+| Event Buchung: Benachrichtigung nach erfolgreicher Zahlung                                |
+
+Versenden Sie zu versch. Zeitpunkten Benachrichtigungen und nutzen Sie dabei die **Simple Tokens**.
+
+Mit `##member_unsubscribeLink##` kann ein tokengesicherter Event-Stornierungs-Link mitgesandt werden.
+Dazu muss aber im Event die Event-Stornierung aktiviert werden und im Kalender die Seite mit dem Modul **Event-Stornierungsformular** eingerichtet worden sein.
+
+![Notification Center](docs/notification_center.jpg)
+
+#### Gebrauch der Simple Tokens im Notification Center
+
+|                                           |                              |                                                                                                                                                                                                                                                           |
+|-------------------------------------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Teilnehmer                                | `tl_calendar_events_member`  | `##member_gender##` (Männlich, Weiblich oder Divers), `##member_salutation##` (Übersetzt: Herr oder Frau), `##member_email##`, `##member_firstname##`, `##member_street##`, etc.                                                                          |
+| Event                                     | `tl_calendar_events`         | `##event_title##`, `##event_street##`, `##event_postal##`, `##event_city##`, `##event_unsubscribeLimitTstamp##`, etc.                                                                                                                                     |
+| Organisator/Email-Absender                | `tl_user`                    | `##organizer_name##`, `##organizer_email##`, etc.                                                                                                                                                                                                         |
+| Angaben zur Zahlung                       | `tl_calendar_events_payment` | `##uuid##`, `##bookingUuid##`, `##paidAt##`, `##refundedAt##`, `##method##`, `##transactionId##`, `##transactionStatus##`, `##currencyCode##`, `##taxValue##`, `##grossAmount##`, `##netAmount##`, `##vatAmount##`, `##transactionDetails##`, `##notes##` |
+| Insert-Tags und Simple Tokens kombinieren | `format_date`, usw.          | Simple Tokens lassen sich mit Insert-Tags kombinieren. -> `{{format_date::##member_dateOfBirth##::d.m.Y}}`, `{{format_date::##event_startDate##::d.m.Y}}`, usw.                                                                                           |
+
+#### Benachrichtigung (Beispiel: Benachrichtigung nach erfolgreicher Zahlung)
+
+```
+{if member_gender=='male'}
+Sehr geehrter Herr ##member_firstname ##` ##member_lastname##
+{elseif member_gender=='female'}
+Sehr geehrte Frau ##member_firstname## ##member_lastname##
+{else}
+Hallo ##member_firstname## ##member_lastname##
+{endif}
+
+Hiermit bestätigen wir den Eingang Ihrer Buchungsanfrage zur Veranstaltung "##event_title##" vom {{format_date::##event_startDate##::d.m.Y}}.
+
+Ihre Angaben:
+Name/Vorname: ##member_firstname## ##member_lastname##
+Adresse: ##member_street##, ##member_postal##, ##member_city##
+Telefon: ##member_phone##
+E-Mail: ##member_email##
+Begleitpersonen: ##member_escorts##
+Anzahl Tickets: ##member_ticketAmount##
+Geschlecht: ##member_gender##
+Geburtsdatum: {{format_date::##member_dateOfBirth##::d.m.Y}}
+
+Stornierung erlauben: {if event_enableDeregistration=='1'}Ja{else}Nein{endif}
+
+{if payment_method=='paypal'}
+Ihre Bezahlung:
+Bezahlanbieter: ##payment_method##
+Total: ##payment_grossAmount## ##payment_currencyCode##
+{endif}
+
+{if member_waitingList=='1'}
+Auf Warteliste: JA!
+{endif}
+
+{if event_requireOptIn=='1'}
+Bitte beachten Sie, dass Ihre Buchung erst nach Bestätigung mit dem Berstätigungslink gültig wird.
+##member_optInLink##
+{endif}
+
+{if event_enableDeregistration=='1'}
+Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
+##member_unsubscribeLink##
+Achtung! es können nur Stornierungen bis zum {{format_date::##event_unsubscribeLimitTstamp##::d.m.}} angenommen werden.
+{endif}
+
+Freundliche Grüsse
+
+##organizer_name##
+```
+
+### Template Variablen
+
+Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
+
+| Tag               | Type   | Erklärung                                                                                                                                  |
+|-------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `event`           | object | `\Contao\CalendarEvntsModel $event` Objekt mit allen Angaben zum Event. Z.B. gibt `event.title` den Event-Namen aus.                       |
+| `calendar`        | object | `\Contao\CalendarModel $calendar` Objekt mit allen Angaben zum übergeordneten Kalender. Z.B. gibt `calendar.title` den Kalender-Namen aus. |
+| `eventStatus`     | string | `draft`, `booking_open`, `fully_booked`, `waiting_list_open`, `not_bookable`, `not_yet_bookable`, `booking_closed`                         |
+| `canRegister`     | bool   | Zeigt, ob eine Buchung (auf Warteliste) möglich ist.                                                                                       |
+| `isFullyBooked`   | bool   | Zeigt, ob der Event ausgebucht ist.                                                                                                        |
+| `bookingCount`    | int    | Zeigt, die Anzahl Buchungen an.                                                                                                            |
+| `freeSpotsCount`  | int    | Zeigt die Anzahl freier Plätze an.                                                                                                         |
+| `waitingListOpen` | bool   | Zeigt an, ob die Warteliste geöffnet ist.                                                                                                  |
+| `hasLoggedInUser` | bool   | Zeigt an, ob ein Mitglied angemeldet ist.                                                                                                  |
+| `loggedInUser`    | null   | FrontendUser Gibt null oder das FrontendUser Objekt zurück.                                                                                |
+
+### Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
 
 Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) herunterladen.
 In der `config/config.yaml` lässt sich das Encoding einstellen.
@@ -56,355 +204,29 @@ markocupic_calendar_event_booking:
     convert_to: 'ISO-8859-1'
 ```
 
-## Einrichtung (Ablauf)
-
-1. Kalender und Events anlegen.
-2. "Eventliste" und "Eventleser" Frontend-Module anlegen.
-3. Falls nicht schon geschehen, E-Mail-Gateway (Notification Center) anlegen.
-4. Benachrichtigung des Typs "Event-Buchungsbestätigung" anlegen (Notification Center)
-5. Im Contao Formulargenerator die benötigten Felder bereitstellen.
-6. Im Formular (Formulargenerator) die Weiterleitungsseite einrichten.
-7. Das Frontend Modul "Event-Buchungsformular" erstellen und in den Modul-Einstellungen das bei Punkt 5 erstellte Formular auswählen. Danach noch die bei Punkt 4 erstellte Benachrichtigung auswählen.
-8. Die 3 erstellten Module (Eventliste, Eventleser und Event-Buchungsformular) in der Contao Seitenstruktur einbinden (Wichtig! Event-Buchungsformular und Eventleser gehören auf die gleiche Seite).
-9. Optional das Frontend Modul "Event-Abmeldeformular" mit dazugehörender Benachrichtigung "Event-Abmeldung" erstellen und dieses in einer extra dafür erstellten Seite einbinden.
-10. Optional das Frontend Modul "Event-Mitglieder-Auflistung" erstellen und auf der Seite mit dem Eventleser Modul einbinden.
-11. Bei den Events die Buchungs-, Benachrichtigungs- und Abmeldeoptionen konfigurieren.
-12. In der Kalendereinstellung die Seite mit dem "Event-Abmeldeformular" festlegen.
-
-#### Punkt 4: E-Mail Benachrichtigung im Notification Center konfigurieren
-
-Versenden Sie beim Absenden des Formulars eine oder mehrere Nachrichten an den Teilnehmer oder eine Kopie an den Eventorganisator
-und nutzen Sie dabei die **Simple Tokens**.
-
-Mit ##event_unsubscribeHref## kann ein tokengesicherter Event-Abmeldelink mitgesandt werden. Dazu muss aber im Event die Event-Abmeldung erlaubt werden.
-Auch sollte das dafür nötige Frontend Modul "Event-Abmeldeformular" erstellt und in einer Seite eingebunden worden sein.
-![Notification Center](docs/notification_center.jpg)
-
-##### Gebrauch der Simple Tokens im Notification Center
-
-Teilnehmer:  ##member_gender## (Männlich, Weiblich oder Divers), ##member_salutation## (Übersetzt: Herr oder Frau), ##member_email##, ##member_firstname##, ##member_street##, etc. (Feldnamen aus tl_calendar_events_member)
-
-Event: ##event_title##, ##event_street##, ##event_postal##, ##event_city##, ##event_unsubscribeLimitTstamp##, etc. (Feldnamen aus tl_calendar_events)
-
-Organisator/Email-Absender: ##organizer_name##, ##organizer_email, etc. (Feldnamen aus tl_user)
+### Konfiguration `config/config.yaml`
 
 ```
-{if member_gender=='male'}
-Sehr geehrter Herr ##member_firstname## ##member_lastname##
-{elseif member_gender=='female'}
-Sehr geehrte Frau ##member_firstname## ##member_lastname##
-{else}
-Hallo ##member_firstname## ##member_lastname##
-{endif}
-
-Hiermit bestätigen wir den Eingang Ihre Buchungsanfrage zur Veranstaltung "##event_title##" vom ##event_startDateFormatted## ##event_startTimeFormatted## bis ##event_endDateFormatted## ##event_endTimeFormatted## .
-
-Bitte beachten Sie, dass Ihre Teilnahme erst nach erfolgter Prüfung definitiv wird. Sie erhalten dazu in den nächsten 1-2 Werktagen von uns die definitive Buchungsbestätigung.
-
-Ihre Angaben:
-Name/Vorname: ##member_firstname## ##member_lastname##
-Adresse: ##member_street##, ##member_postal##, ##member_city##
-Telefon: ##member_phone##
-E-Mail: ##member_email##
-Begleitpersonen: ##member_escorts##
-Geschlech: ##member_gender##
-Event-Stornierung erlauben: {if event_enableDeregistration=='1'}Ja{else}Nein{endif}
-
-
-{if event_enableDeregistration=='1'}
-Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumelden:
-##event_unsubscribeHref##
-{endif}
-
-Freundliche Grüsse
-
-##organizer_name##
+# config/config.yaml
+markocupic_calendar_event_booking:
+    auto_expire_reserved_bookings: true  # Unbestätigte Anmeldungen/Anmeldungen mit nicht erledigten Zahlungen werden nach Ablauf einer konfigurierbaren Zeit (auto_expire_time_limit) automatisch abgelehnt.
+    auto_expire_time_limit: 86400 # Zeit in Sekunden, welche der User hat, um seine Buchung per Link zu bestätigen oder um die Zahlung zu erledigen.
+    auto_delete_expired_bookings: true # Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht.
+    auto_delete_canceled_bookings: true # Stornierte Anmeldungen werden automatisch aus der Datenbank gelöscht.
+    rate_limiter:
+        event_booking_form: # Gebrauch des Buchungsformulars begrenzen
+            policy: 'fixed_window'
+            limit: 10 # default 5
+            interval: '20 minutes' # default '15 minutes'
+    member_list_export:
+        enable_output_conversion: true
+        convert_from: 'UTF-8'
+        convert_to: 'ISO-8859-1'
 ```
 
-#### Punkt 5: Event-Buchungsformular erstellen
+### Checkout Template updatesicher anpassen
 
-Beim ersten Aufruf der Seite nach der Installation der Erweiterung wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
-**Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.** Weitere Einstellungen müssen keine zwingend gemacht werden.
-![Formulargenerator-Einstellung](docs/form_generator.png)
-Folgende Felder können im Formular erstellt werden:
-firstname,lastname,gender,dateOfBirth,street,postal,city,phone,email,escorts,notes
+Das Standard Checkout template befindet sich unter `vendor/markocupic/calendar-event-booking-bundle/templates/Checkout/default.html.twig`.
 
-Werden weitere Felder gewünscht, so müssen diese im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` definiert werden.
-Danach Cache neu aufbauen und via Installtool die Felder in der Datenbank anlegen.
-
-[Dokumentation](https://docs.contao.org/dev/getting-started/starting-development/#contao-configuration-translations)
-
-```php
-<?php
-// Put this in TL_ROOT/contao/dca/tl_calendar_events_member.php
-
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
-
-// Add additional field to tl_calendar_events_member
-$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['foodHabilities'] = [
-    'exclude'   => true,
-    'search'    => true,
-    'sorting'   => true,
-    'inputType' => 'select',
-    'options'   => ['vegetarian', 'vegan'],
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-
-// Add a new legend and custom field to the default.
-Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('food_legend', 'personal_legend', PaletteManipulator::POSITION_AFTER)
-    ->addField(['foodHabilities'], 'food_legend', PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_calendar_events_member');
-
-```
-
-#### Punkt 11: E-Mail Buchungsbestätigung im Event aktivieren
-
-Aktivieren Sie beim Event die Buchungsbestätigung mit dem Notification Center, wählen Sie eine Benachrichtigung aus und legen Sie einen Absender mit einer gültigen E-Mail-Adresse (tl_user) fest.
-![Benachrichtigung im Event aktivieren](docs/benachrichtigung-aktivieren.png)
-
-### Template Variablen
-
-Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
-Tag | type | Erklärung
------------- |------------- |--
-`$this->canRegister` | bool | Zeigt, ob eine Registrierung möglich ist.
-`$this->isFullyBooked` | bool | Zeigt, ob der Event ausgebucht ist.
-`$this->bookingCount` | int | Zeigt, die Anzahl Registrierungen an.
-`$this->bookingMin` | int | Zeigt, die minimal verlangte Teilnehmerzahl an.
-`$this->bookingMax` | int | Zeigt, die maximale Teilnehmerzahl an.
-`$this->bookingStartTimestamp` | int | Zeigt, die Buchungsstartzeit (timestamp) an.
-`$this->bookingStartDate` | int | Zeigt, die Buchungsstartzeit (date) an.
-`$this->bookingStartDatim` | int | Zeigt, die Buchungsstartzeit (datim) an.
-`$this->bookingEndTimestamp` | int | Zeigt, die Buchungsendzeit (timestamp) an.
-`$this->bookingEndDate` | int | Zeigt, die Buchungsendzeit (date) an.
-`$this->bookingEndDatim` | int | Zeigt, die Buchungsendzeit (datim) an.
-`$this->hasLoggedInUser` | bool | Zeigt an, ob ein Mitglied angemeldet ist.
-`$this->loggedInUser` | null|FrontendUser | Gibt null oder das FrontendUser Objekt zurück.
-
-### Überblick über alle Simple Tokens beim Gebrauch des Notification Centers
-
-```
-Array
-(
-    [admin_email] => admin@mi6.com
-    [member_id] => 26
-    [member_pid] => Testevent 2
-    [member_tstamp] => 08.09.2021 21:26
-    [member_addedOn] => 08.09.2021 21:26
-    [member_notes] => Tomorrow never dies!
-    [member_firstname] => James
-    [member_lastname] => Bond
-    [member_gender] => Männlich
-    [member_dateOfBirth] => 12. März 1976
-    [member_street] => Casino Royale
-    [member_postal] => 66666
-    [member_city] => London
-    [member_phone] => 23123
-    [member_email] => 007@mi6.com
-    [member_escorts] => 0
-    [member_bookingToken] => d47636dd-7606-4f0b-ad8d-82461abde483
-    [member_notificationSent] => nein
-    [member_subscriptionAccepted] => nein
-    [member_notificationSentDatim] =>
-    [member_salutation] => Herr
-    [event_id] => 3
-    [event_pid] => Events
-    [event_tstamp] => 08.09.2021 14:04
-    [event_title] => Testevent 2
-    [event_alias] => testevent-2
-    [event_author] => Eve Moneypenny
-    [event_addTime] => nein
-    [event_startTime] => 00:00
-    [event_endTime] => 23:59
-    [event_startDateFormatted] => 16. September 2021
-    [event_endDateFormatted] => 18. September 2021
-    [event_startTimeFormatted] => 08:00
-    [event_endTimeFormatted] => 18:00
-    [event_location] =>
-    [event_teaser] =>
-    [event_addImage] => nein
-    [event_overwriteMeta] => nein
-    [event_singleSRC] =>
-    [event_alt] =>
-    [event_imageTitle] =>
-    [event_size] =>
-    [event_imagemargin] =>
-    [event_imageUrl] =>
-    [event_fullsize] => nein
-    [event_caption] =>
-    [event_floating] => oberhalb
-    [event_recurring] => nein
-    [event_repeatEach] =>
-    [event_repeatEnd] => 0
-    [event_recurrences] => 0
-    [event_addEnclosure] => nein
-    [event_enclosure] =>
-    [event_source] => Standard
-    [event_jumpTo] => 0
-    [event_articleId] => 0
-    [event_url] =>
-    [event_target] => nein
-    [event_cssClass] =>  upcoming
-    [event_noComments] => nein
-    [event_published] => ja
-    [event_start] =>
-    [event_stop] =>
-    [event_address] =>
-    [event_description] =>
-    [event_pageTitle] =>
-    [event_unsubscribeLimit] => 0
-    [event_enableDeregistration] => ja
-    [event_eventBookingNotificationSender] => Eve Moneypenny
-    [event_eventBookingNotificationCenterIds] => Event Buchungs Benachrichtigung
-    [event_enableNotificationCenter] => ja
-    [event_maxEscortsPerMember] => 0
-    [event_maxMembers] => 11
-    [event_bookingStartDate] => 7. Juni 2021
-    [event_bookingEndDate] => 15. September 2021
-    [event_addBookingForm] => ja
-    [event_city] =>
-    [event_postal] =>
-    [event_street] =>
-    [event_enableMultiBookingWithSameAddress] => ja
-    [event_unsubscribeLimitTstamp] => 12.08.2021 16:40
-    [event_featured] => nein
-    [event_robots] =>
-    [event_minMembers] => 0
-    [event_includeEscortsWhenCalculatingRegCount] => nein
-    [organizer_id] => 1
-    [organizer_tstamp] => 09.06.2021 16:08
-    [organizer_username] => eve.moneypenny
-    [organizer_name] => Eve Moneypenny
-    [organizer_email] => em@mi6.com
-    [organizer_language] => de
-    [organizer_backendTheme] => flexible
-    [organizer_fullscreen] => nein
-    [organizer_uploader] =>
-    [organizer_showHelp] => ja
-    [organizer_thumbnails] => ja
-    [organizer_useRTE] => ja
-    [organizer_useCE] => ja
-    [organizer_pwChange] => nein
-    [organizer_admin] => ja
-    [organizer_groups] =>
-    [organizer_inherit] => Nur Gruppenrechte verwenden
-    [organizer_modules] =>
-    [organizer_themes] =>
-    [organizer_pagemounts] =>
-    [organizer_alpty] =>
-    [organizer_filemounts] =>
-    [organizer_fop] =>
-    [organizer_imageSizes] =>
-    [organizer_forms] =>
-    [organizer_formp] =>
-    [organizer_amg] =>
-    [organizer_disable] => nein
-    [organizer_start] =>
-    [organizer_stop] =>
-    [organizer_dateAdded] => 09.06.2021 16:08
-    [organizer_lastLogin] => 08.09.2021 13:47
-    [organizer_currentLogin] => 08.09.2021 21:13
-    [organizer_locked] => 01.01.1970 01:00
-    [organizer_faqs] =>
-    [organizer_faqp] =>
-    [organizer_news] =>
-    [organizer_newp] =>
-    [organizer_newsfeeds] =>
-    [organizer_newsfeedp] =>
-    [organizer_newsletters] =>
-    [organizer_newsletterp] =>
-    [organizer_calendars] =>
-    [organizer_calendarp] =>
-    [organizer_calendarfeeds] =>
-    [organizer_calendarfeedp] =>
-    [organizer_useTwoFactor] =>
-    [organizer_secret] =>
-    [organizer_trustedTokenVersion] => 0
-    [organizer_backupCodes] =>
-    [organizer_loginAttempts] => 0
-    [organizer_fields] =>
-    [organizer_elements] =>
-    [organizer_activation] =>
-    [organizer_rsts_permissions] =>
-    [organizer_rsts_sliders] =>
-    [organizer_senderName] => Eve Moneypenny
-    [organizer_senderEmail] => em@mi6.com
-    [event_unsubscribeHref] => https://mi6.com/events-stornierungsformular.html?bookingToken=d47636dd-7606-4f0b-ad8d-82461abde483
-)
-
-```
-
-## Mit Hooks Frontend Module erweitern/anpassen
-
-Vor allem das Modul "Buchungsformular" lässt sich sehr gut erweitern. An verschiedenen Stellen im Code lassen sich via Hooks Funktionalitäten wie Lego-Bausteine hinzufügen oder durch Deaktivierung eines Hooks unerwünschte Funktionalitäten entfernen.
-Um sich einen Überblick über die verschiedenen Hooks zu verschaffen, genügt ein Blick in den [Buchungs-Controller](https://github.com/markocupic/calendar-event-booking-bundle/blob/master/src/Controller/FrontendModule/CalendarEventBookingEventBookingModuleController.php).
-
-```php
-<?php
-// src/EventListener/DoSomething.php
-
-declare(strict_types=1);
-
-namespace App\EventListener;
-
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-
- #[AsHook(DoSomething::HOOK, priority: 1200)]
-final class DoSomething
-{
-    public const HOOK = 'calEvtBookingPostBooking';
-
-    /**
-     * @var EventRegistration
-     */
-    private $eventRegistration;
-
-    public function __invoke(CalendarEventBookingEventBookingModuleController $moduleInstance, array $arrDisabledHooks = []): void
-    {
-        if (\in_array(self::class, $arrDisabledHooks, true)) {
-            return;
-        }
-
-        $event = $moduleInstance->getEvent();
-        $registration = $moduleInstance->getEventRegistration();
-        $form = $moduleInstance->getForm();
-
-        // Do something
-
-    }
-}
-
-```
-
-## Mehrfaches Absenden des Buchungsformulars unterbinden
-
-Mit etwas Javascript Code, den man im Buchungs-Template einbindet,
-lässt sich durch Deaktivierung des Absende-Buttons beim ersten Absenden des Formulars,
-eine mehrfache Anmeldung durch Doppelklick o.Ä unterbinden.
-
-```javascript
-
-<script>
-    /**
-    * vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/templates/modules/mod_calendar_event_booking_event_booking_module.html5
-    * Prevent sending forms multiple times
-    */
-    document.addEventListener("DOMContentLoaded", function(event) {
-    let elForms = document.querySelectorAll('.mod_calendar_event_booking_event_booking_module form');
-    if(elForms.length){
-    elForms.forEach((elForm, index, nodeList) => {
-    elForm.addEventListener('submit', (event) => {
-    let elBtn = elForm.querySelector('.submit[type="submit"]');
-    if(elBtn)
-{
-    elBtn.disabled = true;
-}
-});
-});
-}
-});
-</script>
-```
+Um das Original-Template zu überschreiben, muss ein neues/angepasstes Template im Projekt-ROOT unter
+`templates/bundles/MarkocupicCalendarEventBookingBundle/Checkout/default.html.twig` angelegt werden.

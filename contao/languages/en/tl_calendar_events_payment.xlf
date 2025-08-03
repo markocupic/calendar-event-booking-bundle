@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_calendar_events_member.php" source-language="en">
+    <body>
+      <trans-unit id="tl_calendar_events_payment.payment_legend">
+        <source>Payment</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.uuid.0">
+        <source>Payment UUID.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.uuid.1">
+        <source>Add a payment UUID.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.bookingUuid.0">
+        <source>Booking UUID</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.bookingUuid.1">
+        <source>Add a bookikng UUID.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.paidAt.0">
+        <source>Paid at</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.paidAt.1">
+        <source>Add a payment date.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundedAt.0">
+        <source>Refunded at</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundedAt.1">
+        <source>Add a refunding date.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.method.0">
+        <source>Payment method</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.method.1">
+        <source>Add a payment method.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionId.0">
+        <source>Transaction ID</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionId.1">
+        <source>Add a transaction id.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionStatus.0">
+        <source>Transaction status</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionStatus.1">
+        <source>Add a transaction status.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.currencyCode.0">
+        <source>Currency code</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.currencyCode.1">
+        <source>Enter the currency code (e.g. EUR).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.grossAmount.0">
+        <source>Gross amount</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.grossAmount.1">
+        <source>Enter the gross amount paid (e.g. 215.00).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.netAmount.0">
+        <source>Net amount</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.netAmount.1">
+        <source>Enter the net amount paid (e.g. 200.00).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.vatAmount.0">
+        <source>VAT amount</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.vatAmount.1">
+        <source>Enter the VAT amount paid (e.g. 15.00).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.taxValue.0">
+        <source>Tax value (percent)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.taxValue.1">
+        <source>Enter the tax as a percent value (e.g. 7.50)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionDetails.0">
+        <source>Transaction details</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.transactionDetails.1">
+        <source>Enter the transaction details.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.notes.0">
+        <source>Notes</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.notes.1">
+        <source>Enter the notes.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

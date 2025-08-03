@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
 use Contao\System;
@@ -23,6 +24,8 @@ use Markocupic\ExportTable\Export\ExportTable;
 
 class CalendarEventsMember
 {
+    private Adapter $system;
+
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly ExportTable $exportTable,
@@ -34,10 +37,10 @@ class CalendarEventsMember
      * @throws \Exception
      */
     #[AsCallback(table: 'tl_calendar_events_member', target: 'config.onload')]
-    public function downloadEventRegistrations(): void
+    public function downloadEventBookings(): void
     {
-        // Download the registration list as a csv spreadsheet
-        if ('downloadEventRegistrations' === Input::get('action')) {
+        // Download the booking list as a csv spreadsheet
+        if ('downloadEventBookings' === Input::get('action')) {
             // Add fields
             $arrSkip = ['bookingToken'];
             $arrSelectedFields = [];

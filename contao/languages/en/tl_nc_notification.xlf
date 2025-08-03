@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1">
-  <file datatype="php" original="vendor/markocupic/calendar-event-booking-bundle/src/Resources/contao/languages/en/tl_nc_notification.php" source-language="en">
+  <file datatype="php" original="contao/languages/en/tl_nc_notification.php" source-language="en">
     <body>
       <trans-unit id="tl_nc_notification.type.event-booking-notification">
-        <source>Event booking</source>
+        <source>Event booking: Notification after submitting the event booking form</source>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-opt-in-notification">
+        <source>Event booking: Notification after confirmation of booking with link (Double-Opt-In)</source>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.event-unsubscribe-notification">
-        <source>Event booking unsubscription</source>
+        <source>Event booking: Notification after event cancellation</source>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.waiting-list-advancement-notification">
+        <source>Event booking: Notification after moving up from the waiting list</source>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-payment-success-notification">
+        <source>Event booking: Notification on payment success</source>
       </trans-unit>
     </body>
   </file>

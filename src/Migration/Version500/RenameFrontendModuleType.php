@@ -18,9 +18,6 @@ use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingEventBookingModuleController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingMemberListModuleController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\CalendarEventBookingUnsubscribeFromEventModuleController;
 
 class RenameFrontendModuleType extends AbstractMigration
 {
@@ -98,7 +95,7 @@ class RenameFrontendModuleType extends AbstractMigration
 
         if ($count > 0) {
             $set = [
-                'type' => CalendarEventBookingMemberListModuleController::TYPE,
+                'type' => 'calendar_event_booking_member_list_module',
             ];
             $this->connection->update('tl_module', $set, ['type' => 'calendar_event_booking_member_list']);
             $arrMessage[] = 'Renamed frontend module type "calendar_event_booking_member_list" to "'.$set['type'].'". Please rename your custom templates from "mod_calendar_event_booking_member_list.html5" to "mod_calendar_event_booking_member_list_module.html5".';
@@ -112,7 +109,7 @@ class RenameFrontendModuleType extends AbstractMigration
 
         if ($count > 0) {
             $set = [
-                'type' => CalendarEventBookingUnsubscribeFromEventModuleController::TYPE,
+                'type' => 'calendar_event_booking_unsubscribe_from_event_module',
             ];
             $this->connection->update('tl_module', $set, ['type' => 'unsubscribefromevent']);
             $arrMessage[] = 'Renamed frontend module type "unsubscribefromevent" to "'.$set['type'].'". Please rename your custom templates from "mod_unsubscribefromevent.html5" to "mod_calendar_event_booking_unsubscribe_from_event_module.html5".';
@@ -126,7 +123,7 @@ class RenameFrontendModuleType extends AbstractMigration
 
         if ($count > 0) {
             $set = [
-                'type' => CalendarEventBookingEventBookingModuleController::TYPE,
+                'type' => 'calendar_event_booking_event_booking_module',
             ];
             $this->connection->update('tl_module', $set, ['type' => 'eventbooking']);
             $arrMessage[] = 'Renamed frontend module type "eventbooking" to "'.$set['type'].'". Please rename your custom templates from "mod_eventbooking.html5" to "mod_calendar_event_booking_event_booking_module.html5".';
