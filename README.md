@@ -1,6 +1,6 @@
 # Events buchen mit Contao
 
-### Achtung: Bei der Migration von Version 5.x nach 6.x kam es zu vielen ![Änderungen](https://github.com/markocupic/calendar-event-booking-bundle/blob/6.x/UPGRADE.md.
+### Achtung: Bei der Migration von Version 5.x nach 6.x kam es zu vielen [Änderungen](https://github.com/markocupic/calendar-event-booking-bundle/blob/6.x/UPGRADE.md). Die Event- und Kalendereinstellungen müssen nach der Migration unbedingt überprüft und angepasst werden. Vor dem Upgrade sollte ein Datenbank-Backup erstellt werden.
 
 ## Events buchen
 
@@ -42,16 +42,9 @@ Abschnitt "Konfiguration" beachten!
 
 ## Einrichtung (Ablauf)
 
-1. Kalender und Events anlegen.
-2. Formular auf Basis des automatisch generierten Formulars im Formulargenerator erstellen/anpassen/mit zusätzlichen Feldern erweitern. Im Formular die Option **"Aktiviere Event-Buchungsformular-Funktion"** aktivieren! Im Formular **keine Weiterleitungsseite** eingeben.
-3. Frontend Module Event-Buchungsformular und Event-Buchungs-Checkout (Zusammenfassung/Zahlung) anlegen
-4. Seite und Artikel mit dem Module **Buchungsformular** und Seite und Artikel mit dem Modul **Event-Buchungs-Checkout** einrichten. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
-5. Alle Benachrichtigungen anlegen.
-6. Im Backend unter **Formulare** (Formulargenerator) die Weiterleitungsseite einrichten und die Option "Aktiviere Event-Buchungsformular-Funktion" anwählen. Hier keine Benachrichtigung auswählen.
-7. In den Kalendereinstellungen alle Weiterleitungsseiten einrichten.
-8. In den Kalendereinstellungen alle gewünschten Benachrichtigungen auswählen.
+### 1. Kalender und Events anlegen.
 
-### Punkt 2: Event-Buchungsformular erstellen
+### 2. Buchungsformular erstellen und erweitern
 
 Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
 
@@ -65,8 +58,6 @@ Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular m
 - Benutzen Sie das Feld `escorts`, wenn es Begleitpersonen gibt. Begleitpersonen werden **nicht** zur Gesamtzahl der Teilnehmerzahl dazugezählt.
 - Es können zusätzliche Felder im Formulargenerator erstellt werden. Damit die Daten in der Datenbank gespeichert werden, muss die DCA im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` erweitert werden. Danach muss via Shell der Cache neu aufgebaut `composer install` und die
   Datenbankmigration ausgeführt werden. `vendor/bin/contao-console contao:migrate`
-
-[Dokumentation](https://docs.contao.org/dev/getting-started/starting-development/#contao-configuration-translations)
 
 ```php
 <?php
@@ -92,7 +83,15 @@ PaletteManipulator::create()
     ->applyToPalette('default', 'tl_calendar_events_member');
 ```
 
-### Punkt 5: Benachrichtigungen mit Notification Center
+### 3. Frontend Module Event-Buchungsformular und Event-Buchungs-Checkout (Zusammenfassung/Zahlung) anlegen
+
+### 4. Seite und Artikel anlegen
+
+- Seite und Artikel mit dem Module **Buchungsformular** anlegen. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
+
+- Seite und Artikel mit dem Modul **Event-Buchungs-Checkout** einrichten.
+
+### 5. Benachrichtigungen mit Notification Center anlegen
 
 | Benachrichtigungen (Notification Center)                                                  |
 |-------------------------------------------------------------------------------------------|
@@ -106,8 +105,6 @@ Versenden Sie zu versch. Zeitpunkten Benachrichtigungen und nutzen Sie dabei die
 
 Mit `##member_unsubscribeLink##` kann ein tokengesicherter Event-Stornierungs-Link mitgesandt werden.
 Dazu muss aber im Event die Event-Stornierung aktiviert werden und im Kalender die Seite mit dem Modul **Event-Stornierungsformular** eingerichtet worden sein.
-
-![Notification Center](docs/notification_center.jpg)
 
 #### Gebrauch der Simple Tokens im Notification Center
 
@@ -154,7 +151,7 @@ Total: ##payment_grossAmount## ##payment_currencyCode##
 Auf Warteliste: JA!
 {endif}
 
-{if event_requireOptIn=='1'}
+{if calendar_requireOptIn=='1'}
 Bitte beachten Sie, dass Ihre Buchung erst nach Bestätigung mit dem Berstätigungslink gültig wird.
 ##member_optInLink##
 {endif}
@@ -170,7 +167,11 @@ Freundliche Grüsse
 ##organizer_name##
 ```
 
-### Template Variablen
+### 7. In den Kalendereinstellungen alle Weiterleitungsseiten einrichten.
+
+### 8. In den Kalendereinstellungen alle gewünschten Benachrichtigungen auswählen.
+
+## Template Variablen
 
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
 
@@ -187,7 +188,7 @@ Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einset
 | `hasLoggedInUser` | bool   | Zeigt an, ob ein Mitglied angemeldet ist.                                                                                                  |
 | `loggedInUser`    | null   | FrontendUser Gibt null oder das FrontendUser Objekt zurück.                                                                                |
 
-### Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
+## Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
 
 Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) herunterladen.
 In der `config/config.yaml` lässt sich das Encoding einstellen.
@@ -204,7 +205,7 @@ markocupic_calendar_event_booking:
     convert_to: 'ISO-8859-1'
 ```
 
-### Konfiguration `config/config.yaml`
+## Konfiguration `config/config.yaml`
 
 ```
 # config/config.yaml
@@ -224,7 +225,7 @@ markocupic_calendar_event_booking:
         convert_to: 'ISO-8859-1'
 ```
 
-### Checkout Template updatesicher anpassen
+## Checkout Template updatesicher anpassen
 
 Das Standard Checkout template befindet sich unter `vendor/markocupic/calendar-event-booking-bundle/templates/Checkout/default.html.twig`.
 

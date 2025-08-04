@@ -64,6 +64,10 @@ class NotificationHelper
             throw new \Exception(\sprintf('Event with ID %s not found.', $booking->pid));
         }
 
+        if (null === ($calendar = $event->getRelated('pid'))) {
+            throw new \Exception(\sprintf('Calendar with ID %s not found.', $event->pid));
+        }
+
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
         $userModelAdapter = $this->framework->getAdapter(UserModel::class);
         $systemAdapter = $this->framework->getAdapter(System::class);
@@ -77,7 +81,7 @@ class NotificationHelper
         // Get admin email
         $arrTokens['admin_email'] = $this->getAdminEmail();
 
-        // Prepare tokens for event member and use "member_" as prefix
+        // Prepare tokens for event member and use "member_" as a prefix
         $row = $booking->row();
 
         foreach ($row as $k => $v) {
@@ -86,7 +90,14 @@ class NotificationHelper
 
         $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$booking->gender]);
 
-        // Prepare tokens for event and use "event_" as prefix
+        // Prepare tokens for the parent calendar and use "calendar_" as a prefix
+        $row = $calendar->row();
+
+        foreach ($row as $k => $v) {
+            $arrTokens['calendar_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
+        }
+
+        // Prepare tokens for the parent event and use "event_" as a prefix
         $row = $event->row();
 
         foreach ($row as $k => $v) {

@@ -304,14 +304,14 @@ class EventBooking
     public function getOptInLink(CalendarEventsMemberModel $booking): string
     {
         if (null === ($event = $booking->getRelated('pid'))) {
-            return '';
-        }
-
-        if (!$event->requireOptIn) {
-            return '';
+            throw new \Exception('Event not found.');
         }
 
         if (null === ($calendar = $event->getRelated('pid'))) {
+            throw new \Exception('Calendar not found.');
+        }
+
+        if (!$calendar->requireOptIn) {
             return '';
         }
 

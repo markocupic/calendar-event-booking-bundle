@@ -38,12 +38,6 @@
       <trans-unit id="tl_calendar_events.enableBookingForm.1">
         <source>Activate the booking form and set the options.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.requireOptIn.0">
-        <source>Confirmation of booking required (Double Opt-In)</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.requireOptIn.1">
-        <source>Only confirmed bookings are counted towards the number of participants. Unconfirmed bookings automatically receive the status ‘expired’ after a configurable deadline has expired.</source>
-      </trans-unit>
       <trans-unit id="tl_calendar_events.maxTicketsPerBooking.0">
         <source>Maximum number of bookable tickets per booking</source>
       </trans-unit>
@@ -115,12 +109,6 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events.unsubscribeLimitTstamp.1">
         <source>Fixed time limit for unsubscriptions from this event (overrides subscription limit in days)</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.emailUnique.0">
-        <source>Enable multiple bookings with same email address</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.emailUnique.1">
-        <source>Please choose if multiple bookings with same email address should be allowed.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.cost_legend">
         <source>Costs</source>

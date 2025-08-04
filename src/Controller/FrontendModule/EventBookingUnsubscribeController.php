@@ -132,7 +132,6 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $template->calendar = $event->getRelated('pid');
 
             if ($booking->canceled) {
-                $this->hasUnsubscribed = true;
                 $template->hasUnsubscribed = true;
                 $template->class = ' info booking-already-canceled';
 

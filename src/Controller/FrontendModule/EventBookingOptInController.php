@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -92,7 +93,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
             $template->calendar = $calendar;
 
-            if ($this->processConfirm($template, $event, $booking, $request)) {
+            if ($this->processConfirm($template, $calendar, $event, $booking, $request)) {
                 // Send notification
                 if ($calendar->optInNotification) {
                     $tokens = $this->notificationHelper->getNotificationTokens($booking);
@@ -126,7 +127,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         return $template->getResponse();
     }
 
-    private function processConfirm(Template $template, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
+    private function processConfirm(Template $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
     {
         $message = $this->framework->getAdapter(Message::class);
 
@@ -147,7 +148,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         }
 
         // Check if opt-in is required
-        if (!$calendarEvent->requireOptIn) {
+        if (!$calendar->requireOptIn) {
             $template->class .= ' info confirm-not-required';
             $template->confirmNotRequired = true;
 

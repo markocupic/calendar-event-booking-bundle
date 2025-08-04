@@ -15,7 +15,7 @@ mod_opt_in:
 
 mod_unsubscribe:
     error:
-        invalid_uuid: 'Stornierung nicht möglich! Der Stornierungslink ist ungültig.'
+        invalid_uuid: 'Stornierung nicht möglich! Buchung nicht gefunden. Es kann damit zusammenhängen, dass Se die erlaubte zeitliche Frist zum Bestätigen der Buchung überschritten haben.'
         event_not_found: 'Stornierung nicht möglich! Zu Ihrer Buchung wurde kein Event gefunden.'
         unsubscription_not_allowed: 'Stornierung beim Event "%title%" nicht möglich!'
         unsubscription_limit_expired: 'Stornierung nicht möglich! Die Stornierungsfrist für Event "%title%" ist leider abgelaufen.'
@@ -23,7 +23,7 @@ mod_unsubscribe:
     info:
         already_unsubscribed: 'Ihre Buchung für Event "%title%" wurde bereits storniert.'
         unsubscribe_success: 'Ihre Anmeldung zu Event "%title%" wurde erfolgreich storniert.'
-    stop_unsubscribtion_btn_label: 'Stornierung abbrechen'
+    stop_unsubscription_btn_label: 'Stornierung abbrechen'
     unsubscribe_btn_label: 'Buchung stornieren'
     unsubscribe_confirm: 'Liebe(r) <span class="event-member-name">%firstname% %lastname%</span>{{br}}Möchten Sie Ihre Anmeldung zu Event "%title%" stornieren?'
 

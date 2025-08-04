@@ -120,7 +120,7 @@ class WaitingListManager
             ->orderBy('t.addedOn', 'ASC')
         ;
 
-        if ($event->requireOptIn) {
+        if ($event->getRelated('pid')?->requireOptIn) {
             $queryBuilder->andWhere('t.optIn = 1');
         }
 

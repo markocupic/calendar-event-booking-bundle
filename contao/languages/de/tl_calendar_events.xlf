@@ -50,14 +50,6 @@
         <source>Activate the booking form and set the options.</source>
         <target>Aktivieren Sie das Buchungsformular und legen Sie die Optionen fest.</target>
       </trans-unit>
-      <trans-unit id="tl_calendar_events.requireOptIn.0">
-        <source>Confirmation of booking required (Double Opt-In)</source>
-        <target>Bestätigung der Buchung erforderlich (Double Opt-In)</target>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.requireOptIn.1">
-        <source>Only confirmed bookings are counted towards the number of participants. Unconfirmed bookings automatically receive the status ‘expired’ after a configurable deadline has expired.</source>
-        <target>Nur bestätigte Buchungen werden zur Teilnehmeranzahl gezählt. Unbestätigte Buchungen erhalten nach dem Ablauf einer konfigurierbaren Frist automatisch den Status ‘abgelaufen‘.</target>
-      </trans-unit>
       <trans-unit id="tl_calendar_events.maxTicketsPerBooking.0">
         <source>Maximum number of bookable tickets per booking</source>
         <target>Maximale Anzahl buchbarer Tickets pro Buchung</target>
@@ -154,14 +146,6 @@
         <source>Fixed time limit for unsubscriptions from this event (overrides subscription limit in days)</source>
         <target>Geben Sie einen genauen Zeitpunkt an, bis zu dem die Abmeldung möglich sein soll. Überschreibt die
           Abmeldefrist in Tagen.</target>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.emailUnique.0">
-        <source>Enable multiple bookings with same email address</source>
-        <target>Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen</target>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events.emailUnique.1">
-        <source>Please choose if multiple bookings with same email address should be allowed.</source>
-        <target>Geben Sie an, ob Merhfachbuchung mit einer bereits verwendeten E-Mail-Adresse möglich sein sollen.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events.cost_legend">
         <source>Costs</source>

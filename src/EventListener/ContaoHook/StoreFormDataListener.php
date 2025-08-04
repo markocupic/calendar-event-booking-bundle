@@ -20,6 +20,7 @@ use Contao\FrontendUser;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\PaymentCheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
+use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -67,7 +68,7 @@ class StoreFormDataListener
             throw new \Exception('Calendar not found.');
         }
 
-        // Set the redirect the checkout page
+        // Set the redirect checkout page
         if (!$form->getModel()->jumpTo) {
             $form->getModel()->jumpTo = $calendar->eventBookingCheckoutPage;
         }
@@ -88,7 +89,7 @@ class StoreFormDataListener
         $data['form'] = $form->id;
         $data['ticketAmount'] = (int) ($data['ticketAmount'] ?? 1);
         $data['escorts'] = (int) ($data['escorts'] ?? 0);
-        $data['temporaryReserved'] = $event->requireOptIn ? 1 : 0;
+        $data['temporaryReserved'] = $calendar->requireOptIn ? 1 : 0;
         $data['checkoutHandler'] = $this->getCheckoutHandler()->getIdentifier();
 
         if ($this->getCheckoutHandler() instanceof PaymentCheckoutHandlerInterface) {

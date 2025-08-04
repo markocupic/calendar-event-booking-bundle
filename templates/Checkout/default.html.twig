@@ -29,7 +29,7 @@
                     <td>{{ 'mod_form.checkout.yes'|trans }}</td>
                 </tr>
             {% endif %}
-            {% if event.requireOptIn and booking.temporaryReserved and not booking.optIn %}
+            {% if calendar.requireOptIn and booking.temporaryReserved and not booking.optIn %}
                 <tr class="ceb-default-checkout-table-confirmed">
                     <td>{{ 'mod_form.checkout.booking_confirmed'|trans }}</td>
                     <td>{{ 'mod_form.checkout.booking_not_confirmed'|trans|raw }}</td>

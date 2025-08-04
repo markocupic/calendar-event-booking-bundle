@@ -39,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enable
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['__selector__'][] = 'enableWaitingList';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableBookingForm'] = 'bookingStartDate,bookingEndDate,minBookings,maxBookings,maxTicketsPerBooking,maxEscortsPerBooking,requireOptIn,emailUnique,enableWaitingList';
+$GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableBookingForm'] = 'bookingStartDate,bookingEndDate,minBookings,maxBookings,maxTicketsPerBooking,maxEscortsPerBooking,enableWaitingList';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableDeregistration'] = 'unsubscribeLimit,unsubscribeLimitTstamp';
 $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']['enableWaitingList'] = 'maxWaitingList';
 
@@ -172,21 +172,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['maxEscortsPerBooking'] = [
     'search'    => true,
     'sorting'   => true,
     'sql'       => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'notnull' => true, 'default' => 0],
-];
-
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['requireOptIn'] = [
-    'inputType' => 'checkbox',
-    'exclude'   => true,
-    'eval'      => ['tl_class' => 'w50 cbx m12'],
-    'sql'       => ['type' => 'boolean', 'default' => false],
-];
-
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['emailUnique'] = [
-    'eval'      => ['tl_class' => 'w50 cbx m12'],
-    'exclude'   => true,
-    'filter'    => true,
-    'inputType' => 'checkbox',
-    'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableWaitingList'] = [

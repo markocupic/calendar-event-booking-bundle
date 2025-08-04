@@ -98,12 +98,6 @@ class RenameCalendarEventsColumns extends AbstractMigration
             ],
             [
                 'table' => 'tl_calendar_events',
-                'old' => 'enableMultiBookingWithSameAddress',
-                'new' => 'emailUnique',
-                'type' => "TINYINT(1) NOT NULL DEFAULT '0'",
-            ],
-            [
-                'table' => 'tl_calendar_events',
                 'old' => 'maxEscortsPerMember',
                 'new' => 'maxEscortsPerBooking',
                 'type' => "INT(10) UNSIGNED NOT NULL DEFAULT '0'",

@@ -15,7 +15,7 @@ mod_opt_in:
 
 mod_unsubscribe:
     error:
-        invalid_uuid: 'Cancellation not possible! The cancellation link is invalid.'
+        invalid_uuid: 'Cancellation not possible! Booking not found. This may be due to exceeding the allowed time frame for confirming the booking.'
         event_not_found: 'Cancellation not possible! No event was found for your booking.'
         unsubscription_not_allowed: 'Cancellation for the event "%title%" is not possible!'
         unsubscription_limit_expired: 'Cancellation not possible! The cancellation deadline for event "%title%" has unfortunately passed.'
@@ -23,9 +23,9 @@ mod_unsubscribe:
     info:
         already_unsubscribed: 'Your booking for event "%title%" has already been canceled.'
         unsubscribe_success: 'Your registration for event "%title%" has been successfully canceled.'
+    stop_unsubscription_btn_label: 'Stop cancellation'
     unsubscribe_btn_label: 'Cancel booking'
     unsubscribe_confirm: 'Would you like to cancel your booking for event "%title%"?'
-    unsubscribe_success: 'Your booking has been canceled.'
 
 mod_form:
     error:

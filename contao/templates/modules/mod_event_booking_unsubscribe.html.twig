@@ -10,13 +10,13 @@
             <div class="formbody">
                 <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
-                <p class="unsubscribe_confirm">
+                <p class="unsubscribe-confirm">
                     {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%title%': event.title})|raw }}
                 </p>
-                <div class="widget widget-submit">
+                <div class="widget widget-submit unsubscribe-confirm-btn">
                     <button type="submit" class="submit">{{ 'mod_unsubscribe.unsubscribe_btn_label'|trans }}</button>
                 </div>
-                <p><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscribtion_btn_label'|trans }}</a></p>
+                <p class="stop-unsubscription"><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscription_btn_label'|trans }}</a></p>
             </div>
         </form>
     {% endif %}

@@ -19,11 +19,31 @@ use Doctrine\DBAL\Platforms\MySQLPlatform;
 PaletteManipulator::create()
     ->addLegend('event_booking_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('event_booking_notification_legend', 'event_booking_legend', PaletteManipulator::POSITION_AFTER)
-    ->addField(['eventBookingCheckoutPage', 'eventBookingCheckoutHandler', 'eventBookingOptInPage', 'eventUnsubscribePage'], 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField(['emailUnique', 'requireOptIn', 'eventBookingCheckoutPage', 'eventBookingCheckoutHandler', 'eventUnsubscribePage'], 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
     ->addField(['subscribeNotification', 'unsubscribeNotification', 'optInNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar');
 
+$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'requireOptIn';
+
+// Subpalettes
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['requireOptIn'] = 'eventBookingOptInPage';
+
 // Fields
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['emailUnique'] = [
+    'eval'      => ['tl_class' => 'w50 cbx m12'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'sql'       => ['type' => 'boolean', 'default' => false],
+];
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['requireOptIn'] = [
+    'inputType' => 'checkbox',
+    'exclude'   => true,
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 cbx m12'],
+    'sql'       => ['type' => 'boolean', 'default' => false],
+];
+
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
     'exclude'    => true,
     'inputType'  => 'pageTree',

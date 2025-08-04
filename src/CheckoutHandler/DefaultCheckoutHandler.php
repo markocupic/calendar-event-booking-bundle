@@ -33,9 +33,23 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
 
     public function getCheckoutData(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutData
     {
+        $event = $booking->getRelated('pid');
+        $calendar = $event?->getRelated('pid');
+
+        if(null === $event)
+        {
+          throw new \Exception('Event not found.');
+        }
+
+        if(null === $calendar)
+        {
+            throw new \Exception('Calendar not found.');
+        }
+
         $template = [];
         $template['booking'] = $booking->row();
-        $template['event'] = $booking->getRelated('pid')?->row();
+        $template['event'] = $event->row();
+        $template['calendar'] = $calendar->row();
         $template['module'] = $model;
 
         return new CheckoutData($this->getIdentifier(), self::TEMPLATE_NAME, $template);

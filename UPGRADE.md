@@ -25,12 +25,10 @@ Das Modul sollte auf der Seite platziert werden, wo User hingeleitet werden, nac
 - Umbenennung von `tl_calendar_events.maxEscortsPerMember` nach `tl_calendar_events.maxEscortsPerBooking`
 - Umbenennung von `tl_calendar_events.minMembers` nach `tl_calendar_events.minBookings`
 - Umbenennung von `tl_calendar_events.maxMembers` nach `tl_calendar_events.maxBookings`
-- Umbenennung von `tl_calendar_events.enableMultiBookingWithSameAddress` nach `tl_calendar_events.emailUnique`
 
 ### Neue Spalten in `tl_calendar_events`
 
 - Einführung von `tl_calendar_events.maxTicketsPerBooking`
-- Einführung von `tl_calendar_events.requireOptIn`
 - Einführung von `tl_calendar_events.enableWaitingList`
 - Einführung von `tl_calendar_events.maxWaitingList`
 -
@@ -43,6 +41,8 @@ Das Modul sollte auf der Seite platziert werden, wo User hingeleitet werden, nac
 - Einführung von `tl_calendar.waitingListAdvancementNotification`
 - Einführung von `tl_calendar.unsubscribeNotification`
 - Einführung von `tl_calendar.optInNotification`
+- Einführung von `tl_calendar.requireOptIn`
+- Einführung von `tl_calendar.emailUnique`
 
 ### Neue Spalte `tl_calendar_events_member.ticketAmount` und neue Funktion von `tl_calendar_events_member.escorts`
 

@@ -60,11 +60,13 @@ class ValidateFormFieldListener
 
         $widget->value = strtolower($widget->value);
 
-        $event = $bookingModuleInstance->getEvent();
+        $calendar = $bookingModuleInstance->getCalendar();
 
-        if ($event->emailUnique) {
+        if ($calendar->emailUnique) {
             return $widget;
         }
+
+        $event = $bookingModuleInstance->getEvent();
 
         $count = $this->connection->fetchOne(
             'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? AND email LIKE ?',

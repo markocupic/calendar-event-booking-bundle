@@ -8,6 +8,18 @@
       <trans-unit id="tl_calendar.event_booking_notification_legend">
         <source>Event booking notifications</source>
       </trans-unit>
+      <trans-unit id="tl_calendar.emailUnique.0">
+        <source>Enable multiple bookings with same email address</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.emailUnique.1">
+        <source>Please choose if multiple bookings with same email address should be allowed.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.requireOptIn.0">
+        <source>Confirmation of booking required (Double Opt-In)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.requireOptIn.1">
+        <source>Only confirmed bookings are counted towards the number of participants. Unconfirmed bookings automatically receive the status ‘expired’ after a configurable deadline has expired.</source>
+      </trans-unit>
       <trans-unit id="tl_calendar.eventBookingCheckoutPage.0">
         <source>Event booking checkout page</source>
       </trans-unit>

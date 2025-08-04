@@ -26,6 +26,9 @@ class DefaultTokenConfig
             ],
             'text_token' => [
                 'admin_email',
+                'calendar_*',
+                'calendar_title',
+                'calendar_requireOptIn',
                 'event_*',
                 'event_endDateFormatted',
                 'event_endTimeFormatted',
@@ -33,7 +36,6 @@ class DefaultTokenConfig
                 'event_startTimeFormatted',
                 'event_title',
                 'event_unsubscribeLimitTstamp',
-                'event_requireOptIn',
                 'member_*',
                 'member_optInLink',
                 'member_dateOfBirth',

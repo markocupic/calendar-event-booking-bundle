@@ -33,7 +33,7 @@ use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
-use Markocupic\CalendarEventBookingBundle\Exception\EventBookingResponseException;
+use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
@@ -160,25 +160,29 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
             $template->form_markup = $this->framework->getAdapter(Controller::class)->getForm($model->form);
 
+            // Use Contao core hooks to customize the form processing.
+            // Throw an EventBookingException exception to stop the form processing.
+            // Throw an EventBookingRedirectResponseException to roll back the transaction and redirect to a new URL...
+
             $this->connection->commit();
         } catch (RedirectResponseException $e) {
             // !important: Otherwise new inserts to the booking table won't be persisted on
-            // page redirects
+            // page redirects after a successful booking (tl_form.jumpTo).
             $this->connection->commit();
 
+            throw $e;
+        }catch (EventBookingRedirectResponseException $e) {
+            $this->connection->rollBack();
             throw $e;
         } catch (EventBookingException $e) {
             $this->connection->rollBack();
             $this->framework->getAdapter(Message::class)->add($e->getTranslatableText(), $e->getSeverityLevel());
-        } catch (EventBookingResponseException $e) {
-            $this->connection->rollBack();
-
-            return $e->getResponse();
-        } catch (\throwable $e) {
+        }  catch (\throwable $e) {
             $this->connection->rollBack();
             $this->framework->getAdapter(Message::class)->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
+
             if (method_exists($e, 'getMessage')) {
-                $this->contaoErrorLogger->error($e->getMessage());
+                $this->contaoErrorLogger?->error($e->getMessage());
             }
 
             throw $e;
