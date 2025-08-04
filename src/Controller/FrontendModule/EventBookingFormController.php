@@ -70,6 +70,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
         private readonly RateLimiterFactoryInterface $rateLimiterFactory,
+        private bool $rateLimitBookingFormEnable,
         private readonly LoggerInterface|null $contaoErrorLogger,
     ) {
     }
@@ -142,11 +143,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
         try {
             if ($request->request->get('FORM_SUBMIT') === $this->getFormId($model->form)) {
-                $limiter = $this->rateLimiterFactory->create($request->getClientIp());
-
-                if (!$limiter->consume()->isAccepted()) {
-                    throw new EventBookingException('too many requests', $this->translator->trans('mod_form.error.too_many_requests', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
-                }
+                // Protect form against too many requests
+                $this->checkRateLimit($request);
 
                 // Get the ticket amount from POST (default: 1)
                 $requestedTicketAmount = (int) $request->request->get('ticketAmount', 1);
@@ -160,9 +158,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
             $template->form_markup = $this->framework->getAdapter(Controller::class)->getForm($model->form);
 
-            // Use Contao core hooks to customize the form processing.
-            // Throw an EventBookingException exception to stop the form processing.
-            // Throw an EventBookingRedirectResponseException to roll back the transaction and redirect to a new URL...
+            // Use Contao core hooks to customize the form processing. Throw an
+            // EventBookingException exception to stop the form processing. Throw an
+            // EventBookingRedirectResponseException to roll back the transaction and
+            // redirect to a new URL...
 
             $this->connection->commit();
         } catch (RedirectResponseException $e) {
@@ -171,13 +170,14 @@ class EventBookingFormController extends AbstractFrontendModuleController
             $this->connection->commit();
 
             throw $e;
-        }catch (EventBookingRedirectResponseException $e) {
+        } catch (EventBookingRedirectResponseException $e) {
             $this->connection->rollBack();
+
             throw $e;
         } catch (EventBookingException $e) {
             $this->connection->rollBack();
             $this->framework->getAdapter(Message::class)->add($e->getTranslatableText(), $e->getSeverityLevel());
-        }  catch (\throwable $e) {
+        } catch (\throwable $e) {
             $this->connection->rollBack();
             $this->framework->getAdapter(Message::class)->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
 
@@ -242,5 +242,16 @@ class EventBookingFormController extends AbstractFrontendModuleController
         $template->waitingListOpen = $this->waitingListOpen;
         $template->messages = $this->framework->getAdapter(Message::class)->hasMessages() ? $this->framework->getAdapter(Message::class)->generate('FE') : null;
         $this->addTemplateData->addTemplateData($template, $this->event, $request);
+    }
+
+    private function checkRateLimit(Request $request): void
+    {
+        if ($this->rateLimitBookingFormEnable && !empty($request->getClientIp())) {
+            $limiter = $this->rateLimiterFactory->create($request->getClientIp());
+
+            if (!$limiter->consume()->isAccepted()) {
+                throw new EventBookingException('too many requests', $this->translator->trans('mod_form.error.too_many_requests', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            }
+        }
     }
 }

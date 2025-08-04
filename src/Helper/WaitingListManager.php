@@ -45,12 +45,17 @@ class WaitingListManager
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationHelper $notificationHelper,
         private readonly RequestStack $requestStack,
+        private readonly bool $autoWaitingListAdvancement,
         private readonly LoggerInterface|null $contaoGeneralLogger,
     ) {
     }
 
     public function checkWaitingList(CalendarEventsModel|null $event = null): void
     {
+        if (!$this->autoWaitingListAdvancement) {
+            return;
+        }
+
         $this->framework->initialize();
 
         $lock = $this->lockFactory->createLock(self::class);

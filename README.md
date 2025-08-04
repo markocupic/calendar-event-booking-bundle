@@ -7,21 +7,21 @@
 Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
 Das Anmeldeformular kann im Contao Formulargenerator erstellt werden. Während des Installationsprozesses wird ein Sample Anmeldeformular generiert.
 Beim Absenden des Formulars werden die Werte in der Datenbank in der Tabelle tl_calendar_events_member abgelegt. Die Buchungen sind im Backend einsehbar und über eine CSV-Datei exportierbar.
-Optional ist eine Buchung auf Warteliste möglich. Die Personen auf der Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden.
 
-## Bezahlfunktion
+## Bezahl-Checkout
 
-Die Bezahlfunktion ist zahlungspflichtig (Bitte Autor der Extension per E-Mail kontaktieren)
+Der Bezahl-Checkout ist zahlungspflichtig (Bitte Autor der Extension per E-Mail kontaktieren)
 
 Im Moment sind folgende **Zahlungsmethoden** vorhanden:
 
 - PayPal
 
-Event-Organisator und Teilnehmer können bei jedem Prozess automatisch benachrichtigt werden (Notification Cecnter).
+## Benachrichtigungen
+Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigt werden (Notification Cecnter).
 
 ## Warteliste
 
-Es kann eine Warteliste aktiviert werden. Und Personen rücken automatisch nach, wenn Plätze durch Stornierung frei werden. Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
+Optional kann eine Warteliste aktiviert werden. Personen auf Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden. Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
 
 ## Double-Opt-In
 
@@ -56,6 +56,7 @@ Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular m
   `waitingList`, `gender`, `firstname`, `lastname`, `dateOfBirth`, `street`, `postal`, `city`, `phone`, `email`, `ticketAmount`, `escorts`, `notes`
 - Benutzen Sie das Feld `ticketAmount`, wenn für jedes Ticket ein Platz von der Gesamtzahl der maximal möglichen Teilnehmerzahl abgezogen werden soll.
 - Benutzen Sie das Feld `escorts`, wenn es Begleitpersonen gibt. Begleitpersonen werden **nicht** zur Gesamtzahl der Teilnehmerzahl dazugezählt.
+- Das Feld `waitingList` muss bei aktivierter Warteliste vorhanden sein.
 - Es können zusätzliche Felder im Formulargenerator erstellt werden. Damit die Daten in der Datenbank gespeichert werden, muss die DCA im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` erweitert werden. Danach muss via Shell der Cache neu aufgebaut `composer install` und die
   Datenbankmigration ausgeführt werden. `vendor/bin/contao-console contao:migrate`
 
@@ -85,9 +86,9 @@ PaletteManipulator::create()
 
 ### 3. Frontend Module Event-Buchungsformular und Event-Buchungs-Checkout (Zusammenfassung/Zahlung) anlegen
 
-### 4. Seite und Artikel anlegen
+### 4. Seiten und Artikel anlegen
 
-- Seite und Artikel mit dem Module **Buchungsformular** anlegen. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
+- Seite und Artikel mit dem Modul **Buchungsformular** anlegen. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
 
 - Seite und Artikel mit dem Modul **Event-Buchungs-Checkout** einrichten.
 
@@ -167,9 +168,51 @@ Freundliche Grüsse
 ##organizer_name##
 ```
 
-### 7. In den Kalendereinstellungen alle Weiterleitungsseiten einrichten.
+### 6. In den Kalendereinstellungen alle Weiterleitungsseiten einrichten.
 
-### 8. In den Kalendereinstellungen alle gewünschten Benachrichtigungen auswählen.
+### 7. In den Kalendereinstellungen alle gewünschten Benachrichtigungen auswählen.
+
+### 8. In den Kalendereinstellungen weitere Einstellungen vornehmen.
+
+### 9. Bundle-Konfiguration anpassen `config/config.yaml`
+
+Weitere Einstellungen lassen sich über die Bundle-Konfiguration vornehmen in der Datei `config/config.yaml`.
+Falls nicht vorhanden, muss diese zuerst erstellt werden.
+
+```
+# config/config.yaml
+markocupic_calendar_event_booking:
+    auto_expire_reserved_bookings: true
+    auto_expire_time_limit: 3600
+    auto_delete_expired_bookings: false
+    auto_delete_canceled_bookings: false
+    auto _waiting_list_advancement: true
+    rate_limiter:
+        event_booking_form: # Gebrauch des Buchungsformulars begrenzen
+            enable: true
+            policy: 'fixed_window'
+            limit: 5
+            interval: '15 minutes'
+    member_list_export:
+        enable_output_conversion: false
+        convert_from: 'UTF-8'
+        convert_to: 'ISO-8859-1'
+```
+
+| **Paramter**                                  | **Default**    | **Erklärung**                                                                                                                                                                       |
+|-----------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `auto_expire_reserved_bookings`               | `true`         | Unbestätigte Anmeldungen/Anmeldungen oder Anmeldungen mit nicht erledigten Zahlungen werden nach Ablauf einer konfigurierbaren Zeit (auto_expire_time_limit) automatisch abgelehnt. |
+| `auto_expire_time_limit`                      | `3600`         | Zeit in Sekunden, welche dem User ab dem Moment der Registrierung bleibt, um seine Buchung per Link zu bestätigen oder um die Zahlung zu erledigen.                                 |
+| `auto_delete_expired_bookings`                | `false`        | Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus                                                                                                       |
+| `auto_delete_canceled_bookings`               | `false`        | Stornierte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus.                                                                                                      |
+| `auto_waiting_list_advancement`               | `true`         | Schaltet das automatische Nachrücken von der Warteliste ein/aus.                                                                                                                    |
+| `rate_limiter.event_booking_form.enable`      | `true`         | Form-Submits mit Symfony Rate Limiter begrenzen. Ein/Aus.                                                                                                                           |
+| `rate_limiter.event_booking_form.policy`      | `fixed_window` | Rate Limit Methode                                                                                                                                                                  |
+| `rate_limiter.event_booking_form.limit`       | `5`            | Rate Limit                                                                                                                                                                          |
+| `rate_limiter.event_booking_form.interval`    | `15 minutes`   | Zeit-Intervall                                                                                                                                                                      |
+| `member_list_export.enable_output_conversion` | `false`        | Zeichensatz-Konvertierung beim Member-Export ein-/ausschalten.                                                                                                                      |
+| `member_list_export.convert_from`             | `UTF-8`        | Quellzeichensatz                                                                                                                                                                    |
+| `member_list_export.convert_to`               | `ISO-8859-1`   | Zielzeichensatz                                                                                                                                                                     |
 
 ## Template Variablen
 
@@ -190,7 +233,7 @@ Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einset
 
 ## Event Teilnehmer als CSV-Datei herunterladen (Encoding richtig einstellen)
 
-Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) herunterladen.
+Die Teilnehmer eines Events lassen sich im Backend als CSV-Datei (Excel) exportieren.
 In der `config/config.yaml` lässt sich das Encoding einstellen.
 Standardmässig werden die Daten im Format **UTF-8** exportiert.
 Es kann sein, dass Excel (bei entsprechender Einstellung), dann Umlaute falsch darstellt.
@@ -203,26 +246,6 @@ markocupic_calendar_event_booking:
     enable_output_conversion: true
     convert_from: 'UTF-8'
     convert_to: 'ISO-8859-1'
-```
-
-## Konfiguration `config/config.yaml`
-
-```
-# config/config.yaml
-markocupic_calendar_event_booking:
-    auto_expire_reserved_bookings: true  # Unbestätigte Anmeldungen/Anmeldungen mit nicht erledigten Zahlungen werden nach Ablauf einer konfigurierbaren Zeit (auto_expire_time_limit) automatisch abgelehnt.
-    auto_expire_time_limit: 86400 # Zeit in Sekunden, welche der User hat, um seine Buchung per Link zu bestätigen oder um die Zahlung zu erledigen.
-    auto_delete_expired_bookings: true # Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht.
-    auto_delete_canceled_bookings: true # Stornierte Anmeldungen werden automatisch aus der Datenbank gelöscht.
-    rate_limiter:
-        event_booking_form: # Gebrauch des Buchungsformulars begrenzen
-            policy: 'fixed_window'
-            limit: 10 # default 5
-            interval: '20 minutes' # default '15 minutes'
-    member_list_export:
-        enable_output_conversion: true
-        convert_from: 'UTF-8'
-        convert_to: 'ISO-8859-1'
 ```
 
 ## Checkout Template updatesicher anpassen

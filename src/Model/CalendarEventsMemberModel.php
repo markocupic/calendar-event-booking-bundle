@@ -17,7 +17,6 @@ namespace Markocupic\CalendarEventBookingBundle\Model;
 use Contao\Model;
 
 /**
- *
  * @method static CalendarEventsMemberModel|null findOneByBookingToken($bookingToken)
  */
 class CalendarEventsMemberModel extends Model

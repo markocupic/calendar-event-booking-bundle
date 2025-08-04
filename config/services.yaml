@@ -10,6 +10,8 @@ services:
             $autoDeleteExpiredBookings: '%markocupic_calendar_event_booking.auto_delete_expired_bookings%'
             $autoDeleteCanceledBookings: '%markocupic_calendar_event_booking.auto_delete_canceled_bookings%'
             $rateLimiterFactory: '@markocupic_calendar_event_booking.rate_limit.event_booking_factory'
+            $autoWaitingListAdvancement: '%markocupic_calendar_event_booking.auto_waiting_list_advancement%'
+            $rateLimitBookingFormEnable: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.enable%'
 
     Markocupic\CalendarEventBookingBundle\:
         resource: ../src/
