@@ -39,6 +39,7 @@ use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
 use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use phpDocumentor\Reflection\Types\Boolean;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,17 +63,18 @@ class EventBookingFormController extends AbstractFrontendModuleController
     private string|null $eventStatus = null;
 
     public function __construct(
-        private readonly AddTemplateData $addTemplateData,
-        private readonly Connection $connection,
-        private readonly ContaoFramework $framework,
-        private readonly EventBooking $eventBooking,
-        private readonly LockFactory $lockFactory,
-        private readonly ScopeMatcher $scopeMatcher,
-        private readonly TranslatorInterface $translator,
+        private readonly AddTemplateData             $addTemplateData,
+        private readonly Connection                  $connection,
+        private readonly ContaoFramework             $framework,
+        private readonly EventBooking                $eventBooking,
+        private readonly LockFactory                 $lockFactory,
+        private readonly ScopeMatcher                $scopeMatcher,
+        private readonly TranslatorInterface         $translator,
         private readonly RateLimiterFactoryInterface $rateLimiterFactory,
-        private bool $rateLimitBookingFormEnable,
-        private readonly LoggerInterface|null $contaoErrorLogger,
-    ) {
+        private bool                                 $rateLimitBookingFormEnable,
+        private readonly LoggerInterface|null        $contaoErrorLogger,
+    )
+    {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
@@ -147,7 +149,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
                 $this->checkRateLimit($request);
 
                 // Get the ticket amount from POST (default: 1)
-                $requestedTicketAmount = (int) $request->request->get('ticketAmount', 1);
+                $requestedTicketAmount = (int)$request->request->get('ticketAmount', 1);
 
                 if (!$this->eventBooking->canFulfillBookingRequest($this->event, $requestedTicketAmount)) {
                     if ($this->eventBooking->canFulfillBookingRequestWaitingList($this->event, $requestedTicketAmount)) {
@@ -220,10 +222,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
         }
 
         if (!$form->isCalendarEventBookingForm) {
-            throw new \Exception('Invalid booking form ID '.$form->id.' attached to the event booking form module. Please enable the "isCalendarEventBookingForm" flag in the form settings in the Contao backend.');
+            throw new \Exception('Invalid booking form ID ' . $form->id . ' attached to the event booking form module. Please enable the "isCalendarEventBookingForm" flag in the form settings in the Contao backend.');
         }
 
-        return $form->formID ? 'auto_'.$form->formID : 'auto_form_'.$form->id;
+        return $form->formID ? 'auto_' . $form->formID : 'auto_form_' . $form->id;
     }
 
     private function addTemplateData(Template $template, Request $request): void
@@ -234,9 +236,9 @@ class EventBookingFormController extends AbstractFrontendModuleController
             EventStatus::NOT_YET_BOOKABLE => function () {
                 $dateFormat = $this->framework->getAdapter(Config::class)->get('dateFormat');
 
-                return $this->translator->trans('MSC.'.$this->eventStatus, [$dateFormat, $this->event->bookingStartDate], 'contao_default');
+                return $this->translator->trans('MSC.' . $this->eventStatus, [$dateFormat, $this->event->bookingStartDate], 'contao_default');
             },
-            default => $this->translator->trans('MSC.'.$this->eventStatus, [], 'contao_default'),
+            default => $this->translator->trans('MSC.' . $this->eventStatus, [], 'contao_default'),
         };
 
         $template->waitingListOpen = $this->waitingListOpen;

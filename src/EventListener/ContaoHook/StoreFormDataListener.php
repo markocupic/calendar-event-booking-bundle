@@ -20,6 +20,7 @@ use Contao\FrontendUser;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\PaymentCheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
+use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\HttpFoundation\RequestStack;

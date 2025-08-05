@@ -36,11 +36,13 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         $event = $booking->getRelated('pid');
         $calendar = $event?->getRelated('pid');
 
-        if (null === $event) {
-            throw new \Exception('Event not found.');
+        if(null === $event)
+        {
+          throw new \Exception('Event not found.');
         }
 
-        if (null === $calendar) {
+        if(null === $calendar)
+        {
             throw new \Exception('Calendar not found.');
         }
 
