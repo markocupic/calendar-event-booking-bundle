@@ -186,7 +186,7 @@ markocupic_calendar_event_booking:
     auto_expire_time_limit: 3600
     auto_delete_expired_bookings: false
     auto_delete_canceled_bookings: false
-    auto _waiting_list_advancement: true
+    auto_waiting_list_advancement: true
     rate_limiter:
         event_booking_form: # Gebrauch des Buchungsformulars begrenzen
             enable: true
