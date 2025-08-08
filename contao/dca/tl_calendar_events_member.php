@@ -152,7 +152,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'boolean', 'default' => false],
         ],
-        'expired'          => [
+        'expired'           => [
             'eval'      => ['tl_class' => 'w50', 'disabled' => true],
             'exclude'   => true,
             'filter'    => true,

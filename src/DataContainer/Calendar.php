@@ -19,7 +19,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingNotificationType;
-use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInSuccessNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingPaymentSuccessNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventUnsubscribeNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\WaitingListAdvancementNotificationType;
@@ -80,12 +81,22 @@ class Calendar
         );
     }
 
-    #[AsCallback(table: 'tl_calendar', target: 'fields.optInNotification.options')]
-    public function getOptInNotifications(): array
+    #[AsCallback(table: 'tl_calendar', target: 'fields.optInInvitationNotification.options')]
+    public function getOptInInvitationNotifications(): array
     {
         return $this->connection->fetchAllKeyValue(
             'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
-            [EventBookingOptInNotificationType::NAME],
+            [EventBookingOptInInvitationNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.optInSuccessNotification.options')]
+    public function getOptInSuccessNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingOptInSuccessNotificationType::NAME],
             [Types::STRING],
         );
     }

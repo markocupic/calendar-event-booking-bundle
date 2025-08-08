@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\NotificationType;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\EmailTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
+use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 
 class WaitingListAdvancementNotificationType implements NotificationTypeInterface
@@ -37,12 +38,16 @@ class WaitingListAdvancementNotificationType implements NotificationTypeInterfac
     {
         $tokenDefinitions = [];
 
-        foreach ($this->getTokenConfig()['text_token'] as $token) {
-            $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_unsubscribe.'.$token);
+        foreach ($this->getTokenConfig()['email_token'] as $token) {
+            $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
-        foreach ($this->getTokenConfig()['email_token'] as $token) {
-            $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_unsubscribe.'.$token);
+        foreach ($this->getTokenConfig()['text_token'] as $token) {
+            $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
+        }
+
+        foreach ($this->getTokenConfig()['html_token'] as $token) {
+            $tokenDefinitions[] = $this->factory->create(HtmlTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
         return $tokenDefinitions;

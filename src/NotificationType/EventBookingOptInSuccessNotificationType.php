@@ -20,9 +20,9 @@ use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinition
 use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 
-class EventUnsubscribeNotificationType implements NotificationTypeInterface
+class EventBookingOptInSuccessNotificationType implements NotificationTypeInterface
 {
-    public const NAME = 'event-unsubscribe-notification';
+    public const NAME = 'event-booking-opt-in-success-notification';
 
     public function __construct(
         private readonly TokenDefinitionFactoryInterface $factory,

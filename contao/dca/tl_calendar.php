@@ -20,13 +20,13 @@ PaletteManipulator::create()
     ->addLegend('event_booking_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('event_booking_notification_legend', 'event_booking_legend', PaletteManipulator::POSITION_AFTER)
     ->addField(['emailUnique', 'requireOptIn', 'eventBookingCheckoutPage', 'eventBookingCheckoutHandler', 'eventUnsubscribePage'], 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['subscribeNotification', 'unsubscribeNotification', 'optInNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField(['subscribeNotification', 'unsubscribeNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar');
 
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'requireOptIn';
 
 // Subpalettes
-$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['requireOptIn'] = 'eventBookingOptInPage';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['requireOptIn'] = 'eventBookingOptInPage,optInInvitationNotification,optInSuccessNotification';
 
 // Fields
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['emailUnique'] = [
@@ -111,7 +111,15 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['unsubscribeNotification'] = [
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['optInNotification'] = [
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['optInInvitationNotification'] = [
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'select',
+    'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
+];
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['optInSuccessNotification'] = [
     'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,

@@ -22,7 +22,6 @@ use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 class ProcessFormDataListener
 {
@@ -30,7 +29,6 @@ class ProcessFormDataListener
 
     public function __construct(
         private readonly EventBooking $eventBooking,
-        private readonly NotificationCenter $notificationCenter,
         private readonly NotificationHelper $notificationHelper,
         private readonly RequestStack $requestStack,
         private readonly LoggerInterface|null $contaoGeneralLogger,
@@ -40,13 +38,13 @@ class ProcessFormDataListener
     #[AsHook(self::HOOK, priority: 1000)]
     public function addBookingTokenToFlashBag(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if (!$form->isCalendarEventBookingForm) {
+        if(!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         $request = $this->requestStack->getCurrentRequest();
 
-        if (!$request->attributes->has('_calendar_event_booking_token')) {
+        if (!$request->attributes->get('_calendar_event_booking_token')) {
             return;
         }
 
@@ -58,94 +56,143 @@ class ProcessFormDataListener
     #[AsHook(self::HOOK, priority: 900)]
     public function addBookingToSession(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if (!$form->isCalendarEventBookingForm) {
-            return;
-        }
-
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
-            return;
-        }
-
-        $bookingToken = $request->attributes->get('_calendar_event_booking_token');
-
-        $booking = CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
-
-        if (null === $booking) {
+        if(!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingModuleInstanceFromRequest();
+
+        if(null === $bookingModuleInstance){
+            return;
+        }
+
+        $booking = $this->getCurrentBookingFromRequest();
+
+        if(null === $booking){
+            return;
+        }
 
         $event = $bookingModuleInstance->getEvent();
 
-        $this->eventBooking->addToSession($event, $booking, $request);
+        $this->eventBooking->addToSession($event, $booking, $this->requestStack->getCurrentRequest());
     }
 
     #[AsHook(self::HOOK, priority: 800)]
     public function contaoLog(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if (!$form->isCalendarEventBookingForm) {
-            return;
-        }
-
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
-            return;
-        }
-
-        $bookingToken = $request->attributes->get('_calendar_event_booking_token');
-
-        $booking = CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
-
-        if (null === $booking) {
+        if(!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingModuleInstanceFromRequest();
+        if(null === $bookingModuleInstance){
+            return;
+        }
+
+        $booking = $this->getCurrentBookingFromRequest();
+
+        if(null === $booking){
+            return;
+        }
 
         $event = $bookingModuleInstance->getEvent();
 
-        $strText = "New event booking for event '$event->title' and booking token $booking->bookingToken.";
+        $strText = sprintf('New event booking for event "%s" and booking token %s.', $event->title,$booking->bookingToken);
 
         $this->contaoGeneralLogger?->info($strText);
     }
 
     #[AsHook(self::HOOK, priority: 700)]
-    public function sendNotification(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
+    public function sendNotifications(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if (!$form->isCalendarEventBookingForm) {
-            return;
-        }
-
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
-            return;
-        }
-
-        $bookingToken = $request->attributes->get('_calendar_event_booking_token');
-
-        $booking = CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
-
-        if (null === $booking) {
+        if(!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingModuleInstanceFromRequest();
 
         $calendar = $bookingModuleInstance->getCalendar();
 
-        if (!$calendar?->subscribeNotification) {
+        $booking = $this->getCurrentBookingFromRequest();
+
+        if(null === $booking){
+            return;
+        }
+
+        // Send the subscribing to the event notification.
+        if ($calendar?->subscribeNotification) {
+            // Add an extra layer. So we can implement the SendNotificationEvent.
+            $this->notificationHelper->sendNotification($calendar->subscribeNotification, $this->notificationHelper->getNotificationTokens($booking), $booking);
+        }
+
+        // Send the opt-in invitation notification.
+        if (!$calendar?->requireOptIn || !$calendar?->optInInvitationNotification) {
             return;
         }
 
         // Add an extra layer. So we can implement the SendNotificationEvent.
-        $this->notificationHelper->sendNotification($calendar->subscribeNotification, $this->notificationHelper->getNotificationTokens($booking), $booking);
+        $this->notificationHelper->sendNotification($calendar->optInInvitationNotification, $this->notificationHelper->getNotificationTokens($booking), $booking);
     }
+
+    private function isValidEventBookingRequest(Form $form): bool
+    {
+        if (!$form->isCalendarEventBookingForm) {
+            return false;
+        }
+
+        if (null === $this->getBookingModuleInstanceFromRequest()) {
+            return false;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        if(null === $request){
+            return false;
+        }
+
+        $booking = $this->getCurrentBookingFromRequest();
+
+        if (null === $booking) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getBookingModuleInstanceFromRequest(): null|EventBookingFormController
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if(null === $request){
+            return null;
+        }
+
+        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+
+        if(!$bookingModuleInstance instanceof EventBookingFormController){
+           return null;
+        }
+
+        return $bookingModuleInstance;
+    }
+
+    private function getCurrentBookingFromRequest(): null|CalendarEventsMemberModel{
+        $request = $this->requestStack->getCurrentRequest();
+
+        if(null === $request){
+            return null;
+        }
+
+        $bookingToken =  $request->attributes->get('_calendar_event_booking_token',null);
+
+        if(null === $bookingToken){
+            return null;
+        }
+
+        return CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
+
+}
 }

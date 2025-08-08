@@ -118,9 +118,6 @@ class NotificationHelper
             }
         }
 
-        // Generate opt-in link
-        $arrTokens['member_optInLink'] = $this->eventBooking->getOptInLink($booking);
-
         // Generate unsubscribe link
         $arrTokens['member_unsubscribeLink'] = $this->eventBooking->getUnsubscribeLink($booking);
 

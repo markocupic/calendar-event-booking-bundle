@@ -1,5 +1,6 @@
 mod_opt_in:
     error:
+        token_no_longer_valid: 'Confirmation not possible! Your opt-in token has expired or is no longer valid.'
         booking_not_found: 'Confirmation unfortunately not possible! Your booking could not be found. This may be due to exceeding the allowed time frame for confirming the booking.'
         corresponding_event_not_found: 'Confirmation unfortunately not possible! No event matching the booking was found.'
         corresponding_calendar_not_found: 'Confirmation unfortunately not possible! No calendar matching the booking was found.'

@@ -40,7 +40,7 @@ Das Modul sollte auf der Seite platziert werden, wo User hingeleitet werden, nac
 - Einführung von `tl_calendar.subscribeNotification`
 - Einführung von `tl_calendar.waitingListAdvancementNotification`
 - Einführung von `tl_calendar.unsubscribeNotification`
-- Einführung von `tl_calendar.optInNotification`
+- Einführung von `tl_calendar.optInSuccessNotification`
 - Einführung von `tl_calendar.requireOptIn`
 - Einführung von `tl_calendar.emailUnique`
 
@@ -93,7 +93,7 @@ Alle Templates sind neu in Twig geschrieben.
 Das Template `partial_event_booking_member_list_partial.html5` wurde entfernt und ist neu in `mod_event_booking_member_list.html.twig` enthalten.
 
 ### Neue Benachrichtigungstypen
-- Neuer Benachrichtigungstyp `event-booking-opt-in-notification`
+- Neuer Benachrichtigungstyp `event-booking-opt-in-success-notification`
 - Neuer Benachrichtigungstyp `event-confirm-notification`
 - Neuer Benachrichtigungstyp `waiting-list-advancement-notification`
 - Neuer Benachrichtigungstyp `event-booking-payment-success-notification`

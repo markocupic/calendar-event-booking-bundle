@@ -62,11 +62,19 @@
       <trans-unit id="tl_calendar.waitingListAdvancementNotification.1">
         <source>This notification will be sent when a participant is moved from the waiting list to the regular list of active bookings.</source>
       </trans-unit>
-      <trans-unit id="tl_calendar.optInNotification.0">
-        <source>Booking confirm notification</source>
+      <trans-unit id="tl_calendar.optInInvitationNotification.0">
+        <source>Opt-In invitation notification</source>
+        <target>Opt-In Einladungsbenachrichtigung</target>
       </trans-unit>
-      <trans-unit id="tl_calendar.optInNotification.1">
-        <source>Please choose a booking confirm notification.</source>
+      <trans-unit id="tl_calendar.optInInvitationNotification.1">
+        <source>Please select an opt-in notification that will be sent after submitting the registration form for the event.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.optInSuccessNotification.0">
+        <source>Notification after consent (opt-in success)</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.optInSuccessNotification.1">
+        <source>Please select a notification that will be sent after the customer has agreed to register for the event via the link.</source>
+        <target>Bitte wählen Sie eine Benachrichtigung aus, die versendet wird, nachdem der Kunde via Link der Anmeldung zum Event zugestimmt hat.</target>
       </trans-unit>
       <trans-unit id="tl_calendar.unsubscribeNotification.0">
         <source>Event unsubscribe notification</source>

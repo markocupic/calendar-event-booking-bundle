@@ -301,7 +301,7 @@ class EventBooking
         return $this->urlParser->addQueryString($params, $page->getAbsoluteUrl());
     }
 
-    public function getOptInLink(CalendarEventsMemberModel $booking): string
+    public function getOptInLink(CalendarEventsMemberModel $booking, string $token): string
     {
         if (null === ($event = $booking->getRelated('pid'))) {
             throw new \Exception('Event not found.');
@@ -319,7 +319,8 @@ class EventBooking
             return '';
         }
 
-        $params = \sprintf('action=%s&bookingToken=%s', EventBookingOptInController::ACTION, $booking->bookingToken);
+        // The token will be generated dynamically by the AddOptInTokenStampListener
+        $params = \sprintf('action=%s&token=%s', EventBookingOptInController::ACTION, $token);
 
         return $this->urlParser->addQueryString($params, $page->getAbsoluteUrl());
     }

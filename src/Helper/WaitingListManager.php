@@ -52,7 +52,7 @@ class WaitingListManager
 
     public function checkWaitingList(CalendarEventsModel|null $event = null): void
     {
-        if(!$this->autoWaitingListAdvancement) {
+        if (!$this->autoWaitingListAdvancement) {
             return;
         }
 

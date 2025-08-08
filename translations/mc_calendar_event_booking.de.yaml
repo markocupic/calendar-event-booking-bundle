@@ -1,5 +1,6 @@
 mod_opt_in:
     error:
+        token_no_longer_valid: 'Bestätigung leider nicht möglich! Ihr Opt-in-Token ist abgelaufen oder nicht mehr gültig.'
         booking_not_found: 'Bestätigung leider nicht möglich! Ihre Buchung konnte leider nicht gefunden werden. Es kann damit zusammenhängen, dass Se die erlaubte zeitliche Frist zum Bestätigen der Buchung überschritten haben.'
         corresponding_event_not_found: 'Bestätigung leider nicht möglich! Es wurde kein zur Buchung passender Event gefunden.'
         corresponding_calendar_not_found: 'Bestätigung leider nicht möglich! Es wurde kein zur Buchung passender Kalender gefunden.'

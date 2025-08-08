@@ -17,11 +17,23 @@ namespace Markocupic\CalendarEventBookingBundle\NotificationType;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\EmailTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
+use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 
-class EventBookingOptInNotificationType implements NotificationTypeInterface
+class EventBookingOptInInvitationNotificationType implements NotificationTypeInterface
 {
-    public const NAME = 'event-booking-opt-in-notification';
+    public const NAME = 'event-booking-opt-in-invitation-notification';
+
+    public const TOKEN_CONFIG = [
+        'text_token' => [
+            //'member_optInLink',
+        ],
+        'html_token' => [
+            //'member_optInLink',
+        ],
+        'email_token' => [
+        ],
+    ];
 
     public function __construct(
         private readonly TokenDefinitionFactoryInterface $factory,
@@ -37,11 +49,21 @@ class EventBookingOptInNotificationType implements NotificationTypeInterface
     {
         $tokenDefinitions = [];
 
-        foreach ($this->getTokenConfig()['text_token'] as $token) {
+        $tokens = array_merge($this->getTokenConfig()['text_token'], self::TOKEN_CONFIG['text_token']);
+
+        foreach ($tokens as $token) {
             $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
-        foreach ($this->getTokenConfig()['email_token'] as $token) {
+        $tokens = array_merge($this->getTokenConfig()['html_token'], self::TOKEN_CONFIG['html_token']);
+
+        foreach ($tokens as $token) {
+            $tokenDefinitions[] = $this->factory->create(HtmlTokenDefinition::class, $token, 'event_booking.'.$token);
+        }
+
+        $tokens = array_merge($this->getTokenConfig()['email_token'], self::TOKEN_CONFIG['email_token']);
+
+        foreach ($tokens as $token) {
             $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 

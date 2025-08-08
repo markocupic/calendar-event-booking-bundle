@@ -6,9 +6,13 @@
         <source>Event booking: Notification after submitting the event booking form</source>
         <target>Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars</target>
       </trans-unit>
-      <trans-unit id="tl_nc_notification.type.event-booking-opt-in-notification">
-        <source>Event booking: Notification after confirmation of booking with link (Double-Opt-In)</source>
-        <target>Event Buchung: Benachrichtigung nach der Bestätigung der Buchung mit Link (Double-Opt-In)</target>
+      <trans-unit id="tl_nc_notification.type.event-booking-opt-in-invitation-notification">
+        <source>Event booking: Double-Opt-In invitation notification</source>
+        <target>Event Buchung: Opt-In Einladungsbenachrichtigung</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-opt-in-success-notification">
+        <source>Event booking: Notification after consent (Double-Opt-In)</source>
+        <target>Event Buchung: Benachrichtigung nach Einwilligung (Double-Opt-In Succes)</target>
       </trans-unit>
       <trans-unit id="tl_nc_notification.type.event-unsubscribe-notification">
         <source>Event booking: Notification after event cancellation</source>
