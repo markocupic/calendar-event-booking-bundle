@@ -18,6 +18,7 @@ use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\PriceRegexpListener;
 
 // Table config
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['doNotCopyRecords'] = true;
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['ctable'][] = 'tl_calendar_events_member';
 
 // Palettes

@@ -39,11 +39,12 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
     private CalendarEventsModel|null $event = null;
 
     public function __construct(
-        private readonly Connection $connection,
+        private readonly Connection      $connection,
         private readonly ContaoFramework $framework,
-        private readonly EventBooking $eventBooking,
-        private readonly ScopeMatcher $scopeMatcher,
-    ) {
+        private readonly EventBooking    $eventBooking,
+        private readonly ScopeMatcher    $scopeMatcher,
+    )
+    {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
@@ -89,7 +90,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         $arrOrder = StringUtil::deserialize($model->ceb_modMemberList_sorting, true);
         $arrOrder = empty($arrOrder) ? ['dateAdded::DESC'] : $arrOrder;
 
-        $rows = $this->getBookings((int) $this->event->id, $arrWhere, $arrOrder);
+        $rows = $this->getBookings($this->event->id, $arrWhere, $arrOrder);
         $rowCount = \count($rows);
 
         $i = 0;
@@ -125,11 +126,10 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from($t, 't')
-            ->where('t.pid = :pid')
-            ->setParameter('pid', $eventId)
-        ;
-
+            ->setParameter('pid', $eventId);
+        $hasWhereClause = false;
         foreach ($arrWhere as $strWhere) {
+            $hasWhereClause = true;
             [$col, $value] = StringUtil::trimsplit('::', $strWhere);
 
             if (!$this->columnExists($t, $col)) {
@@ -139,9 +139,12 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
             $value = 'true' === $value ? 1 : $value;
             $value = 'false' === $value ? 0 : $value;
 
-            $qb->orWhere("t.$col = :$col")
-                ->setParameter($col, $value)
-            ;
+            $qb->orWhere("t.$col = :$col AND t.pid = :pid")
+                ->setParameter($col, $value);
+        }
+
+        if (!$hasWhereClause) {
+            $qb->setParameter('pid', $eventId);
         }
 
         foreach ($arrOrder as $strOrder) {

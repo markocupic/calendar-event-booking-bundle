@@ -15,11 +15,6 @@ declare(strict_types=1);
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 /**
- * Create the calendar_event_booking palette
- */
-$GLOBALS['TL_DCA']['tl_form']['palettes']['calendar_event_booking'] = '{calendar_event_booking_settings:show},isCalendarEventBookingForm;{title_legend},title,alias,jumpTo;{template_legend:hide},customTpl;{expert_legend:hide},novalidate,attributes,formID';
-
-/**
  * Add the isCalendarEventBookingForm field to the default palette.
  */
 PaletteManipulator::create()

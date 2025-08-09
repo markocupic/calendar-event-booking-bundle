@@ -23,6 +23,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
 use Soundasleep\Html2Text;
+use Soundasleep\Html2TextException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\NotificationCenterBundle\Event\CreateParcelEvent;
@@ -36,6 +37,7 @@ use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TokenDefinitionInterface;
 use Terminal42\NotificationCenterBundle\Token\TokenCollection;
+use Terminal42\NotificationCenterBundle\Util\Email;
 
 class AddOptInTokenListener
 {
@@ -131,11 +133,7 @@ class AddOptInTokenListener
     /**
      * Register the opt-in token in tl_opt_in.
      *
-     * @param Parcel $parcel
-     * @param CalendarEventsMemberModel $booking
-     * @param string $optInToken
-     * @return void
-     * @throws \Soundasleep\Html2TextException
+     * @throws Html2TextException
      */
     private function addOptInIfRequired(Parcel $parcel, CalendarEventsMemberModel $booking, string $optInToken): void
     {
@@ -152,7 +150,8 @@ class AddOptInTokenListener
         $optIn['token'] = $optInToken;
 
         // Get the email addresses
-        $optIn['email'] = $this->replaceTokensAndInsertTags($languageConfig->languageConfig->getString('recipients'), $tokenCollection->tokenCollection);
+        $recipients = $this->replaceTokensAndInsertTags($languageConfig->languageConfig->getString('recipients'), $tokenCollection->tokenCollection);
+        $optIn['email'] = implode(',',Email::splitEmailAddresses($recipients));
 
         // Get the email subject
         $optIn['email_subject'] = $this->replaceTokensAndInsertTags($languageConfig->languageConfig->getString('email_subject'), $tokenCollection->tokenCollection);

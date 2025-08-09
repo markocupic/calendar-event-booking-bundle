@@ -17,6 +17,7 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBooking
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingUnsubscribeController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingOptInController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingCheckoutController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingMyBookingsController;
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingFormController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -24,6 +25,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingUnsubscribeController::T
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMemberListController::TYPE] = '{title_legend},name,headline,type;{config_legend:hide},ceb_modMemberList_enableBookingStatusFilter,ceb_modMemberList_sorting;{template_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingOptInController::TYPE] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingCheckoutController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMyBookingsController::TYPE] = '{title_legend},name,headline,type;{config_legend:hide},ceb_modMyBookings_startTimeFilter,ceb_modMyBookings_sorting;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Subpalettes
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'ceb_modMemberList_enableBookingStatusFilter';
@@ -41,17 +43,33 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_enableBookingStatus
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_bookingStatusFilter'] = [
+    'eval'      => ['multiple' => true, 'tl_class' => 'w50'],
     'filter'    => true,
     'inputType' => 'checkbox',
     'options'   => ['waitingList::true', 'waitingList::false', 'optIn::true', 'optIn::false', 'temporaryReserved::true', 'temporaryReserved::false', 'expired::true', 'expired::false', 'canceled::true', 'canceled::false', 'paid::true', 'paid::false'],
-    'eval'      => ['multiple' => true],
     'sql'       => "blob NULL",
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_sorting'] = [
+    'eval'      => ['multiple' => true, 'tl_class' => 'w50'],
     'filter'    => true,
     'inputType' => 'checkboxWizard',
     'options'   => ['addedOn::DESC', 'addedOn::ASC', 'lastname::DESC', 'lastname::ASC'],
-    'eval'      => ['multiple' => true],
     'sql'       => "blob NULL",
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_startTimeFilter'] = [
+    'eval'      => ['multiple' => false, 'tl_class' => 'w50'],
+    'filter'    => true,
+    'inputType' => 'select',
+    'options'   => ['past', 'upcoming', 'all'],
+    'sql'       => ['type' => 'text', 'length' => 64, 'default' => 'upcoming'],
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_sorting'] = [
+    'eval'      => ['multiple' => false, 'tl_class' => 'w50'],
+    'filter'    => true,
+    'inputType' => 'select',
+    'options'   => ['ASC', 'DESC'],
+    'sql'       => ['type' => 'text', 'length' => 64, 'default' => 'ASC'],
 ];

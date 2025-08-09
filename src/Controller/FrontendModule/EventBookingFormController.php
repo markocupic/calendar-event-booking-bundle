@@ -67,10 +67,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly ContaoFramework $framework,
         private readonly EventBooking $eventBooking,
         private readonly LockFactory $lockFactory,
+        private readonly RateLimiterFactoryInterface $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
-        private readonly RateLimiterFactoryInterface $rateLimiterFactory,
-        private bool $rateLimitBookingFormEnable,
+        private readonly bool $rateLimitBookingFormEnable,
         private readonly LoggerInterface|null $contaoErrorLogger,
     ) {
     }
@@ -111,6 +111,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
     }
 
     /**
+     * @param Template $template
+     * @param ModuleModel $model
+     * @param Request $request
+     * @return Response
      * @throws Exception
      * @throws \Throwable
      */

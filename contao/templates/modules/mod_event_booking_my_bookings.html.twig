@@ -1,0 +1,50 @@
+{% trans_default_domain "mc_calendar_event_booking" %}
+{% use "@Contao/component/_figure.html.twig" %}
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    <div class="ceb-my-bookings">
+        {% for item in bookings %}
+            <div class="ceb-my-bookings--item">
+                <div class="ceb-my-bookings--thumb">
+                    {% if item.event.addImage %}
+                        <div class="ceb-my-bookings--thumb-inner">
+                            {% with {figure: figure(item.event.singleSRC, item.event.size)} %}{{ block('figure_component') }}{% endwith %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ceb-my-bookings--info">
+                    <div class="ceb-my-bookings--info-event-title">
+                        {{ item.event.title }}
+                    </div>
+                    <div class="ceb-my-bookings--info-event-start-date">
+                        {{ item.event.startDate|date("d.m.Y") }}
+                    </div>
+                    <div class="ceb-my-bookings--info-booking">
+                        {% if item.booking.firstname|default %}
+                            <div class="ceb-my-bookings--info-booking-firstname">
+                                {{ item.booking.firstname }}
+                            </div>
+                        {% endif %}
+                        {% if item.booking.lastname|default %}
+                            <div class="ceb-my-bookings--info-booking-lastname">
+                                {{ item.booking.lastname }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if item.payments|default %}
+                        <div class="ceb-my-bookings--payments">
+                            {% for payment in item.payments %}
+                                <div class="ceb-my-bookings--info-payment">
+                                    <div>{{ payment.grossAmount }} {{ payment.currencyCode }}</div>
+                                    <div>{{ payment.method }}</div>
+                                    <div>{{ payment.uuid }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

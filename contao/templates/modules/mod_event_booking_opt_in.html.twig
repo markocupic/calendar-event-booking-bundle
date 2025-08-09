@@ -1,7 +1,10 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-     {% if messages %}
+    {% if messages %}
         {{ messages|raw }}
+    {% endif %}
+    {% if optInSuccess|default %}
+        {# Here you can place the success message #}
     {% endif %}
 {% endblock %}

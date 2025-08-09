@@ -17,6 +17,7 @@ Im Moment sind folgende **Zahlungsmethoden** vorhanden:
 - PayPal
 
 ## Benachrichtigungen
+
 Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigt werden (Notification Cecnter).
 
 ## Warteliste
@@ -32,13 +33,14 @@ Abschnitt "Konfiguration" beachten!
 
 ## Frontend-Module
 
-| Frontend-Modul                                    | Erklärung                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|---------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Event-Buchungsformular                            | Wird benötigt, um das Event-Buchungsformular auszugeben. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                            |
-| Event-Buchungs-Checkout (Zusammenfassung/Zahlung) | Dieses Modul sollte auf der Weiterleitungsseite eingerichtet werden, auf die Kunden nach dem Absenden des Buchungsformulars geleitet werden. Es zeigt eine kurze Bestätigung der Buchung an. Oder löst den Zahlungscheckout aus (kostenpflichtig).                                                                                                                                                                                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Event-Buchungs-Bestätigung (Double-Opt-In)        | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungsbestätigungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden. Dieses Modul sollte nicht in Zusammenhang mit einem Bezahlungs-Checkout berwendet werden. |
-| Event-Stornierungsformular                        | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungs-Stornierungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden.                                                                                          |
-| Event-Teilnehmer-Liste                            | Optional! Dieses Modul listet die vorhandenen Buchungen auf. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                        |
+| Frontend-Modul                                      | Erklärung                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|:----------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Event-Booking - Buchungsformular                    | Wird benötigt, um das Event-Buchungsformular auszugeben. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                            |
+| Event-Booking - Checkout (Zusammenfassung/Zahlung)  | Dieses Modul sollte auf der Weiterleitungsseite eingerichtet werden, auf die Kunden nach dem Absenden des Buchungsformulars geleitet werden. Es zeigt eine kurze Bestätigung der Buchung an. Oder löst den Zahlungscheckout aus (kostenpflichtig).                                                                                                                                                                                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Event-Booking - Buchungsbestätigung (Double-Opt-In) | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungsbestätigungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden. Dieses Modul sollte nicht in Zusammenhang mit einem Bezahlungs-Checkout berwendet werden. |
+| Event-Booking - Stornierungsformular                | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungs-Stornierungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden.                                                                                          |
+| Event-Booking - Teilnehmer-Liste                    | Optional! Dieses Modul listet die vorhandenen Buchungen auf. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                        |
+| Event-Booking - Meine Buchungen                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ## Einrichtung (Ablauf)
 
@@ -48,10 +50,16 @@ Abschnitt "Konfiguration" beachten!
 
 Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
 
-- **Wichtig!!! Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein.**
-- Zudem kann optional die Weiterleitungsseite ausgewählt werden.
-- **Bei der Benutzung eines Zahlungscheckouts sollte keine Weiterleitungsseite eingerichtet werden!**
-- Weitere Einstellungen müssen keine zwingend gemacht werden. Es sollte keine Benachrichtigung ausgewählt werden. Diese wird beim Event ausgewählt.
+#### Einstellungenim Formular
+
+- **Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein!**
+- **Im Formular Weiterleitungsseite weglassen! Diese sollte in der Kalendereinstellung ausgewählt werden.**
+- **Es sollte keine Benachrichtigung ausgewählt werden. Diese wird in der Kalendereinstellung ausgewählt.**
+- **Übertragungsmethode: POST**
+
+#### Formularfelder und Datenbankfelder
+
+- Das Formularfeld `bookingUuid` wird automatisch generiert.
 - Folgende Felder werden im Beispielformular mitgeliefert und deren Inhalt beim Absenden des Formulars wird in der Datenbank (tl_calendar_events_member) gespeichert:
   `waitingList`, `gender`, `firstname`, `lastname`, `dateOfBirth`, `street`, `postal`, `city`, `phone`, `email`, `ticketAmount`, `escorts`, `notes`
 - Benutzen Sie das Feld `ticketAmount`, wenn für jedes Ticket ein Platz von der Gesamtzahl der maximal möglichen Teilnehmerzahl abgezogen werden soll.
@@ -84,9 +92,16 @@ PaletteManipulator::create()
     ->applyToPalette('default', 'tl_calendar_events_member');
 ```
 
-### 3. Frontend Module Event-Buchungsformular und Event-Buchungs-Checkout (Zusammenfassung/Zahlung) anlegen
+### 3. Frontend Module anlegen
 
 ### 4. Seiten und Artikel anlegen
+
+So könnte ein funktionierender Seitenaufbau mit den zugehörenden Modulen aussehen:
+
+| **Seite**       | **Event Buchung**                                                                                                      | **Checkout**             | **Opt-In** (optional)                | **Stornierung** (optional)           | **Meine Buchungen** (optional)                                                                                                             |
+|:----------------|:-----------------------------------------------------------------------------------------------------------------------|:-------------------------|:-------------------------------------|:-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| **Module**      | Event-Booking - Buchungsformular<br>Event-Booking - Teilnehmer-Liste                                                   | Event-Booking - Checkout | Event-Booking - Buchungs-Bestätigung | Event-Booking - Stornierungsformular | Event-Booking - Meine Buchungen                                                                                                            |
+| **Zu beachten** | Beide Module benötigen den Event-Alias in der URL und sollten deshalb idealerweise auf einer Event Detailseite liegen. |                          | optional                             | optional                             | optional<br>Zeigt die Buchungen des eingeloggten Users an. Funktioniert nur, wenn der User zum Zeitpunkt der Registrierung angemeldet war. |
 
 - Seite und Artikel mit dem Modul **Buchungsformular** anlegen. Das Modul **Buchungsformular** ist auf den Event-Alias in der URL angewiesen und sollte idealerweise auf einer Event-Detail-Seite angelegt werden.
 
@@ -94,13 +109,14 @@ PaletteManipulator::create()
 
 ### 5. Benachrichtigungen mit Notification Center anlegen
 
-| Benachrichtigungen (Notification Center)                                                  |
-|-------------------------------------------------------------------------------------------|
-| Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars            |
-| Event Buchung: Benachrichtigung nach der Bestätigung der Buchung mit Link (Double-Opt-In) |
-| Event Buchung: Benachrichtigung nach der Event-Stornierung                                |
-| Event Buchung: Benachrichtigung nach dem Nachrücken von der Warteliste                    |
-| Event Buchung: Benachrichtigung nach erfolgreicher Zahlung                                |
+| Benachrichtigungen (Notification Center)                                       |
+|:-------------------------------------------------------------------------------|
+| Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars |
+| Event Buchung: Opt-In Einladungsbenachrichtigung                               |
+| Event Buchung: Benachrichtigung nach Einwilligung (Double-Opt-In Succes)       |
+| Event Buchung: Benachrichtigung nach der Event-Stornierung                     |
+| Event Buchung: Benachrichtigung nach dem Nachrücken von der Warteliste         |
+| Event Buchung: Benachrichtigung nach erfolgreicher Zahlung                     |
 
 Versenden Sie zu versch. Zeitpunkten Benachrichtigungen und nutzen Sie dabei die **Simple Tokens**.
 
@@ -110,7 +126,7 @@ Dazu muss aber im Event die Event-Stornierung aktiviert werden und im Kalender d
 #### Gebrauch der Simple Tokens im Notification Center
 
 |                                           |                              |                                                                                                                                                                                                                                                           |
-|-------------------------------------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:------------------------------------------|:-----------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Teilnehmer                                | `tl_calendar_events_member`  | `##member_gender##` (Männlich, Weiblich oder Divers), `##member_salutation##` (Übersetzt: Herr oder Frau), `##member_email##`, `##member_firstname##`, `##member_street##`, etc.                                                                          |
 | Event                                     | `tl_calendar_events`         | `##event_title##`, `##event_street##`, `##event_postal##`, `##event_city##`, `##event_unsubscribeLimitTstamp##`, etc.                                                                                                                                     |
 | Organisator/Email-Absender                | `tl_user`                    | `##organizer_name##`, `##organizer_email##`, etc.                                                                                                                                                                                                         |
@@ -200,7 +216,7 @@ markocupic_calendar_event_booking:
 ```
 
 | **Paramter**                                  | **Default**    | **Erklärung**                                                                                                                                                                       |
-|-----------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:----------------------------------------------|:---------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `auto_expire_reserved_bookings`               | `true`         | Unbestätigte Anmeldungen/Anmeldungen oder Anmeldungen mit nicht erledigten Zahlungen werden nach Ablauf einer konfigurierbaren Zeit (auto_expire_time_limit) automatisch abgelehnt. |
 | `auto_expire_time_limit`                      | `3600`         | Zeit in Sekunden, welche dem User ab dem Moment der Registrierung bleibt, um seine Buchung per Link zu bestätigen oder um die Zahlung zu erledigen.                                 |
 | `auto_delete_expired_bookings`                | `false`        | Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus                                                                                                       |
@@ -219,7 +235,7 @@ markocupic_calendar_event_booking:
 Folgende zusätzliche Template Variablen sind in allen Kalender-Templates einsetzbar:
 
 | Tag               | Type   | Erklärung                                                                                                                                  |
-|-------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------|
+|:------------------|:-------|:-------------------------------------------------------------------------------------------------------------------------------------------|
 | `event`           | object | `\Contao\CalendarEvntsModel $event` Objekt mit allen Angaben zum Event. Z.B. gibt `event.title` den Event-Namen aus.                       |
 | `calendar`        | object | `\Contao\CalendarModel $calendar` Objekt mit allen Angaben zum übergeordneten Kalender. Z.B. gibt `calendar.title` den Kalender-Namen aus. |
 | `eventStatus`     | string | `draft`, `booking_open`, `fully_booked`, `waiting_list_open`, `not_bookable`, `not_yet_bookable`, `booking_closed`                         |

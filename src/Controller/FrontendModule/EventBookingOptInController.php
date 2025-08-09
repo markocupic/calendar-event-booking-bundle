@@ -213,6 +213,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $booking->temporaryReserved = false;
         $booking->save();
         $template->class .= ' confirm-success';
+        $template->optInSuccess = true;
         $message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));
 
         $event = new BookingConfirmEvent($booking, self::class, $request);

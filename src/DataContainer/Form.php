@@ -17,26 +17,10 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\FormModel;
+use Contao\Message;
 
 class Form
 {
-    /**
-     * Remove fields from the default palette.
-     */
-    #[AsCallback(table: 'tl_form', target: 'config.onload')]
-    public function removeFieldsFromPalette(DataContainer $dc): void
-    {
-        if (null === ($form = FormModel::findById($dc->id))) {
-            return;
-        }
-
-        if (!$form->isCalendarEventBookingForm) {
-            return;
-        }
-
-        $GLOBALS['TL_DCA']['tl_form']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_form']['palettes']['calendar_event_booking'];
-    }
-
     /**
      * Manipulate fields.
      */

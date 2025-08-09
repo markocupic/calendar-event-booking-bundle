@@ -3,19 +3,22 @@
   <file datatype="php" original="contao/languages/en/modules.php" source-language="en">
     <body>
       <trans-unit id="FMD.event_booking_form.0">
-        <source>Event booking form</source>
+        <source>Event Booking - Form</source>
       </trans-unit>
       <trans-unit id="FMD.event_booking_member_list.0">
-        <source>Event member listing</source>
+        <source>Event Booking - Member listing</source>
       </trans-unit>
       <trans-unit id="FMD.event_booking_unsubscribe.0">
-        <source>Event unsubscription form</source>
+        <source>Event Booking - Unsubscription form</source>
       </trans-unit>
       <trans-unit id="FMD.event_booking_opt_in.0">
-        <source>Event booking confirm (Double-Opt-In)</source>
+        <source>Event Booking - Confirm (Double-Opt-In)</source>
       </trans-unit>
       <trans-unit id="FMD.event_booking_checkout.0">
-        <source>Event booking checkout (Summary/Payment)</source>
+        <source>Event Booking - Checkout (Summary/Payment)</source>
+      </trans-unit>
+      <trans-unit id="FMD.event_booking_my_bookings.0">
+        <source>Event Booking - My bookings</source>
       </trans-unit>
     </body>
   </file>
