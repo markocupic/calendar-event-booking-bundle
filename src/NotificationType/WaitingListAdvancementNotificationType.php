@@ -38,15 +38,15 @@ class WaitingListAdvancementNotificationType implements NotificationTypeInterfac
     {
         $tokenDefinitions = [];
 
-        foreach ($this->getTokenConfig()['email_token'] as $token) {
+        foreach ($this->getTokenConfig()['email_token'] ?? [] as $token) {
             $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
-        foreach ($this->getTokenConfig()['text_token'] as $token) {
+        foreach ($this->getTokenConfig()['text_token'] ?? [] as $token) {
             $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
-        foreach ($this->getTokenConfig()['html_token'] as $token) {
+        foreach ($this->getTokenConfig()['html_token'] ?? [] as $token) {
             $tokenDefinitions[] = $this->factory->create(HtmlTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 

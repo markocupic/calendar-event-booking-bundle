@@ -102,7 +102,6 @@ class AddOptInTokenListener
         }
 
         $optInToken = OptIn::generateToken();
-
         $optInLink = $this->eventBooking->getOptInLink($booking, $optInToken);
 
         $tokenCollectionStamp
