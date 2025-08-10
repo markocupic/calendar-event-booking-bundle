@@ -14,22 +14,21 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\NotificationType;
 
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\EmailTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
-use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-class EventBookingOptInInvitationNotificationType implements NotificationTypeInterface
+#[AutoconfigureTag('cebb.notification')]
+class EventBookingOptInInvitationNotificationType implements NotificationTypeInterface, CalendarEventsBookingNotificationTypeInterface
 {
     public const NAME = 'event-booking-opt-in-invitation-notification';
 
     public const TOKEN_CONFIG = [
         'text_token' => [
-            //'member_optInLink',
-        ],
-        'html_token' => [
-            //'member_optInLink',
+            'member_optInLink',
         ],
         'email_token' => [
         ],
@@ -45,26 +44,30 @@ class EventBookingOptInInvitationNotificationType implements NotificationTypeInt
         return self::NAME;
     }
 
+    public static function getType(): string
+    {
+        return self::NAME;
+    }
+
+    /**
+     * This makes the tokens available to the auto suggester in the notification
+     * center. Setting the HTML tokens is not necessary! It even prevents the
+     * auto-suggest feature from working properly.
+     */
     public function getTokenDefinitions(): array
     {
         $tokenDefinitions = [];
-
-        $tokens = array_merge($this->getTokenConfig()['text_token'], self::TOKEN_CONFIG['text_token']);
-
-        foreach ($tokens as $token) {
-            $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
-        }
-
-        $tokens = array_merge($this->getTokenConfig()['html_token'], self::TOKEN_CONFIG['html_token']);
-
-        foreach ($tokens as $token) {
-            $tokenDefinitions[] = $this->factory->create(HtmlTokenDefinition::class, $token, 'event_booking.'.$token);
-        }
 
         $tokens = array_merge($this->getTokenConfig()['email_token'], self::TOKEN_CONFIG['email_token']);
 
         foreach ($tokens as $token) {
             $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_booking.'.$token);
+        }
+
+        $tokens = array_merge($this->getTokenConfig()['text_token'], self::TOKEN_CONFIG['text_token']);
+
+        foreach ($tokens as $token) {
+            $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
         return $tokenDefinitions;

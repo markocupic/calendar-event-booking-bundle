@@ -82,6 +82,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
                 'href'  => 'do=calendar&table=tl_calendar_events_payment',
                 'icon'  => 'bundles/markocupiccalendareventbooking/icons/circle-dollar-sign.svg',
             ],
+            'notification' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['notification'],
+                'href'  => 'do=calendar&table=tl_calendar_events_booking_notification',
+                'icon'  => 'bundles/markocupiccalendareventbooking/icons/mail.svg',
+            ],
         ],
     ],
     'palettes' => [

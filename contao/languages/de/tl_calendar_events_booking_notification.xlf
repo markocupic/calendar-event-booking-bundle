@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/tl_calendar_events_booking_notification.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_calendar_events_booking_notification.deliveredOn.0">
+        <source>Delivery date</source>
+        <target>Versanddatum</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.deliveredOn.1">
+        <source>Please enter the delivery date.</source>
+        <target>Bitte geben Sie das Versanddatum ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.type.0">
+        <source>Notification</source>
+        <target>Benachrichtigung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.type.1">
+        <source>Please enter the notification type.</source>
+        <target>Bitte geben Sie den Benachrichtigungstyp ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.delivered.0">
+        <source>Delivery successful</source>
+        <target>Versand erfolgreich</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.delivered.1">
+        <source>Please indicate whether the delivery was successful.</source>
+        <target>Bitte geben Sie an, ob der Versand erfolgreich war.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsTo.0">
+        <source>Recipient</source>
+        <target>Empfänger</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsTo.1">
+        <source>Please enter the recipient(s).</source>
+        <target>Bitte geben Sie den/die Empfänger ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsCc.0">
+        <source>CC recipient</source>
+        <target>CC-Empfänger</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsCc.1">
+        <source>Please enter the CC recipient(s).</source>
+        <target>Bitte geben Sie den/die CC-Empfänger ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsBcc.0">
+        <source>BCC recipient</source>
+        <target>BCC-Empfänger</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.recipientsBcc.1">
+        <source>Please enter the BCC recipient(s).</source>
+        <target>Bitte geben Sie den/die BCC-Empfänger ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.0">
+        <source>Error message</source>
+        <target>Fehlermeldung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.1">
+        <source>Please enter the error message.</source>
+        <target>Bitte geben Sie die Fehlermeldung ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.subject.0">
+        <source>Subject</source>
+        <target>Betreff</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.subject.1">
+        <source>Please enter the subject.</source>
+        <target>Bitte geben Sie den Betreff ein.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

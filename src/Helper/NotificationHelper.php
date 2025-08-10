@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Helper;
 
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
@@ -38,7 +36,6 @@ class NotificationHelper
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly NotificationCenter $notificationCenter,
         private readonly RequestStack $requestStack,
-        private readonly ScopeMatcher $scopeMatcher,
     ) {
     }
 
@@ -77,9 +74,6 @@ class NotificationHelper
         $controllerAdapter->loadLanguageFile('tl_calendar_events_member');
 
         $arrTokens = [];
-
-        // Get admin email
-        $arrTokens['admin_email'] = $this->getAdminEmail();
 
         // Prepare tokens for event member and use "member_" as a prefix
         $row = $booking->row();
@@ -136,29 +130,5 @@ class NotificationHelper
         }
 
         return $arrTokens;
-    }
-
-    private function getAdminEmail(): string
-    {
-        $request = $this->requestStack->getCurrentRequest();
-
-        if ($request && $this->scopeMatcher->isFrontendRequest()) {
-            /** @var PageModel $pageModel */
-            $pageModel = $request->attributes->get('pageModel');
-
-            if (null !== $pageModel && $adminEmail = $pageModel->adminEmailget) {
-                return $adminEmail;
-            }
-        }
-
-        if (!empty($GLOBALS['TL_ADMIN_EMAIL'])) {
-            return $GLOBALS['TL_ADMIN_EMAIL'];
-        }
-
-        if ($email = Config::get('adminEmail')) {
-            return $email;
-        }
-
-        return '';
     }
 }

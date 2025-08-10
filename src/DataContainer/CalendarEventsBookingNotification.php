@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
+ */
+
+namespace Markocupic\CalendarEventBookingBundle\DataContainer;
+
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\DataContainer;
+use Contao\Image;
+use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+
+class CalendarEventsBookingNotification
+{
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly EventBooking $eventBooking,
+    ) {
+    }
+
+    #[AsCallback(table: 'tl_calendar_events_booking_notification', target: 'list.label.label')]
+    /**
+     * Add an image to each record.
+     *
+     * @param array  $row
+     * @param string $label
+     * @param array  $args
+     *
+     * @return array
+     */
+    public function addIcon($row, $label, DataContainer $dc, $args)
+    {
+        $imageOk = 'bundles/markocupiccalendareventbooking/icons/check-circle.svg';
+        $imageError = 'bundles/markocupiccalendareventbooking/icons/alert-circle.svg';
+
+        if ($row['delivered']) {
+            $icon = $imageOk;
+            $status='success';
+        } else {
+            $icon = $imageError;
+            $status='error';
+        }
+
+        $args[0] = \sprintf(
+            '<div class="list_icon_delivered" data-delivered="%s"><img src="%s" style="width:16px"/></div>',
+            $status,
+            Image::getUrl($icon),
+        );
+
+        return $args;
+    }
+}

@@ -22,6 +22,7 @@ use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
+use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -55,9 +56,14 @@ class AddOptInTokenListener
     #[AsEventListener]
     public function onGetTokenDefinitions(GetTokenDefinitionsForNotificationTypeEvent $event): void
     {
+        if (EventBookingOptInInvitationNotificationType::NAME !== $event->getNotificationType()->getName()) {
+            return;
+        }
+
+        // Adding the member_optInLink token to the HtmlTokenDefinition will make the
+        // auto suggester break!
         $event
             ->addTokenDefinition($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink'))
-            ->addTokenDefinition($this->getTokenDefinition(HtmlTokenDefinition::class, 'member_optInLink'))
         ;
     }
 
@@ -73,12 +79,6 @@ class AddOptInTokenListener
     {
         $parcel = $event->getParcel();
 
-        $tokenCollectionStamp = $parcel->getStamp(TokenCollectionStamp::class);
-
-        if (!$tokenCollectionStamp instanceof TokenCollectionStamp) {
-            return;
-        }
-
         $notificationConfig = $parcel->getStamp(NotificationConfigStamp::class);
 
         if (!$notificationConfig instanceof NotificationConfigStamp) {
@@ -86,6 +86,12 @@ class AddOptInTokenListener
         }
 
         if (EventBookingOptInInvitationNotificationType::NAME !== $notificationConfig->toArray()['type']) {
+            return;
+        }
+
+        $tokenCollectionStamp = $parcel->getStamp(TokenCollectionStamp::class);
+
+        if (!$tokenCollectionStamp instanceof TokenCollectionStamp) {
             return;
         }
 
@@ -112,6 +118,12 @@ class AddOptInTokenListener
 
         // Create the opt-in entries in tl_opt_in
         $this->addOptInIfRequired($parcel, $booking, $optInToken);
+
+        // Add the CalendarEventBookingStamp to the parcel
+        $calendarEventBookingStamp = new CalendarEventBookingStamp((string) $booking->id, $notificationConfig->toArray()['type']);
+        $parcel = $parcel->withStamp($calendarEventBookingStamp);
+
+        $event->setParcel($parcel);
     }
 
     protected function replaceTokens(string $value, TokenCollection $tokenCollection): string
@@ -150,7 +162,7 @@ class AddOptInTokenListener
 
         // Get the email addresses
         $recipients = $this->replaceTokensAndInsertTags($languageConfig->languageConfig->getString('recipients'), $tokenCollection->tokenCollection);
-        $optIn['email'] = implode(',',Email::splitEmailAddresses($recipients));
+        $optIn['email'] = implode(',', Email::splitEmailAddresses($recipients));
 
         // Get the email subject
         $optIn['email_subject'] = $this->replaceTokensAndInsertTags($languageConfig->languageConfig->getString('email_subject'), $tokenCollection->tokenCollection);
