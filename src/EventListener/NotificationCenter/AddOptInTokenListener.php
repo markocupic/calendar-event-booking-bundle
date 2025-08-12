@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventListener;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
@@ -22,7 +22,6 @@ use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
-use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -118,25 +117,19 @@ class AddOptInTokenListener
 
         // Create the opt-in entries in tl_opt_in
         $this->addOptInIfRequired($parcel, $booking, $optInToken);
-
-        // Add the CalendarEventBookingStamp to the parcel
-        $calendarEventBookingStamp = new CalendarEventBookingStamp((string) $booking->id, $notificationConfig->toArray()['type']);
-        $parcel = $parcel->withStamp($calendarEventBookingStamp);
-
-        $event->setParcel($parcel);
     }
 
-    protected function replaceTokens(string $value, TokenCollection $tokenCollection): string
+    private function replaceTokens(string $value, TokenCollection $tokenCollection): string
     {
         return $this->simpleTokenParser->parse($value, $tokenCollection->forSimpleTokenParser());
     }
 
-    protected function replaceInsertTags(string $value): string
+    private function replaceInsertTags(string $value): string
     {
         return $this->insertTagParser->replaceInline($value);
     }
 
-    protected function replaceTokensAndInsertTags(string $value, TokenCollection $tokenCollection): string
+    private function replaceTokensAndInsertTags(string $value, TokenCollection $tokenCollection): string
     {
         return $this->replaceInsertTags($this->replaceTokens($value, $tokenCollection));
     }

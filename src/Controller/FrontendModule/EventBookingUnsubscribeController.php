@@ -229,6 +229,8 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         $booking->temporaryReserved = false;
         $booking->save();
 
+        $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
+
         $event = new CancelBookingEvent($booking, self::class, $request);
         $this->eventDispatcher->dispatch($event);
 

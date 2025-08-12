@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-namespace Markocupic\CalendarEventBookingBundle\EventListener;
+namespace Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter;
 
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsBookingNotificationModel;
@@ -29,10 +29,9 @@ class LogDeliveriesListener
     public function __construct(
         private readonly Connection $connection,
         #[TaggedLocator('cebb.notification', defaultIndexMethod: 'getType')]
-        private ContainerInterface  $notificationTypes,
-        private readonly array      $notificationLogExclude,
-    )
-    {
+        private ContainerInterface $notificationTypes,
+        private readonly array $notificationLogExclude,
+    ) {
     }
 
     public function __invoke(ReceiptEvent $event): void
@@ -56,22 +55,22 @@ class LogDeliveriesListener
         $email = $receipt->getParcel()->getStamp(EmailStamp::class)->toArray();
 
         $set = [
-            'pid'           => (int)$booking['booking_id'],
-            'tstamp'        => time(),
-            'deliveredOn'   => time(),
-            'type'          => $booking['notification_type'],
+            'pid' => (int) $booking['booking_id'],
+            'tstamp' => time(),
+            'deliveredOn' => time(),
+            'type' => $booking['notification_type'],
             'senderAddress' => $email['from'],
-            'senderName'    => $email['fromName'],
-            'replyTo'       => $email['replyTo'],
-            'recipientsTo'  => $email['to'],
-            'recipientsCc'  => $email['cc'],
+            'senderName' => $email['fromName'],
+            'replyTo' => $email['replyTo'],
+            'recipientsTo' => $email['to'],
+            'recipientsCc' => $email['cc'],
             'recipientsBcc' => $email['bcc'],
-            'subject'       => $email['subject'],
-            'text'          => $email['text'],
-            'html'          => $email['html'],
-            'attachments'   => !empty($email['attachmentVouchers']) ? json_encode($email['attachmentVouchers']) : '',
+            'subject' => $email['subject'],
+            'text' => $email['text'],
+            'html' => $email['html'],
+            'attachments' => !empty($email['attachmentVouchers']) ? json_encode($email['attachmentVouchers']) : '',
             'embeddedImages' => !empty($email['embeddedImageVouchers']) ? json_encode($email['embeddedImageVouchers']) : '',
-            'exception'     => '',
+            'exception' => '',
         ];
 
         if (!empty($set['text']) && $set['html'] === $set['text']) {
@@ -80,7 +79,7 @@ class LogDeliveriesListener
 
         if ($receipt->wasDelivered()) {
             $set['delivered'] = 1;
-            $set = array_filter(array_combine(array_keys($set), array_values($set)), fn($v, $k) => !\in_array($k, $this->notificationLogExclude, true), ARRAY_FILTER_USE_BOTH);
+            $set = array_filter(array_combine(array_keys($set), array_values($set)), fn ($v, $k) => !\in_array($k, $this->notificationLogExclude, true), ARRAY_FILTER_USE_BOTH);
 
             $this->connection->insert(CalendarEventsBookingNotificationModel::getTable(), $set);
 
@@ -89,7 +88,7 @@ class LogDeliveriesListener
 
         $set['delivered'] = 0;
         $set['exception'] = $receipt->getException()->getMessage();
-        $set = array_filter(array_combine(array_keys($set), array_values($set)), fn($v, $k) => !\in_array($k, $this->notificationLogExclude, true), ARRAY_FILTER_USE_BOTH);
+        $set = array_filter(array_combine(array_keys($set), array_values($set)), fn ($v, $k) => !\in_array($k, $this->notificationLogExclude, true), ARRAY_FILTER_USE_BOTH);
 
         $this->connection->insert(CalendarEventsBookingNotificationModel::getTable(), $set);
     }

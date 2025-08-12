@@ -122,6 +122,8 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             }
 
             if ($this->processConfirm($template, $calendar, $event, $booking, $request)) {
+                $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
+
                 // Send notification
                 if ($calendar->optInSuccessNotification) {
                     $tokens = $this->notificationHelper->getNotificationTokens($booking);

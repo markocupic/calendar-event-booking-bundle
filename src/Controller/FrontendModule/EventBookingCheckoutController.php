@@ -59,9 +59,11 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
             $this->event = $this->booking?->getRelated('pid');
             $this->calendar = $this->event?->getRelated('pid');
 
-            if (null === $this->event || !$this->event->published || null === $this->calendar) {
+            if (null === $this->booking || null === $this->event || !$this->event->published || null === $this->calendar) {
                 return new Response('', Response::HTTP_NO_CONTENT);
             }
+
+            $request->attributes->set('_calendar_event_booking_token', $this->booking->bookingToken);
 
             $this->setCheckoutHandler($this->checkoutHandlers, $this->calendar->eventBookingCheckoutHandler);
 
