@@ -43,7 +43,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
-use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsFrontendModule(EventBookingFormController::TYPE, category: 'events', template: 'mod_event_booking_form')]
@@ -67,7 +67,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly ContaoFramework $framework,
         private readonly EventBooking $eventBooking,
         private readonly LockFactory $lockFactory,
-        private readonly RateLimiterFactoryInterface $rateLimiterFactory,
+        private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
         private readonly bool $rateLimitBookingFormEnable,
@@ -111,10 +111,6 @@ class EventBookingFormController extends AbstractFrontendModuleController
     }
 
     /**
-     * @param Template $template
-     * @param ModuleModel $model
-     * @param Request $request
-     * @return Response
      * @throws Exception
      * @throws \Throwable
      */
