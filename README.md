@@ -195,24 +195,27 @@ Freundliche Grüsse
 Weitere Einstellungen lassen sich über die Bundle-Konfiguration vornehmen in der Datei `config/config.yaml`.
 Falls nicht vorhanden, muss diese zuerst erstellt werden.
 
-```
+```yaml
 # config/config.yaml
 markocupic_calendar_event_booking:
-    auto_expire_reserved_bookings: true
-    auto_expire_time_limit: 3600
-    auto_delete_expired_bookings: false
-    auto_delete_canceled_bookings: false
-    auto_waiting_list_advancement: true
-    rate_limiter:
-        event_booking_form: # Gebrauch des Buchungsformulars begrenzen
-            enable: true
-            policy: 'fixed_window'
-            limit: 5
-            interval: '15 minutes'
-    member_list_export:
-        enable_output_conversion: false
-        convert_from: 'UTF-8'
-        convert_to: 'ISO-8859-1'
+  auto_expire_reserved_bookings: true
+  auto_expire_time_limit: 3600
+  auto_delete_expired_bookings: false
+  auto_delete_canceled_bookings: false
+  auto_waiting_list_advancement: true
+  notification:
+    log:
+      exclude: [ html,text ] # Um Platz in der Datenbank zu sparen, den Text der Nachrichten in tl_calendar_events_booking_notification nicht abspeichern
+  rate_limiter:
+    event_booking_form: # Gebrauch des Buchungsformulars begrenzen
+      enable: true
+      policy: 'fixed_window'
+      limit: 5
+      interval: '15 minutes'
+  member_list_export:
+    enable_output_conversion: false
+    convert_from: 'UTF-8'
+    convert_to: 'ISO-8859-1'
 ```
 
 | **Paramter**                                  | **Default**    | **Erklärung**                                                                                                                                                                       |
@@ -222,6 +225,7 @@ markocupic_calendar_event_booking:
 | `auto_delete_expired_bookings`                | `false`        | Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus                                                                                                       |
 | `auto_delete_canceled_bookings`               | `false`        | Stornierte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus.                                                                                                      |
 | `auto_waiting_list_advancement`               | `true`         | Schaltet das automatische Nachrücken von der Warteliste ein/aus.                                                                                                                    |
+| `notification.log.exclude`                    | `[]`           | Hier können Sie einstellen, welche Felder `tl_calendar_events_booking_notification` vom Logging ausgeschlossen sein sollen.                                                         |
 | `rate_limiter.event_booking_form.enable`      | `true`         | Form-Submits mit Symfony Rate Limiter begrenzen. Ein/Aus.                                                                                                                           |
 | `rate_limiter.event_booking_form.policy`      | `fixed_window` | Rate Limit Methode                                                                                                                                                                  |
 | `rate_limiter.event_booking_form.limit`       | `5`            | Rate Limit                                                                                                                                                                          |

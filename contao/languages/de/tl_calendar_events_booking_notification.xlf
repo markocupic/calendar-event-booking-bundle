@@ -26,6 +26,30 @@
         <source>Please indicate whether the delivery was successful.</source>
         <target>Bitte geben Sie an, ob der Versand erfolgreich war.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.senderAddress.0">
+        <source>Sender address</source>
+        <target>E-Mail-Adresse des Absenders</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.senderAddress.1">
+        <source>Please enter the sender address.</source>
+        <target>Bitte geben Sie E-Mail-Adresse des Absenders ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.senderName.0">
+        <source>Sender name</source>
+        <target>Absendername</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.senderName.1">
+        <source>Please enter the sender name.</source>
+        <target>Bitte geben Sie den Namen des Absenders ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.replyTo.0">
+        <source>Reply-to address</source>
+        <target>Antwort an (Reply To)</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.replyTo.1">
+        <source>Please enter the reply-to address for this message.</source>
+        <target>Bitte geben Sie die &quot;Antwort an&quot; E-Mail-Adresse für diese Nachricht ein.</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_booking_notification.recipientsTo.0">
         <source>Recipient</source>
         <target>Empfänger</target>
@@ -50,14 +74,6 @@
         <source>Please enter the BCC recipient(s).</source>
         <target>Bitte geben Sie den/die BCC-Empfänger ein.</target>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_booking_notification.exception.0">
-        <source>Error message</source>
-        <target>Fehlermeldung</target>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events_booking_notification.exception.1">
-        <source>Please enter the error message.</source>
-        <target>Bitte geben Sie die Fehlermeldung ein.</target>
-      </trans-unit>
       <trans-unit id="tl_calendar_events_booking_notification.subject.0">
         <source>Subject</source>
         <target>Betreff</target>
@@ -65,6 +81,46 @@
       <trans-unit id="tl_calendar_events_booking_notification.subject.1">
         <source>Please enter the subject.</source>
         <target>Bitte geben Sie den Betreff ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.text.0">
+        <source>Text</source>
+        <target>Text</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.text.1">
+        <source>Please enter the notification text.</source>
+        <target>Bitte geben Sie den Text der Benachrichtigung ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.html.0">
+        <source>HTML</source>
+        <target>HTML</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.html.1">
+        <source>Please enter the html text of the message.</source>
+        <target>Bitte geben Sie den HTML-Text der Nachricht ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.attachments.0">
+        <source>Attachments</source>
+        <target>Dateianhänge</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.attachments.1">
+        <source>Please enter the attachments for this message.</source>
+        <target>Bitte geben Sie die Dateianhänge der Nachricht ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.embeddedImages.0">
+        <source>Embedded images</source>
+        <target>Eingebettete Bilder</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.embeddedImages.1">
+        <source>Please enter the embedded images for this message.</source>
+        <target>Bitte geben Sie die eingebetteten Bilder der Nachricht ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.0">
+        <source>Error message</source>
+        <target>Fehlermeldung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.1">
+        <source>Please enter the error message.</source>
+        <target>Bitte geben Sie die Fehlermeldung ein.</target>
       </trans-unit>
     </body>
   </file>

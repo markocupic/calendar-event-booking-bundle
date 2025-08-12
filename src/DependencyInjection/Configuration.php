@@ -48,12 +48,36 @@ class Configuration implements ConfigurationInterface
                     ->info('If set to false, the automatic advancement from waiting list will be disabled.')
                     ->defaultTrue()
                 ->end()
+                ->append($this->addNotificationNode())
                 ->append($this->addRateLimitNode())
                 ->append($this->addMemberListNode())
              ->end()
         ;
 
         return $treeBuilder;
+    }
+
+    private function addNotificationNode(): NodeDefinition
+    {
+        return (new TreeBuilder('notification'))
+            ->getRootNode()
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('log')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('exclude')
+                            ->scalarPrototype()
+                                ->validate()
+                                    ->ifTrue(fn($v) => !is_string($v))
+                                    ->thenInvalid('Each option must be a string.')
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     private function addRateLimitNode(): NodeDefinition

@@ -57,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{default_legend},deliveredOn,type,delivered,recipientsTo,recipientsCc,recipientsBcc,subject,exception',
+        'default' => '{default_legend},deliveredOn,type,delivered,senderAddress,senderName,replyTo,recipientsTo,recipientsCc,recipientsBcc,subject,text,html,attachments,embeddedImages,exception',
     ],
     'fields'   => [
         'id'            => [
@@ -87,11 +87,35 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'delivered'     => [
-            'eval'      => ['doNotCopy' => true, 'mandatory' => false, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'sorting'   => true,
             'sql'       => ['type' => 'boolean', 'default' => false],
+        ],
+        'senderAddress' => [
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+        ],
+        'senderName'    => [
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+        ],
+        'replyTo'       => [
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
         'recipientsTo'  => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
@@ -124,6 +148,34 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'search'    => true,
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+        ],
+        'text'          => [
+            'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
+            'explanation' => 'insertTags',
+            'inputType'   => 'textarea',
+            'search'      => true,
+            'sql'         => "mediumtext NULL"
+        ],
+        'html'          => [
+            'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
+            'explanation' => 'insertTags',
+            'inputType'   => 'textarea',
+            'search'      => true,
+            'sql'         => "mediumtext NULL"
+        ],
+        'attachments'   => [
+            'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
+            'explanation' => 'insertTags',
+            'inputType'   => 'textarea',
+            'search'      => true,
+            'sql'         => "mediumtext NULL"
+        ],
+        'embeddedImages' => [
+            'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
+            'explanation' => 'insertTags',
+            'inputType'   => 'textarea',
+            'search'      => true,
+            'sql'         => "mediumtext NULL"
         ],
         'exception'     => [
             'eval'      => ['mandatory' => false, 'maxlength' => 1024, 'tl_class' => 'clr'],

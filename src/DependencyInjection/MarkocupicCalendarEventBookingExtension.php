@@ -43,6 +43,9 @@ class MarkocupicCalendarEventBookingExtension extends Extension
         $container->setParameter($this->getAlias().'.auto_delete_canceled_bookings', $config['auto_delete_canceled_bookings']);
         $container->setParameter($this->getAlias().'.auto_waiting_list_advancement', $config['auto_waiting_list_advancement']);
 
+        // notification
+        $container->setParameter($this->getAlias().'.notification.log.exclude', $config['notification']['log']['exclude']);
+
         // rate limit
         $container->setParameter($this->getAlias().'.rate_limit.event_booking_form.enable', $config['rate_limit']['event_booking_form']['enable']);
         $container->setParameter($this->getAlias().'.rate_limit.event_booking_form.policy', $config['rate_limit']['event_booking_form']['policy']);

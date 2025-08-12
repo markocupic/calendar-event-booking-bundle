@@ -41,14 +41,14 @@ class CalendarEventsBookingNotification
     public function addIcon($row, $label, DataContainer $dc, $args)
     {
         $imageOk = 'bundles/markocupiccalendareventbooking/icons/check-circle.svg';
-        $imageError = 'bundles/markocupiccalendareventbooking/icons/alert-circle.svg';
+        $imageError = 'bundles/markocupiccalendareventbooking/icons/alert-triangle.svg';
 
         if ($row['delivered']) {
             $icon = $imageOk;
-            $status='success';
+            $status = 'success';
         } else {
             $icon = $imageError;
-            $status='error';
+            $status = 'error';
         }
 
         $args[0] = \sprintf(

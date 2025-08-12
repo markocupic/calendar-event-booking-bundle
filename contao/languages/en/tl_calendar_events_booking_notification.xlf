@@ -38,17 +38,29 @@
       <trans-unit id="tl_calendar_events_booking_notification.recipientsBcc.1">
         <source>Please enter the BCC recipient(s).</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_booking_notification.exception.0">
-        <source>Error message</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events_booking_notification.exception.1">
-        <source>Please enter the error message.</source>
-      </trans-unit>
       <trans-unit id="tl_calendar_events_booking_notification.subject.0">
         <source>Subject</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_booking_notification.subject.1">
         <source>Please enter the subject.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.text.0">
+        <source>Text</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.text.1">
+        <source>Please enter the notification text.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.html.0">
+        <source>HTML</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.html.1">
+        <source>Please enter the html text of the message.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.0">
+        <source>Error message</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_booking_notification.exception.1">
+        <source>Please enter the error message.</source>
       </trans-unit>
     </body>
   </file>
