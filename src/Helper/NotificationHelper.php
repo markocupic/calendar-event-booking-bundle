@@ -16,7 +16,6 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
@@ -82,7 +81,9 @@ class NotificationHelper
             $arrTokens['member_'.$k] = $stringUtilAdapter->revertInputEncoding((string) $v);
         }
 
-        $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$booking->gender]);
+        if (!empty($booking->gender) && !empty($GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$booking->gender])) {
+            $arrTokens['member_salutation'] = $stringUtilAdapter->revertInputEncoding((string) $GLOBALS['TL_LANG']['tl_calendar_events_member']['salutation_'.$booking->gender]);
+        }
 
         // Prepare tokens for the parent calendar and use "calendar_" as a prefix
         $row = $calendar->row();
