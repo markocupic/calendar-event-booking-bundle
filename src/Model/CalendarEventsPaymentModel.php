@@ -15,7 +15,11 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Model;
 
 use Contao\Model;
+use Contao\Model\Collection;
 
+/**
+ * @method static Collection<CalendarEventsPaymentModel>|null findByPid($val, array $opt = [])
+ */
 class CalendarEventsPaymentModel extends Model
 {
     /**
