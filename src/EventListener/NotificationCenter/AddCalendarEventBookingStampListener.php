@@ -19,16 +19,16 @@ use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\NotificationCenterBundle\Event\CreateParcelEvent;
+use Terminal42\NotificationCenterBundle\Parcel\Parcel;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\NotificationConfigStamp;
+use Terminal42\NotificationCenterBundle\Parcel\Stamp\TokenCollectionStamp;
 
-readonly class AddCalendarEventBookingStampListener
+class AddCalendarEventBookingStampListener
 {
     public function __construct(
         #[TaggedLocator('cebb.notification', defaultIndexMethod: 'getType')]
-        private ContainerInterface $notificationTypes,
-        private RequestStack $requestStack,
+        private readonly ContainerInterface $notificationTypes,
     ) {
     }
 
@@ -41,21 +41,17 @@ readonly class AddCalendarEventBookingStampListener
     {
         $parcel = $event->getParcel();
 
-        $notificationConfig = $parcel->getStamp(NotificationConfigStamp::class);
+        $notificationConfigStamp = $parcel->getStamp(NotificationConfigStamp::class);
 
-        if (!$notificationConfig instanceof NotificationConfigStamp) {
+        if (!$notificationConfigStamp instanceof NotificationConfigStamp) {
             return;
         }
 
-        if (!$this->notificationTypes->has($notificationConfig->toArray()['type'])) {
+        if (!$this->notificationTypes->has($notificationConfigStamp->toArray()['type'])) {
             return;
         }
 
-        $uuid = $this->requestStack->getCurrentRequest()?->attributes->get('_calendar_event_booking_token');
-
-        if (empty($uuid)) {
-            return;
-        }
+        $uuid = $this->getBookingTokenFromParcel($parcel);
 
         $booking = CalendarEventsMemberModel::findOneBy('bookingToken', $uuid);
 
@@ -64,9 +60,22 @@ readonly class AddCalendarEventBookingStampListener
         }
 
         // We will need to read this later in order to log the notifications for the bookings.
-        $calendarEventBookingStamp = new CalendarEventBookingStamp((string) $booking->id, $notificationConfig->toArray()['type']);
+        $calendarEventBookingStamp = new CalendarEventBookingStamp((string) $booking->id, $notificationConfigStamp->toArray()['type']);
         $parcel = $parcel->withStamp($calendarEventBookingStamp);
 
         $event->setParcel($parcel);
+    }
+
+    private function getBookingTokenFromParcel(Parcel $parcel): string|null
+    {
+        $tokenCollectionStamp = $parcel->getStamp(TokenCollectionStamp::class);
+
+        if (!$tokenCollectionStamp instanceof TokenCollectionStamp) {
+            return null;
+        }
+
+        $tokens = $tokenCollectionStamp->tokenCollection->toKeyValue();
+
+        return $tokens['member_bookingToken'] ?? null;
     }
 }
