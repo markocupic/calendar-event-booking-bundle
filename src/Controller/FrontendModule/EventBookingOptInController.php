@@ -134,7 +134,6 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         } catch (OptInTokenAlreadyConfirmedException $e) {
             $message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
         } catch (OptInTokenNoLongerValidException $e) {
-            // / New
             $message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
         } catch (EventBookingOptInException $e) {
             if ($this->connection->isTransactionActive()) {
@@ -195,7 +194,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             throw new EventBookingOptInException('Booking already expired.', $this->translator->trans('mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
         }
 
-        // Check if past even start date
+        // Check if past event start date
         if (!empty($calendarEvent->startDate) && time() > $calendarEvent->startDate) {
             $template->class .= ' error confirm-no-more-possible';
             $template->cannotConfirm = true;
