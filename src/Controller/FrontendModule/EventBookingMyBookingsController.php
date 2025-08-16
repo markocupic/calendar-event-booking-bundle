@@ -16,10 +16,8 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendUser;
 use Contao\ModuleModel;
-use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
