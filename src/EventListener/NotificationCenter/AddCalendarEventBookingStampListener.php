@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Terminal42\NotificationCenterBundle\Event\CreateParcelEvent;
@@ -27,7 +28,7 @@ use Terminal42\NotificationCenterBundle\Parcel\Stamp\TokenCollectionStamp;
 class AddCalendarEventBookingStampListener
 {
     public function __construct(
-        #[TaggedLocator('cebb.notification', defaultIndexMethod: 'getType')]
+        #[AutowireLocator('cebb.notification', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $notificationTypes,
     ) {
     }

@@ -38,7 +38,7 @@ final class ExportTable implements ListenerInterface
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
             if ('pid' === $strFieldName) {
-                $event = $calendarEventsModelAdapter->findById($varValue);
+                $event = $calendarEventsModelAdapter->findByPk($varValue);
 
                 if (null !== $event) {
                     $varValue = $event->title;

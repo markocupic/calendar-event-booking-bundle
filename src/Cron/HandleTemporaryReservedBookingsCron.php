@@ -72,7 +72,7 @@ class HandleTemporaryReservedBookingsCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findById($bookingID);
+            $model = CalendarEventsMemberModel::findByPk($bookingID);
 
             $event = new AutoDeleteExpiredBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);
@@ -107,7 +107,7 @@ class HandleTemporaryReservedBookingsCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findById($bookingID);
+            $model = CalendarEventsMemberModel::findByPk($bookingID);
 
             $event = new AutoExpireReservedBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);

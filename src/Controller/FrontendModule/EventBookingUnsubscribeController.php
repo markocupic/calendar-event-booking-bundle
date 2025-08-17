@@ -23,10 +23,10 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\CancelBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingUnsubscribeException;
@@ -41,7 +41,7 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 
-#[AsFrontendModule(EventBookingUnsubscribeController::TYPE, category: 'events', template: 'mod_event_booking_unsubscribe')]
+#[AsFrontendModule(EventBookingUnsubscribeController::TYPE, category: 'events')]
 class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_booking_unsubscribe';
@@ -98,7 +98,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
     /**
      * @throws \Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $message = $this->framework->getAdapter(Message::class);
 
@@ -113,27 +113,27 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $booking = CalendarEventsMemberModel::findOneByBookingToken($uuid);
 
             if (null === $booking) {
-                $template->class = ' error booking-not-found';
+                $template->class .= ' error booking-not-found';
 
                 throw new EventBookingUnsubscribeException('Booking not found.', $this->translator->trans('mod_unsubscribe.error.invalid_uuid', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
-            $template->booking = $booking;
+            $template->set('booking', $booking);
 
             $event = $booking->getRelated('pid');
 
             if (null === $event) {
-                $template->class = ' error event-not-found';
+                $template->class .= ' error event-not-found';
 
                 throw new EventBookingUnsubscribeException('Event not found.', $this->translator->trans('mod_unsubscribe.error.event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
-            $template->event = $event;
-            $template->calendar = $event->getRelated('pid');
+            $template->set('event', $event);
+            $template->set('calendar', $event->getRelated('pid'));
 
             if ($booking->canceled) {
-                $template->hasUnsubscribed = true;
-                $template->class = ' info booking-already-canceled';
+                $template->set('hasUnsubscribed', true);
+                $template->class .= ' info booking-already-canceled';
 
                 if ('true' === $request->query->get(self::QUERY_PARAM_UNSUBSCRIBED)) {
                     throw new EventBookingUnsubscribeException('You have unsubscribed.', $this->translator->trans('mod_unsubscribe.info.unsubscribe_success', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::INFO);
@@ -143,13 +143,13 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             }
 
             if (!$event->enableDeregistration) {
-                $template->class = ' error unsubscription-not-allowed';
+                $template->class .= ' error unsubscription-not-allowed';
 
                 throw new EventBookingUnsubscribeException('Unsubscription not allowed.', $this->translator->trans('mod_unsubscribe.error.unsubscription_not_allowed', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
             if ($this->isUnsubscriptionLimitExpired($event)) {
-                $template->class = ' error unsubscription-limit-expired';
+                $template->class .= ' error unsubscription-limit-expired';
 
                 throw new EventBookingUnsubscribeException('Unsubscription limit has expired.', $this->translator->trans('mod_unsubscribe.error.unsubscription_limit_expired', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
@@ -161,9 +161,9 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
                 $this->framework->getAdapter(Controller::class)->redirect($redirectUrl);
             }
 
-            $template->hasForm = true;
-            $template->formId = 'tl_unsubscribe_from_event';
-            $template->requestToken = $this->csrfTokenManager->getDefaultTokenValue();
+            $template->set('hasForm', true);
+            $template->set('formId', 'tl_unsubscribe_from_event');
+            $template->set('requestToken', $this->csrfTokenManager->getDefaultTokenValue());
             $this->connection->commit();
         } catch (EventBookingUnsubscribeException $e) {
             if ($this->connection->isTransactionActive()) {
@@ -187,7 +187,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $lock->release();
         }
 
-        $template->messages = Message::generate('FE');
+        $template->set('messages', Message::generate('FE'));
 
         return $template->getResponse();
     }

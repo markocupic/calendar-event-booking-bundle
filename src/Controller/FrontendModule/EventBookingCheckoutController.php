@@ -15,27 +15,25 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
-use Contao\CalendarModel;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\Template;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(EventBookingCheckoutController::TYPE, category: 'events', template: 'mod_event_booking_checkout')]
+#[AsFrontendModule(EventBookingCheckoutController::TYPE, category: 'events')]
 class EventBookingCheckoutController extends AbstractFrontendModuleController
 {
     use CheckoutHandlerAwareTrait;
 
     public const TYPE = 'event_booking_checkout';
-
-    private CalendarModel|null $calendar = null;
 
     private CalendarEventsModel|null $event = null;
 
@@ -43,31 +41,15 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
     public function __construct(
         private readonly ScopeMatcher $scopeMatcher,
-        #[TaggedIterator('cebb.checkout_handler')]
-        private readonly iterable $checkoutHandlers,
+        #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
+        private readonly ContainerInterface $checkoutHandlers,
     ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
     {
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
-            if (!$this->isCheckout($request)) {
-                return new Response('', Response::HTTP_NO_CONTENT);
-            }
-
-            $this->booking = $this->getBookingFromRequest($request);
-            $this->event = $this->booking?->getRelated('pid');
-            $this->calendar = $this->event?->getRelated('pid');
-
-            if (null === $this->booking || null === $this->event || !$this->event->published || null === $this->calendar) {
-                return new Response('', Response::HTTP_NO_CONTENT);
-            }
-
-            $request->attributes->set('_calendar_event_booking_token', $this->booking->bookingToken);
-
-            $this->setCheckoutHandler($this->checkoutHandlers, $this->calendar->eventBookingCheckoutHandler);
-
-            if (null === $this->checkoutHandler) {
+            if (!$this->initialize($request)) {
                 return new Response('', Response::HTTP_NO_CONTENT);
             }
         }
@@ -79,11 +61,11 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     /**
      * @throws \Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $template->checkout = $this->checkoutHandler->getCheckoutData($this->booking, $model, $request);
-        $template->booking = $this->booking;
-        $template->event = $this->event;
+        $template->set('checkout', $this->checkoutHandler->getCheckoutData($this->booking, $model, $request));
+        $template->set('booking', $this->booking);
+        $template->set('event', $this->event);
 
         return $template->getResponse();
     }
@@ -108,5 +90,26 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         }
 
         return false;
+    }
+
+    private function initialize(Request $request): bool
+    {
+        if (!$this->isCheckout($request)) {
+            return false;
+        }
+
+        $this->booking = $this->getBookingFromRequest($request);
+        $this->event = $this->booking?->getRelated('pid');
+        $calendar = $this->event?->getRelated('pid');
+
+        if (null === $this->booking || null === $this->event || !$this->event->published || null === $calendar) {
+            return false;
+        }
+
+        $request->attributes->set('_calendar_event_booking_token', $this->booking->bookingToken);
+
+        $this->setCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
+
+        return null !== $this->checkoutHandler;
     }
 }

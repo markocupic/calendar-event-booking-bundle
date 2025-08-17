@@ -26,7 +26,7 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
 
     public const TEMPLATE_NAME = '@MarkocupicCalendarEventBooking/Checkout/default.html.twig';
 
-    public function getIdentifier(): string
+    public static function getType(): string
     {
         return self::NAME;
     }
@@ -50,6 +50,6 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         $template['calendar'] = $calendar->row();
         $template['module'] = $model;
 
-        return new CheckoutData($this->getIdentifier(), self::TEMPLATE_NAME, $template);
+        return new CheckoutData($this->getType(), self::TEMPLATE_NAME, $template);
     }
 }

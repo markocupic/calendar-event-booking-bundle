@@ -20,8 +20,10 @@ use Contao\FrontendUser;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\PaymentCheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
+use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -35,8 +37,8 @@ class StoreFormDataListener
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly TokenStorageInterface $tokenStorage,
-        #[TaggedIterator('cebb.checkout_handler')]
-        private readonly iterable $checkoutHandlers,
+        #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
+        private readonly ContainerInterface $checkoutHandlers,
     ) {
     }
 
@@ -89,7 +91,7 @@ class StoreFormDataListener
         $data['ticketAmount'] = (int) ($data['ticketAmount'] ?? 1);
         $data['escorts'] = (int) ($data['escorts'] ?? 0);
         $data['temporaryReserved'] = $calendar->requireOptIn ? 1 : 0;
-        $data['checkoutHandler'] = $this->getCheckoutHandler()->getIdentifier();
+        $data['checkoutHandler'] = $this->getCheckoutHandler()->getType();
 
         if ($this->getCheckoutHandler() instanceof PaymentCheckoutHandlerInterface) {
             $data['temporaryReserved'] = 1;

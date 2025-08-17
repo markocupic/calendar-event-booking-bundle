@@ -18,6 +18,7 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsBookingNotificationModel;
 use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Terminal42\NotificationCenterBundle\Event\ReceiptEvent;
@@ -28,7 +29,7 @@ class LogDeliveriesListener
 {
     public function __construct(
         private readonly Connection $connection,
-        #[TaggedLocator('cebb.notification', defaultIndexMethod: 'getType')]
+        #[AutowireLocator('cebb.notification', defaultIndexMethod: 'getType')]
         private ContainerInterface $notificationTypes,
         private readonly array $notificationLogExclude,
     ) {

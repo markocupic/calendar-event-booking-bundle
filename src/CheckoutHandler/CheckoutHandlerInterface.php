@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface CheckoutHandlerInterface
 {
-    public function getIdentifier(): string;
+    public static function getType(): string;
 
     public function getCheckoutData(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutData;
 }

@@ -16,9 +16,9 @@ namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\FrontendUser;
 use Contao\ModuleModel;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
@@ -27,7 +27,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(EventBookingMyBookingsController::TYPE, category: 'events', template: 'mod_event_booking_my_bookings')]
+#[AsFrontendModule(EventBookingMyBookingsController::TYPE, category: 'events')]
 class EventBookingMyBookingsController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_booking_my_bookings';
@@ -41,14 +41,14 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
     /**
      * @throws \Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $user = $this->security->getUser();
 
         if (!$user instanceof FrontendUser) {
-            $template->bookings = [];
+            $template->set('bookings', []);
         } else {
-            $template->bookings = $this->getRelatedSubscriptions($user, $model);
+            $template->set('bookings', $this->getRelatedSubscriptions($user, $model));
         }
 
         return $template->getResponse();
@@ -79,7 +79,7 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
         $rows = [];
 
         foreach ($bookings as $rowBooking) {
-            $booking = CalendarEventsMemberModel::findByPk($rowBooking['id']);
+            $booking = CalendarEventsMemberModel::findById($rowBooking['id']);
             $event = $booking->getRelated('pid');
             $calendar = $event?->getRelated('pid');
             $payments = CalendarEventsPaymentModel::findByPid($rowBooking['id']);

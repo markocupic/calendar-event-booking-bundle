@@ -137,7 +137,7 @@ class WaitingListManager
 
         $this->processedIds[] = $bookingID;
 
-        return CalendarEventsMemberModel::findById($bookingID);
+        return CalendarEventsMemberModel::findByPk($bookingID);
     }
 
     private function shouldAdvanceBooking(CalendarEventsMemberModel $booking): bool

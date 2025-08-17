@@ -59,7 +59,7 @@ class HandleCanceledBookingCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findById($bookingID);
+            $model = CalendarEventsMemberModel::findByPk($bookingID);
 
             $event = new AutoDeleteCanceledBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);

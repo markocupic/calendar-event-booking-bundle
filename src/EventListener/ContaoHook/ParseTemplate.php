@@ -34,25 +34,19 @@ final class ParseTemplate
     }
 
     /**
-     * Add booking data to calendar templates.
+     * Add booking data to legacy calendar templates.
      */
     public function __invoke(Template $template): void
     {
-        $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
+        $this->framework->initialize();
 
-        if (!str_starts_with($template->getName(), 'event') && !str_starts_with($template->getName(), 'mod_calendar_event_booking')) {
+        if (!str_starts_with($template->getName(), 'event')) {
             return;
         }
 
-        $event = null;
+        $event = $this->framework->getAdapter(CalendarEventsModel::class)->findByPk($template->id ?? 0);
 
-        if (str_starts_with($template->getName(), 'mod_calendar_event_booking')) {
-            $event = $template->event;
-        } elseif (str_starts_with($template->getName(), 'event')) {
-            $event = $calendarEventsModelAdapter->findById($template->id);
-        }
-
-        if (!$event instanceof CalendarEventsModel) {
+        if (null === $event) {
             return;
         }
 
@@ -62,6 +56,8 @@ final class ParseTemplate
             return;
         }
 
-        $this->addTemplateData->addTemplateData($template, $event, $request);
+        foreach ($this->addTemplateData->getData($event, $request) as $key => $value) {
+            $template->{$key} = $value;
+        }
     }
 }

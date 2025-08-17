@@ -23,13 +23,13 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\FormFieldModel;
 use Contao\FormModel;
 use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\System;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
@@ -46,7 +46,7 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[AsFrontendModule(EventBookingFormController::TYPE, category: 'events', template: 'mod_event_booking_form')]
+#[AsFrontendModule(EventBookingFormController::TYPE, category: 'events')]
 class EventBookingFormController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_booking_form';
@@ -114,7 +114,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
      * @throws Exception
      * @throws \Throwable
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         // Attach the event booking form module instance to the request so that we can
         // access it later in the Contao Hooks or event listeners
@@ -156,7 +156,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
                 }
             }
 
-            $template->form_markup = $this->framework->getAdapter(Controller::class)->getForm($model->form);
+            $template->set('form_markup', $this->framework->getAdapter(Controller::class)->getForm($model->form));
 
             // Use Contao core hooks to customize the form processing. Throw an
             // EventBookingException exception to stop the form processing. Throw an
@@ -226,21 +226,21 @@ class EventBookingFormController extends AbstractFrontendModuleController
         return $form->formID ? 'auto_'.$form->formID : 'auto_form_'.$form->id;
     }
 
-    private function addTemplateData(Template $template, Request $request): void
+    private function addTemplateData(FragmentTemplate $template, Request $request): void
     {
-        $template->eventStatus = $this->eventStatus;
+        $template->set('eventStatus', $this->eventStatus);
 
-        $template->eventStatusText = match ($this->eventStatus) {
+        $template->set('eventStatusText', match ($this->eventStatus) {
             EventStatus::NOT_YET_BOOKABLE => function () {
                 $dateFormat = $this->framework->getAdapter(Config::class)->get('dateFormat');
 
                 return $this->translator->trans('MSC.'.$this->eventStatus, [$dateFormat, $this->event->bookingStartDate], 'contao_default');
             },
             default => $this->translator->trans('MSC.'.$this->eventStatus, [], 'contao_default'),
-        };
+        });
 
-        $template->waitingListOpen = $this->waitingListOpen;
-        $template->messages = $this->framework->getAdapter(Message::class)->hasMessages() ? $this->framework->getAdapter(Message::class)->generate('FE') : null;
+        $template->set('waitingListOpen', $this->waitingListOpen);
+        $template->set('messages', $this->framework->getAdapter(Message::class)->hasMessages() ? $this->framework->getAdapter(Message::class)->generate('FE') : null);
         $this->addTemplateData->addTemplateData($template, $this->event, $request);
     }
 

@@ -292,7 +292,7 @@ class EventBooking
             return '';
         }
 
-        if (null === ($page = PageModel::findById($calendar->eventUnsubscribePage))) {
+        if (null === ($page = PageModel::findByPk($calendar->eventUnsubscribePage))) {
             return '';
         }
 
@@ -315,7 +315,7 @@ class EventBooking
             return '';
         }
 
-        if (null === ($page = PageModel::findById($calendar->eventBookingOptInPage))) {
+        if (null === ($page = PageModel::findByPk($calendar->eventBookingOptInPage))) {
             return '';
         }
 

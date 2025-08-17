@@ -20,10 +20,10 @@ use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
@@ -31,7 +31,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule(EventBookingMemberListController::TYPE, category: 'events', template: 'mod_event_booking_member_list')]
+#[AsFrontendModule(EventBookingMemberListController::TYPE, category: 'events')]
 class EventBookingMemberListController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_booking_member_list';
@@ -39,12 +39,11 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
     private CalendarEventsModel|null $event = null;
 
     public function __construct(
-        private readonly Connection      $connection,
+        private readonly Connection $connection,
         private readonly ContaoFramework $framework,
-        private readonly EventBooking    $eventBooking,
-        private readonly ScopeMatcher    $scopeMatcher,
-    )
-    {
+        private readonly EventBooking $eventBooking,
+        private readonly ScopeMatcher $scopeMatcher,
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
@@ -74,7 +73,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
     /**
      * @throws Exception
      */
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $controllerAdapter = $this->framework->getAdapter(Controller::class);
 
@@ -103,11 +102,11 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
             ++$i;
         }
 
-        $template->bookings = $bookings;
+        $template->set('bookings', $bookings);
 
         // Add the event model to the parent template
-        $template->event = $this->event;
-        $template->calendar = $this->event->getRelated('pid');
+        $template->set('event', $this->event);
+        $template->set('calendar', $this->event->getRelated('pid'));
 
         return $template->getResponse();
     }
@@ -126,10 +125,13 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from($t, 't')
-            ->setParameter('pid', $eventId);
-        $hasWhereClause = false;
+            ->setParameter('pid', $eventId)
+        ;
+
+        $hasWhere = false;
+
         foreach ($arrWhere as $strWhere) {
-            $hasWhereClause = true;
+            $hasWhere = true;
             [$col, $value] = StringUtil::trimsplit('::', $strWhere);
 
             if (!$this->columnExists($t, $col)) {
@@ -140,10 +142,11 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
             $value = 'false' === $value ? 0 : $value;
 
             $qb->orWhere("t.$col = :$col AND t.pid = :pid")
-                ->setParameter($col, $value);
+                ->setParameter($col, $value)
+            ;
         }
 
-        if (!$hasWhereClause) {
+        if (!$hasWhere) {
             $qb->setParameter('pid', $eventId);
         }
 

@@ -24,21 +24,23 @@ use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInSucc
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingPaymentSuccessNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventUnsubscribeNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\WaitingListAdvancementNotificationType;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 
 class Calendar
 {
     public function __construct(
         private readonly Connection $connection,
-        #[TaggedIterator('cebb.checkout_handler')]
-        private readonly iterable $checkoutHandlers,
+        #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
+        private readonly ContainerInterface $checkoutHandlers,
     ) {
     }
 
     #[AsCallback(table: 'tl_calendar', target: 'fields.eventBookingCheckoutHandler.options')]
     public function getCheckoutHandlers(): array
     {
-        return array_map(static fn (CheckoutHandlerInterface $handler) => $handler->getIdentifier(), iterator_to_array($this->checkoutHandlers->getIterator()));
+        return array_map(static fn (CheckoutHandlerInterface $handler) => $handler->getType(), iterator_to_array($this->checkoutHandlers));
     }
 
     #[AsCallback(table: 'tl_calendar', target: 'fields.subscribeNotification.options')]

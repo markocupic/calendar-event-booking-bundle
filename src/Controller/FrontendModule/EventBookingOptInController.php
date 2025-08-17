@@ -22,10 +22,10 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\OptIn\OptInToken;
 use Contao\CoreBundle\OptIn\OptInTokenAlreadyConfirmedException;
 use Contao\CoreBundle\OptIn\OptInTokenNoLongerValidException;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Message;
 use Contao\ModuleModel;
 use Contao\OptInModel;
-use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
@@ -40,7 +40,7 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 
-#[AsFrontendModule(EventBookingOptInController::TYPE, category: 'events', template: 'mod_event_booking_opt_in')]
+#[AsFrontendModule(EventBookingOptInController::TYPE, category: 'events')]
 class EventBookingOptInController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_booking_opt_in';
@@ -62,7 +62,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
     ) {
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $message = $this->framework->getAdapter(Message::class);
 
@@ -153,19 +153,19 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             }
         }
 
-        $template->messages = $message->hasMessages() ? $message->generate('FE') : null;
+        $template->set('messages', $message->hasMessages() ? $message->generate('FE') : null);
 
         return $template->getResponse();
     }
 
-    private function processConfirm(Template $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
+    private function processConfirm(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
     {
         $message = $this->framework->getAdapter(Message::class);
 
         // Check if already canceled
         if ($booking->canceled) {
             $template->class .= ' error booking-canceled';
-            $template->alreadyCanceled = true;
+            $template->set('alreadyCanceled', true);
 
             throw new EventBookingOptInException('Booking canceled.', $this->translator->trans('mod_opt_in.error.booking_canceled', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
         }
@@ -173,7 +173,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         // Check if already confirmed (optIn === true)
         if ($booking->optIn) {
             $template->class .= ' info already-confirmed';
-            $template->alreadyConfirmed = true;
+            $template->set('alreadyConfirmed', true);
 
             throw new EventBookingOptInException('Booking already confirmed.', $this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
         }
@@ -181,7 +181,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         // Check if opt-in is required
         if (!$calendar->requireOptIn) {
             $template->class .= ' info confirm-not-required';
-            $template->confirmNotRequired = true;
+            $template->set('confirmNotRequired', true);
 
             throw new EventBookingOptInException('Opt-In not required.', $this->translator->trans('mod_opt_in.info.opt_in_not_required', [], self::TRANS_DOMAIN), SeverityLevel::INFO);
         }
@@ -189,7 +189,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         // Check if booking has been expired
         if ($booking->expired) {
             $template->class .= ' error confirm-expired';
-            $template->confirmExpired = true;
+            $template->set('confirmExpired', true);
 
             throw new EventBookingOptInException('Booking already expired.', $this->translator->trans('mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
         }
@@ -197,7 +197,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         // Check if past event start date
         if (!empty($calendarEvent->startDate) && time() > $calendarEvent->startDate) {
             $template->class .= ' error confirm-no-more-possible';
-            $template->cannotConfirm = true;
+            $template->set('cannotConfirm', true);
 
             throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
         }
@@ -205,7 +205,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         // Check if past booking date
         if (!empty($calendarEvent->bookingEndDate) && time() > $calendarEvent->bookingEndDate) {
             $template->class .= ' error confirm-no-more-possible';
-            $template->cannotConfirm = true;
+            $template->set('cannotConfirm', true);
 
             throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
         }
@@ -214,7 +214,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $booking->temporaryReserved = false;
         $booking->save();
         $template->class .= ' confirm-success';
-        $template->optInSuccess = true;
+        $template->set('optInSuccess', true);
         $message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));
 
         $event = new BookingConfirmEvent($booking, self::class, $request);

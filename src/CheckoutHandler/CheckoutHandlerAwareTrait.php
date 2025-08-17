@@ -14,21 +14,21 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\CheckoutHandler;
 
+use Psr\Container\ContainerInterface;
+
 trait CheckoutHandlerAwareTrait
 {
     protected CheckoutHandlerInterface|null $checkoutHandler = null;
 
-    public function setCheckoutHandler(iterable $checkoutHandlers, string $checkoutHandler): void
+    public function setCheckoutHandler(ContainerInterface $checkoutHandlers, string $checkoutHandler): void
     {
-        $checkoutHandlers = iterator_to_array($checkoutHandlers);
+        if ($checkoutHandlers->has($checkoutHandler)) {
+            $this->checkoutHandler = $checkoutHandlers->get($checkoutHandler);
 
-        /** @var CheckoutHandlerInterface $checkoutHandler */
-        foreach ($checkoutHandlers as $handler) {
-            if ($checkoutHandler === $handler->getIdentifier()) {
-                $this->checkoutHandler = $handler;
-                break;
-            }
+            return;
         }
+
+        throw new \Exception(\sprintf('Could not find a checkout handler of type "%s".', $checkoutHandler));
     }
 
     public function getCheckoutHandler(): CheckoutHandlerInterface|null

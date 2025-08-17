@@ -100,7 +100,7 @@ class NotificationHelper
         }
 
         // Prepare tokens for organizer_* (sender)
-        $organizer = $userModelAdapter->findById($event->eventBookingNotificationSender);
+        $organizer = $userModelAdapter->findByPk($event->eventBookingNotificationSender);
 
         if (null !== $organizer) {
             $row = $organizer->row();

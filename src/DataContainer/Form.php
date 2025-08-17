@@ -17,7 +17,6 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\FormModel;
-use Contao\Message;
 
 class Form
 {
@@ -27,7 +26,7 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function manipulateFieldsDca(DataContainer $dc): void
     {
-        if (null === ($form = FormModel::findById($dc->id))) {
+        if (null === ($form = FormModel::findByPk($dc->id))) {
             return;
         }
 
