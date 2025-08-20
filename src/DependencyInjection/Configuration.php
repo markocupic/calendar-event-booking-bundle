@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -69,7 +69,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('exclude')
                             ->scalarPrototype()
                                 ->validate()
-                                    ->ifTrue(fn($v) => !is_string($v))
+                                    ->ifTrue(static fn ($v) => !\is_string($v))
                                     ->thenInvalid('Each option must be a string.')
                                 ->end()
                             ->end()

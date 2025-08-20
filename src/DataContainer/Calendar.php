@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -26,7 +26,6 @@ use Markocupic\CalendarEventBookingBundle\NotificationType\EventUnsubscribeNotif
 use Markocupic\CalendarEventBookingBundle\NotificationType\WaitingListAdvancementNotificationType;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 
 class Calendar
 {

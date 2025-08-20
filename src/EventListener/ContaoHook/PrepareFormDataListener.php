@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -16,8 +16,9 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
+use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +28,8 @@ final class PrepareFormDataListener
     public const HOOK = 'prepareFormData';
 
     public function __construct(
-        private readonly EventBooking $eventBooking,
+        private readonly Connection $connection,
+        private readonly EventStatus $eventStatus,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
     ) {
@@ -68,7 +70,7 @@ final class PrepareFormDataListener
             $requestedTickets = (int) $submittedData['ticketAmount'];
         }
 
-        if ($this->eventBooking->canFulfillBookingRequest($event, $requestedTickets)) {
+        if ($this->eventStatus->canFulfillBookingRequest($event, $this->connection, $requestedTickets)) {
             // Everything is fine, the requested tickets are available
             $bookingModuleInstance->waitingListOpen = false;
 
@@ -89,7 +91,7 @@ final class PrepareFormDataListener
             return;
         }
 
-        if (!empty($submittedData['waitingList']) && !$this->eventBooking->canFulfillBookingRequestWaitingList($event, $requestedTickets)) {
+        if (!empty($submittedData['waitingList']) && !$this->eventStatus->canFulfillBookingRequestWaitingList($event, $this->connection, $requestedTickets)) {
             if ($requestedTickets > 1) {
                 // Event is fully booked, but the waiting list is not full. Reduce the ticket
                 // amount to the maximum available on the waiting list.

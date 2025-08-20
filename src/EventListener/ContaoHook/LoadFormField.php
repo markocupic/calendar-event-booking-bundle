@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -17,14 +17,14 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Contao\Widget;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 
 final class LoadFormField
 {
     public const HOOK = 'loadFormField';
 
     public function __construct(
-        private readonly EventBooking $eventBooking,
+        private readonly EventUrlResolver $eventUrlResolver,
     ) {
     }
 
@@ -41,7 +41,7 @@ final class LoadFormField
 
         $widget->type = 'hidden';
 
-        $event = $this->eventBooking->getEventFromCurrentUrl();
+        $event = $this->eventUrlResolver->resolve();
 
         if (null === $event) {
             return $widget;
@@ -87,7 +87,7 @@ final class LoadFormField
             return $widget;
         }
 
-        $event = $this->eventBooking->getEventFromCurrentUrl();
+        $event = $this->eventUrlResolver->resolve();
 
         if (null === $event) {
             return $widget;

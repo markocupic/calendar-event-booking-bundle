@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -23,7 +23,7 @@ class DefaultTokenConfig
                 'member_email',
                 'organizer_email',
             ],
-            'text_token'  => [
+            'text_token' => [
                 'calendar_*',
                 'calendar_title',
                 'calendar_requireOptIn',

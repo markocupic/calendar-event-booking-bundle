@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -73,12 +73,12 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
     ],
     'fields'   => [
         'id'                 => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment",
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid'                => [
             'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
             'foreignKey' => 'tl_calendar_events_member.id',
-            'relation'   => array('type' => 'belongsTo', 'load' => 'lazy')
+            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
         'tstamp'             => [
             'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
@@ -153,7 +153,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL default 0",
+            'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'grossAmount'        => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
@@ -161,7 +161,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL default 0",
+            'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'netAmount'          => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
@@ -169,7 +169,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL default 0",
+            'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'vatAmount'          => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
@@ -177,7 +177,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'inputType' => 'text',
             'search'    => true,
             'sorting'   => true,
-            'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL default 0",
+            'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'transactionDetails' => [
             'eval'      => ['doNotCopy' => true, 'mandatory' => false, 'readonly' => true, 'tl_class' => 'clr w50'],

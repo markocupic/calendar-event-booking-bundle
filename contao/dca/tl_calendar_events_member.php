@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -12,10 +12,10 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
-use Ramsey\Uuid\Uuid;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
     'config'   => [
@@ -56,28 +56,28 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             ],
         ],
         'operations'        => [
-            'edit'    => [
+            'edit'         => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.svg',
             ],
-            'copy'    => [
+            'copy'         => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.svg',
             ],
-            'delete'  => [
+            'delete'       => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'    => [
+            'show'         => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.svg',
             ],
-            'payment' => [
+            'payment'      => [
                 'label' => &$GLOBALS['TL_LANG']['tl_calendar_events_member']['payment'],
                 'href'  => 'do=calendar&table=tl_calendar_events_payment',
                 'icon'  => 'bundles/markocupiccalendareventbooking/icons/circle-dollar-sign.svg',

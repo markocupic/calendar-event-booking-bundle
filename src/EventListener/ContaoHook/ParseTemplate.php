@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -44,7 +44,7 @@ final class ParseTemplate
             return;
         }
 
-        $event = $this->framework->getAdapter(CalendarEventsModel::class)->findByPk($template->id ?? 0);
+        $event = $this->framework->getAdapter(CalendarEventsModel::class)->findById($template->id ?? 0);
 
         if (null === $event) {
             return;

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -26,7 +26,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +41,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
     public function __construct(
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
-        private readonly EventBooking $eventBooking,
+        private readonly EventUrlResolver $eventUrlResolver,
         private readonly ScopeMatcher $scopeMatcher,
     ) {
     }
@@ -51,7 +51,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $showEmpty = true;
 
-            $this->event = $this->eventBooking->getEventFromCurrentUrl();
+            $this->event = $this->eventUrlResolver->resolve();
 
             // Get the current event && return empty string if enableBookingForm isn't set,
             // or the event is not published

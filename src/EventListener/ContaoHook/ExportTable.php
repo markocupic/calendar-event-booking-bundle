@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -38,7 +38,7 @@ final class ExportTable implements ListenerInterface
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
             if ('pid' === $strFieldName) {
-                $event = $calendarEventsModelAdapter->findByPk($varValue);
+                $event = $calendarEventsModelAdapter->findById($varValue);
 
                 if (null !== $event) {
                     $varValue = $event->title;

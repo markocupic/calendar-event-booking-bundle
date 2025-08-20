@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -18,7 +18,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\CoreBundle\String\SimpleTokenParser;
 use Contao\StringUtil;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+use Markocupic\CalendarEventBookingBundle\LinkBuilder\OptInLinkBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
@@ -43,8 +43,8 @@ class AddOptInTokenListener
 {
     public function __construct(
         private readonly ContaoFramework $framework,
-        private readonly EventBooking $eventBooking,
         private readonly InsertTagParser $insertTagParser,
+        private readonly OptInLinkBuilder $optInLinkBuilder,
         private readonly RequestStack $requestStack,
         private readonly SimpleTokenParser $simpleTokenParser,
         private readonly TokenDefinitionFactoryInterface $tokenDefinitionFactory,
@@ -107,7 +107,7 @@ class AddOptInTokenListener
         }
 
         $optInToken = OptIn::generateToken();
-        $optInLink = $this->eventBooking->getOptInLink($booking, $optInToken);
+        $optInLink = $this->optInLinkBuilder->build($booking, $optInToken);
 
         $tokenCollectionStamp
             ->tokenCollection

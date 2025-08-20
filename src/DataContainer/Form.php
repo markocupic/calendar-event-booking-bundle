@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -26,7 +26,7 @@ class Form
     #[AsCallback(table: 'tl_form', target: 'config.onload')]
     public function manipulateFieldsDca(DataContainer $dc): void
     {
-        if (null === ($form = FormModel::findByPk($dc->id))) {
+        if (null === ($form = FormModel::findById($dc->id))) {
             return;
         }
 

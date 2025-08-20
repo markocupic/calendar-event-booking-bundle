@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -17,7 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 use Contao\CalendarEventsModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 
-class OrderHelper
+class OrderManager
 {
     public function calcGrossAmountPerItem(CalendarEventsModel $event): float
     {
@@ -28,7 +28,7 @@ class OrderHelper
     public function calcGrossTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetTotalAmount($event,$booking) + $this->calcVatTotalAmount($event, $booking);
+        return $this->calcNetTotalAmount($event, $booking) + $this->calcVatTotalAmount($event, $booking);
     }
 
     public function calcNetAmountPerItem(CalendarEventsModel $event): float
@@ -52,7 +52,7 @@ class OrderHelper
     public function calcVatTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetTotalAmount($event,  $booking) * $this->getTaxValue($event) * 0.01;
+        return $this->calcNetTotalAmount($event, $booking) * $this->getTaxValue($event) * 0.01;
     }
 
     public function getCurrencyCode(CalendarEventsModel $event): string

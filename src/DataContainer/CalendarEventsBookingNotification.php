@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -15,16 +15,14 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
-use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
 
 class CalendarEventsBookingNotification
 {
     public function __construct(
-        private readonly Connection $connection,
-        private readonly EventBooking $eventBooking,
+        private readonly ContaoFramework $framework,
     ) {
     }
 
@@ -40,21 +38,21 @@ class CalendarEventsBookingNotification
      */
     public function addIcon($row, $label, DataContainer $dc, $args)
     {
-        $imageOk = 'bundles/markocupiccalendareventbooking/icons/check-circle.svg';
-        $imageError = 'bundles/markocupiccalendareventbooking/icons/alert-triangle.svg';
+        $iconSuccess = 'bundles/markocupiccalendareventbooking/icons/check-circle.svg';
+        $iconFail = 'bundles/markocupiccalendareventbooking/icons/alert-triangle.svg';
 
         if ($row['delivered']) {
-            $icon = $imageOk;
+            $icon = $iconSuccess;
             $status = 'success';
         } else {
-            $icon = $imageError;
+            $icon = $iconFail;
             $status = 'error';
         }
 
         $args[0] = \sprintf(
             '<div class="list_icon_delivered" data-delivered="%s"><img src="%s" style="width:16px"/></div>',
             $status,
-            Image::getUrl($icon),
+            $this->framework->getAdapter(Image::class)->getUrl($icon),
         );
 
         return $args;

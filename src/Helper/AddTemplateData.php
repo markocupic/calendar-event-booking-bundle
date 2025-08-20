@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -17,14 +17,17 @@ namespace Markocupic\CalendarEventBookingBundle\Helper;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Twig\FragmentTemplate;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 
 class AddTemplateData
 {
     public function __construct(
-        private readonly EventBooking    $eventBooking,
+        private readonly FrontendUserManager $frontendUserManager,
+        private readonly EventStatus $eventStatus,
+        private readonly Connection $connection,
         private readonly ContaoFramework $framework,
-    )    {
+    ) {
     }
 
     /**
@@ -33,6 +36,7 @@ class AddTemplateData
     public function addTemplateData(FragmentTemplate $template, CalendarEventsModel $event, Request $request): void
     {
         $this->framework->initialize();
+
         foreach ($this->getData($event, $request) as $key => $value) {
             $template->set($key, $value);
         }
@@ -41,15 +45,15 @@ class AddTemplateData
     public function getData(CalendarEventsModel $event, Request $request): array
     {
         return [
-            'event'           => $event,
-            'calendar'        => $event->getRelated('pid'),
-            'canRegister'     => $this->eventBooking->canRegister($event, $request),
-            'isFullyBooked'   => $this->eventBooking->isFullyBooked($event),
-            'freeSpotsCount'  => $this->eventBooking->getFreeSpotsCount($event),
-            'bookingCount'    => $this->eventBooking->getBookingCount($event),
-            'hasLoggedInUser' => $this->eventBooking->hasLoggedInFrontendUser(),
-            'loggedInUser'    => $this->eventBooking->getLoggedInFrontendUser(),
-            'page'            => $request->attributes->get('pageModel'),
+            'event' => $event,
+            'calendar' => $event->getRelated('pid'),
+            'canRegister' => $this->eventStatus->canRegister($event, $request),
+            'isFullyBooked' => $this->eventStatus->isFullyBooked($event, $this->connection),
+            'freeSpotsCount' => $this->eventStatus->getFreeSpotsCount($event, $this->connection),
+            'bookingCount' => $this->eventStatus->getBookingCount($event, $this->connection),
+            'hasLoggedInUser' => $this->frontendUserManager->hasLoggedInFrontendUser(),
+            'loggedInUser' => $this->frontendUserManager->getLoggedInFrontendUser(),
+            'page' => $request->attributes->get('pageModel'),
         ];
     }
 }

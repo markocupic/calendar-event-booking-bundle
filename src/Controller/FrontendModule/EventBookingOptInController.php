@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -30,7 +30,7 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
+use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -55,7 +55,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
         private readonly NotificationCenter $notificationCenter,
-        private readonly NotificationHelper $notificationHelper,
+        private readonly NotificationManager $notificationManager,
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface|null $contaoErrorLogger,
         private readonly LoggerInterface|null $contaoGeneralLogger,
@@ -126,7 +126,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
                 // Send notification
                 if ($calendar->optInSuccessNotification) {
-                    $tokens = $this->notificationHelper->getNotificationTokens($booking);
+                    $tokens = $this->notificationManager->getNotificationTokens($booking);
                     $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
                 }
             }

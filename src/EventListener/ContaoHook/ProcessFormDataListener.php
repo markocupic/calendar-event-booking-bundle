@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -17,8 +17,8 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationHelper;
+use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
+use Markocupic\CalendarEventBookingBundle\Helper\SessionManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,17 +28,17 @@ class ProcessFormDataListener
     public const HOOK = 'processFormData';
 
     public function __construct(
-        private readonly EventBooking $eventBooking,
-        private readonly NotificationHelper $notificationHelper,
-        private readonly RequestStack $requestStack,
         private readonly LoggerInterface|null $contaoGeneralLogger,
+        private readonly NotificationManager $notificationManager,
+        private readonly RequestStack $requestStack,
+        private readonly SessionManager $sessionManager,
     ) {
     }
 
     #[AsHook(self::HOOK, priority: 1000)]
     public function addBookingTokenToFlashBag(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if(!$this->isValidEventBookingRequest($form)) {
+        if (!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
@@ -56,50 +56,50 @@ class ProcessFormDataListener
     #[AsHook(self::HOOK, priority: 900)]
     public function addBookingToSession(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if(!$this->isValidEventBookingRequest($form)) {
+        if (!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         /** @var EventBookingFormController $bookingModuleInstance */
         $bookingModuleInstance = $this->getBookingModuleInstanceFromRequest();
 
-        if(null === $bookingModuleInstance){
+        if (null === $bookingModuleInstance) {
             return;
         }
 
         $booking = $this->getCurrentBookingFromRequest();
 
-        if(null === $booking){
+        if (null === $booking) {
             return;
         }
 
         $event = $bookingModuleInstance->getEvent();
 
-        $this->eventBooking->addToSession($event, $booking, $this->requestStack->getCurrentRequest());
+        $this->sessionManager->addToSession($event, $booking, $formData);
     }
 
     #[AsHook(self::HOOK, priority: 800)]
     public function contaoLog(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if(!$this->isValidEventBookingRequest($form)) {
+        if (!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
         /** @var EventBookingFormController $bookingModuleInstance */
         $bookingModuleInstance = $this->getBookingModuleInstanceFromRequest();
-        if(null === $bookingModuleInstance){
+        if (null === $bookingModuleInstance) {
             return;
         }
 
         $booking = $this->getCurrentBookingFromRequest();
 
-        if(null === $booking){
+        if (null === $booking) {
             return;
         }
 
         $event = $bookingModuleInstance->getEvent();
 
-        $strText = sprintf('New event booking for event "%s" and booking token %s.', $event->title,$booking->bookingToken);
+        $strText = \sprintf('New event booking for event "%s" and booking token %s.', $event->title, $booking->bookingToken);
 
         $this->contaoGeneralLogger?->info($strText);
     }
@@ -107,7 +107,7 @@ class ProcessFormDataListener
     #[AsHook(self::HOOK, priority: 700)]
     public function sendNotifications(array $submittedData, array $formData, array|null $files, array $labels, Form $form): void
     {
-        if(!$this->isValidEventBookingRequest($form)) {
+        if (!$this->isValidEventBookingRequest($form)) {
             return;
         }
 
@@ -118,14 +118,14 @@ class ProcessFormDataListener
 
         $booking = $this->getCurrentBookingFromRequest();
 
-        if(null === $booking){
+        if (null === $booking) {
             return;
         }
 
         // Send the subscribing to the event notification.
         if ($calendar?->subscribeNotification) {
             // Add an extra layer. So we can implement the SendNotificationEvent.
-            $this->notificationHelper->sendNotification($calendar->subscribeNotification, $this->notificationHelper->getNotificationTokens($booking), $booking);
+            $this->notificationManager->sendNotification($calendar->subscribeNotification, $this->notificationManager->getNotificationTokens($booking), $booking);
         }
 
         // Send the opt-in invitation notification.
@@ -134,7 +134,7 @@ class ProcessFormDataListener
         }
 
         // Add an extra layer. So we can implement the SendNotificationEvent.
-        $this->notificationHelper->sendNotification($calendar->optInInvitationNotification, $this->notificationHelper->getNotificationTokens($booking), $booking);
+        $this->notificationManager->sendNotification($calendar->optInInvitationNotification, $this->notificationManager->getNotificationTokens($booking), $booking);
     }
 
     private function isValidEventBookingRequest(Form $form): bool
@@ -149,7 +149,7 @@ class ProcessFormDataListener
 
         $request = $this->requestStack->getCurrentRequest();
 
-        if(null === $request){
+        if (null === $request) {
             return false;
         }
 
@@ -162,37 +162,37 @@ class ProcessFormDataListener
         return true;
     }
 
-    private function getBookingModuleInstanceFromRequest(): null|EventBookingFormController
+    private function getBookingModuleInstanceFromRequest(): EventBookingFormController|null
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if(null === $request){
+        if (null === $request) {
             return null;
         }
 
         $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
 
-        if(!$bookingModuleInstance instanceof EventBookingFormController){
-           return null;
+        if (!$bookingModuleInstance instanceof EventBookingFormController) {
+            return null;
         }
 
         return $bookingModuleInstance;
     }
 
-    private function getCurrentBookingFromRequest(): null|CalendarEventsMemberModel{
+    private function getCurrentBookingFromRequest(): CalendarEventsMemberModel|null
+    {
         $request = $this->requestStack->getCurrentRequest();
 
-        if(null === $request){
+        if (null === $request) {
             return null;
         }
 
-        $bookingToken =  $request->attributes->get('_calendar_event_booking_token',null);
+        $bookingToken = $request->attributes->get('_calendar_event_booking_token', null);
 
-        if(null === $bookingToken){
+        if (null === $bookingToken) {
             return null;
         }
 
         return CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
-
-}
+    }
 }

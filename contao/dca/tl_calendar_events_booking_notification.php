@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -15,7 +15,6 @@ declare(strict_types=1);
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\PriceRegexpListener;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
     'config'   => [
@@ -60,25 +59,25 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
         'default' => '{default_legend},deliveredOn,type,delivered,senderAddress,senderName,replyTo,recipientsTo,recipientsCc,recipientsBcc,subject,text,html,attachments,embeddedImages,exception',
     ],
     'fields'   => [
-        'id'            => [
-            'sql' => "int(10) unsigned NOT NULL auto_increment",
+        'id'             => [
+            'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'pid'           => [
+        'pid'            => [
             'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
             'foreignKey' => 'tl_calendar_events_member.id',
-            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy']
+            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
-        'tstamp'        => [
+        'tstamp'         => [
             'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
-        'deliveredOn'   => [
+        'deliveredOn'    => [
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'flag'      => DataContainer::SORT_DAY_BOTH,
             'inputType' => 'text',
             'sorting'   => true,
             'sql'       => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
-        'type'          => [
+        'type'           => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -86,14 +85,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'delivered'     => [
+        'delivered'      => [
             'eval'      => ['mandatory' => false, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'sorting'   => true,
             'sql'       => ['type' => 'boolean', 'default' => false],
         ],
-        'senderAddress' => [
+        'senderAddress'  => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -101,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'senderName'    => [
+        'senderName'     => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -109,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'replyTo'       => [
+        'replyTo'        => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -117,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'recipientsTo'  => [
+        'recipientsTo'   => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -125,7 +124,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'recipientsCc'  => [
+        'recipientsCc'   => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -133,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'recipientsBcc' => [
+        'recipientsBcc'  => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -141,7 +140,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'subject'       => [
+        'subject'        => [
             'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -149,35 +148,35 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
             'sorting'   => true,
             'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
         ],
-        'text'          => [
+        'text'           => [
             'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
             'inputType'   => 'textarea',
             'search'      => true,
-            'sql'         => "mediumtext NULL"
+            'sql'         => 'mediumtext NULL',
         ],
-        'html'          => [
+        'html'           => [
             'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
             'inputType'   => 'textarea',
             'search'      => true,
-            'sql'         => "mediumtext NULL"
+            'sql'         => 'mediumtext NULL',
         ],
-        'attachments'   => [
+        'attachments'    => [
             'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
             'inputType'   => 'textarea',
             'search'      => true,
-            'sql'         => "mediumtext NULL"
+            'sql'         => 'mediumtext NULL',
         ],
         'embeddedImages' => [
             'eval'        => ['mandatory' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
             'inputType'   => 'textarea',
             'search'      => true,
-            'sql'         => "mediumtext NULL"
+            'sql'         => 'mediumtext NULL',
         ],
-        'exception'     => [
+        'exception'      => [
             'eval'      => ['mandatory' => false, 'maxlength' => 1024, 'tl_class' => 'clr'],
             'exclude'   => true,
             'inputType' => 'textarea',

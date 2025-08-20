@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -96,8 +96,9 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['netPrice'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    //'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
-    'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL DEFAULT 0",
+    // 'sql'       => ['type' => 'string', 'length' =>
+    // MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => ''],
+    'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL DEFAULT 0',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['taxValue'] = [
@@ -106,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['taxValue'] = [
     'inputType' => 'text',
     'search'    => true,
     'sorting'   => true,
-    'sql'       => "DOUBLE PRECISION DEFAULT 0 NOT NULL DEFAULT 0",
+    'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL DEFAULT 0',
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableBookingForm'] = [

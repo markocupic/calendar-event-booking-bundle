@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\NotificationType;
 
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\EmailTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('cebb.notification')]
 class EventBookingNotificationType implements NotificationTypeInterface, CalendarEventsBookingNotificationTypeInterface

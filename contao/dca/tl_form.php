@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-/**
+/*
  * Add the isCalendarEventBookingForm field to the default palette.
  */
 PaletteManipulator::create()
@@ -22,7 +22,7 @@ PaletteManipulator::create()
     ->addField('isCalendarEventBookingForm', 'calendar_event_booking_settings', PaletteManipulator::POSITION_PREPEND)
     ->applyToPalette('default', 'tl_form');
 
-/**
+/*
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_form']['fields']['isCalendarEventBookingForm'] = [

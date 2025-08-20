@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -40,10 +40,10 @@ class WaitingListManager
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly EventBooking $eventBooking,
+        private readonly EventStatus $eventStatus,
         private readonly LockFactory $lockFactory,
         private readonly NotificationCenter $notificationCenter,
-        private readonly NotificationHelper $notificationHelper,
+        private readonly NotificationManager $notificationManager,
         private readonly RequestStack $requestStack,
         private readonly bool $autoWaitingListAdvancement,
         private readonly LoggerInterface|null $contaoGeneralLogger,
@@ -95,7 +95,7 @@ class WaitingListManager
 
     private function processWaitingListForEvent(CalendarEventsModel $event): void
     {
-        while (($availableSlots = $event->maxBookings - $this->eventBooking->getBookingCount($event)) > 0) {
+        while (($availableSlots = $event->maxBookings - $this->eventStatus->getBookingCount($event, $this->connection)) > 0) {
             $nextBooking = $this->findNextEligibleBooking($event, $availableSlots);
 
             if (null === $nextBooking) {
@@ -137,7 +137,7 @@ class WaitingListManager
 
         $this->processedIds[] = $bookingID;
 
-        return CalendarEventsMemberModel::findByPk($bookingID);
+        return CalendarEventsMemberModel::findById($bookingID);
     }
 
     private function shouldAdvanceBooking(CalendarEventsMemberModel $booking): bool
@@ -174,7 +174,7 @@ class WaitingListManager
         if ($calendar?->waitingListAdvancementNotification) {
             $this->notificationCenter->sendNotification(
                 $calendar->waitingListAdvancementNotification,
-                $this->notificationHelper->getNotificationTokens($booking),
+                $this->notificationManager->getNotificationTokens($booking),
             );
         }
     }

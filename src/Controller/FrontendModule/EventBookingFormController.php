@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -36,8 +36,8 @@ use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
 use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
+use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +65,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly AddTemplateData $addTemplateData,
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
-        private readonly EventBooking $eventBooking,
+        private readonly EventUrlResolver $eventUrlResolver,
+        private readonly EventStatus $eventStatusHelper,
         private readonly LockFactory $lockFactory,
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
@@ -78,7 +79,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
     {
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
-            $this->event = $this->eventBooking->getEventFromCurrentUrl();
+            $this->event = $this->eventUrlResolver->resolve();
 
             if (null === $this->event || !$this->event->published || !$this->event->enableBookingForm || null === ($this->calendar = $this->event->getRelated('pid'))) {
                 return new Response('', Response::HTTP_NO_CONTENT);
@@ -122,15 +123,15 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
         $this->framework->getAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
 
-        $this->eventStatus = $this->eventBooking->resolveEventStatus($this->event, $request);
+        $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->event, $request);
 
-        if (!$this->eventBooking->canRegister($this->event, $request) && $this->getFormId($model->form)) {
+        if (!$this->eventStatusHelper->canRegister($this->event, $request) && $this->getFormId($model->form)) {
             $this->addTemplateData($template, $request);
 
             return $template->getResponse();
         }
 
-        if ($this->eventBooking->isFullyBooked($this->event) && !$this->eventBooking->isWaitingListFull($this->event)) {
+        if ($this->eventStatusHelper->isFullyBooked($this->event, $this->connection) && !$this->eventStatusHelper->isWaitingListFull($this->event, $this->connection)) {
             $this->waitingListOpen = true;
             // Show the waitingList checkbox
             $this->setFormFieldVisibility($model->form, 'waitingList', true);
@@ -149,8 +150,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
                 // Get the ticket amount from POST (default: 1)
                 $requestedTicketAmount = (int) $request->request->get('ticketAmount', 1);
 
-                if (!$this->eventBooking->canFulfillBookingRequest($this->event, $requestedTicketAmount)) {
-                    if ($this->eventBooking->canFulfillBookingRequestWaitingList($this->event, $requestedTicketAmount)) {
+                if (!$this->eventStatusHelper->canFulfillBookingRequest($this->event, $this->connection, $requestedTicketAmount)) {
+                    if ($this->eventStatusHelper->canFulfillBookingRequestWaitingList($this->event, $this->connection, $requestedTicketAmount)) {
                         $this->waitingListOpen = true;
                     }
                 }

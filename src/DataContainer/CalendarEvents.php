@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -21,7 +21,7 @@ use Contao\DataContainer;
 use Contao\Date;
 use Contao\Message;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Helper\EventBooking;
+use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarEvents
@@ -29,7 +29,7 @@ class CalendarEvents
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
-        private readonly EventBooking $eventBooking,
+        private readonly EventStatus $eventStatus,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -67,11 +67,11 @@ class CalendarEvents
 
         if ($arrRow['enableBookingForm']) {
             $booking = $this->framework->getAdapter(CalendarEventsModel::class)->findById($arrRow['id']);
-            $bookingCount = $this->eventBooking->getBookingCount($booking);
+            $bookingCount = $this->eventStatus->getBookingCount($booking, $this->connection);
             $counterMarkup = \sprintf(
                 '<span class="label-info">[%s %sx]</span>',
                 $this->translator->trans('MSC.bookings', [], 'contao_default'),
-                $bookingCount
+                $bookingCount,
             );
             $markup = str_replace('</div>', $counterMarkup.'</div>', $markup);
         }
@@ -94,8 +94,8 @@ class CalendarEvents
     public function saveUnsubscribeLimitTstamp(int|null $intValue, DataContainer $dc): int|null
     {
         if (!empty($intValue)) {
-            // Check whether we have an unsubscribeLimit (in days) set as well,
-            // notify the user that we cannot have both
+            // Check whether we have an unsubscribeLimit (in days) set as well, notify the
+            // user that we cannot have both
             if ($dc->activeRecord->unsubscribeLimit > 0) {
                 throw new \InvalidArgumentException($this->translator->trans('ERR.conflicting_unsubscribe_deadlines', [], 'contao_default'));
             }

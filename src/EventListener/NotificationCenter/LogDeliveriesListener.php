@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -19,7 +19,6 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsBookingNotificatio
 use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
-use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Terminal42\NotificationCenterBundle\Event\ReceiptEvent;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\Mailer\EmailStamp;

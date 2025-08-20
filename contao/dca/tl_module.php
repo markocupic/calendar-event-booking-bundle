@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -12,12 +12,12 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/calendar-event-booking-bundle
  */
 
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingCheckoutController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingMemberListController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingUnsubscribeController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingOptInController;
-use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingCheckoutController;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingMyBookingsController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingOptInController;
+use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingUnsubscribeController;
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingFormController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_bookingStatusFilter
     'filter'    => true,
     'inputType' => 'checkbox',
     'options'   => ['waitingList::true', 'waitingList::false', 'optIn::true', 'optIn::false', 'temporaryReserved::true', 'temporaryReserved::false', 'expired::true', 'expired::false', 'canceled::true', 'canceled::false', 'paid::true', 'paid::false'],
-    'sql'       => "blob NULL",
+    'sql'       => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_sorting'] = [
@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_sorting'] = [
     'filter'    => true,
     'inputType' => 'checkboxWizard',
     'options'   => ['addedOn::DESC', 'addedOn::ASC', 'lastname::DESC', 'lastname::ASC'],
-    'sql'       => "blob NULL",
+    'sql'       => 'blob NULL',
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_startTimeFilter'] = [

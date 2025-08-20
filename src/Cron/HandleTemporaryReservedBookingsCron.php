@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -72,7 +72,7 @@ class HandleTemporaryReservedBookingsCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findByPk($bookingID);
+            $model = CalendarEventsMemberModel::findById($bookingID);
 
             $event = new AutoDeleteExpiredBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);
@@ -107,7 +107,7 @@ class HandleTemporaryReservedBookingsCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findByPk($bookingID);
+            $model = CalendarEventsMemberModel::findById($bookingID);
 
             $event = new AutoExpireReservedBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);

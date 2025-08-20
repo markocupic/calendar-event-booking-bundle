@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Calendar Event Booking Bundle.
+ * This file is part of the Calendar Event Booking Bundle.
  *
  * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
@@ -59,7 +59,7 @@ class HandleCanceledBookingCron
 
         foreach ($bookingIDS as $bookingID) {
             $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findByPk($bookingID);
+            $model = CalendarEventsMemberModel::findById($bookingID);
 
             $event = new AutoDeleteCanceledBookingEvent($model, self::class, $request);
             $this->eventDispatcher->dispatch($event);
