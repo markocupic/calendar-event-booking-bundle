@@ -35,4 +35,9 @@ trait CheckoutHandlerAwareTrait
     {
         return $this->checkoutHandler;
     }
+
+    public function getTypes(ContainerInterface $checkoutHandlers): array
+    {
+        return array_map(static fn (string $type): string => $type, array_keys($checkoutHandlers->getProvidedServices()));
+    }
 }

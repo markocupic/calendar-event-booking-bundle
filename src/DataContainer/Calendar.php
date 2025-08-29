@@ -17,7 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerInterface;
+use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInSuccessNotificationType;
@@ -29,6 +29,8 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 
 class Calendar
 {
+    use CheckoutHandlerAwareTrait;
+
     public function __construct(
         private readonly Connection $connection,
         #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
@@ -37,9 +39,9 @@ class Calendar
     }
 
     #[AsCallback(table: 'tl_calendar', target: 'fields.eventBookingCheckoutHandler.options')]
-    public function getCheckoutHandlers(): array
+    public function getCheckoutHandlerTypes(): array
     {
-        return array_map(static fn (CheckoutHandlerInterface $handler) => $handler->getType(), iterator_to_array($this->checkoutHandlers));
+        return $this->getTypes($this->checkoutHandlers);
     }
 
     #[AsCallback(table: 'tl_calendar', target: 'fields.subscribeNotification.options')]
