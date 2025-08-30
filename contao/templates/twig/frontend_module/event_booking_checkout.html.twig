@@ -1,0 +1,21 @@
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set searchable = false %}
+
+{% block content %}
+    <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
+        {% block checkout %}
+            {#
+                To override the default template you can refer to your custom template:
+                {% if checkout.getCheckoutType() == 'paypal %}
+                    {% '@App/checkout/paypal.html.twig' with checkout.getData() only %}
+                {% elseif checkout.getCheckoutType() == 'stripe %}
+                    {% '@App/checkout/stripe.html.twig' with checkout.getData() only %}
+                {% else %}
+                    {% include checkout.getTemplateName() with checkout.getData() only %}
+                {% endif %}
+            #}
+            {% include checkout.getTemplateName() with checkout.getData() only %}
+        {% endblock %}
+    </div>
+{% endblock %}

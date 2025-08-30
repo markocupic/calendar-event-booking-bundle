@@ -1,6 +1,8 @@
 {% trans_default_domain "mc_calendar_event_booking" %}
 {% use "@Contao/component/_figure.html.twig" %}
-{% extends '@Contao/block_unsearchable' %}
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set searchable = false %}
 
 {% block content %}
     <div class="ceb-my-bookings">

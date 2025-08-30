@@ -22,37 +22,44 @@ class OrderManager
     public function calcGrossAmountPerItem(CalendarEventsModel $event): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetAmountPerItem($event) + $this->calcVatAmountPerItem($event);
+        $amount = $this->calcNetAmountPerItem($event) + $this->calcVatAmountPerItem($event);
+        return $this->formatPrice($amount);
+
     }
 
     public function calcGrossTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetTotalAmount($event, $booking) + $this->calcVatTotalAmount($event, $booking);
+        $amount = $this->calcNetTotalAmount($event, $booking) + $this->calcVatTotalAmount($event, $booking);
+        return $this->formatPrice($amount);
     }
 
     public function calcNetAmountPerItem(CalendarEventsModel $event): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $event->netPrice;
+        $amount = $event->netPrice;
+        return $this->formatPrice($amount);
     }
 
     public function calcNetTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $booking->ticketAmount * $this->calcNetAmountPerItem($event);
+        $amount = $booking->ticketAmount * $this->calcNetAmountPerItem($event);
+        return $this->formatPrice($amount);
     }
 
     public function calcVatAmountPerItem(CalendarEventsModel $event): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetAmountPerItem($event) * $this->getTaxValue($event) * 0.01;
+        $amount = $this->calcNetAmountPerItem($event) * $this->getTaxValue($event) * 0.01;
+        return $this->formatPrice($amount);
     }
 
     public function calcVatTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        return $this->calcNetTotalAmount($event, $booking) * $this->getTaxValue($event) * 0.01;
+        $amount = $this->calcNetTotalAmount($event, $booking) * $this->getTaxValue($event) * 0.01;
+        return $this->formatPrice($amount);
     }
 
     public function getCurrencyCode(CalendarEventsModel $event): string
@@ -63,5 +70,10 @@ class OrderManager
     public function getTaxValue(CalendarEventsModel $event): float
     {
         return $event->taxValue;
+    }
+
+    private function formatPrice(float $price): float
+    {
+        return (float) number_format($price, 2, '.', '');
     }
 }

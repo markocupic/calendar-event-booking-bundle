@@ -1,4 +1,6 @@
-{% extends '@Contao/block_unsearchable' %}
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set searchable = false %}
 
 {% block content %}
     {% if messages %}

@@ -8,8 +8,7 @@
             }) }}
         {% endif %}
 
-        <p>{{ 'mod_form.checkout.registration_successful'|trans({'%event_title%': event.title})|raw }}</p>
-
+        <p>{{ 'mod_form.checkout.registration_successful'|trans({'%event_title%': event.title})|decode_entities }}</p>
         <table class="ceb-default-checkout-table">
             {% if booking.firstname|default and booking.lastname|default %}
                 <tr class="ceb-default-checkout-table-name">
@@ -32,13 +31,13 @@
             {% if calendar.requireOptIn and booking.temporaryReserved and not booking.optIn %}
                 <tr class="ceb-default-checkout-table-confirmed">
                     <td>{{ 'mod_form.checkout.booking_confirmed'|trans }}</td>
-                    <td>{{ 'mod_form.checkout.booking_not_confirmed'|trans|raw }}</td>
+                    <td>{{ 'mod_form.checkout.booking_not_confirmed'|trans }}</td>
                 </tr>
             {% endif %}
             {% if booking.expired %}
                 <tr class="ceb-default-checkout-table-expired">
                     <td>{{ 'mod_form.checkout.booking_expired_title'|trans }}</td>
-                    <td>{{ 'mod_form.checkout.booking_expired_text'|trans|raw }}</td>
+                    <td>{{ 'mod_form.checkout.booking_expired_text'|trans }}</td>
                 </tr>
             {% endif %}
             {% if booking.canceled %}

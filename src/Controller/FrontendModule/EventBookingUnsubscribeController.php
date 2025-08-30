@@ -113,7 +113,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $booking = CalendarEventsMemberModel::findOneByBookingToken($uuid);
 
             if (null === $booking) {
-                $template->class .= ' error booking-not-found';
+                $this->addCssClassToTemplate('error booking-not-found', $template);
 
                 throw new EventBookingUnsubscribeException('Booking not found.', $this->translator->trans('mod_unsubscribe.error.invalid_uuid', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
@@ -123,7 +123,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $event = $booking->getRelated('pid');
 
             if (null === $event) {
-                $template->class .= ' error event-not-found';
+                $this->addCssClassToTemplate('error event-not-found', $template);
 
                 throw new EventBookingUnsubscribeException('Event not found.', $this->translator->trans('mod_unsubscribe.error.event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
@@ -133,7 +133,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             if ($booking->canceled) {
                 $template->set('hasUnsubscribed', true);
-                $template->class .= ' info booking-already-canceled';
+                $this->addCssClassToTemplate('info booking-already-canceled', $template);
 
                 if ('true' === $request->query->get(self::QUERY_PARAM_UNSUBSCRIBED)) {
                     throw new EventBookingUnsubscribeException('You have unsubscribed.', $this->translator->trans('mod_unsubscribe.info.unsubscribe_success', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::INFO);
@@ -143,13 +143,13 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             }
 
             if (!$event->enableDeregistration) {
-                $template->class .= ' error unsubscription-not-allowed';
+                $this->addCssClassToTemplate('error unsubscription-not-allowed', $template);
 
                 throw new EventBookingUnsubscribeException('Unsubscription not allowed.', $this->translator->trans('mod_unsubscribe.error.unsubscription_not_allowed', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
             if ($this->isUnsubscriptionLimitExpired($event)) {
-                $template->class .= ' error unsubscription-limit-expired';
+                $this->addCssClassToTemplate('error unsubscription-limit-expired', $template);
 
                 throw new EventBookingUnsubscribeException('Unsubscription limit has expired.', $this->translator->trans('mod_unsubscribe.error.unsubscription_limit_expired', ['%title%' => $event->title], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
@@ -236,5 +236,11 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
         $this->notify($booking, $calendarEvent);
         $this->contaoGeneralLogger?->info(\sprintf('Booking for event "%s" ID %d has been unsubscribed by link.', $calendarEvent->title, $booking->id));
+    }
+
+    private function addCssClassToTemplate(string $cssClass, FragmentTemplate $template): void
+    {
+        $classes = $template->get('element_css_classes').' '.$cssClass;
+        $template->set('element_css_classes', implode(' ', array_filter(explode(' ', $classes))));
     }
 }

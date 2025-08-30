@@ -1,5 +1,7 @@
 {% trans_default_domain "mc_calendar_event_booking" %}
-{% extends '@Contao/block_unsearchable' %}
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set searchable = false %}
 
 {% block content %}
     {% if messages %}
@@ -7,7 +9,7 @@
     {% endif %}
     {% set event_data = event.row() %}
     <ul>
-        <li>{{ 'mod_form.form.event_status'|trans }}: {{ eventStatus }}</li>
+        <li>{{ 'mod_form.form.event_status'|trans }}: {{ ('mod_form.event_status.'~eventStatus)|trans }}</li>
         <li>{{ 'mod_form.form.logged_in_user'|trans }}: {{ hasLoggedInUser ? loggedInUser.firstname ~ ' ' ~ loggedInUser.lastname : '---' }}</li>
         <li>{{ 'mod_form.form.event_name'|trans }}: {{ event_data.title }}</li>
         <li>{{ 'mod_form.form.event_start_date'|trans }}: {{ event_data.startDate|date(page.dateFormat) }}</li>

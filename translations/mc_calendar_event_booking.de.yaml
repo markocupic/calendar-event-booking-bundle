@@ -44,6 +44,14 @@ mod_form:
         is_waiting_list_open: 'Warteliste verfügbar'
         booking_count: 'Anzahl Buchungen'
         free_spots_count: 'Freie Plätze'
+    event_status:
+        draft: 'Entwurf'
+        booking_open: 'Buchung geöffnet'
+        fully_booked: 'Ausgebucht'
+        waiting_list_open: 'Warteliste verfügbar'
+        not_bookable: 'Nicht buchbar'
+        not_yet_bookable: 'Noch nicht buchbar'
+        booking_closed: 'Buchung geschlossen'
     checkout:
         registration_successful: 'Sie haben sich erfolgreich für "%event_title%" registriert.'
         name: 'Name'

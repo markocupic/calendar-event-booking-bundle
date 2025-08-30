@@ -24,7 +24,7 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
 {
     public const NAME = 'default';
 
-    public const TEMPLATE_NAME = '@MarkocupicCalendarEventBooking/Checkout/default.html.twig';
+    public const TEMPLATE_NAME = '@Contao_MarkocupicCalendarEventBookingBundle/frontend_module_fragment/checkout/default.html.twig';
 
     public static function getType(): string
     {

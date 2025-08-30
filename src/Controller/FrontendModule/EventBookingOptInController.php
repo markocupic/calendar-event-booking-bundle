@@ -98,12 +98,16 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $arrRelated = $optInModel->getRelatedRecords();
 
             if (empty($arrRelated[CalendarEventsMemberModel::getTable()][0])) {
+                $this->addCssClassToTemplate('error booking-not-found', $template);
+
                 throw new EventBookingOptInException('Booking not found.', $this->translator->trans('mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
             $booking = CalendarEventsMemberModel::findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
 
             if (null === $booking) {
+                $this->addCssClassToTemplate('error booking-not-found', $template);
+
                 throw new EventBookingOptInException('Booking not found.', $this->translator->trans('mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
@@ -111,6 +115,8 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $event = $booking->getRelated('pid');
 
             if (null === $event) {
+                $this->addCssClassToTemplate('error event-not-found', $template);
+
                 throw new EventBookingOptInException('Event not found.', $this->translator->trans('mod_opt_in.error.corresponding_event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
@@ -118,6 +124,8 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $calendar = $event->getRelated('pid');
 
             if (null === $calendar) {
+                $this->addCssClassToTemplate('error calendar-not-found', $template);
+
                 throw new EventBookingOptInException('Calendar not found.', $this->translator->trans('mod_opt_in.error.corresponding_calendar_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
@@ -164,7 +172,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if already canceled
         if ($booking->canceled) {
-            $template->class .= ' error booking-canceled';
+            $this->addCssClassToTemplate('error booking-canceled', $template);
             $template->set('alreadyCanceled', true);
 
             throw new EventBookingOptInException('Booking canceled.', $this->translator->trans('mod_opt_in.error.booking_canceled', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
@@ -172,7 +180,8 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if already confirmed (optIn === true)
         if ($booking->optIn) {
-            $template->class .= ' info already-confirmed';
+            $this->addCssClassToTemplate('info already-confirmed', $template);
+
             $template->set('alreadyConfirmed', true);
 
             throw new EventBookingOptInException('Booking already confirmed.', $this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
@@ -180,7 +189,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if opt-in is required
         if (!$calendar->requireOptIn) {
-            $template->class .= ' info confirm-not-required';
+            $this->addCssClassToTemplate('info confirm-not-required', $template);
             $template->set('confirmNotRequired', true);
 
             throw new EventBookingOptInException('Opt-In not required.', $this->translator->trans('mod_opt_in.info.opt_in_not_required', [], self::TRANS_DOMAIN), SeverityLevel::INFO);
@@ -188,7 +197,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if booking has been expired
         if ($booking->expired) {
-            $template->class .= ' error confirm-expired';
+            $this->addCssClassToTemplate('error confirm-expired', $template);
             $template->set('confirmExpired', true);
 
             throw new EventBookingOptInException('Booking already expired.', $this->translator->trans('mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
@@ -196,7 +205,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if past event start date
         if (!empty($calendarEvent->startDate) && time() > $calendarEvent->startDate) {
-            $template->class .= ' error confirm-no-more-possible';
+            $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
             $template->set('cannotConfirm', true);
 
             throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
@@ -204,7 +213,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
         // Check if past booking date
         if (!empty($calendarEvent->bookingEndDate) && time() > $calendarEvent->bookingEndDate) {
-            $template->class .= ' error confirm-no-more-possible';
+            $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
             $template->set('cannotConfirm', true);
 
             throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
@@ -213,7 +222,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $booking->optIn = true;
         $booking->temporaryReserved = false;
         $booking->save();
-        $template->class .= ' confirm-success';
+        $this->addCssClassToTemplate('confirm-success', $template);
         $template->set('optInSuccess', true);
         $message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));
 
@@ -223,5 +232,11 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $this->contaoGeneralLogger?->info(\sprintf('Booking for "%s" ID: %d confirmed via link.', $calendarEvent->title, $booking->id));
 
         return true;
+    }
+
+    private function addCssClassToTemplate(string $cssClass, FragmentTemplate $template): void
+    {
+        $classes = $template->get('element_css_classes').' '.$cssClass;
+        $template->set('element_css_classes', implode(' ', array_filter(explode(' ', $classes))));
     }
 }

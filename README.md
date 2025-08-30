@@ -270,7 +270,28 @@ markocupic_calendar_event_booking:
 
 ## Checkout Template updatesicher anpassen
 
-Das Standard Checkout template befindet sich unter `vendor/markocupic/calendar-event-booking-bundle/templates/Checkout/default.html.twig`.
+Das Standard Checkout template befindet sich unter `vendor/markocupic/calendar-event-booking-bundle/contao/templates/twig/frontend_module_fragment/checkout/default.html.twig`.
 
-Um das Original-Template zu überschreiben, muss ein neues/angepasstes Template im Projekt-ROOT unter
-`templates/bundles/MarkocupicCalendarEventBookingBundle/Checkout/default.html.twig` angelegt werden.
+Um das Original-Template updatesicher zu überschreiben, müssen ein neues/angepasstes Checkout-Template und ein Custom Frontend Modul Template erstellt werden:
+
+```twig
+{# contao/templates/frontend_module/event_booking_checkout.html.twig #}
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set searchable = false %}
+
+{% block content %}
+    <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
+        {% block checkout %}
+            {# To override the default template you can refer to your custom checkout fragment templates: #}
+            {% if checkout.getCheckoutType() == 'paypal %}
+                {% '@App/checkout/paypal.html.twig' with checkout.getData() only %}
+            {% elseif checkout.getCheckoutType() == 'stripe %}
+                {% '@App/checkout/stripe.html.twig' with checkout.getData() only %}
+            {% else %}
+                {% include checkout.getTemplateName() with checkout.getData() only %}
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}
+```

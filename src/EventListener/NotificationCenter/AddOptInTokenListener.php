@@ -20,6 +20,7 @@ use Contao\CoreBundle\String\SimpleTokenParser;
 use Contao\StringUtil;
 use Markocupic\CalendarEventBookingBundle\LinkBuilder\OptInLinkBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingNotificationType;
 use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
 use Soundasleep\Html2Text;
@@ -84,7 +85,9 @@ class AddOptInTokenListener
             return;
         }
 
-        if (EventBookingOptInInvitationNotificationType::NAME !== $notificationConfig->toArray()['type']) {
+        $allowed = [EventBookingOptInInvitationNotificationType::NAME,EventBookingNotificationType::NAME];
+
+        if (!in_array($notificationConfig->toArray()['type'], $allowed)) {
             return;
         }
 
@@ -108,11 +111,9 @@ class AddOptInTokenListener
 
         $optInToken = OptIn::generateToken();
         $optInLink = $this->optInLinkBuilder->build($booking, $optInToken);
-
-        $tokenCollectionStamp
-            ->tokenCollection
-            ->replaceToken($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
-            ->replaceToken($this->getTokenDefinition(HtmlTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
+        $event->getParcel()->getStamp(TokenCollectionStamp::class)->tokenCollection
+            ->addToken($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
+            ->addToken($this->getTokenDefinition(HtmlTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
         ;
 
         // Create the opt-in entries in tl_opt_in
