@@ -23,14 +23,15 @@ class OrderManager
     {
         // @todo We could dispatch an event here to make it overwritable.
         $amount = $this->calcNetAmountPerItem($event) + $this->calcVatAmountPerItem($event);
-        return $this->formatPrice($amount);
 
+        return $this->formatPrice($amount);
     }
 
     public function calcGrossTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        $amount = $this->calcNetTotalAmount($event, $booking) + $this->calcVatTotalAmount($event, $booking);
+        $amount = $booking->ticketAmount * $this->calcGrossAmountPerItem($event);
+
         return $this->formatPrice($amount);
     }
 
@@ -38,6 +39,7 @@ class OrderManager
     {
         // @todo We could dispatch an event here to make it overwritable.
         $amount = $event->netPrice;
+
         return $this->formatPrice($amount);
     }
 
@@ -45,6 +47,7 @@ class OrderManager
     {
         // @todo We could dispatch an event here to make it overwritable.
         $amount = $booking->ticketAmount * $this->calcNetAmountPerItem($event);
+
         return $this->formatPrice($amount);
     }
 
@@ -52,13 +55,15 @@ class OrderManager
     {
         // @todo We could dispatch an event here to make it overwritable.
         $amount = $this->calcNetAmountPerItem($event) * $this->getTaxValue($event) * 0.01;
+
         return $this->formatPrice($amount);
     }
 
     public function calcVatTotalAmount(CalendarEventsModel $event, CalendarEventsMemberModel $booking): float
     {
         // @todo We could dispatch an event here to make it overwritable.
-        $amount = $this->calcNetTotalAmount($event, $booking) * $this->getTaxValue($event) * 0.01;
+        $amount = $this->calcVatAmountPerItem($event) * $booking->ticketAmount;
+
         return $this->formatPrice($amount);
     }
 
@@ -74,6 +79,6 @@ class OrderManager
 
     private function formatPrice(float $price): float
     {
-        return (float) number_format($price, 2, '.', '');
+        return round($price, 2);
     }
 }
