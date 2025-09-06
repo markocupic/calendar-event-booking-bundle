@@ -61,7 +61,6 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
     public function __construct(
         private readonly Connection $connection,
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
-        private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
         private readonly NotificationCenter $notificationCenter,
@@ -100,7 +99,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $message = $this->framework->getAdapter(Message::class);
+        $message = $this->getContaoAdapter(Message::class);
 
         $uuid = $request->query->get(self::QUERY_PARAM_BOOKING_TOKEN, false);
 
@@ -158,7 +157,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
                 $this->processUnsubscription($booking, $event, $request);
                 $this->connection->commit();
                 $redirectUrl = $this->urlParser->addQueryString(self::QUERY_PARAM_UNSUBSCRIBED.'=true');
-                $this->framework->getAdapter(Controller::class)->redirect($redirectUrl);
+                $this->getContaoAdapter(Controller::class)->redirect($redirectUrl);
             }
 
             $template->set('hasForm', true);

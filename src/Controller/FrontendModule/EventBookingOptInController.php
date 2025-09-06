@@ -64,7 +64,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $message = $this->framework->getAdapter(Message::class);
+        $message = $this->getContaoAdapter(Message::class);
 
         $token = $request->query->get('token');
         $action = $request->query->get('action');
@@ -168,7 +168,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
     private function processConfirm(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
     {
-        $message = $this->framework->getAdapter(Message::class);
+        $message = $this->getContaoAdapter(Message::class);
 
         // Check if already canceled
         if ($booking->canceled) {

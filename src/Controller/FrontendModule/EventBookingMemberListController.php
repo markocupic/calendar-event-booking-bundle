@@ -40,7 +40,6 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
 
     public function __construct(
         private readonly Connection $connection,
-        private readonly ContaoFramework $framework,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly ScopeMatcher $scopeMatcher,
     ) {
@@ -75,7 +74,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $controllerAdapter = $this->framework->getAdapter(Controller::class);
+        $controllerAdapter = $this->getContaoAdapter(Controller::class);
 
         // Load language
         $controllerAdapter->loadLanguageFile(CalendarEventsMemberModel::getTable());
