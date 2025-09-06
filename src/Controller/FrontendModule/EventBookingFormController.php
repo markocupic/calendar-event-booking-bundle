@@ -24,6 +24,7 @@ use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
+use Contao\Date;
 use Contao\FormFieldModel;
 use Contao\FormModel;
 use Contao\Message;
@@ -64,7 +65,6 @@ class EventBookingFormController extends AbstractFrontendModuleController
     public function __construct(
         private readonly AddTemplateData $addTemplateData,
         private readonly Connection $connection,
-        private readonly ContaoFramework $framework,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly EventStatus $eventStatusHelper,
         private readonly LockFactory $lockFactory,
@@ -121,7 +121,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         // access it later in the Contao Hooks or event listeners
         $request->attributes->set('_event_booking_form_module', $this);
 
-        $this->framework->getAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
+        $this->getContaoAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
 
         $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->event, $request);
 
@@ -157,7 +157,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
                 }
             }
 
-            $template->set('form_markup', $this->framework->getAdapter(Controller::class)->getForm($model->form));
+            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($model->form));
 
             // Use Contao core hooks to customize the form processing. Throw an
             // EventBookingException exception to stop the form processing. Throw an
@@ -177,10 +177,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
             throw $e;
         } catch (EventBookingException $e) {
             $this->connection->rollBack();
-            $this->framework->getAdapter(Message::class)->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->getContaoAdapter(Message::class)->add($e->getTranslatableText(), $e->getSeverityLevel());
         } catch (\throwable $e) {
             $this->connection->rollBack();
-            $this->framework->getAdapter(Message::class)->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
+            $this->getContaoAdapter(Message::class)->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
 
             if (method_exists($e, 'getMessage')) {
                 $this->contaoErrorLogger?->error($e->getMessage());
@@ -214,7 +214,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
      */
     private function getFormId(int $formId): string
     {
-        $form = $this->framework->getAdapter(FormModel::class)->findById($formId);
+        $form = $this->getContaoAdapter(FormModel::class)->findById($formId);
 
         if (null === $form) {
             throw new \Exception('No booking form assigned to the booking module.');
@@ -232,16 +232,12 @@ class EventBookingFormController extends AbstractFrontendModuleController
         $template->set('eventStatus', $this->eventStatus);
 
         $template->set('eventStatusText', match ($this->eventStatus) {
-            EventStatus::NOT_YET_BOOKABLE => function () {
-                $dateFormat = $this->framework->getAdapter(Config::class)->get('dateFormat');
-
-                return $this->translator->trans('MSC.'.$this->eventStatus, [$dateFormat, $this->event->bookingStartDate], 'contao_default');
-            },
+            EventStatus::NOT_YET_BOOKABLE => $this->translator->trans('MSC.'.$this->eventStatus, [$this->getContaoAdapter(Date::class)->parse($this->getContaoAdapter(Config::class)->get('datimFormat'), $this->event->bookingStartDate)], 'contao_default'),
             default => $this->translator->trans('MSC.'.$this->eventStatus, [], 'contao_default'),
         });
 
         $template->set('waitingListOpen', $this->waitingListOpen);
-        $template->set('messages', $this->framework->getAdapter(Message::class)->hasMessages() ? $this->framework->getAdapter(Message::class)->generate('FE') : null);
+        $template->set('messages', $this->getContaoAdapter(Message::class)->hasMessages() ? $this->getContaoAdapter(Message::class)->generate('FE') : null);
         $this->addTemplateData->addTemplateData($template, $this->event, $request);
     }
 
