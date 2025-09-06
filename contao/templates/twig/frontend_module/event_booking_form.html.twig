@@ -8,6 +8,8 @@
         {{ messages|raw }}
     {% endif %}
     {% set event_data = event.row() %}
+    {# Overview of useful template variables: #}
+    {#
     <ul>
         <li>{{ 'mod_form.form.event_status'|trans }}: {{ ('mod_form.event_status.'~eventStatus)|trans }}</li>
         <li>{{ 'mod_form.form.logged_in_user'|trans }}: {{ hasLoggedInUser ? loggedInUser.firstname ~ ' ' ~ loggedInUser.lastname : '---' }}</li>
@@ -21,6 +23,7 @@
         <li>{{ 'mod_form.form.booking_count'|trans }}: {{ bookingCount }}x</li>
         <li>{{ 'mod_form.form.free_spots_count'|trans }}: {{ freeSpotsCount }}x</li>
     </ul>
+    #}
     {% if eventStatusText|default %}
         <div class="booking-status-text {{ eventStatus }}">
             {{ eventStatusText|raw }}
