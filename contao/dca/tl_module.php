@@ -63,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_startTimeFilter'] =
     'filter'    => true,
     'inputType' => 'select',
     'options'   => ['past', 'upcoming', 'all'],
-    'sql'       => ['type' => 'text', 'length' => 64, 'default' => 'upcoming'],
+    'sql'       => ['type' => 'string', 'length' => 64, 'default' => 'upcoming'],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_sorting'] = [
@@ -71,5 +71,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMyBookings_sorting'] = [
     'filter'    => true,
     'inputType' => 'select',
     'options'   => ['ASC', 'DESC'],
-    'sql'       => ['type' => 'text', 'length' => 64, 'default' => 'ASC'],
+    'sql'       => ['type' => 'string', 'length' => 64, 'default' => 'ASC'],
 ];
