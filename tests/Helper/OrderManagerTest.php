@@ -212,7 +212,7 @@ class OrderManagerTest extends ContaoTestCase
         $taxValue = $orderManager->getTaxValue($event);
 
         // Verify the result
-        $this->assertSame(0, $taxValue);
+        $this->assertSame(0.0, $taxValue);
     }
 
     /**
