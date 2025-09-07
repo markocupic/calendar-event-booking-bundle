@@ -21,10 +21,11 @@ use Markocupic\CalendarEventBookingBundle\Event\AutoDeleteCanceledBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsCronJob('minutely')]
-class HandleCanceledBookingCron
+class HandleCanceledBookingsCron
 {
     public function __construct(
         private readonly Connection $connection,
@@ -48,29 +49,39 @@ class HandleCanceledBookingCron
         $this->framework->initialize();
 
         $qb = $this->connection->createQueryBuilder();
-
         $qb->select('id')
             ->from('tl_calendar_events_member', 't')
             ->where('t.canceled = 1')
-            ->setMaxResults(50)
         ;
 
-        $bookingIDS = $qb->fetchFirstColumn();
+        $bookingIDs = $qb->fetchFirstColumn();
+        $request = $this->requestStack->getCurrentRequest();
 
-        foreach ($bookingIDS as $bookingID) {
-            $request = $this->requestStack->getCurrentRequest();
-            $model = CalendarEventsMemberModel::findById($bookingID);
-
-            $event = new AutoDeleteCanceledBookingEvent($model, self::class, $request);
-            $this->eventDispatcher->dispatch($event);
-
-            if (!$event->shouldDelete()) {
-                continue;
-            }
-
-            if ($model->delete()) {
-                $this->contaoCronLogger->info("Canceled booking ID $bookingID has been deleted automatically.");
-            }
+        foreach ($bookingIDs as $bookingId) {
+            $this->processSingleCanceledBooking($bookingId, $request);
         }
+    }
+
+    private function processSingleCanceledBooking(int $bookingId, Request|null $request): bool
+    {
+        $model = $this->framework->getAdapter(CalendarEventsMemberModel::class)->findById($bookingId);
+
+        if (null === $model) {
+            return false;
+        }
+
+        $event = $this->eventDispatcher->dispatch(new AutoDeleteCanceledBookingEvent($model, self::class, $request));
+
+        if (false === $event->shouldDelete()) {
+            return false;
+        }
+
+        if ($model->delete()) {
+            $this->contaoCronLogger->info("Canceled booking ID $bookingId has been deleted automatically.");
+
+            return true;
+        }
+
+        return false;
     }
 }

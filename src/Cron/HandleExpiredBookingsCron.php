@@ -27,7 +27,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsCronJob('minutely')]
-class HandleTemporaryReservedBookingsCron
+class HandleExpiredBookingsCron
 {
     public function __construct(
         private readonly Connection $connection,
@@ -74,8 +74,7 @@ class HandleTemporaryReservedBookingsCron
             $request = $this->requestStack->getCurrentRequest();
             $model = CalendarEventsMemberModel::findById($bookingID);
 
-            $event = new AutoDeleteExpiredBookingEvent($model, self::class, $request);
-            $this->eventDispatcher->dispatch($event);
+            $event = $this->eventDispatcher->dispatch(new AutoDeleteExpiredBookingEvent($model, self::class, $request));
 
             if (!$event->shouldDelete()) {
                 continue;
