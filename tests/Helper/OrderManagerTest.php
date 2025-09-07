@@ -1,5 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
+ */
+
 namespace Markocupic\CalendarEventBookingBundle\Tests\Helper;
 
 use Contao\CalendarEventsModel;
@@ -21,14 +33,14 @@ class OrderManagerTest extends ContaoTestCase
         $orderManager = new OrderManager();
 
         // Expected calculations
-        $expectedVat = 100.0 * (20.0 / 100.0);
+        $expectedVat = 100.0 * 20.0 / 100.0;
         $expectedGrossAmount = 100.0 + $expectedVat;
 
         // Execute the method
         $grossAmount = $orderManager->calcGrossAmountPerItem($event);
 
         // Verify the result
-        $this->assertEquals(round($expectedGrossAmount, 2), $grossAmount);
+        $this->assertSame(round($expectedGrossAmount, 2), $grossAmount);
     }
 
     /**
@@ -47,7 +59,7 @@ class OrderManagerTest extends ContaoTestCase
         $currencyCode = $orderManager->getCurrencyCode($event);
 
         // Verify the result
-        $this->assertEquals('USD', $currencyCode);
+        $this->assertSame('USD', $currencyCode);
     }
 
     /**
@@ -66,7 +78,7 @@ class OrderManagerTest extends ContaoTestCase
         $currencyCode = $orderManager->getCurrencyCode($event);
 
         // Verify the result
-        $this->assertSame('',$currencyCode);
+        $this->assertSame('', $currencyCode);
     }
 
     public function testCalcGrossTotalAmount(): void
@@ -84,7 +96,7 @@ class OrderManagerTest extends ContaoTestCase
         $orderManager = new OrderManager();
 
         // Expected calculations
-        $expectedVat = 100.0 * (20.0 / 100.0);
+        $expectedVat = 100.0 * 20.0 / 100.0;
         $expectedGrossAmount = 100.0 + $expectedVat;
         $expectedGrossTotalAmount = $booking->ticketAmount * $expectedGrossAmount;
 
@@ -92,7 +104,7 @@ class OrderManagerTest extends ContaoTestCase
         $grossTotalAmount = $orderManager->calcGrossTotalAmount($event, $booking);
 
         // Verify the result
-        $this->assertEquals(round($expectedGrossTotalAmount, 2), $grossTotalAmount);
+        $this->assertSame(round($expectedGrossTotalAmount, 2), $grossTotalAmount);
     }
 
     public function testCalcNetAmountPerItem(): void
@@ -111,7 +123,7 @@ class OrderManagerTest extends ContaoTestCase
         $netAmount = $orderManager->calcNetAmountPerItem($event);
 
         // Verify the result
-        $this->assertEquals(round($expectedNetAmount, 2), $netAmount);
+        $this->assertSame(round($expectedNetAmount, 2), $netAmount);
     }
 
     public function testCalcNetTotalAmount(): void
@@ -136,10 +148,10 @@ class OrderManagerTest extends ContaoTestCase
 
         // Execute the method and verify results
         $netTotalAmount1 = $orderManager->calcNetTotalAmount($event, $booking1);
-        $this->assertEquals(round($expectedNetTotalAmount1, 2), $netTotalAmount1);
+        $this->assertSame(round($expectedNetTotalAmount1, 2), $netTotalAmount1);
 
         $netTotalAmount2 = $orderManager->calcNetTotalAmount($event, $booking2);
-        $this->assertEquals(round($expectedNetTotalAmount2, 2), $netTotalAmount2);
+        $this->assertSame(round($expectedNetTotalAmount2, 2), $netTotalAmount2);
     }
 
     /**
@@ -156,13 +168,13 @@ class OrderManagerTest extends ContaoTestCase
         $orderManager = new OrderManager();
 
         // Expected VAT calculation
-        $expectedVatAmount = 100.0 * (20.0 / 100.0);
+        $expectedVatAmount = 100.0 * 20.0 / 100.0;
 
         // Execute the method
         $vatAmount = $orderManager->calcVatAmountPerItem($event);
 
         // Verify the result
-        $this->assertEquals(round($expectedVatAmount, 2), $vatAmount);
+        $this->assertSame(round($expectedVatAmount, 2), $vatAmount);
     }
 
     /**
@@ -181,7 +193,7 @@ class OrderManagerTest extends ContaoTestCase
         $taxValue = $orderManager->getTaxValue($event);
 
         // Verify the result
-        $this->assertEquals(15.0, $taxValue);
+        $this->assertSame(15.0, $taxValue);
     }
 
     /**
@@ -200,7 +212,7 @@ class OrderManagerTest extends ContaoTestCase
         $taxValue = $orderManager->getTaxValue($event);
 
         // Verify the result
-        $this->assertEquals(0, $taxValue);
+        $this->assertSame(0, $taxValue);
     }
 
     /**
@@ -224,16 +236,16 @@ class OrderManagerTest extends ContaoTestCase
         $orderManager = new OrderManager();
 
         // Expected results
-        $expectedVatPerItem = 120.0 * (15.0 / 100.0);
+        $expectedVatPerItem = 120.0 * 15.0 / 100.0;
         $expectedVatTotal1 = $expectedVatPerItem * $booking1->ticketAmount;
         $expectedVatTotal2 = $expectedVatPerItem * $booking2->ticketAmount;
 
         // Execute the method and verify results
         $vatTotalAmount1 = $orderManager->calcVatTotalAmount($event, $booking1);
-        $this->assertEquals(round($expectedVatTotal1, 2), $vatTotalAmount1);
+        $this->assertSame(round($expectedVatTotal1, 2), $vatTotalAmount1);
 
         $vatTotalAmount2 = $orderManager->calcVatTotalAmount($event, $booking2);
-        $this->assertEquals(round($expectedVatTotal2, 2), $vatTotalAmount2);
+        $this->assertSame(round($expectedVatTotal2, 2), $vatTotalAmount2);
     }
 
     #[DataProvider('formatPrice')]
@@ -248,20 +260,18 @@ class OrderManagerTest extends ContaoTestCase
         $result = $reflection->invoke($orderManager, $test);
 
         // Verify the result
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     public static function formatPrice(): iterable
     {
-        yield  [0.000000001, 0.0];
-        yield  [-0.000000001, 0.0];
-        yield  [123.4567890123, 123.46];
-        yield  [-123.4567890123, -123.46];
+        yield [0.000000001, 0.0];
+        yield [-0.000000001, 0.0];
+        yield [123.4567890123, 123.46];
+        yield [-123.4567890123, -123.46];
         yield [-123.4547890123, -123.45];
-        yield  [123.4567890123, 123.46];
-        yield  [123.4547890123, 123.45];
-        yield  [0.0, 0.0];
+        yield [123.4567890123, 123.46];
+        yield [123.4547890123, 123.45];
+        yield [0.0, 0.0];
     }
-
-
 }

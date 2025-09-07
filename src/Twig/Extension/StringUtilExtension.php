@@ -27,8 +27,6 @@ class StringUtilExtension extends AbstractExtension
         ];
     }
 
-
-
     public function entityDecode(string $string): string
     {
         return StringUtil::decodeEntities($string);

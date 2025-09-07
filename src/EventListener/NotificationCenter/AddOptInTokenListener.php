@@ -85,9 +85,9 @@ class AddOptInTokenListener
             return;
         }
 
-        $allowed = [EventBookingOptInInvitationNotificationType::NAME,EventBookingNotificationType::NAME];
+        $allowed = [EventBookingOptInInvitationNotificationType::NAME, EventBookingNotificationType::NAME];
 
-        if (!in_array($notificationConfig->toArray()['type'], $allowed)) {
+        if (!\in_array($notificationConfig->toArray()['type'], $allowed, true)) {
             return;
         }
 
