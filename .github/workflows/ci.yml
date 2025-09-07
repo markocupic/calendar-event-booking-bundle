@@ -13,17 +13,32 @@ jobs:
     name: Coding Style
     runs-on: ubuntu-latest
     steps:
-      -   name: Setup PHP
-          uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
 
-      -   name: Checkout
-          uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      -   name: Install ecs
-          run: cd tools/ecs && composer update --no-interaction --no-suggest
+      - name: Install ecs
+        run: cd tools/ecs && composer update --no-interaction --no-suggest
 
-      -   name: Run the CS fixer
-          run: composer cs-fixer
+      - name: Run the CS fixer
+        run: composer cs-fixer
+  phpstan:
+    name: Phpstan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install phpstan
+        run: cd tools/phpstan && composer update --no-interaction --no-suggest
+
+      - name: Run phpstan
+        run: composer phpstan
 
   tests:
     name: PHP ${{ matrix.php }}
@@ -33,19 +48,19 @@ jobs:
       matrix:
         php: [ 8.2, 8.3, 8.4 ]
     steps:
-      -   name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
 
-      -   name: Checkout
-          uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      -   name: Install phpunit
-          run: cd tools/phpunit && composer update --no-interaction --no-suggest
+      - name: Install phpunit
+        run: cd tools/phpunit && composer update --no-interaction --no-suggest
 
-      -   name: Install the dependencies
-          run: composer update --no-interaction --no-suggest
+      - name: Install the dependencies
+        run: composer update --no-interaction --no-suggest
 
-      -   name: Run the unit tests
-          run: composer unit-tests
+      - name: Run the unit tests
+        run: composer unit-tests
