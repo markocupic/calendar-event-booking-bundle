@@ -45,9 +45,8 @@ class EventStatusTest extends ContaoTestCase
             'published' => false,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::DRAFT, $result);
     }
@@ -59,9 +58,8 @@ class EventStatusTest extends ContaoTestCase
             'start' => time() + 3600,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::DRAFT, $result);
     }
@@ -74,9 +72,8 @@ class EventStatusTest extends ContaoTestCase
             'end' => time() - 3600,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::DRAFT, $result);
     }
@@ -90,9 +87,8 @@ class EventStatusTest extends ContaoTestCase
             'enableBookingForm' => false,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::NOT_BOOKABLE, $result);
     }
@@ -107,9 +103,8 @@ class EventStatusTest extends ContaoTestCase
             'bookingStartDate' => time() + 3600,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::NOT_YET_BOOKABLE, $result);
     }
@@ -125,9 +120,8 @@ class EventStatusTest extends ContaoTestCase
             'bookingEndDate' => time() - 1800,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::BOOKING_CLOSED, $result);
     }
@@ -157,9 +151,8 @@ class EventStatusTest extends ContaoTestCase
             ->willReturn(true)
         ;
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::FULLY_BOOKED, $result);
     }
@@ -175,9 +168,8 @@ class EventStatusTest extends ContaoTestCase
             'bookingEndDate' => time() + 3600,
         ]);
 
-        $reflection = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->eventStatus, $calendarEvent);
+        $method = new \ReflectionMethod(EventStatus::class, 'determineEventStatus');
+        $result = $method->invokeArgs($this->eventStatus, [$calendarEvent]);
 
         $this->assertSame(EventStatus::BOOKING_OPEN, $result);
     }

@@ -23,7 +23,8 @@
     "require-dev": {
         "contao/easy-coding-standard": "^6.13",
         "contao/test-case": "^5.5",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "symfony/phpunit-bridge": "^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {

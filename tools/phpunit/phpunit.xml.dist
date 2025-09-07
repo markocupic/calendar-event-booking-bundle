@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         backupGlobals="false"
-         bootstrap="../../vendor/autoload.php"
-         colors="true"
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+        colors="true"
+        bootstrap="../../vendor/autoload.php"
+        beStrictAboutChangesToGlobalState="true"
+        displayDetailsOnTestsThatTriggerDeprecations="true"
+        displayDetailsOnTestsThatTriggerErrors="true"
+        displayDetailsOnTestsThatTriggerNotices="true"
+        displayDetailsOnTestsThatTriggerWarnings="true"
+        displayDetailsOnPhpunitDeprecations="true"
 >
     <php>
-        <ini name="display_errors" value="1" />
-        <ini name="error_reporting" value="-1" />
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0"/>
+        <env name="SYMFONY_PATCH_TYPE_DECLARATIONS" value="deprecations=0"/>
     </php>
-
     <testsuites>
-        <testsuite name="MultipageForms Test Suite">
+        <testsuite name="calendar-event-booking-bundle">
             <directory>../../tests</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
 </phpunit>

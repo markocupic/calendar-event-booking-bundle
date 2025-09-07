@@ -255,9 +255,8 @@ class OrderManagerTest extends ContaoTestCase
         $orderManager = new OrderManager();
 
         // Execute the method
-        $reflection = new \ReflectionMethod(OrderManager::class, 'formatPrice');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($orderManager, $test);
+        $method = new \ReflectionMethod(OrderManager::class, 'formatPrice');
+        $result = $method->invokeArgs($orderManager, [$test]);
 
         // Verify the result
         $this->assertSame($expected, $result);
