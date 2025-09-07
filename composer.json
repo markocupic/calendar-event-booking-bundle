@@ -21,7 +21,9 @@
         "symfony/rate-limiter": "^6.4 || ^7.1"
     },
     "require-dev": {
-        "contao/easy-coding-standard": "^6.13"
+        "contao/easy-coding-standard": "^6.13",
+        "contao/test-case": "^5.5",
+        "phpstan/phpstan": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -30,6 +32,10 @@
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\CalendarEventBookingBundle\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ tests/ --config tools/ecs/config/default.php --fix --ansi",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
     },
     "version": "6.0"
 }

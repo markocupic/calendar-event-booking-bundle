@@ -1,0 +1,13 @@
+{
+    "require": {
+        "contao/core-bundle": "^5.6",
+        "phpunit/phpunit": "^11.5",
+        "contao/test-case": "^5.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "php-http/discovery": true
+        }
+    }
+}

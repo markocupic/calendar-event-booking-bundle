@@ -69,15 +69,15 @@ class OrderManager
 
     public function getCurrencyCode(CalendarEventsModel $event): string
     {
-        return $event->currencyCode;
+        return (string) $event->currencyCode;
     }
 
     public function getTaxValue(CalendarEventsModel $event): float
     {
-        return $event->taxValue;
+        return (float) $event->taxValue;
     }
 
-    private function formatPrice(float $price): float
+    protected function formatPrice(float $price): float
     {
         return round($price, 2);
     }

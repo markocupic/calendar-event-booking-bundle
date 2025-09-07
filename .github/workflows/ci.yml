@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request: ~
+  push:
+    branches:
+      - '*'
+    tags:
+      - '*'
+
+jobs:
+  cs:
+    name: Coding Style
+    runs-on: ubuntu-latest
+    steps:
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+
+      -   name: Checkout
+          uses: actions/checkout@v2
+
+      -   name: Install ecs
+          run: cd tools/ecs && composer update --no-interaction --no-suggest
+
+      -   name: Run the CS fixer
+          run: composer cs-fixer
+
+  tests:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ 8.1, 8.2, 8.3, 8.4 ]
+    steps:
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php }}
+
+      -   name: Checkout
+          uses: actions/checkout@v2
+
+      -   name: Install phpunit
+          run: cd tools/phpunit && composer update --no-interaction --no-suggest
+
+      -   name: Install the dependencies
+          run: composer update --no-interaction --no-suggest
+
+      -   name: Run the unit tests
+          run: composer unit-tests
