@@ -103,7 +103,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
                 throw new EventBookingOptInException('Booking not found.', $this->translator->trans('mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
 
-            $booking = CalendarEventsMemberModel::findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
+            $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
 
             if (null === $booking) {
                 $this->addCssClassToTemplate('error booking-not-found', $template);

@@ -76,7 +76,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
             return null;
         }
 
-        if (null === ($booking = CalendarEventsMemberModel::findOneByBookingToken($request->query->get('bookingToken')))) {
+        if (null === ($booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findOneByBookingToken($request->query->get('bookingToken')))) {
             return null;
         }
 

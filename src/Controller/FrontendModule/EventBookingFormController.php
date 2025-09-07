@@ -132,7 +132,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
         if ($this->eventStatusHelper->isFullyBooked($this->event, $this->connection) && !$this->eventStatusHelper->isWaitingListFull($this->event, $this->connection)) {
             $this->waitingListOpen = true;
-            // Show the waitingList checkbox
+            // Show the waitingList checkbox if the waiting list is available
             $this->setFormFieldVisibility($model->form, 'waitingList', true);
         }
 
@@ -156,12 +156,11 @@ class EventBookingFormController extends AbstractFrontendModuleController
                 }
             }
 
-            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($model->form));
-
             // Use Contao core hooks to customize the form processing. Throw an
             // EventBookingException exception to stop the form processing. Throw an
             // EventBookingRedirectResponseException to roll back the transaction and
             // redirect to a new URL...
+            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($model->form));
 
             $this->connection->commit();
         } catch (RedirectResponseException $e) {
@@ -197,7 +196,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
     private function setFormFieldVisibility(int $formId, string $name, bool $blnShow = true): void
     {
-        $formField = FormFieldModel::findOneBy(['name = ?', 'pid = ?'], [$name, $formId]);
+        $formField = $this->getContaoAdapter(FormFieldModel::class)->findOneBy(['name = ?', 'pid = ?'], [$name, $formId]);
 
         if (null === $formField) {
             throw new \Exception(\sprintf('Form field "%s" not found.', $name));

@@ -79,10 +79,10 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
         $rows = [];
 
         foreach ($bookings as $rowBooking) {
-            $booking = CalendarEventsMemberModel::findById($rowBooking['id']);
+            $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($rowBooking['id']);
             $event = $booking->getRelated('pid');
             $calendar = $event?->getRelated('pid');
-            $payments = CalendarEventsPaymentModel::findByPid($rowBooking['id']);
+            $payments = $this->getContaoAdapter(CalendarEventsPaymentModel::class)->findByPid($rowBooking['id']);
 
             $row = [
                 'booking' => $booking,
