@@ -1,8 +1,9 @@
 {
     "require": {
         "contao/core-bundle": "^5.6",
+        "contao/manager-plugin": "^2.13",
         "phpstan/phpstan": "^2.1",
-        "contao/calendar-bundle": "^5.3",
+        "contao/calendar-bundle": "^5.6",
         "markocupic/export_table": "^5.1",
         "ramsey/uuid": "^3.0 || ^4.0",
         "codefog/contao-haste": "^5.0",
