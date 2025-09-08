@@ -1,4 +1,5 @@
 /docs export-ignore
 /.ecs export-ignore
 /.gitignore export-ignore
+/.phpunit.result.cache export-ignore
 
