@@ -70,7 +70,8 @@ class HandleCanceledBookingsCron
             return false;
         }
 
-        $event = $this->eventDispatcher->dispatch(new AutoDeleteCanceledBookingEvent($model, self::class, $request));
+        $event = new AutoDeleteCanceledBookingEvent($model, self::class, $request);
+        $this->eventDispatcher->dispatch($event);
 
         if (false === $event->shouldDelete()) {
             return false;

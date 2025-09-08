@@ -74,7 +74,8 @@ class HandleExpiredBookingsCron
             $request = $this->requestStack->getCurrentRequest();
             $model = CalendarEventsMemberModel::findById($bookingID);
 
-            $event = $this->eventDispatcher->dispatch(new AutoDeleteExpiredBookingEvent($model, self::class, $request));
+            $event = new AutoDeleteExpiredBookingEvent($model, self::class, $request);
+            $this->eventDispatcher->dispatch($event);
 
             if (!$event->shouldDelete()) {
                 continue;

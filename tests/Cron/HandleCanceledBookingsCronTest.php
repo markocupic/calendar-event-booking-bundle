@@ -89,16 +89,16 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
 
-        $eventMock = $this->createMock(AutoDeleteCanceledBookingEvent::class);
-        $eventMock
-            ->method('shouldDelete')
-            ->willReturn(true)
-        ;
-
         $this->eventDispatcher
             ->method('dispatch')
             ->with($this->isInstanceOf(AutoDeleteCanceledBookingEvent::class))
-            ->willReturn($eventMock)
+            ->willReturnCallback(
+                static function (AutoDeleteCanceledBookingEvent $event) {
+                    $event->setShouldDelete(true);
+
+                    return $event;
+                },
+            )
         ;
 
         $this->logger
@@ -141,16 +141,16 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
 
-        $eventMock = $this->createMock(AutoDeleteCanceledBookingEvent::class);
-        $eventMock
-            ->method('shouldDelete')
-            ->willReturn(false)
-        ;
-
         $this->eventDispatcher
             ->method('dispatch')
             ->with($this->isInstanceOf(AutoDeleteCanceledBookingEvent::class))
-            ->willReturn($eventMock)
+            ->willReturnCallback(
+                static function (AutoDeleteCanceledBookingEvent $event) {
+                    $event->setShouldDelete(false);
+
+                    return $event;
+                },
+            )
         ;
 
         $this->logger
