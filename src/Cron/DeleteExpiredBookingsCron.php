@@ -17,6 +17,7 @@ namespace Markocupic\CalendarEventBookingBundle\Cron;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Markocupic\CalendarEventBookingBundle\Event\AutoDeleteExpiredBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
@@ -28,13 +29,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class DeleteExpiredBookingsCron
 {
     public function __construct(
-        private readonly Connection $connection,
-        private readonly ContaoFramework $framework,
+        private readonly Connection               $connection,
+        private readonly ContaoFramework          $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly RequestStack $requestStack,
-        private readonly bool $autoDeleteExpiredBookings,
-        private readonly LoggerInterface|null $contaoCronLogger,
-    ) {
+        private readonly RequestStack             $requestStack,
+        private readonly bool                     $autoDeleteExpiredBookings,
+        private readonly LoggerInterface|null     $contaoCronLogger,
+    )
+    {
     }
 
     public function __invoke(): void
@@ -53,8 +55,7 @@ class DeleteExpiredBookingsCron
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
             ->from('tl_calendar_events_member', 't')
-            ->where('t.expired = 1')
-        ;
+            ->where('t.expired = 1');
 
         $bookingIds = $qb->fetchFirstColumn();
         $request = $this->requestStack->getCurrentRequest();
@@ -66,7 +67,7 @@ class DeleteExpiredBookingsCron
 
     private function processSingleExpiredBooking(int $bookingId, Request|null $request): bool
     {
-        $model = CalendarEventsMemberModel::findById($bookingId);
+        $model = $this->framework->getAdapter(CalendarEventsMemberModel::class)->findById($bookingId);
 
         if (null === $model) {
             return false;
@@ -75,11 +76,11 @@ class DeleteExpiredBookingsCron
         $event = new AutoDeleteExpiredBookingEvent($model, self::class, $request);
         $this->eventDispatcher->dispatch($event);
 
-        if (!$event->shouldDelete()) {
+        if (false === $event->shouldDelete()) {
             return false;
         }
 
-        if ($model->delete()) {
+        if ($this->connection->delete('tl_calendar_events_member',['id' => $bookingId], [Types::INTEGER])) {
             $this->contaoCronLogger->info("Expired booking ID $bookingId has been deleted automatically.");
 
             return true;
