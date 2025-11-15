@@ -57,6 +57,9 @@ class DefaultTokenConfig
                 'payment_transactionDetails',
                 'payment_notes',
             ],
+            'file_token' => [
+                'event_booking_attachment_*',
+            ],
         ];
     }
 }

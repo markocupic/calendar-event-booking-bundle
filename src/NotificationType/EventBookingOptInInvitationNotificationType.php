@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
 use Terminal42\NotificationCenterBundle\Token\Definition\EmailTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
+use Terminal42\NotificationCenterBundle\Token\Definition\FileTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 
 #[AutoconfigureTag('cebb.notification')]
@@ -57,16 +58,16 @@ class EventBookingOptInInvitationNotificationType implements NotificationTypeInt
     {
         $tokenDefinitions = [];
 
-        $tokens = array_merge($this->getTokenConfig()['email_token'], self::TOKEN_CONFIG['email_token']);
-
-        foreach ($tokens as $token) {
+        foreach ($this->getTokenConfig()['email_token'] ?? [] as $token) {
             $tokenDefinitions[] = $this->factory->create(EmailTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
-        $tokens = array_merge($this->getTokenConfig()['text_token'], self::TOKEN_CONFIG['text_token']);
-
-        foreach ($tokens as $token) {
+        foreach ($this->getTokenConfig()['text_token'] ?? [] as $token) {
             $tokenDefinitions[] = $this->factory->create(TextTokenDefinition::class, $token, 'event_booking.'.$token);
+        }
+
+        foreach ($this->getTokenConfig()['file_token'] ?? [] as $token) {
+            $tokenDefinitions[] = $this->factory->create(FileTokenDefinition::class, $token, 'event_booking.'.$token);
         }
 
         return $tokenDefinitions;
