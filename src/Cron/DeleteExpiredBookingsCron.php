@@ -29,14 +29,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class DeleteExpiredBookingsCron
 {
     public function __construct(
-        private readonly Connection               $connection,
-        private readonly ContaoFramework          $framework,
+        private readonly Connection $connection,
+        private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly RequestStack             $requestStack,
-        private readonly bool                     $autoDeleteExpiredBookings,
-        private readonly LoggerInterface|null     $contaoCronLogger,
-    )
-    {
+        private readonly RequestStack $requestStack,
+        private readonly bool $autoDeleteExpiredBookings,
+        private readonly LoggerInterface|null $contaoCronLogger,
+    ) {
     }
 
     public function __invoke(): void
@@ -55,7 +54,8 @@ class DeleteExpiredBookingsCron
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id')
             ->from('tl_calendar_events_member', 't')
-            ->where('t.expired = 1');
+            ->where('t.expired = 1')
+        ;
 
         $bookingIds = $qb->fetchFirstColumn();
         $request = $this->requestStack->getCurrentRequest();
@@ -80,7 +80,7 @@ class DeleteExpiredBookingsCron
             return false;
         }
 
-        if ($this->connection->delete('tl_calendar_events_member',['id' => $bookingId], [Types::INTEGER])) {
+        if ($this->connection->delete('tl_calendar_events_member', ['id' => $bookingId], [Types::INTEGER])) {
             $this->contaoCronLogger->info("Expired booking ID $bookingId has been deleted automatically.");
 
             return true;
