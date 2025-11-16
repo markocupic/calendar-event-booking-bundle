@@ -52,7 +52,11 @@ mod_form:
         not_bookable: 'Not bookable'
         not_yet_bookable: 'Not yet bookable'
         booking_closed: 'Booking is closed'
-    checkout:
+
+mod_checkout:
+    error:
+        booking_not_found: 'Invalid or missing booking token. This error usually occurs if you have not confirmed your booking in time or if we have not received your payment in time.'
+    default:
         registration_successful: 'You have successfully registered for "%event_title%".'
         name: 'Name'
         email_address: 'Email Address'

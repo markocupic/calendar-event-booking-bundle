@@ -19,14 +19,16 @@ use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
+use Contao\Message;
 use Contao\ModuleModel;
-use Contao\PageModel;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsFrontendModule(EventBookingCheckoutController::TYPE, category: 'events')]
 class EventBookingCheckoutController extends AbstractFrontendModuleController
@@ -40,22 +42,12 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     private CalendarEventsMemberModel|null $booking = null;
 
     public function __construct(
-        private readonly ScopeMatcher $scopeMatcher,
         #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $checkoutHandlers,
+        private readonly RequestStack $requestStack,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly TranslatorInterface $translator,
     ) {
-    }
-
-    public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
-    {
-        if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
-            if (!$this->initialize($request)) {
-                return new Response('', Response::HTTP_NO_CONTENT);
-            }
-        }
-
-        // Call the parent method
-        return parent::__invoke($request, $model, $section, $classes);
     }
 
     /**
@@ -63,6 +55,18 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
+        if (!$this->initialize($request)) {
+            if (!$this->getContaoAdapter(Message::class)->hasError()) {
+                $errorMessage = $this->translator->trans('mod_checkout.error.booking_not_found', [], 'mc_calendar_event_booking');
+                $this->getContaoAdapter(Message::class)->addError($errorMessage);
+            }
+
+            $template->set('errorMessages', $this->getErrorMessages());
+
+            // Stop here if initialization fails.
+            return $template->getResponse();
+        }
+
         $template->set('checkout', $this->checkoutHandler->getCheckoutData($this->booking, $model, $request));
         $template->set('booking', $this->booking);
         $template->set('event', $this->event);
@@ -111,5 +115,47 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $this->setCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
 
         return null !== $this->checkoutHandler;
+    }
+
+    private function getInfoMessages(): string|null
+    {
+        return $this->getMessages('info');
+    }
+
+    private function getConfirmMessages(): string|null
+    {
+        return $this->getMessages('confirm');
+    }
+
+    private function getErrorMessages(): string|null
+    {
+        return $this->getMessages('error');
+    }
+
+    private function getMessages(string $type): string|null
+    {
+        if (!\in_array($type, ['error', 'confirm', 'info'], true)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid message type "%s".', $type));
+        }
+
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+
+        if (!$session->isStarted()) {
+            return null;
+        }
+
+        $messages = $session->getFlashBag()->get('contao.FE.'.$type);
+
+        if (empty($messages)) {
+            return null;
+        }
+
+        $messageString = '';
+
+        foreach ($messages as $message) {
+            $messageString .= \sprintf('<p class="tl_%s">%s</p>', $type, $message);
+        }
+
+        return $messageString;
     }
 }

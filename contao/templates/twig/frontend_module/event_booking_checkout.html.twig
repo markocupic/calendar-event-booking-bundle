@@ -3,9 +3,16 @@
 {% set searchable = false %}
 
 {% block content %}
-    <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
-        {% block checkout %}
-            {#
+    {% if errorMessages|default %}
+        <div class="ceb-checkout">
+            <div class="ceb-checkout--error-messages">
+                {{ errorMessages|raw }}
+            </div>
+        </div>
+    {% else %}
+        <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
+            {% block checkout %}
+                {#
                 To override the default template you can refer to your custom template:
                 {% if checkout.getCheckoutType() == 'paypal %}
                     {% '@App/checkout/paypal.html.twig' with checkout.getData() only %}
@@ -14,8 +21,9 @@
                 {% else %}
                     {% include checkout.getTemplateName() with checkout.getData() only %}
                 {% endif %}
-            #}
-            {% include checkout.getTemplateName() with checkout.getData() only %}
-        {% endblock %}
-    </div>
+                #}
+                {% include checkout.getTemplateName() with checkout.getData() only %}
+            {% endblock %}
+        </div>
+    {% endif %}
 {% endblock %}

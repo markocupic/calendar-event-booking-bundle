@@ -52,7 +52,11 @@ mod_form:
         not_bookable: 'Nicht buchbar'
         not_yet_bookable: 'Noch nicht buchbar'
         booking_closed: 'Buchung geschlossen'
-    checkout:
+
+mod_checkout:
+    error:
+        booking_not_found: 'Ungültiges oder fehlendes Buchungstoken. Dieser fehler tritt meistens auf, wenn Sie Ihre Buchung nicht rechtzeitig bestätigt haben oder Ihre Zahlung nicht rechtzeitig bei uns eingegangen ist.'
+    default:
         registration_successful: 'Sie haben sich erfolgreich für "%event_title%" registriert.'
         name: 'Name'
         email_address: 'E-Mail-Adresse'
