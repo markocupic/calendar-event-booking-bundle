@@ -75,7 +75,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
         // If the checkout handler returns a response (e.g. RedirectResponse), we don't
         // need to render the template.
-        if ($checkoutResponse->getResponse() instanceof Response) {
+        if ($checkoutResponse->hasResponse()) {
             return $checkoutResponse->getResponse();
         }
 

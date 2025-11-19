@@ -56,6 +56,11 @@ class CheckoutResponse
         $this->templateName = $templateName;
     }
 
+    public function hasResponse(): bool
+    {
+        return null !== $this->response;
+    }
+
     public function getResponse(): Response|null
     {
         return $this->response;
