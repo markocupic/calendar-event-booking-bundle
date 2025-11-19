@@ -55,6 +55,10 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
+        $page = $this->getPageModel();
+        $page->alwaysLoadFromCache = false;
+        $page->cache = 0;
+
         if (!$this->initialize($request)) {
             if (!$this->getContaoAdapter(Message::class)->hasError()) {
                 $errorMessage = $this->translator->trans('mod_checkout.error.booking_not_found', [], 'mc_calendar_event_booking');
@@ -67,7 +71,15 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
-        $template->set('checkout', $this->checkoutHandler->getCheckoutData($this->booking, $model, $request));
+        $checkoutResponse = $this->checkoutHandler->getResponse($this->booking, $model, $request);
+
+        // If the checkout handler returns a response (e.g. RedirectResponse), we don't
+        // need to render the template.
+        if ($checkoutResponse->getResponse() instanceof Response) {
+            return $checkoutResponse->getResponse();
+        }
+
+        $template->set('checkout', $checkoutResponse);
         $template->set('booking', $this->booking);
         $template->set('event', $this->event);
 

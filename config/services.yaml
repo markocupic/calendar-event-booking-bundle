@@ -17,7 +17,7 @@ services:
     Markocupic\CalendarEventBookingBundle\:
         resource: ../src/
         exclude: [
-            ../src/CheckoutHandler/CheckoutData.php,
+            ../src/CheckoutHandler/CheckoutResponse.php,
             ../src/DependencyInjection,
             ../src/Event,
             ../src/Exception,

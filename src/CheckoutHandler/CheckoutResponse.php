@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\CheckoutHandler;
 
-class CheckoutData
+use Symfony\Component\HttpFoundation\Response;
+
+class CheckoutResponse
 {
     public function __construct(
         private string $checkoutType,
         private string $templateName,
         private array $data = [],
+        private Response|null $response = null,
     ) {
     }
 
@@ -51,5 +54,15 @@ class CheckoutData
     public function setTemplateName(string $templateName): void
     {
         $this->templateName = $templateName;
+    }
+
+    public function getResponse(): Response|null
+    {
+        return $this->response;
+    }
+
+    public function setResponse(Response|null $response): void
+    {
+        $this->response = $response;
     }
 }

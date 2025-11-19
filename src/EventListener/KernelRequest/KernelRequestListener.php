@@ -46,3 +46,22 @@ class KernelRequestListener
         Controller::redirect($this->urlParser->addQueryString('bookingToken='.$bookingToken[0]));
     }
 }
+
+// src/EventListener/ResponseListener.php
+
+namespace App\EventListener;
+
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+
+class ResponseListener
+{
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $response = $event->getResponse();
+
+        // Disable bfcache by setting headers
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+    }
+}
