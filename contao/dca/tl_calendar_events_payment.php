@@ -45,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+                'attributes' => 'data-action="contao--scroll-offset#store" accesskey="e"',
             ],
         ],
         'operations'        => [
@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'delete' => [
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false" data-action="contao--scroll-offset#store"',
             ],
             'show'   => [
                 'href' => 'act=show',

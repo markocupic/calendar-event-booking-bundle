@@ -45,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_booking_notification'] = [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
+                'attributes' => 'data-action="contao--scroll-offset#store" accesskey="e"',
             ],
         ],
         'operations'        => [
