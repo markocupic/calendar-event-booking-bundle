@@ -32,6 +32,7 @@ use Contao\PageModel;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Event\FrontendModuleGetResponseEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
@@ -40,6 +41,7 @@ use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
@@ -64,8 +66,9 @@ class EventBookingFormController extends AbstractFrontendModuleController
     public function __construct(
         private readonly AddTemplateData $addTemplateData,
         private readonly Connection $connection,
-        private readonly EventUrlResolver $eventUrlResolver,
+        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly EventStatus $eventStatusHelper,
+        private readonly EventUrlResolver $eventUrlResolver,
         private readonly LockFactory $lockFactory,
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
@@ -117,14 +120,24 @@ class EventBookingFormController extends AbstractFrontendModuleController
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         // Attach the event booking form module instance to the request so that we can
-        // access it later in the Contao Hooks or event listeners
+        // access it later in the Contao Hooks or event listeners.
         $request->attributes->set('_event_booking_form_module', $this);
+
+        // Allow other modules to modify the form ID, the template variables or the response.
+        $event = new FrontendModuleGetResponseEvent($template, $model, $request, $this, ['formId' => $model->form]);
+        $this->eventDispatcher->dispatch($event);
+
+        if ($event->hasResponse()) {
+            return $event->getResponse();
+        }
+
+        $formId = $event->getOptions()['formId'] ?? -1;
 
         $this->getContaoAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
 
         $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->event, $request);
 
-        if (!$this->eventStatusHelper->canRegister($this->event, $request) && $this->getFormId($model->form)) {
+        if (!$this->eventStatusHelper->canRegister($this->event, $request) && $this->getFormId($formId)) {
             $this->addTemplateData($template, $request);
 
             return $template->getResponse();
@@ -133,7 +146,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         if ($this->eventStatusHelper->isFullyBooked($this->event, $this->connection) && !$this->eventStatusHelper->isWaitingListFull($this->event, $this->connection)) {
             $this->waitingListOpen = true;
             // Show the waitingList checkbox if the waiting list is available
-            $this->setFormFieldVisibility($model->form, 'waitingList', true);
+            $this->setFormFieldVisibility($formId, 'waitingList', true);
         }
 
         $lock = $this->lockFactory->createLock(self::class);
@@ -142,7 +155,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         $this->connection->beginTransaction();
 
         try {
-            if ($request->request->get('FORM_SUBMIT') === $this->getFormId($model->form)) {
+            if ($request->request->get('FORM_SUBMIT') === $this->getFormId($formId)) {
                 // Protect form against too many requests
                 $this->checkRateLimit($request);
 
@@ -160,7 +173,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
             // EventBookingException exception to stop the form processing. Throw an
             // EventBookingRedirectResponseException to roll back the transaction and
             // redirect to a new URL...
-            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($model->form));
+            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($formId));
 
             $this->connection->commit();
         } catch (RedirectResponseException $e) {
