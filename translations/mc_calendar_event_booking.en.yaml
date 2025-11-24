@@ -59,6 +59,11 @@ mod_checkout:
     default:
         registration_successful: 'You have successfully registered for "%event_title%".'
         name: 'Name'
+        firstname: 'First name'
+        lastname: 'Last name'
+        street: 'Street'
+        postal: 'ZIP code'
+        city: 'City'
         email_address: 'Email Address'
         on_waiting_list: 'On Waiting List'
         yes: 'Yes'
