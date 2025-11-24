@@ -124,7 +124,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
         $request->attributes->set('_calendar_event_booking_token', $this->booking->bookingToken);
 
-        $this->setCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
+        $this->setCheckoutHandler($this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler));
 
         return null !== $this->checkoutHandler;
     }

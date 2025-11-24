@@ -77,7 +77,7 @@ class StoreFormDataListener
             throw new \Exception('Event booking checkout handler not found.');
         }
 
-        $this->setCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
+        $checkoutHandler = $this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
 
         $data['formSubmit'] = json_encode($data);
         $data['pid'] = $event->id;
@@ -90,9 +90,9 @@ class StoreFormDataListener
         $data['ticketAmount'] = (int) ($data['ticketAmount'] ?? 1);
         $data['escorts'] = (int) ($data['escorts'] ?? 0);
         $data['temporaryReserved'] = $calendar->requireOptIn ? 1 : 0;
-        $data['checkoutHandler'] = $this->getCheckoutHandler()->getType();
+        $data['checkoutHandler'] = $checkoutHandler->getType();
 
-        if ($this->getCheckoutHandler() instanceof PaymentCheckoutHandlerInterface) {
+        if ($checkoutHandler instanceof PaymentCheckoutHandlerInterface) {
             $data['temporaryReserved'] = 1;
             $data['paid'] = 0;
         }
