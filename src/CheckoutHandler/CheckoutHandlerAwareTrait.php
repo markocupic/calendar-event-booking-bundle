@@ -20,15 +20,9 @@ trait CheckoutHandlerAwareTrait
 {
     protected CheckoutHandlerInterface|null $checkoutHandler = null;
 
-    public function setCheckoutHandler(ContainerInterface $checkoutHandlers, string $checkoutHandler): void
+    public function setCheckoutHandler(CheckoutHandlerInterface $checkoutHandler): void
     {
-        if ($checkoutHandlers->has($checkoutHandler)) {
-            $this->checkoutHandler = $checkoutHandlers->get($checkoutHandler);
-
-            return;
-        }
-
-        throw new \Exception(\sprintf('Could not find a checkout handler of type "%s".', $checkoutHandler));
+        $this->checkoutHandler = $checkoutHandler;
     }
 
     public function getCheckoutHandler(): CheckoutHandlerInterface|null
@@ -39,5 +33,14 @@ trait CheckoutHandlerAwareTrait
     public function getTypes(ContainerInterface $checkoutHandlers): array
     {
         return array_map(static fn (string $type): string => $type, array_keys($checkoutHandlers->getProvidedServices()));
+    }
+
+    public function resolveCheckoutHandler(ContainerInterface $checkoutHandlers, string $checkoutHandler): CheckoutHandlerInterface
+    {
+        if ($checkoutHandlers->has($checkoutHandler)) {
+            return $checkoutHandlers->get($checkoutHandler);
+        }
+
+        throw new \Exception(\sprintf('Could not find a checkout handler of type "%s".', $checkoutHandler));
     }
 }
