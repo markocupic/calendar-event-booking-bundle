@@ -106,6 +106,14 @@
         <source>Please enter the booking date.</source>
         <target>Geben Sie ein Buchungsdatum ein.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.member.0">
+        <source>Contao frontend user</source>
+        <target>Contao Frontend-Mitglied</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.member.1">
+        <source>Select a Contao frontend user to which the booking can be assigned.</source>
+        <target>Wählen Sie einen Contao Frontend User aus, welchem die Buchung zugeordnet werden kann.</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_member.temporaryReserved.0">
         <source>Temporary reserved</source>
         <target>Temporär reserviert</target>

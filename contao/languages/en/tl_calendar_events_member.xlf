@@ -80,6 +80,12 @@
       <trans-unit id="tl_calendar_events_member.addedOn.1">
         <source>Please enter the booking date.</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_member.member.0">
+        <source>Contao frontend user</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.member.1">
+        <source>Select a Contao frontend user to which the booking can be assigned.</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_member.temporaryReserved.0">
         <source>Temporary reserved</source>
       </trans-unit>
