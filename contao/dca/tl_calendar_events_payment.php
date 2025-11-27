@@ -69,7 +69,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{payment_legend},uuid,bookingUuid,paidAt,refundedAt,method,transactionId,transactionStatus,currencyCode,taxValue,grossAmount,netAmount,vatAmount,transactionDetails,notes',
+        'default' => '{payment_legend},uuid,bookingUuid,paidAt,refundedAt,method,orderId,transactionId,transactionStatus,currencyCode,taxValue,grossAmount,netAmount,vatAmount,transactionDetails,notes',
     ],
     'fields'   => [
         'id'                 => [
@@ -115,6 +115,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
         ],
         'method'             => [
             'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'search'    => true,
+            'sorting'   => true,
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'orderId'      => [
+            'eval'      => ['doNotCopy' => true, 'mandatory' => false, 'maxlength' => 255, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,

@@ -46,6 +46,14 @@
         <source>Add a payment method.</source>
         <target>Fügen Sie eine Zahlungsmethode hinzu.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.orderId.0">
+        <source>Order ID</source>
+        <target>Auftragsnummer</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.orderId.1">
+        <source>Add an order id.</source>
+        <target>Fügen Sie eine Auftragsnummer hinzu.</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_payment.transactionId.0">
         <source>Transaction ID</source>
         <target>Transaktions-ID</target>
