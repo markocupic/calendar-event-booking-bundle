@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\CheckoutHandler;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckoutResponse
+class CheckoutResult
 {
     public function __construct(
         private string $checkoutType,

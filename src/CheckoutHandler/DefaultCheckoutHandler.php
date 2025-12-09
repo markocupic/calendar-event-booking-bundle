@@ -31,7 +31,7 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         return self::NAME;
     }
 
-    public function getResponse(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutResponse
+    public function handleRequest(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutResult
     {
         $event = $booking->getRelated('pid');
         $calendar = $event?->getRelated('pid');
@@ -50,6 +50,6 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         $template['calendar'] = $calendar->row();
         $template['module'] = $model;
 
-        return new CheckoutResponse($this->getType(), self::TEMPLATE_NAME, $template);
+        return new CheckoutResult($this->getType(), self::TEMPLATE_NAME, $template);
     }
 }

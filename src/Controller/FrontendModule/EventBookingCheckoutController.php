@@ -71,15 +71,15 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
-        $checkoutResponse = $this->checkoutHandler->getResponse($this->booking, $model, $request);
+        $checkoutResult = $this->checkoutHandler->handleRequest($this->booking, $model, $request);
 
         // If the checkout handler returns a response (e.g. RedirectResponse), we don't
         // need to render the template.
-        if ($checkoutResponse->hasResponse()) {
-            return $checkoutResponse->getResponse();
+        if ($checkoutResult->hasResponse()) {
+            return $checkoutResult->getResponse();
         }
 
-        $template->set('checkout', $checkoutResponse);
+        $template->set('checkout', $checkoutResult);
         $template->set('booking', $this->booking);
         $template->set('event', $this->event);
 
