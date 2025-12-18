@@ -13,7 +13,7 @@
         "php": "^8.1",
         "contao/core-bundle": "^4.13 || ^5.0",
         "contao/calendar-bundle": "^4.13 || ^5.0",
-        "markocupic/export_table": "^5.1",
+        "markocupic/export_table": "^5.7",
         "ramsey/uuid": "^3.0 || ^4.0",
         "codefog/contao-haste": "^5.0",
         "terminal42/notification_center": "^2.0"
