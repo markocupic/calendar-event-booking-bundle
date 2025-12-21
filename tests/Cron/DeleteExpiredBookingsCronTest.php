@@ -51,7 +51,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
 
         $cron = $this->createCronJobInstance($framework, false);
 
-        $cron->__invoke();
+        $cron();
     }
 
     public function testAutoDeletionWhenShouldDelete(): void
@@ -111,7 +111,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
 
         $cron = $this->createCronJobInstance($framework, true);
 
-        $cron->__invoke();
+        $cron();
     }
 
     public function testAutoDeletionWhenDeletionHasBeenStoppedByEventListener(): void
@@ -168,7 +168,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
 
         $cron = $this->createCronJobInstance($framework, true);
 
-        $cron->__invoke();
+        $cron();
     }
 
     private function initializeMocks(): void

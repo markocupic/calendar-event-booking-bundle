@@ -23,13 +23,13 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\RedirectResponseException;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
-use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\CancelBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingUnsubscribeException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
+use Markocupic\CalendarEventBookingBundle\FlashMessage\Unsubscribe\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
@@ -62,6 +62,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
+        private readonly Message $message,
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationManager $notificationManager,
         private readonly ScopeMatcher $scopeMatcher,
@@ -98,8 +99,6 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $message = $this->getContaoAdapter(Message::class);
-
         $uuid = $request->query->get(self::QUERY_PARAM_BOOKING_TOKEN, false);
 
         $lock = $this->lockFactory->createLock(base64_encode(self::class.$uuid));
@@ -120,7 +119,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             $event = $booking->getRelated('pid');
 
-            if (null === $event) {
+            if (!$event instanceof CalendarEventsModel) {
                 $this->addCssClassToTemplate('error event-not-found', $template);
 
                 throw new EventBookingUnsubscribeException('Event not found.', $this->translator->trans('mod_unsubscribe.error.event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
@@ -168,7 +167,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
                 $this->connection->rollBack();
             }
 
-            $message->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->message->add($e->getTranslatableText(), $e->getSeverityLevel());
         } catch (RedirectResponseException $e) {
             throw $e;
         } catch (\Throwable $e) {
@@ -176,7 +175,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
                 $this->connection->rollBack();
             }
 
-            $message->addError($this->translator->trans('mod_unsubscribe.error.unexpected_error', [], self::TRANS_DOMAIN));
+            $this->message->addError($this->translator->trans('mod_unsubscribe.error.unexpected_error', [], self::TRANS_DOMAIN));
 
             if (method_exists($e, 'getMessage')) {
                 $this->contaoErrorLogger?->error($e->getMessage());
@@ -185,7 +184,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $lock->release();
         }
 
-        $template->set('messages', Message::generate('FE'));
+        $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
 
         return $template->getResponse();
     }

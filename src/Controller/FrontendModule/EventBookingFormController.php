@@ -26,7 +26,6 @@ use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Date;
 use Contao\FormFieldModel;
 use Contao\FormModel;
-use Contao\Message;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\System;
@@ -36,6 +35,7 @@ use Markocupic\CalendarEventBookingBundle\Event\FrontendModuleGetResponseEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
+use Markocupic\CalendarEventBookingBundle\FlashMessage\Form\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
@@ -70,6 +70,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly EventStatus $eventStatusHelper,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly LockFactory $lockFactory,
+        private readonly Message $message,
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
@@ -188,10 +189,10 @@ class EventBookingFormController extends AbstractFrontendModuleController
             throw $e;
         } catch (EventBookingException $e) {
             $this->connection->rollBack();
-            $this->getContaoAdapter(Message::class)->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->message->add($e->getTranslatableText(), $e->getSeverityLevel());
         } catch (\throwable $e) {
             $this->connection->rollBack();
-            $this->getContaoAdapter(Message::class)->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
+            $this->message->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
 
             if (method_exists($e, 'getMessage')) {
                 $this->contaoErrorLogger?->error($e->getMessage());
@@ -248,7 +249,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
         });
 
         $template->set('waitingListOpen', $this->waitingListOpen);
-        $template->set('messages', $this->getContaoAdapter(Message::class)->hasMessages() ? $this->getContaoAdapter(Message::class)->generate('FE') : null);
+        $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
         $this->addTemplateData->addTemplateData($template, $this->event, $request);
     }
 
@@ -258,7 +259,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
             $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 
             if (!$limiter->consume()->isAccepted()) {
-                throw new EventBookingException('too many requests', $this->translator->trans('mod_form.error.too_many_requests', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingException('Too many requests!', $this->translator->trans('mod_form.error.too_many_requests', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
             }
         }
     }

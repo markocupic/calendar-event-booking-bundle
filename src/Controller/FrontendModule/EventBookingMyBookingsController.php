@@ -54,7 +54,7 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
         return $template->getResponse();
     }
 
-    private function getRelatedSubscriptions(FrontendUser $user, ModuleModel $model)
+    private function getRelatedSubscriptions(FrontendUser $user, ModuleModel $model): array
     {
         $qb = $this->connection->createQueryBuilder();
         $qb

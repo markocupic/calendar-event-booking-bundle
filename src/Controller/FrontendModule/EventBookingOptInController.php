@@ -23,13 +23,13 @@ use Contao\CoreBundle\OptIn\OptInToken;
 use Contao\CoreBundle\OptIn\OptInTokenAlreadyConfirmedException;
 use Contao\CoreBundle\OptIn\OptInTokenNoLongerValidException;
 use Contao\CoreBundle\Twig\FragmentTemplate;
-use Contao\Message;
 use Contao\ModuleModel;
 use Contao\OptInModel;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
+use Markocupic\CalendarEventBookingBundle\FlashMessage\OptIn\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
@@ -54,6 +54,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
+        private readonly Message $message,
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationManager $notificationManager,
         private readonly TranslatorInterface $translator,
@@ -64,8 +65,6 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        $message = $this->getContaoAdapter(Message::class);
-
         $token = $request->query->get('token');
         $action = $request->query->get('action');
 
@@ -140,36 +139,34 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             }
             $this->connection->commit();
         } catch (OptInTokenAlreadyConfirmedException $e) {
-            $message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
+            $this->message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
         } catch (OptInTokenNoLongerValidException $e) {
-            $message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
+            $this->message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
         } catch (EventBookingOptInException $e) {
             if ($this->connection->isTransactionActive()) {
                 $this->connection->rollBack();
             }
 
-            $message->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->message->add($e->getTranslatableText(), $e->getSeverityLevel());
         } catch (\Throwable $e) {
             if ($this->connection->isTransactionActive()) {
                 $this->connection->rollBack();
             }
 
-            $message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
+            $this->message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
 
             if (method_exists($e, 'getMessage')) {
                 $this->contaoErrorLogger?->error($e->getMessage());
             }
         }
 
-        $template->set('messages', $message->hasMessages() ? $message->generate('FE') : null);
+        $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
 
         return $template->getResponse();
     }
 
     private function processConfirm(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
     {
-        $message = $this->getContaoAdapter(Message::class);
-
         // Check if already canceled
         if ($booking->canceled) {
             $this->addCssClassToTemplate('error booking-canceled', $template);
@@ -224,7 +221,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $booking->save();
         $this->addCssClassToTemplate('confirm-success', $template);
         $template->set('optInSuccess', true);
-        $message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));
+        $this->message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));
 
         $event = new BookingConfirmEvent($booking, self::class, $request);
         $this->eventDispatcher->dispatch($event);

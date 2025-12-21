@@ -19,9 +19,9 @@ use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
-use Contao\Message;
 use Contao\ModuleModel;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
+use Markocupic\CalendarEventBookingBundle\FlashMessage\Checkout\Message;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
@@ -44,6 +44,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     public function __construct(
         #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $checkoutHandlers,
+        private readonly Message $message,
         private readonly RequestStack $requestStack,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
@@ -60,12 +61,10 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $page->cache = 0;
 
         if (!$this->initialize($request)) {
-            if (!$this->getContaoAdapter(Message::class)->hasError()) {
-                $errorMessage = $this->translator->trans('mod_checkout.error.booking_not_found', [], 'mc_calendar_event_booking');
-                $this->getContaoAdapter(Message::class)->addError($errorMessage);
-            }
-
-            $template->set('errorMessages', $this->getErrorMessages());
+            $errorMessage = $this->translator->trans('mod_checkout.error.booking_not_found', [], 'mc_calendar_event_booking');
+            $this->message->addError($errorMessage);
+            $template->set('hasInitializationError', true);
+            $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
 
             // Stop here if initialization fails.
             return $template->getResponse();
@@ -82,6 +81,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $template->set('checkout', $checkoutResult);
         $template->set('booking', $this->booking);
         $template->set('event', $this->event);
+        $template->set('calendar', $this->event->getRelated('pid')->current());
 
         return $template->getResponse();
     }
@@ -127,47 +127,5 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $this->setCheckoutHandler($this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler));
 
         return null !== $this->checkoutHandler;
-    }
-
-    private function getInfoMessages(): string|null
-    {
-        return $this->getMessages('info');
-    }
-
-    private function getConfirmMessages(): string|null
-    {
-        return $this->getMessages('confirm');
-    }
-
-    private function getErrorMessages(): string|null
-    {
-        return $this->getMessages('error');
-    }
-
-    private function getMessages(string $type): string|null
-    {
-        if (!\in_array($type, ['error', 'confirm', 'info'], true)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid message type "%s".', $type));
-        }
-
-        $session = $this->requestStack->getCurrentRequest()->getSession();
-
-        if (!$session->isStarted()) {
-            return null;
-        }
-
-        $messages = $session->getFlashBag()->get('contao.FE.'.$type);
-
-        if (empty($messages)) {
-            return null;
-        }
-
-        $messageString = '';
-
-        foreach ($messages as $message) {
-            $messageString .= \sprintf('<p class="tl_%s">%s</p>', $type, $message);
-        }
-
-        return $messageString;
     }
 }

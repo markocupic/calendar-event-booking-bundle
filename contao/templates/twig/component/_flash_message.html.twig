@@ -1,0 +1,9 @@
+{% block flash_message_component %}
+    {% for type, message in messages %}
+        {% for item in messages[type] %}
+            <div class="tl_{{ type|lower }}">
+                {{ item }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

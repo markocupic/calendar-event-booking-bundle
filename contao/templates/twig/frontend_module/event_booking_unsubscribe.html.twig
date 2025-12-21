@@ -1,11 +1,17 @@
 {% trans_default_domain "mc_calendar_event_booking" %}
 {% extends "@Contao/frontend_module/_base.html.twig" %}
+{% use "@Contao_MarkocupicCalendarEventBookingBundle/component/_flash_message.html.twig" %}
 
 {% set searchable = false %}
 
 {% block content %}
     {% if messages|default %}
-        {{ messages|raw }}
+        <div class="ceb-form--unsubscribe">
+            {# Render the messages. #}
+            {% with {messages} only %}
+                {{ block('flash_message_component') }}
+            {% endwith %}
+        </div>
     {% endif %}
     {% if hasForm|default %}
         <form action="{{ app.request.getRequestUri() }}" id="{{ formId }}" method="post">

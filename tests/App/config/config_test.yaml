@@ -1,0 +1,35 @@
+imports:
+    - { resource: security.yaml }
+
+parameters:
+    locale: en
+
+framework:
+    test: ~
+    translator: { fallbacks: ['%locale%'] }
+    secret: '%env(APP_SECRET)%'
+    default_locale: '%locale%'
+    http_method_override: false
+    php_errors:
+        log: true
+    handle_all_throwables: true
+
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                driver: pdo_mysql
+                url: '%env(DATABASE_URL)%'
+                charset: utf8mb4
+                default_table_options:
+                    charset: utf8mb4
+                    collation: utf8mb4_unicode_ci
+                    engine: InnoDB
+        types:
+            binary_string:
+                class: Contao\CoreBundle\Doctrine\DBAL\Types\BinaryStringType

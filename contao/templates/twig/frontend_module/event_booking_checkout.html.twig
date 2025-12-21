@@ -1,13 +1,19 @@
 {% extends "@Contao/frontend_module/_base.html.twig" %}
+{% use "@Contao_MarkocupicCalendarEventBookingBundle/component/_flash_message.html.twig" %}
 
 {% set searchable = false %}
 
 {% block content %}
-    {% if errorMessages|default %}
+    {% if hasInitializationError|default %}
         <div class="ceb-checkout">
-            <div class="ceb-checkout--error-messages">
-                {{ errorMessages|raw }}
-            </div>
+            {% if messages|default %}
+                <div class="ceb-checkout--messages">
+                    {# Render the messages. #}
+                    {% with {messages} only %}
+                        {{ block('flash_message_component') }}
+                    {% endwith %}
+                </div>
+            {% endif %}
         </div>
     {% else %}
         <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">

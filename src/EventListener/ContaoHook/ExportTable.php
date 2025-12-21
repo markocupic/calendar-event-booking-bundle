@@ -18,7 +18,7 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Markocupic\ExportTable\Config\Config;
-use Markocupic\ExportTable\Listener\ContaoHooks\ListenerInterface;
+use Markocupic\ExportTable\EventListener\ContaoHooks\ListenerInterface;
 
 #[AsHook(ExportTable::HOOK, priority: 1000)]
 final class ExportTable implements ListenerInterface

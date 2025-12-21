@@ -13,7 +13,8 @@
         "php": "^8.1",
         "contao/core-bundle": "^5.3",
         "contao/calendar-bundle": "^5.3",
-        "markocupic/export_table": "^5.1",
+        "markocupic/export_table": "^5.7",
+        "markocupic/contao-flash-message": "dev-main",
         "ramsey/uuid": "^3.0 || ^4.0",
         "codefog/contao-haste": "^5.0",
         "terminal42/notification_center": "^2.0",
@@ -24,11 +25,17 @@
         "contao/easy-coding-standard": "^6.13",
         "contao/test-case": "^5.5",
         "phpstan/phpstan": "^2.1",
-        "symfony/phpunit-bridge": "^6.0 || ^7.0"
+        "symfony/phpunit-bridge": "^6.0 || ^7.0",
+        "dama/doctrine-test-bundle": "^v8.3"
     },
     "autoload": {
         "psr-4": {
             "Markocupic\\CalendarEventBookingBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Markocupic\\CalendarEventBookingBundle\\Tests\\": "tests/"
         }
     },
     "extra": {
