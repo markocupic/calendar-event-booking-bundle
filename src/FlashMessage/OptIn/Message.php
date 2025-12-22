@@ -16,9 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\FlashMessage\OptIn;
 
 use Markocupic\ContaoFlashMessage\FlashMessage\GenericMessage;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('mc.flash_message.message_handler')]
 class Message extends GenericMessage implements MessageInterface
 {
     /**
