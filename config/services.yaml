@@ -33,3 +33,23 @@ services:
             - { id: markocupic_calendar_event_booking.event_booking, policy: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.policy%', limit: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.limit%', interval: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.interval%' }
             - '@contao.rate_limit.member_password_storage'
             - '@?lock_factory'
+
+    markocupic_calendar_event_booking.flash_message.checkout:
+        class: Markocupic\ContaoFlashMessage\FlashMessage\Message
+        tags:
+            - { name: 'mc.flash_message.message_handler', messageId: 'cebb_checkout' }
+
+    markocupic_calendar_event_booking.flash_message.form:
+        class: Markocupic\ContaoFlashMessage\FlashMessage\Message
+        tags:
+            - { name: 'mc.flash_message.message_handler', messageId: 'cebb_form' }
+
+    markocupic_calendar_event_booking.flash_message.opt_in:
+        class: Markocupic\ContaoFlashMessage\FlashMessage\Message
+        tags:
+            - { name: 'mc.flash_message.message_handler', messageId: 'cebb_opt_in' }
+
+    markocupic_calendar_event_booking.flash_message.unsubscribe:
+        class: Markocupic\ContaoFlashMessage\FlashMessage\Message
+        tags:
+            - { name: 'mc.flash_message.message_handler', messageId: 'cebb_unsubscribe' }

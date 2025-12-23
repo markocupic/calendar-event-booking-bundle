@@ -29,10 +29,11 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\CancelBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingUnsubscribeException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\FlashMessage\Unsubscribe\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +63,8 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
-        private readonly Message $message,
+        #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.unsubscribe')]
+        private readonly MessageInterface $message,
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationManager $notificationManager,
         private readonly ScopeMatcher $scopeMatcher,

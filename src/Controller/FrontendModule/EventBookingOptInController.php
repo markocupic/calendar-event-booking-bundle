@@ -29,10 +29,11 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\FlashMessage\OptIn\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +55,8 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LockFactory $lockFactory,
-        private readonly Message $message,
+        #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.opt_in')]
+        private readonly MessageInterface $message,
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationManager $notificationManager,
         private readonly TranslatorInterface $translator,

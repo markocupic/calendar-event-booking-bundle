@@ -35,12 +35,13 @@ use Markocupic\CalendarEventBookingBundle\Event\FrontendModuleGetResponseEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\FlashMessage\Form\Message;
 use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
 use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
 use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +71,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
         private readonly EventStatus $eventStatusHelper,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly LockFactory $lockFactory,
-        private readonly Message $message,
+        #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.form')]
+        private readonly MessageInterface $message,
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,

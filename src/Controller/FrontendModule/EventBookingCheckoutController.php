@@ -21,9 +21,10 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
-use Markocupic\CalendarEventBookingBundle\FlashMessage\Checkout\Message;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,7 +45,8 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     public function __construct(
         #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $checkoutHandlers,
-        private readonly Message $message,
+        #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.checkout')]
+        private readonly MessageInterface $message,
         private readonly RequestStack $requestStack,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
