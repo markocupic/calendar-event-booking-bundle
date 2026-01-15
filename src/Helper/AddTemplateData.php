@@ -45,15 +45,15 @@ class AddTemplateData
     public function getData(CalendarEventsModel $event, Request $request): array
     {
         return [
-            'event' => $event,
-            'calendar' => $event->getRelated('pid'),
+            'event' => $event->current(),
+            'calendar' => $event->getRelated('pid')?->current(),
             'canRegister' => $this->eventStatus->canRegister($event, $request),
             'isFullyBooked' => $this->eventStatus->isFullyBooked($event, $this->connection),
             'freeSpotsCount' => $this->eventStatus->getFreeSpotsCount($event, $this->connection),
             'bookingCount' => $this->eventStatus->getBookingCount($event, $this->connection),
             'hasLoggedInUser' => $this->frontendUserManager->hasLoggedInFrontendUser(),
             'loggedInUser' => $this->frontendUserManager->getLoggedInFrontendUser(),
-            'page' => $request->attributes->get('pageModel'),
+            'page' => $request->attributes->get('pageModel')->current(),
         ];
     }
 }
