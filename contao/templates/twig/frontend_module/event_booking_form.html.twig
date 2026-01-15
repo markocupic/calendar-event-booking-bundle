@@ -14,8 +14,15 @@
         </div>
     {% endif %}
     {% set event_data = event.row() %}
-    {# Overview of useful template variables: #}
+    {# Some examples of how the built-in Twig variables can be used: #}
+    {# Booking statuses: booking_open, fully_booked, waiting_list_open, not_bookable, not_yet_bookable, booking_closed #}
     {#
+    {% if eventStatus === 'waiting_list_open' %}
+       <div>Here comes an important message!</div>
+    {% endif %}
+    {% if eventStatus === 'booking_open' %}
+       <div>Here comes an important message!</div>
+    {% endif %}
     <ul>
         <li>{{ 'mod_form.form.event_status'|trans }}: {{ ('mod_form.event_status.'~eventStatus)|trans }}</li>
         <li>{{ 'mod_form.form.logged_in_user'|trans }}: {{ hasLoggedInUser ? loggedInUser.firstname ~ ' ' ~ loggedInUser.lastname : '---' }}</li>
