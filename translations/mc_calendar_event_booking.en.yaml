@@ -57,7 +57,7 @@ mod_checkout:
     error:
         booking_not_found: 'Invalid or missing booking token. This error usually occurs if you have not confirmed your booking in time or if we have not received your payment in time.'
     default:
-        registration_successful: 'You have successfully registered for "%event_title%".'
+        registration_successful: 'You have successfully signed up for "%event_title%".'
         name: 'Name'
         firstname: 'First name'
         lastname: 'Last name'
