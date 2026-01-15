@@ -14,6 +14,17 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Exception;
 
-class EventBookingException extends AbstractTranslatableException
+interface TranslatableExceptionInterface
 {
+    public function getSeverityLevel(): string;
+
+    public function getMessageKey(): string;
+
+    public function getMessageData(): array;
+
+    public function getMessageDomain(): string;
+
+    public function setTranslatedMessage(string $translatedMessage): void;
+
+    public function getTranslatedMessage(): string;
 }

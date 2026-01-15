@@ -27,6 +27,7 @@ use Contao\ModuleModel;
 use Contao\OptInModel;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
+use Markocupic\CalendarEventBookingBundle\Exception\AbstractTranslatableException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
@@ -78,7 +79,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $optInModel = OptInModel::findOneByToken($token);
 
         if (null === $optInModel) {
-            throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
         }
 
         $optInToken = new OptInToken($optInModel, $this->framework);
@@ -101,7 +102,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             if (empty($arrRelated[CalendarEventsMemberModel::getTable()][0])) {
                 $this->addCssClassToTemplate('error booking-not-found', $template);
 
-                throw new EventBookingOptInException('Booking not found.', $this->translator->trans('mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingOptInException('Booking not found.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN);
             }
 
             $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
@@ -109,7 +110,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             if (null === $booking) {
                 $this->addCssClassToTemplate('error booking-not-found', $template);
 
-                throw new EventBookingOptInException('Booking not found.', $this->translator->trans('mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingOptInException('Booking not found.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN);
             }
 
             /** @var CalendarEventsModel $event */
@@ -118,7 +119,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             if (null === $event) {
                 $this->addCssClassToTemplate('error event-not-found', $template);
 
-                throw new EventBookingOptInException('Event not found.', $this->translator->trans('mod_opt_in.error.corresponding_event_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingOptInException('Event not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_event_not_found', [], self::TRANS_DOMAIN);
             }
 
             /** @var CalendarModel $calendar */
@@ -127,7 +128,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             if (null === $calendar) {
                 $this->addCssClassToTemplate('error calendar-not-found', $template);
 
-                throw new EventBookingOptInException('Calendar not found.', $this->translator->trans('mod_opt_in.error.corresponding_calendar_not_found', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingOptInException('Calendar not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_calendar_not_found', [], self::TRANS_DOMAIN);
             }
 
             if ($this->processConfirm($template, $calendar, $event, $booking, $request)) {
@@ -144,12 +145,12 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
         } catch (OptInTokenNoLongerValidException $e) {
             $this->message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
-        } catch (EventBookingOptInException $e) {
+        } catch (AbstractTranslatableException $e) {
             if ($this->connection->isTransactionActive()) {
                 $this->connection->rollBack();
             }
 
-            $this->message->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->message->add($this->translator->trans($e->getTranslatableText(), $e->getMessageData(), $e->getMessageDomain()), $e->getSeverityLevel());
         } catch (\Throwable $e) {
             if ($this->connection->isTransactionActive()) {
                 $this->connection->rollBack();
@@ -157,9 +158,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
             $this->message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
 
-            if (method_exists($e, 'getMessage')) {
-                $this->contaoErrorLogger?->error($e->getMessage());
-            }
+            $this->contaoErrorLogger?->error($e->getMessage());
         }
 
         $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
@@ -174,16 +173,15 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->addCssClassToTemplate('error booking-canceled', $template);
             $template->set('alreadyCanceled', true);
 
-            throw new EventBookingOptInException('Booking canceled.', $this->translator->trans('mod_opt_in.error.booking_canceled', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            throw new EventBookingOptInException('Booking canceled.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_canceled', [], self::TRANS_DOMAIN);
         }
 
         // Check if already confirmed (optIn === true)
         if ($booking->optIn) {
             $this->addCssClassToTemplate('info already-confirmed', $template);
-
             $template->set('alreadyConfirmed', true);
 
-            throw new EventBookingOptInException('Booking already confirmed.', $this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
+            throw new EventBookingOptInException('Booking already confirmed.', SeverityLevel::INFO, 'mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN);
         }
 
         // Check if opt-in is required
@@ -191,7 +189,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->addCssClassToTemplate('info confirm-not-required', $template);
             $template->set('confirmNotRequired', true);
 
-            throw new EventBookingOptInException('Opt-In not required.', $this->translator->trans('mod_opt_in.info.opt_in_not_required', [], self::TRANS_DOMAIN), SeverityLevel::INFO);
+            throw new EventBookingOptInException('Opt-In not required.', SeverityLevel::INFO, 'mod_opt_in.info.opt_in_not_required', [], self::TRANS_DOMAIN);
         }
 
         // Check if booking has been expired
@@ -199,7 +197,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->addCssClassToTemplate('error confirm-expired', $template);
             $template->set('confirmExpired', true);
 
-            throw new EventBookingOptInException('Booking already expired.', $this->translator->trans('mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            throw new EventBookingOptInException('Booking already expired.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN);
         }
 
         // Check if past event start date
@@ -207,7 +205,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
             $template->set('cannotConfirm', true);
 
-            throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
         }
 
         // Check if past booking date
@@ -215,12 +213,13 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
             $template->set('cannotConfirm', true);
 
-            throw new EventBookingOptInException('Confirm no more possible.', $this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
         }
 
         $booking->optIn = true;
         $booking->temporaryReserved = false;
         $booking->save();
+
         $this->addCssClassToTemplate('confirm-success', $template);
         $template->set('optInSuccess', true);
         $this->message->addInfo($this->translator->trans('mod_opt_in.info.opt_in_success', [], self::TRANS_DOMAIN));

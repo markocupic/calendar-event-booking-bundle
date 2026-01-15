@@ -32,6 +32,7 @@ use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Event\FrontendModuleGetResponseEvent;
+use Markocupic\CalendarEventBookingBundle\Exception\AbstractTranslatableException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
@@ -189,16 +190,13 @@ class EventBookingFormController extends AbstractFrontendModuleController
             $this->connection->rollBack();
 
             throw $e;
-        } catch (EventBookingException $e) {
+        } catch (AbstractTranslatableException $e) {
             $this->connection->rollBack();
-            $this->message->add($e->getTranslatableText(), $e->getSeverityLevel());
+            $this->message->add($this->translator->trans($e->getTranslatableText(), $e->getMessageData(), $e->getMessageDomain()), $e->getSeverityLevel());
         } catch (\throwable $e) {
             $this->connection->rollBack();
             $this->message->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
-
-            if (method_exists($e, 'getMessage')) {
-                $this->contaoErrorLogger?->error($e->getMessage());
-            }
+            $this->contaoErrorLogger?->error($e->getMessage());
 
             throw $e;
         } finally {
@@ -261,7 +259,7 @@ class EventBookingFormController extends AbstractFrontendModuleController
             $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 
             if (!$limiter->consume()->isAccepted()) {
-                throw new EventBookingException('Too many requests!', $this->translator->trans('mod_form.error.too_many_requests', [], self::TRANS_DOMAIN), SeverityLevel::ERROR);
+                throw new EventBookingException('Too many requests!', SeverityLevel::ERROR, 'mod_form.error.too_many_requests', [], self::TRANS_DOMAIN);
             }
         }
     }

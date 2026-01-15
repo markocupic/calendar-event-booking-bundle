@@ -14,23 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Exception;
 
-class EventBookingOptInException extends \RuntimeException
+class EventBookingOptInException extends AbstractTranslatableException
 {
-    public function __construct(
-        string $reason,
-        private string $translatableText,
-        private SeverityLevel $severityLevel = SeverityLevel::INFO,
-    ) {
-        parent::__construct($reason);
-    }
-
-    public function getSeverityLevel(): string
-    {
-        return $this->severityLevel->value;
-    }
-
-    public function getTranslatableText(): string
-    {
-        return $this->translatableText;
-    }
 }
