@@ -16,6 +16,10 @@
                     <td>{{ booking.firstname }} {{ booking.lastname }}</td>
                 </tr>
             {% endif %}
+            <tr class="ceb-default-checkout-table-ticket-amount">
+                <td>{{ 'mod_checkout.default.ticket_amount'|trans }}</td>
+                <td>{{ booking.ticketAmount }}</td>
+            </tr>
             {% if booking.email|default %}
                 <tr class="ceb-default-checkout-table-email">
                     <td>{{ 'mod_checkout.default.email_address'|trans }}</td>

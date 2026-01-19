@@ -20,7 +20,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Event\WaitingListAdvancementEvent;
+use Markocupic\CalendarEventBookingBundle\Event\WaitingListPromotedEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -45,14 +45,14 @@ class WaitingListManager
         private readonly NotificationCenter $notificationCenter,
         private readonly NotificationManager $notificationManager,
         private readonly RequestStack $requestStack,
-        private readonly bool $autoWaitingListAdvancement,
+        private readonly bool $autoWaitingListPromotion,
         private readonly LoggerInterface|null $contaoGeneralLogger,
     ) {
     }
 
     public function checkWaitingList(CalendarEventsModel|null $event = null): void
     {
-        if (!$this->autoWaitingListAdvancement) {
+        if (!$this->autoWaitingListPromotion) {
             return;
         }
 
@@ -69,6 +69,7 @@ class WaitingListManager
             }
 
             while ($events->next()) {
+                /** @var CalendarEventsModel $currentEvent */
                 $currentEvent = $events->current();
 
                 if (!$currentEvent->enableWaitingList) {
@@ -80,6 +81,28 @@ class WaitingListManager
         } finally {
             $lock->release();
         }
+    }
+
+    public function sendPromotionNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
+    {
+        $calendar = $event->getRelated('pid');
+
+        if ($calendar?->waitingListAdvancementNotification) {
+            $this->notificationCenter->sendNotification(
+                $calendar->waitingListAdvancementNotification,
+                $this->notificationManager->getNotificationTokens($booking),
+            );
+        }
+    }
+
+    public function logPromotion(CalendarEventsMemberModel $booking): void
+    {
+        $this->contaoGeneralLogger?->info(
+            \sprintf(
+                'Moved booking ID %d from waiting list to the regular list of bookings.',
+                $booking->id,
+            ),
+        );
     }
 
     private function getEventsToProcess(CalendarEventsModel|null $event): Collection|null
@@ -102,11 +125,11 @@ class WaitingListManager
                 break;
             }
 
-            if (!$this->shouldAdvanceBooking($nextBooking)) {
+            if (!$this->isAdvancementAllowed($nextBooking)) {
                 continue;
             }
 
-            $this->moveBookingFromWaitingList($nextBooking, $event);
+            $this->promoteBookingFromWaitingList($nextBooking, $event);
         }
     }
 
@@ -116,7 +139,7 @@ class WaitingListManager
 
         $queryBuilder->select('id')
             ->from('tl_calendar_events_member', 't')
-            ->where('t.pid = :pid AND t.waitingList = 1 AND t.canceled != 1 AND t.expired != 1')
+            ->where('t.pid = :pid AND t.waitingList = 1 AND temporaryReserved != 1 AND t.canceled != 1 AND t.expired != 1')
             ->andWhere('t.ticketAmount <= :availableSlots')
             ->andWhere($queryBuilder->expr()->notIn('t.id', ':processedIds'))
             ->setParameter('pid', $event->id)
@@ -140,20 +163,20 @@ class WaitingListManager
         return CalendarEventsMemberModel::findById($bookingID);
     }
 
-    private function shouldAdvanceBooking(CalendarEventsMemberModel $booking): bool
+    private function isAdvancementAllowed(CalendarEventsMemberModel $booking): bool
     {
-        $advancementEvent = new WaitingListAdvancementEvent(
+        $event = new WaitingListPromotedEvent(
             $booking,
             self::class,
             $this->requestStack->getCurrentRequest(),
         );
 
-        $this->eventDispatcher->dispatch($advancementEvent);
+        $this->eventDispatcher->dispatch($event);
 
-        return $advancementEvent->shouldAdvance();
+        return $event->isAdvancementAllowed();
     }
 
-    private function moveBookingFromWaitingList(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
+    private function promoteBookingFromWaitingList(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
     {
         $affected = $this->connection->update(
             'tl_calendar_events_member',
@@ -162,30 +185,8 @@ class WaitingListManager
         );
 
         if ($affected) {
-            $this->sendAdvancementNotification($booking, $event);
-            $this->logAdvancement($booking);
+            $this->sendPromotionNotification($booking, $event);
+            $this->logPromotion($booking);
         }
-    }
-
-    private function sendAdvancementNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
-    {
-        $calendar = $event->getRelated('pid');
-
-        if ($calendar?->waitingListAdvancementNotification) {
-            $this->notificationCenter->sendNotification(
-                $calendar->waitingListAdvancementNotification,
-                $this->notificationManager->getNotificationTokens($booking),
-            );
-        }
-    }
-
-    private function logAdvancement(CalendarEventsMemberModel $booking): void
-    {
-        $this->contaoGeneralLogger?->info(
-            \sprintf(
-                'Moved booking ID %d from waiting list to the regular list of bookings.',
-                $booking->id,
-            ),
-        );
     }
 }

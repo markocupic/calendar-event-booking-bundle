@@ -44,7 +44,7 @@ class Configuration implements ConfigurationInterface
                     ->info('If set to true, canceled bookings are deleted from the database automatically by a cronjob.')
                     ->defaultFalse()
                 ->end()
-                ->booleanNode('auto_waiting_list_advancement')
+                ->booleanNode('auto_waiting_list_promotion')
                     ->info('If set to false, the automatic advancement from waiting list will be disabled.')
                     ->defaultTrue()
                 ->end()

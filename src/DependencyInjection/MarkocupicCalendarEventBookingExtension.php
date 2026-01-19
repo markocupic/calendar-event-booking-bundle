@@ -41,7 +41,7 @@ class MarkocupicCalendarEventBookingExtension extends Extension
         $container->setParameter($this->getAlias().'.auto_expire_time_limit', $config['auto_expire_time_limit']);
         $container->setParameter($this->getAlias().'.auto_delete_expired_bookings', $config['auto_delete_expired_bookings']);
         $container->setParameter($this->getAlias().'.auto_delete_canceled_bookings', $config['auto_delete_canceled_bookings']);
-        $container->setParameter($this->getAlias().'.auto_waiting_list_advancement', $config['auto_waiting_list_advancement']);
+        $container->setParameter($this->getAlias().'.auto_waiting_list_promotion', $config['auto_waiting_list_promotion']);
 
         // notification
         $container->setParameter($this->getAlias().'.notification.log.exclude', $config['notification']['log']['exclude']);

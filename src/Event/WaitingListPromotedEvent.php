@@ -18,9 +18,9 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class WaitingListAdvancementEvent extends Event
+class WaitingListPromotedEvent extends Event
 {
-    private bool $shouldAdvance = true;
+    private bool $isAdvancementAllowed = true;
 
     public function __construct(
         private readonly CalendarEventsMemberModel $booking,
@@ -44,13 +44,13 @@ class WaitingListAdvancementEvent extends Event
         return $this->booking;
     }
 
-    public function shouldAdvance(): bool
+    public function isAdvancementAllowed(): bool
     {
-        return $this->shouldAdvance;
+        return $this->isAdvancementAllowed;
     }
 
-    public function setShouldAdvance(bool $shouldAdvance): bool
+    public function setShouldAdvance(bool $isAdvancementAllowed): void
     {
-        return $this->shouldAdvance = $shouldAdvance;
+        $this->isAdvancementAllowed = $isAdvancementAllowed;
     }
 }
