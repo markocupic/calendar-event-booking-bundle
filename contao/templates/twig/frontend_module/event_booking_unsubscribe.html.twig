@@ -5,27 +5,31 @@
 {% set searchable = false %}
 
 {% block content %}
-    {% if messages|default %}
-        <div class="ceb-form--unsubscribe">
-            {# Render the messages. #}
-            {% with {messages} only %}
-                {{ block('flash_message_component') }}
-            {% endwith %}
-        </div>
-    {% endif %}
-    {% if hasForm|default %}
-        <form action="{{ app.request.getRequestUri() }}" id="{{ formId }}" method="post">
-            <div class="formbody">
-                <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
-                <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
-                <p class="unsubscribe-confirm">
-                    {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%title%': event.title})|raw }}
-                </p>
-                <div class="widget widget-submit unsubscribe-confirm-btn">
-                    <button type="submit" class="submit">{{ 'mod_unsubscribe.unsubscribe_btn_label'|trans }}</button>
-                </div>
-                <p class="stop-unsubscription"><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscription_btn_label'|trans }}</a></p>
+    {% block messages %}
+        {% if messages|default %}
+            <div class="ceb-form--unsubscribe">
+                {# Render the messages. #}
+                {% with {messages} only %}
+                    {{ block('flash_message_component') }}
+                {% endwith %}
             </div>
-        </form>
-    {% endif %}
+        {% endif %}
+    {% endblock %}
+    {% block form %}
+        {% if hasForm|default %}
+            <form action="{{ app.request.getRequestUri() }}" id="{{ formId }}" method="post">
+                <div class="formbody">
+                    <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
+                    <p class="unsubscribe-confirm">
+                        {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%title%': event.title})|raw }}
+                    </p>
+                    <div class="widget widget-submit unsubscribe-confirm-btn">
+                        <button type="submit" class="submit">{{ 'mod_unsubscribe.unsubscribe_btn_label'|trans }}</button>
+                    </div>
+                    <p class="stop-unsubscription"><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscription_btn_label'|trans }}</a></p>
+                </div>
+            </form>
+        {% endif %}
+    {% endblock %}
 {% endblock %}
