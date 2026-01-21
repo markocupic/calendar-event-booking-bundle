@@ -63,6 +63,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
 
     private CalendarEventsModel|null $event = null;
 
+    private FormModel|null $form = null;
+
     private string|null $eventStatus = null;
 
     public function __construct(
@@ -96,20 +98,19 @@ class EventBookingFormController extends AbstractFrontendModuleController
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function getCalendar(): CalendarModel|null
     {
         return $this->calendar;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function getEvent(): CalendarEventsModel|null
     {
         return $this->event;
+    }
+
+    public function getForm(): FormModel|null
+    {
+        return $this->form;
     }
 
     public function getEventStatus(): string|null
@@ -140,6 +141,8 @@ class EventBookingFormController extends AbstractFrontendModuleController
         $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->event, $request);
 
         $formId = $event->getOptions()['formId'] ?? -1;
+
+        $this->form = $this->getContaoAdapter(FormModel::class)->findById($formId);
 
         if (!$this->eventStatusHelper->canRegister($this->event, $request) && $this->getFormId($formId)) {
             $this->addTemplateData($template, $request);
