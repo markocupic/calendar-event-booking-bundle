@@ -51,10 +51,28 @@ class CalendarEventsMember
                 }
             }
 
+            $filterQuery = ['tl_calendar_events_member.pid = ?'];
+            $filterParams = [Input::get('id')];
+
+            // Add custom filters via url parameter (filter=base64encoded_query)
+            $filter = Input::get('filter', true);
+
+            if (!empty($filter)) {
+                $filter = base64_decode($filter, true);
+                $filter = preg_replace('/\./', '%2E', $filter);
+                $customFilters = $this->parseQueryPreserveDots($filter);
+
+                foreach ($customFilters as $key => $value) {
+                    $filterQuery[] = "$key = ?";
+                    $filterParams[] = $value;
+                }
+            }
+
             $exportConfig = (new Config('tl_calendar_events_member'))
                 ->setExportType('csv')
-                ->setFilter([['tl_calendar_events_member.pid = ?'], [Input::get('id')]])
+                ->setFilter([implode(' AND ', $filterQuery), $filterParams])
                 ->setFields($arrSelectedFields)
+                ->setSortBy('addedOn')
                 ->setAddHeadline(true)
                 ->setHeadlineFields($arrSelectedFields)
             ;
@@ -73,5 +91,25 @@ class CalendarEventsMember
 
             $this->exportTable->run($exportConfig);
         }
+    }
+
+    public function parseQueryPreserveDots(string $query): array
+    {
+        $result = [];
+
+        foreach (explode('&', $query) as $pair) {
+            if ('' === $pair) {
+                continue;
+            }
+
+            [$key, $value] = array_pad(explode('=', $pair, 2), 2, '');
+
+            $key = urldecode($key);
+            $value = urldecode($value);
+
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }
