@@ -135,11 +135,11 @@ class EventBookingFormController extends AbstractFrontendModuleController
             return $event->getResponse();
         }
 
-        $formId = $event->getOptions()['formId'] ?? -1;
-
         $this->getContaoAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
 
         $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->event, $request);
+
+        $formId = $event->getOptions()['formId'] ?? -1;
 
         if (!$this->eventStatusHelper->canRegister($this->event, $request) && $this->getFormId($formId)) {
             $this->addTemplateData($template, $request);
