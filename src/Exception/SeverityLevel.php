@@ -16,8 +16,8 @@ namespace Markocupic\CalendarEventBookingBundle\Exception;
 
 enum SeverityLevel: string
 {
-    case ERROR = 'TL_ERROR';
-    case INFO = 'TL_INFO';
-    case SUCCESS = 'TL_SUCCESS';
-    case WARNING = 'TL_WARNING';
+    case ERROR = 'ERROR';
+    case INFO = 'INFO';
+    case SUCCESS = 'SUCCESS';
+    case WARNING = 'WARNING';
 }
