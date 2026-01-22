@@ -7,45 +7,48 @@
                 metadata: { alt: event.title },
             }) }}
         {% endif %}
-
-        <p>{{ 'mod_checkout.default.registration_successful'|trans({'%event_title%': event.title})|decode_entities }}</p>
-        <table class="ceb-default-checkout-table">
+        <div class="ceb-default-checkout--messages">
+            <div class="tl_info">
+                {{ 'mod_checkout.default.registration_successful'|trans({'%event_title%': event.title})|decode_entities }}
+            </div>
+        </div>
+        <table class="ceb-default-checkout--table">
             {% if booking.firstname|default and booking.lastname|default %}
                 <tr class="ceb-default-checkout-table-name">
                     <td>{{ 'mod_checkout.default.name'|trans }}</td>
                     <td>{{ booking.firstname }} {{ booking.lastname }}</td>
                 </tr>
             {% endif %}
-            <tr class="ceb-default-checkout-table-ticket-amount">
+            <tr class="ceb-default-checkout--table-ticket-amount">
                 <td>{{ 'mod_checkout.default.ticket_amount'|trans }}</td>
                 <td>{{ booking.ticketAmount }}</td>
             </tr>
             {% if booking.email|default %}
-                <tr class="ceb-default-checkout-table-email">
+                <tr class="ceb-default-checkout--table-email">
                     <td>{{ 'mod_checkout.default.email_address'|trans }}</td>
                     <td>{{ booking.email }}</td>
                 </tr>
             {% endif %}
             {% if booking.waitingList %}
-                <tr class="ceb-default-checkout-table-waiting-list">
+                <tr class="ceb-default-checkout--table-waiting-list">
                     <td>{{ 'mod_checkout.default.on_waiting_list'|trans }}</td>
                     <td>{{ 'mod_checkout.default.yes'|trans }}</td>
                 </tr>
             {% endif %}
             {% if calendar.requireOptIn and booking.temporaryReserved and not booking.optIn %}
-                <tr class="ceb-default-checkout-table-confirmed">
+                <tr class="ceb-default-checkout--table-confirmed">
                     <td>{{ 'mod_checkout.default.booking_confirmed'|trans }}</td>
                     <td>{{ 'mod_checkout.default.booking_not_confirmed'|trans }}</td>
                 </tr>
             {% endif %}
             {% if booking.expired %}
-                <tr class="ceb-default-checkout-table-expired">
+                <tr class="ceb-default-checkout--table-expired">
                     <td>{{ 'mod_checkout.default.booking_expired_title'|trans }}</td>
                     <td>{{ 'mod_checkout.default.booking_expired_text'|trans }}</td>
                 </tr>
             {% endif %}
             {% if booking.canceled %}
-                <tr class="ceb-default-checkout-table-canceled">
+                <tr class="ceb-default-checkout--table-canceled">
                     <td>{{ 'mod_checkout.default.booking_canceled_title'|trans }}</td>
                     <td>{{ 'mod_checkout.default.booking_canceled_text'|trans }}</td>
                 </tr>
