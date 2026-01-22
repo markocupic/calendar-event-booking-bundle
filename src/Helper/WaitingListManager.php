@@ -83,7 +83,21 @@ class WaitingListManager
         }
     }
 
-    public function sendPromotionNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
+    public function promoteBookingFromWaitingList(CalendarEventsMemberModel $booking, CalendarEventsModel $event, string $context): void
+    {
+        $affected = $this->connection->update(
+            'tl_calendar_events_member',
+            ['waitingList' => 0],
+            ['id' => $booking->id],
+        );
+
+        if ($affected) {
+            $this->sendPromotionNotification($booking, $event);
+            $this->logPromotion($booking, $context);
+        }
+    }
+
+    private function sendPromotionNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
     {
         $calendar = $event->getRelated('pid');
 
@@ -95,12 +109,13 @@ class WaitingListManager
         }
     }
 
-    public function logPromotion(CalendarEventsMemberModel $booking): void
+    private function logPromotion(CalendarEventsMemberModel $booking, string $context): void
     {
         $this->contaoGeneralLogger?->info(
             \sprintf(
-                'Moved booking ID %d from waiting list to the regular list of bookings.',
+                'Moved booking ID %d from waiting list to the regular list of bookings. Context: %s',
                 $booking->id,
+                $context,
             ),
         );
     }
@@ -116,20 +131,25 @@ class WaitingListManager
         return CalendarEventsModel::findUpcomingByPids($calendarIds);
     }
 
-    private function processWaitingListForEvent(CalendarEventsModel $event): void
+    private function processWaitingListForEvent(CalendarEventsModel $calendarEvent): void
     {
-        while (($availableSlots = $event->maxBookings - $this->eventStatus->getBookingCount($event, $this->connection)) > 0) {
-            $nextBooking = $this->findNextEligibleBooking($event, $availableSlots);
+        while (($availableSlots = $calendarEvent->maxBookings - $this->eventStatus->getBookingCount($calendarEvent, $this->connection)) > 0) {
+            $nextBooking = $this->findNextEligibleBooking($calendarEvent, $availableSlots);
 
             if (null === $nextBooking) {
                 break;
             }
 
-            if (!$this->isAdvancementAllowed($nextBooking)) {
-                continue;
-            }
+            $event = new WaitingListPromotedEvent(
+                $nextBooking,
+                self::class,
+                $this->requestStack->getCurrentRequest(),
+            );
 
-            $this->promoteBookingFromWaitingList($nextBooking, $event);
+            // It is the responsibility of the corresponding event listener to call
+            // WaitingListManager::promoteBookingFromWaitingList() in order to remove the
+            // ‘waiting list’ status from the booking.
+            $this->eventDispatcher->dispatch($event);
         }
     }
 
@@ -161,32 +181,5 @@ class WaitingListManager
         $this->processedIds[] = $bookingID;
 
         return CalendarEventsMemberModel::findById($bookingID);
-    }
-
-    private function isAdvancementAllowed(CalendarEventsMemberModel $booking): bool
-    {
-        $event = new WaitingListPromotedEvent(
-            $booking,
-            self::class,
-            $this->requestStack->getCurrentRequest(),
-        );
-
-        $this->eventDispatcher->dispatch($event);
-
-        return $event->isAdvancementAllowed();
-    }
-
-    private function promoteBookingFromWaitingList(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
-    {
-        $affected = $this->connection->update(
-            'tl_calendar_events_member',
-            ['waitingList' => 0],
-            ['id' => $booking->id],
-        );
-
-        if ($affected) {
-            $this->sendPromotionNotification($booking, $event);
-            $this->logPromotion($booking);
-        }
     }
 }
