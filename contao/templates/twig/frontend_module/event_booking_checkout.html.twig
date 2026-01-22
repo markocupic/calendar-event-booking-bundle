@@ -19,11 +19,13 @@
         <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
             {% block checkout %}
                 {#
-                To override the default template you can refer to your custom template:
+                <!-- To override the default template you can refer to your custom template: -->
                 {% if checkout.getCheckoutType() == 'paypal %}
-                    {% '@App/checkout/paypal.html.twig' with checkout.getData() only %}
+                    <!-- In this case store the template under templates/App/Checkout/paypal.html.twig -->
+                    {% include 'App/Checkout/paypal.html.twig' with checkout.getData() only %}
                 {% elseif checkout.getCheckoutType() == 'stripe %}
-                    {% '@App/checkout/stripe.html.twig' with checkout.getData() only %}
+                    <!-- In this case store the template under templates/App/Checkout/stripe.html.twig -->
+                    {% include'App/Checkout/stripe.html.twig' with checkout.getData() only %}
                 {% else %}
                     {% include checkout.getTemplateName() with checkout.getData() only %}
                 {% endif %}
