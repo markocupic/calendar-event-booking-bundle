@@ -19,10 +19,10 @@
     {# Some examples of how the built-in Twig variables can be used: #}
     {# Booking statuses: booking_open, fully_booked, waiting_list_open, not_bookable, not_yet_bookable, booking_closed #}
     {#
-    {% if eventStatus === 'waiting_list_open' %}
+    {% if eventStatus == 'waiting_list_open' %}
        <div>Here comes an important message!</div>
     {% endif %}
-    {% if eventStatus === 'booking_open' %}
+    {% if eventStatus == 'booking_open' %}
        <div>Here comes an important message!</div>
     {% endif %}
     <ul>
