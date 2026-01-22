@@ -22,7 +22,13 @@ Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benac
 
 ## Warteliste
 
-Optional kann eine Warteliste aktiviert werden. Personen auf Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden. Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
+Optional kann eine Warteliste aktiviert werden. Personen auf Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden.
+Nachrücken können nur Personen,
+
+- deren Anmeldung nicht storniert wurden
+- deren Anmedlung nicht temporär ist
+- deren Reservierungsanfrage nicht abgelaufen ist.
+  Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
 
 ## Double-Opt-In
 
@@ -62,7 +68,7 @@ Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular m
 - Das Formularfeld `bookingUuid` wird automatisch generiert.
 - Folgende Felder werden im Beispielformular mitgeliefert und deren Inhalt beim Absenden des Formulars wird in der Datenbank (tl_calendar_events_member) gespeichert:
   `waitingList`, `gender`, `firstname`, `lastname`, `dateOfBirth`, `street`, `postal`, `city`, `phone`, `email`, `ticketAmount`, `escorts`, `notes`
-- Benutzen Sie das Feld `ticketAmount`, wenn für jedes Ticket ein Platz von der Gesamtzahl der maximal möglichen Teilnehmerzahl abgezogen werden soll.
+- Benutzen Sie das Feld `ticketAmount`, wenn mehrere Plätze gebucht werden können und für jedes Ticket ein Platz von der Gesamtzahl der maximal möglichen Teilnehmerzahl abgezogen werden soll.
 - Benutzen Sie das Feld `escorts`, wenn es Begleitpersonen gibt. Begleitpersonen werden **nicht** zur Gesamtzahl der Teilnehmerzahl dazugezählt.
 - Das Feld `waitingList` muss bei aktivierter Warteliste vorhanden sein.
 - Es können zusätzliche Felder im Formulargenerator erstellt werden. Damit die Daten in der Datenbank gespeichert werden, muss die DCA im Projekt-ROOT unter `contao/dca/tl_calendar_events_member.php` erweitert werden. Danach muss via Shell der Cache neu aufgebaut `composer install` und die
@@ -202,7 +208,7 @@ markocupic_calendar_event_booking:
   auto_expire_time_limit: 3600
   auto_delete_expired_bookings: false
   auto_delete_canceled_bookings: false
-  auto_waiting_list_advancement: true
+  auto_waiting_list_promotion: true
   notification:
     log:
       exclude: [ html,text ] # Um Platz in der Datenbank zu sparen, den Text der Nachrichten in tl_calendar_events_booking_notification nicht abspeichern
@@ -224,7 +230,7 @@ markocupic_calendar_event_booking:
 | `auto_expire_time_limit`                      | `3600`         | Zeit in Sekunden, welche dem User ab dem Moment der Registrierung bleibt, um seine Buchung per Link zu bestätigen oder um die Zahlung zu erledigen.                                 |
 | `auto_delete_expired_bookings`                | `false`        | Abgelehnte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus                                                                                                       |
 | `auto_delete_canceled_bookings`               | `false`        | Stornierte Anmeldungen werden automatisch aus der Datenbank gelöscht. Ein/Aus.                                                                                                      |
-| `auto_waiting_list_advancement`               | `true`         | Schaltet das automatische Nachrücken von der Warteliste ein/aus.                                                                                                                    |
+| `auto_waiting_list_promotion`                 | `true`         | Schaltet das automatische Nachrücken von der Warteliste ein/aus.                                                                                                                    |
 | `notification.log.exclude`                    | `[]`           | Hier können Sie einstellen, welche Felder `tl_calendar_events_booking_notification` vom Logging ausgeschlossen sein sollen.                                                         |
 | `rate_limiter.event_booking_form.enable`      | `true`         | Form-Submits mit Symfony Rate Limiter begrenzen. Ein/Aus.                                                                                                                           |
 | `rate_limiter.event_booking_form.policy`      | `fixed_window` | Rate Limit Methode                                                                                                                                                                  |
@@ -285,9 +291,9 @@ Um das Original-Template updatesicher zu überschreiben, müssen ein neues/angep
         {% block checkout %}
             {# To override the default template you can refer to your custom checkout fragment templates: #}
             {% if checkout.getCheckoutType() == 'paypal %}
-                {% '@App/checkout/paypal.html.twig' with checkout.getData() only %}
+                {% include 'App/Checkout/paypal.html.twig' with checkout.getData() only %}
             {% elseif checkout.getCheckoutType() == 'stripe %}
-                {% '@App/checkout/stripe.html.twig' with checkout.getData() only %}
+                {% include 'App/Checkout/stripe.html.twig' with checkout.getData() only %}
             {% else %}
                 {% include checkout.getTemplateName() with checkout.getData() only %}
             {% endif %}
