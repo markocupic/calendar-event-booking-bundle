@@ -1,6 +1,6 @@
 # API changes
 
-## Version 5.* to 6.0
+## Version 6.* to 7.0
 
 ### Umbenennung der Frontend-Module
 
@@ -46,8 +46,8 @@ Das Modul sollte auf der Seite platziert werden, wo User hingeleitet werden, nac
 
 ### Neue Spalte `tl_calendar_events_member.ticketAmount` und neue Funktion von `tl_calendar_events_member.escorts`
 
-Das Feld `tl_calendar_events_member.ticketAmount` sollte benutzt werden, wenn bei einer Buchung mehrere Tickets erworben werden sollen.
-**Achtung!** Die Anzahl Tickets wird zur Gesamtzahl der gebuchten Plätze addiert.
+Das Feld `tl_calendar_events_member.ticketAmount` wird neu verwendet, wenn bei einer Buchung mehrere Tickets erworben werden sollen.
+**Achtung!** Die Anzahl Tickets wird immer zur Gesamtzahl der gebuchten Plätze addiert.
 Soll die Anzahl Tickets im Formular einstellbar sein, muss dazu im Buchungsformular ein Feld mit dem Namen `ticketAmount` erstellt werden.
 
 Das Feld `tl_calendar_events_member.escorts` sollte benutzt werden, wenn bei einer Buchung die Zahl der Begleitpersonen angegeben werden muss.
