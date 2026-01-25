@@ -24,8 +24,6 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
 {
     public const NAME = 'default';
 
-    public const TEMPLATE_NAME = '@Contao_MarkocupicCalendarEventBookingBundle/frontend_module_fragment/checkout/default.html.twig';
-
     public static function getType(): string
     {
         return self::NAME;
@@ -44,12 +42,12 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
             throw new \Exception('Calendar not found.');
         }
 
-        $template = [];
-        $template['booking'] = $booking->row();
-        $template['event'] = $event->row();
-        $template['calendar'] = $calendar->row();
-        $template['module'] = $model;
+        $data = [];
+        $data['booking'] = $booking->row();
+        $data['event'] = $event->row();
+        $data['calendar'] = $calendar->row();
+        $data['module'] = $model;
 
-        return new CheckoutResult($this->getType(), self::TEMPLATE_NAME, $template);
+        return new CheckoutResult($this->getType(), $data);
     }
 }

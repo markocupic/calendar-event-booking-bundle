@@ -46,6 +46,14 @@
         <source>Select the sort direction.</source>
         <target>Wählen Sie die Sortierrichtung aus.</target>
       </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_handler.0">
+        <source>Checkout type.</source>
+        <target>Checkout-Typ</target>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_handler.1">
+        <source>Select the checkout type.</source>
+        <target>Wählen Sie den Checkout-Typ aus.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

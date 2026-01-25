@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
@@ -39,6 +40,8 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     public const TYPE = 'event_booking_checkout';
 
     private CalendarEventsModel|null $event = null;
+
+    private CalendarModel|null $calendar = null;
 
     private CalendarEventsMemberModel|null $booking = null;
 
@@ -70,6 +73,10 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
             // Stop here if initialization fails.
             return $template->getResponse();
+        }
+
+        if ($model->ceb_modCheckout_handler !== $this->calendar->eventBookingCheckoutHandler) {
+            return new Response('', Response::HTTP_NO_CONTENT);
         }
 
         $checkoutResult = $this->checkoutHandler->handleRequest($this->booking, $model, $request);
@@ -118,15 +125,15 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
         $this->booking = $this->getBookingFromRequest($request);
         $this->event = $this->booking?->getRelated('pid');
-        $calendar = $this->event?->getRelated('pid');
+        $this->calendar = $this->event?->getRelated('pid');
 
-        if (null === $this->booking || null === $this->event || !$this->event->published || null === $calendar) {
+        if (null === $this->booking || null === $this->event || !$this->event->published || null === $this->calendar) {
             return false;
         }
 
         $request->attributes->set('_calendar_event_booking_token', $this->booking->bookingToken);
 
-        $this->setCheckoutHandler($this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler));
+        $this->setCheckoutHandler($this->resolveCheckoutHandler($this->checkoutHandlers, $this->calendar->eventBookingCheckoutHandler));
 
         return null !== $this->checkoutHandler;
     }

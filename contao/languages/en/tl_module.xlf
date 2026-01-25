@@ -25,19 +25,21 @@
       </trans-unit>
       <trans-unit id="tl_module.ceb_modMyBookings_startTimeFilter.0">
         <source>Output filter</source>
-        <target>Ausgabe Filter</target>
       </trans-unit>
       <trans-unit id="tl_module.ceb_modMyBookings_startTimeFilter.1">
         <source>Select which bookings you want to display.</source>
-        <target>Wählen Sie aus, welche Buchungen Sie angezeigt haben möchten.</target>
       </trans-unit>
       <trans-unit id="tl_module.ceb_modMyBookings_sorting.0">
         <source>Sort direction</source>
-        <target>Sortierrichtung</target>
       </trans-unit>
       <trans-unit id="tl_module.ceb_modMyBookings_sorting.1">
         <source>Select the sort direction.</source>
-        <target>Wählen Sie die Sortierrichtung aus.</target>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_handler.0">
+        <source>Checkout type.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_handler.1">
+        <source>Select the checkout type.</source>
       </trans-unit>
     </body>
   </file>

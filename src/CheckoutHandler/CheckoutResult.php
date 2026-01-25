@@ -20,7 +20,6 @@ class CheckoutResult
 {
     public function __construct(
         private string $checkoutType,
-        private string $templateName,
         private array $data = [],
         private Response|null $response = null,
     ) {
@@ -44,16 +43,6 @@ class CheckoutResult
     public function setData(array $data): void
     {
         $this->data = $data;
-    }
-
-    public function getTemplateName(): string
-    {
-        return $this->templateName;
-    }
-
-    public function setTemplateName(string $templateName): void
-    {
-        $this->templateName = $templateName;
     }
 
     public function hasResponse(): bool

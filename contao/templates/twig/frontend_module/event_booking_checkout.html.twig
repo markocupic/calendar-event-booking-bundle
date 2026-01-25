@@ -1,36 +1,79 @@
+{% trans_default_domain "mc_calendar_event_booking" %}
 {% extends "@Contao/frontend_module/_base.html.twig" %}
 {% use "@Contao_MarkocupicCalendarEventBookingBundle/component/_flash_message.html.twig" %}
-
 {% set searchable = false %}
 
 {% block content %}
-    {% if hasInitializationError|default %}
-        <div class="ceb-checkout">
-            {% if messages|default %}
-                <div class="ceb-checkout--messages">
-                    {# Render the messages. #}
-                    {% with {messages} only %}
-                        {{ block('flash_message_component') }}
-                    {% endwith %}
-                </div>
-            {% endif %}
-        </div>
-    {% else %}
+    <div class="ceb-checkout">
+        {% if messages|default %}
+            <div class="ceb-checkout--messages">
+                {# Render the messages. #}
+                {% with {messages} only %}
+                    {{ block('flash_message_component') }}
+                {% endwith %}
+            </div>
+        {% endif %}
+    </div>
+    {% if not hasInitializationError|default %}
         <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
-            {% block checkout %}
-                {#
-                <!-- To override the default template you can refer to your custom template: -->
-                {% if checkout.getCheckoutType() == 'paypal %}
-                    <!-- In this case store the template under templates/App/Checkout/paypal.html.twig -->
-                    {% include 'App/Checkout/paypal.html.twig' with checkout.getData() only %}
-                {% elseif checkout.getCheckoutType() == 'stripe %}
-                    <!-- In this case store the template under templates/App/Checkout/stripe.html.twig -->
-                    {% include'App/Checkout/stripe.html.twig' with checkout.getData() only %}
-                {% else %}
-                    {% include checkout.getTemplateName() with checkout.getData() only %}
-                {% endif %}
-                #}
-                {% include checkout.getTemplateName() with checkout.getData() only %}
+            {% block checkout_content %}
+                {# Use the with tag to create a new inner scope. Variables set within this scope are not visible outside of the scope. #}
+                {% with checkout.getData() %}
+                    <div class="ceb-default-checkout">
+                        {% if event.addImage %}
+                            {{ contao_figure(event.singleSRC, [600, 600, 'proportional'], {
+                                metadata: { alt: event.title },
+                            }) }}
+                        {% endif %}
+                        <div class="ceb-default-checkout--messages">
+                            <div class="tl_info">
+                                {{ 'mod_checkout.default.registration_successful'|trans({'%event_title%': event.title})|decode_entities }}
+                            </div>
+                        </div>
+                        <table class="ceb-default-checkout--table">
+                            {% if booking.firstname|default and booking.lastname|default %}
+                                <tr class="ceb-default-checkout-table-name">
+                                    <td>{{ 'mod_checkout.default.name'|trans }}</td>
+                                    <td>{{ booking.firstname }} {{ booking.lastname }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr class="ceb-default-checkout--table-ticket-amount">
+                                <td>{{ 'mod_checkout.default.ticket_amount'|trans }}</td>
+                                <td>{{ booking.ticketAmount }}</td>
+                            </tr>
+                            {% if booking.email|default %}
+                                <tr class="ceb-default-checkout--table-email">
+                                    <td>{{ 'mod_checkout.default.email_address'|trans }}</td>
+                                    <td>{{ booking.email }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if booking.waitingList %}
+                                <tr class="ceb-default-checkout--table-waiting-list">
+                                    <td>{{ 'mod_checkout.default.on_waiting_list'|trans }}</td>
+                                    <td>{{ 'mod_checkout.default.yes'|trans }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if calendar.requireOptIn and booking.temporaryReserved and not booking.optIn %}
+                                <tr class="ceb-default-checkout--table-confirmed">
+                                    <td>{{ 'mod_checkout.default.booking_confirmed'|trans }}</td>
+                                    <td>{{ 'mod_checkout.default.booking_not_confirmed'|trans }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if booking.expired %}
+                                <tr class="ceb-default-checkout--table-expired">
+                                    <td>{{ 'mod_checkout.default.booking_expired_title'|trans }}</td>
+                                    <td>{{ 'mod_checkout.default.booking_expired_text'|trans }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if booking.canceled %}
+                                <tr class="ceb-default-checkout--table-canceled">
+                                    <td>{{ 'mod_checkout.default.booking_canceled_title'|trans }}</td>
+                                    <td>{{ 'mod_checkout.default.booking_canceled_text'|trans }}</td>
+                                </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                {% endwith %}
             {% endblock %}
         </div>
     {% endif %}
