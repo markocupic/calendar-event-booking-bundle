@@ -39,7 +39,13 @@
         <source>Checkout type.</source>
       </trans-unit>
       <trans-unit id="tl_module.ceb_modCheckout_handler.1">
-        <source>Select the checkout type.</source>
+        <source>Select the checkout type. Don’t forget to update the template afterwards.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_addImage.0">
+        <source>Display event preview image</source>
+      </trans-unit>
+      <trans-unit id="tl_module.ceb_modCheckout_addImage.1">
+        <source>Whether to display the event preview image</source>
       </trans-unit>
     </body>
   </file>

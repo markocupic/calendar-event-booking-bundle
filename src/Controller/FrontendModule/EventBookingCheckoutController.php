@@ -23,6 +23,7 @@ use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -48,6 +49,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
     public function __construct(
         #[AutowireLocator('cebb.checkout_handler', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $checkoutHandlers,
+        private readonly FigureUtil $figureUtil,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.checkout')]
         private readonly MessageInterface $message,
         private readonly RequestStack $requestStack,
@@ -91,6 +93,15 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $template->set('booking', $this->booking);
         $template->set('event', $this->event);
         $template->set('calendar', $this->event->getRelated('pid')->current());
+
+        if ($model->ceb_modCheckout_addImage && $this->event->addImage) {
+            $figure = $this->figureUtil->buildFigure($this->event->row());
+
+            if (null !== $figure) {
+                $template->set('addImage', true);
+                $template->set('figure', $figure);
+            }
+        }
 
         return $template->getResponse();
     }
