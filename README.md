@@ -1,4 +1,5 @@
 # Events buchen mit Contao
+<a href="https://github.com/markocupic/calendar-event-booking-bundle/tree/develop"><img width="300" alt="version_6_teaser" src="https://github.com/user-attachments/assets/826822f9-349f-405c-b9da-ebb18a679398" /></a>
 
 ### Achtung: Bei der Migration von Version 3.x nach 4.x gab es mehrere Änderungen in der Benennung der Modul-Typen und Template-Namen. Dies bitte bei einer allfälligen Migration berücksichtigen.
 
