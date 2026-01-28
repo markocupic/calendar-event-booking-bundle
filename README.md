@@ -1,6 +1,8 @@
 # Events buchen mit Contao
 
-### Achtung: Bei der Migration von Version 5.x nach 6.x kam es zu vielen [Änderungen](https://github.com/markocupic/calendar-event-booking-bundle/blob/6.x/UPGRADE.md). Die Event- und Kalendereinstellungen müssen nach der Migration unbedingt überprüft und angepasst werden. Vor dem Upgrade sollte ein Datenbank-Backup erstellt werden.
+> **Migration von Version 5.x nach 6.x**
+>
+> Bei der Migration von Version 5.x nach 6.x kam es zu zahlreichen [Änderungen](https://github.com/markocupic/calendar-event-booking-bundle/blob/6.x/UPGRADE.md). Die Event- und Kalendereinstellungen müssen nach der Migration unbedingt überprüft und angepasst werden. Vor dem Upgrade sollte ein Datenbank-Backup erstellt werden.
 
 ## Events buchen
 
@@ -51,6 +53,14 @@ Abschnitt "Konfiguration" beachten!
 ## Einrichtung (Ablauf)
 
 ### 1. Kalender und Events anlegen.
+
+Auf Kalenderebene muss/müssen unter anderem
+- die Seite mit dem Event-Buchungs-Checkout-Modul ausgewählt werden.
+- die Seite mit dem Event-Buchungs-Stornierungs-Modul ausgewählt werden.
+- alle Benachrichtigungen ausgewählt werden
+- der Checkout-Typ gewählt werden. (PayPal ist zahlungspflichtig)
+
+Danach sollten die Events angelegt werden und die Buchungsoptionen konfiguriert werden.
 
 ### 2. Buchungsformular erstellen und erweitern
 
