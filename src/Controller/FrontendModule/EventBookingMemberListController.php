@@ -27,6 +27,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,6 +40,7 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
 
     public function __construct(
         private readonly Connection $connection,
+        private readonly FigureUtil $figureUtil,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly ScopeMatcher $scopeMatcher,
     ) {
@@ -105,6 +107,15 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         // Add the event model to the parent template
         $template->set('event', $this->event);
         $template->set('calendar', $this->event->getRelated('pid'));
+
+        if ($model->ceb_addImage && $this->event->addImage) {
+            $figure = $this->figureUtil->buildFigure($this->event->row());
+
+            if (null !== $figure) {
+                $template->set('addImage', true);
+                $template->set('figure', $figure);
+            }
+        }
 
         return $template->getResponse();
     }

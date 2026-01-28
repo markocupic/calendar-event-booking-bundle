@@ -54,11 +54,11 @@
         <source>Select the checkout type. Don’t forget to update the template afterwards.</source>
         <target>Wählen Sie den Checkout-Typ aus. Bitte vergessen Sie nicht danach auch das Template umzustellen.</target>
       </trans-unit>
-      <trans-unit id="tl_module.ceb_modCheckout_addImage.0">
+      <trans-unit id="tl_module.ceb_addImage.0">
         <source>Display event preview image</source>
         <target>Event-Vorschaubild anzeigen</target>
       </trans-unit>
-      <trans-unit id="tl_module.ceb_modCheckout_addImage.1">
+      <trans-unit id="tl_module.ceb_addImage.1">
         <source>Whether to display the event preview image</source>
         <target>Soll das Event-Vorschaubild angezeigt werden.</target>
       </trans-unit>

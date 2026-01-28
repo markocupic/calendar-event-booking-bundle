@@ -1,5 +1,6 @@
 {% extends "@Contao/frontend_module/_base.html.twig" %}
 {% use "@Contao_MarkocupicCalendarEventBookingBundle/component/_flash_message.html.twig" %}
+{% use "@Contao/component/_figure.html.twig" %}
 
 {% set searchable = false %}
 
@@ -14,6 +15,10 @@
             </div>
         {% endif %}
     {% endblock %}
+    {% if addImage|default %}
+        {# Render the event image #}
+        {% with {figure: figure} %}{{ block('figure_component') }}{% endwith %}
+    {% endif %}
     {% if optInSuccess|default %}
         {# Here you can place the success message #}
     {% endif %}

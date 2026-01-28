@@ -94,7 +94,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $template->set('event', $this->event);
         $template->set('calendar', $this->event->getRelated('pid')->current());
 
-        if ($model->ceb_modCheckout_addImage && $this->event->addImage) {
+        if ($model->ceb_addImage && $this->event->addImage) {
             $figure = $this->figureUtil->buildFigure($this->event->row());
 
             if (null !== $figure) {

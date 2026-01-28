@@ -32,6 +32,7 @@ use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -55,6 +56,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly FigureUtil $figureUtil,
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.opt_in')]
         private readonly MessageInterface $message,
@@ -159,6 +161,17 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             $this->message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
 
             $this->contaoErrorLogger?->error($e->getMessage());
+        }
+
+        if (!empty($event)) {
+            if ($model->ceb_addImage && $event->addImage) {
+                $figure = $this->figureUtil->buildFigure($event->row());
+
+                if (null !== $figure) {
+                    $template->set('addImage', true);
+                    $template->set('figure', $figure);
+                }
+            }
         }
 
         $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);

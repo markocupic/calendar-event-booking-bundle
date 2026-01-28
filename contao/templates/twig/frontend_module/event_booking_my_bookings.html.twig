@@ -1,6 +1,7 @@
 {% trans_default_domain "mc_calendar_event_booking" %}
 {% use "@Contao/component/_figure.html.twig" %}
 {% extends "@Contao/frontend_module/_base.html.twig" %}
+{% use "@Contao/component/_figure.html.twig" %}
 
 {% set searchable = false %}
 
@@ -8,13 +9,10 @@
     <div class="ceb-my-bookings">
         {% for item in bookings %}
             <div class="ceb-my-bookings--item">
-                <div class="ceb-my-bookings--thumb">
-                    {% if item.event.addImage %}
-                        <div class="ceb-my-bookings--thumb-inner">
-                            {% with {figure: figure(item.event.singleSRC, item.event.size)} %}{{ block('figure_component') }}{% endwith %}
-                        </div>
-                    {% endif %}
-                </div>
+                {% if item.figure|default %}
+                    {# Render the event image #}
+                    {% with {figure: item.figure} %}{{ block('figure_component') }}{% endwith %}
+                {% endif %}
                 <div class="ceb-my-bookings--info">
                     <div class="ceb-my-bookings--info-event-title">
                         {{ item.event.title }}

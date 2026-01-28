@@ -22,17 +22,25 @@ use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBooking
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingFormController::TYPE] = '{title_legend},name,headline,type;{form_legend},form;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingUnsubscribeController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMemberListController::TYPE] = '{title_legend},name,headline,type;{config_legend:hide},ceb_modMemberList_enableBookingStatusFilter,ceb_modMemberList_sorting;{template_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingOptInController::TYPE] = '{title_legend},name,headline,type;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingCheckoutController::TYPE] = '{title_legend},name,headline,type,ceb_modCheckout_handler,ceb_modCheckout_addImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMyBookingsController::TYPE] = '{title_legend},name,headline,type;{config_legend:hide},ceb_modMyBookings_startTimeFilter,ceb_modMyBookings_sorting;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingUnsubscribeController::TYPE] = '{title_legend},name,headline,type,ceb_addImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMemberListController::TYPE] = '{title_legend},name,headline,type.ceb_addImage;{config_legend:hide},ceb_modMemberList_enableBookingStatusFilter,ceb_modMemberList_sorting;{template_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingOptInController::TYPE] = '{title_legend},name,headline,type,ceb_addImage;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingCheckoutController::TYPE] = '{title_legend},name,headline,type,ceb_modCheckout_handler,ceb_addImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventBookingMyBookingsController::TYPE] = '{title_legend},name,headline,type,ceb_addImage;{config_legend:hide},ceb_modMyBookings_startTimeFilter,ceb_modMyBookings_sorting;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 // Subpalettes
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'ceb_modMemberList_enableBookingStatusFilter';
 
 // Selectors
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['ceb_modMemberList_enableBookingStatusFilter'] = 'ceb_modMemberList_bookingStatusFilter';
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_addImage'] = [
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr cbx m12'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'sql'       => ['type' => 'boolean', 'default' => false],
+];
 
 // Fields
 $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modMemberList_enableBookingStatusFilter'] = [
@@ -83,7 +91,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modCheckout_handler'] = [
     'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => 'default'],
 ];
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_modCheckout_addImage'] = [
+$GLOBALS['TL_DCA']['tl_module']['fields']['ceb_addImage'] = [
     'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr cbx m12'],
     'exclude'   => true,
     'filter'    => true,

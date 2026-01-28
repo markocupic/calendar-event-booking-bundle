@@ -23,6 +23,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsPaymentModel;
+use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,7 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
     public function __construct(
         private readonly Security $security,
         private readonly Connection $connection,
+        private readonly FigureUtil $figureUtil,
     ) {
     }
 
@@ -84,11 +86,16 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
             $calendar = $event?->getRelated('pid');
             $payments = $this->getContaoAdapter(CalendarEventsPaymentModel::class)->findByPid($rowBooking['id']);
 
+            if ($model->ceb_addImage && $event->addImage) {
+                $figure = $this->figureUtil->buildFigure($event->row());
+            }
+
             $row = [
                 'booking' => $booking,
                 'event' => $event,
                 'calendar' => $calendar,
                 'payments' => $payments,
+                'figure' => $figure ?? null,
             ];
 
             $rows[] = $row;

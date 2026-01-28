@@ -1,6 +1,7 @@
 {% trans_default_domain "mc_calendar_event_booking" %}
 {% extends "@Contao/frontend_module/_base.html.twig" %}
 {% use "@Contao_MarkocupicCalendarEventBookingBundle/component/_flash_message.html.twig" %}
+{% use "@Contao/component/_figure.html.twig" %}
 
 {% set searchable = false %}
 
@@ -13,6 +14,10 @@
             {% endwith %}
         {% endif %}
     {% endblock %}
+    {% if addImage|default %}
+        {# Render the event image #}
+        {% with {figure: figure} %}{{ block('figure_component') }}{% endwith %}
+    {% endif %}
     {% block form %}
         {% if hasForm|default %}
             <div class="ceb-form--unsubscribe">

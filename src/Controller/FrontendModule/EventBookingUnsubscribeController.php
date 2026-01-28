@@ -31,6 +31,7 @@ use Markocupic\CalendarEventBookingBundle\Exception\EventBookingUnsubscribeExcep
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -62,6 +63,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         private readonly Connection $connection,
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly FigureUtil $figureUtil,
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.unsubscribe')]
         private readonly MessageInterface $message,
@@ -163,6 +165,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             $template->set('hasForm', true);
             $template->set('formId', 'tl_unsubscribe_from_event');
             $template->set('requestToken', $this->csrfTokenManager->getDefaultTokenValue());
+
             $this->connection->commit();
         } catch (EventBookingUnsubscribeException $e) {
             if ($this->connection->isTransactionActive()) {
@@ -187,6 +190,15 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         }
 
         $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
+
+        if ($model->ceb_addImage && $event->addImage) {
+            $figure = $this->figureUtil->buildFigure($event->row());
+
+            if (null !== $figure) {
+                $template->set('addImage', true);
+                $template->set('figure', $figure);
+            }
+        }
 
         return $template->getResponse();
     }
