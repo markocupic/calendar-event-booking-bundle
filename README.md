@@ -18,7 +18,7 @@ Im Moment sind folgende **Zahlungsmethoden** vorhanden:
 
 ## Benachrichtigungen
 
-Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigt werden (Notification Cecnter).
+Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigt werden (Notification Center).
 
 ## Warteliste
 
@@ -26,7 +26,7 @@ Optional kann eine Warteliste aktiviert werden. Personen auf Warteliste rücken 
 Nachrücken können nur Personen,
 
 - deren Anmeldung nicht storniert wurden
-- deren Anmedlung nicht temporär ist
+- deren Anmeldung nicht temporär ist
 - deren Reservierungsanfrage nicht abgelaufen ist.
   Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
 
@@ -43,7 +43,7 @@ Abschnitt "Konfiguration" beachten!
 |:----------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Event-Booking - Buchungsformular                    | Wird benötigt, um das Event-Buchungsformular auszugeben. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                            |
 | Event-Booking - Checkout (Zusammenfassung/Zahlung)  | Dieses Modul sollte auf der Weiterleitungsseite eingerichtet werden, auf die Kunden nach dem Absenden des Buchungsformulars geleitet werden. Es zeigt eine kurze Bestätigung der Buchung an. Oder löst den Zahlungscheckout aus (kostenpflichtig).                                                                                                                                                                                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Event-Booking - Buchungsbestätigung (Double-Opt-In) | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungsbestätigungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden. Dieses Modul sollte nicht in Zusammenhang mit einem Bezahlungs-Checkout berwendet werden. |
+| Event-Booking - Buchungsbestätigung (Double-Opt-In) | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungsbestätigungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden. Dieses Modul sollte nicht in Zusammenhang mit einem Bezahlungs-Checkout verwendet werden. |
 | Event-Booking - Stornierungsformular                | Optional! Dieses Modul muss auf der Seite platziert werden, wohin User geleitet werden, wenn sie den Buchungs-Stornierungslink angeklickt haben, welcher mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) versandt worden ist. Die Seite muss in den Kalendereinstellungen konfiguriert werden.                                                                                          |
 | Event-Booking - Teilnehmer-Liste                    | Optional! Dieses Modul listet die vorhandenen Buchungen auf. Das Modul ist auf den Event-Identifier in der URL angewiesen und befindet sich typischerweise auf der selben Seite wie das Event-Leser-Modul.                                                                                                                                                                                                                                        |
 | Event-Booking - Meine Buchungen                     | Zeigt alle Buchungen des aktuell eingeloggten Users an. Funktioniert nur, wenn der User zum Zeitpunkt der Anmeldung eingeloggt war. Zu diesem Zweck sollte das Anmeldeformular nur angemeldeten FE-Usern zugänglich gemacht werden.                                                                                                                                                                                                               |
@@ -56,7 +56,7 @@ Abschnitt "Konfiguration" beachten!
 
 Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular mit allen benötigten Feldern generiert.
 
-#### Einstellungenim Formular
+#### Einstellungen im Formular
 
 - **Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein!**
 - **Im Formular Weiterleitungsseite weglassen! Diese sollte in der Kalendereinstellung ausgewählt werden.**
@@ -124,7 +124,7 @@ So könnte ein funktionierender Seitenaufbau mit den zugehörenden Modulen ausse
 | Event Buchung: Benachrichtigung nach dem Nachrücken von der Warteliste         |
 | Event Buchung: Benachrichtigung nach erfolgreicher Zahlung                     |
 
-Versenden Sie zu versch. Zeitpunkten Benachrichtigungen und nutzen Sie dabei die **Simple Tokens**.
+Versenden Sie zu verschiedenen Zeitpunkten Benachrichtigungen und nutzen Sie dabei die **Simple Tokens**.
 
 Mit `##member_unsubscribeLink##` kann ein tokengesicherter Event-Stornierungs-Link mitgesandt werden.
 Dazu muss aber im Event die Event-Stornierung aktiviert werden und im Kalender die Seite mit dem Modul **Event-Stornierungsformular** eingerichtet worden sein.
@@ -164,9 +164,9 @@ Geburtsdatum: {{format_date::##member_dateOfBirth##::d.m.Y}}
 
 Stornierung erlauben: {if event_enableDeregistration=='1'}Ja{else}Nein{endif}
 
-{if payment_method=='paypal'}
+{if payment_method!=''}
 Ihre Bezahlung:
-Bezahlanbieter: ##payment_method##
+Bezahldienstleister: ##payment_method##
 Total: ##payment_grossAmount## ##payment_currencyCode##
 {endif}
 
@@ -274,30 +274,14 @@ markocupic_calendar_event_booking:
     convert_to: 'ISO-8859-1'
 ```
 
-## Checkout Template updatesicher anpassen
+## Frontend-Module-Templates updatesicher anpassen
 
-Das Standard Checkout template befindet sich unter `vendor/markocupic/calendar-event-booking-bundle/contao/templates/twig/frontend_module_fragment/checkout/default.html.twig`.
+Die Standard Templates für die Frontend-Module befinden sich unter `vendor/markocupic/calendar-event-booking-bundle/contao/templates/twig/frontend_module`.
 
-Um das Original-Template updatesicher zu überschreiben, müssen ein neues/angepasstes Checkout-Template und ein Custom Frontend Modul Template erstellt werden:
+Um das Original-Template updatesicher zu überschreiben, muss das abgeänderte Template unter `contao/templates/twig/frontend_module/**module-name**/` abgelegt werden.
+Nicht vergessen die obligatorische dot-file `.twig-root` in `contao/templates/twig` anzulegen!
+Wenn z.B. das Checkout Template angepasst werden soll, kann das neue Template updatesicher unter `contao/templates/twig/frontend_module/event_booking_checkout/custom.html.twig` abgelegt werden.
+Nicht vergessen den Installer einmal durchlaufen zu lassen! `php composer install`
 
-```twig
-{# contao/templates/frontend_module/event_booking_checkout.html.twig #}
-{% extends "@Contao/frontend_module/_base.html.twig" %}
 
-{% set searchable = false %}
 
-{% block content %}
-    <div class="ceb-checkout" data-checkout-type="{{ checkout.getCheckoutType() }}">
-        {% block checkout %}
-            {# To override the default template you can refer to your custom checkout fragment templates: #}
-            {% if checkout.getCheckoutType() == 'paypal %}
-                {% include 'App/Checkout/paypal.html.twig' with checkout.getData() only %}
-            {% elseif checkout.getCheckoutType() == 'stripe %}
-                {% include 'App/Checkout/stripe.html.twig' with checkout.getData() only %}
-            {% else %}
-                {% include checkout.getTemplateName() with checkout.getData() only %}
-            {% endif %}
-        {% endblock %}
-    </div>
-{% endblock %}
-```
