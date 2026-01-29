@@ -5,6 +5,10 @@
 {% set searchable = false %}
 
 {% block content %}
+    {% if addImage|default %}
+        {# Render the event image #}
+        {% with {figure: figure} %}{{ block('figure_component') }}{% endwith %}
+    {% endif %}
     {% block messages %}
         {% if messages|default %}
             <div class="ceb-opt-in--messages">
@@ -15,10 +19,6 @@
             </div>
         {% endif %}
     {% endblock %}
-    {% if addImage|default %}
-        {# Render the event image #}
-        {% with {figure: figure} %}{{ block('figure_component') }}{% endwith %}
-    {% endif %}
     {% if optInSuccess|default %}
         {# Here you can place the success message #}
     {% endif %}
