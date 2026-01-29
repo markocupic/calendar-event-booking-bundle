@@ -77,158 +77,97 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        /** @var OptInModel $optInModel */
         $optInModel = OptInModel::findOneByToken($token);
 
         if (null === $optInModel) {
             throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
         }
 
-        $optInToken = new OptInToken($optInModel, $this->framework);
+        $booking = $this->loadBookingFromOptInModel($optInModel);
+        $event = $booking?->getRelated('pid');
 
-        $lock = $this->lockFactory->createLock(base64_encode(self::class.$token));
-        $lock->acquire(true);
+        $this->processOptInConfirmation($template, $optInModel, $token, $request, $booking, $event);
 
-        $this->connection->beginTransaction();
-
-        try {
-            // Try to confirm and invalidate the token. Will throw an exception if the token
-            // is already confirmed or expired
-            $optInToken->confirm();
-
-            // Ok... the token is valid! Now check if the booking is still valid (not
-            // expired, not canceled, etc.) It is important to note here that the opt-in
-            // token will not be confirmed if any of the tests below fail.
-            $arrRelated = $optInModel->getRelatedRecords();
-
-            if (empty($arrRelated[CalendarEventsMemberModel::getTable()][0])) {
-                $this->addCssClassToTemplate('error booking-not-found', $template);
-
-                throw new EventBookingOptInException('Booking not found.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN);
-            }
-
-            $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
-
-            if (null === $booking) {
-                $this->addCssClassToTemplate('error booking-not-found', $template);
-
-                throw new EventBookingOptInException('Booking not found.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN);
-            }
-
-            /** @var CalendarEventsModel $event */
-            $event = $booking->getRelated('pid');
-
-            if (null === $event) {
-                $this->addCssClassToTemplate('error event-not-found', $template);
-
-                throw new EventBookingOptInException('Event not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_event_not_found', [], self::TRANS_DOMAIN);
-            }
-
-            /** @var CalendarModel $calendar */
-            $calendar = $event->getRelated('pid');
-
-            if (null === $calendar) {
-                $this->addCssClassToTemplate('error calendar-not-found', $template);
-
-                throw new EventBookingOptInException('Calendar not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_calendar_not_found', [], self::TRANS_DOMAIN);
-            }
-
-            if ($this->processConfirm($template, $calendar, $event, $booking, $request)) {
-                $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
-
-                // Send notification
-                if ($calendar->optInSuccessNotification) {
-                    $tokens = $this->notificationManager->getNotificationTokens($booking);
-                    $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
-                }
-            }
-            $this->connection->commit();
-        } catch (OptInTokenAlreadyConfirmedException $e) {
-            $this->message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
-        } catch (OptInTokenNoLongerValidException $e) {
-            $this->message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
-        } catch (AbstractTranslatableException $e) {
-            if ($this->connection->isTransactionActive()) {
-                $this->connection->rollBack();
-            }
-
-            $this->message->add($this->translator->trans($e->getTranslatableText(), $e->getMessageData(), $e->getMessageDomain()), $e->getSeverityLevel());
-        } catch (\Throwable $e) {
-            if ($this->connection->isTransactionActive()) {
-                $this->connection->rollBack();
-            }
-
-            $this->message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
-
-            $this->contaoErrorLogger?->error($e->getMessage());
-        }
-
-        if (!empty($event)) {
-            if ($model->ceb_addImage && $event->addImage) {
-                $figure = $this->figureUtil->buildFigure($event->row());
-
-                if (null !== $figure) {
-                    $template->set('addImage', true);
-                    $template->set('figure', $figure);
-                }
-            }
-        }
+        $this->addEventImageToTemplate($template, $model, $event);
 
         $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
 
         return $template->getResponse();
     }
 
-    private function processConfirm(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
+    private function processOptInConfirmation(FragmentTemplate $template, OptInModel $optInModel, string $token, Request $request, CalendarEventsMemberModel|null $booking, CalendarEventsModel|null $event): void
     {
-        // Check if already canceled
-        if ($booking->canceled) {
-            $this->addCssClassToTemplate('error booking-canceled', $template);
-            $template->set('alreadyCanceled', true);
+        /** @var CalendarModel|null $calendar */
+        $calendar = $event?->getRelated('pid');
 
-            throw new EventBookingOptInException('Booking canceled.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_canceled', [], self::TRANS_DOMAIN);
+        $lock = $this->lockFactory->createLock(base64_encode(self::class.$token));
+        $lock->acquire(true);
+
+        try {
+            $this->connection->beginTransaction();
+
+            $this->validateRelatedEntities($template, $booking, $event, $calendar);
+
+            // Will throw an exception if the booking... has been canceled, has been already
+            // confirmed, the calendar does not require opt-in the booking has expired, ...
+            $this->validateBookingState($template, $calendar, $event, $booking);
+
+            $optInToken = new OptInToken($optInModel, $this->framework);
+
+            // Will throw an exception if the token is already confirmed or no longer valid.
+            $optInToken->confirm();
+
+            if ($this->processConfirm($template, $event, $booking, $request)) {
+                $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
+
+                if ($calendar->optInSuccessNotification) {
+                    $tokens = $this->notificationManager->getNotificationTokens($booking);
+                    $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
+                }
+            }
+
+            $this->connection->commit();
+        } catch (OptInTokenAlreadyConfirmedException $e) {
+            $this->handleTransactionRollback();
+            $this->message->addInfo($this->translator->trans('mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN));
+        } catch (OptInTokenNoLongerValidException $e) {
+            $this->handleTransactionRollback();
+            $this->message->addInfo($this->translator->trans('mod_opt_in.error.token_no_longer_valid', [], self::TRANS_DOMAIN));
+        } catch (AbstractTranslatableException $e) {
+            $this->handleTransactionRollback();
+            $this->message->add($this->translator->trans($e->getMessageKey(), $e->getMessageData(), $e->getMessageDomain()), $e->getSeverityLevel());
+        } catch (\Throwable $e) {
+            $this->handleTransactionRollback();
+            $this->message->addError($this->translator->trans('mod_opt_in.error.unexpected_error', [], self::TRANS_DOMAIN));
+            $this->contaoErrorLogger?->error($e->getMessage());
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function handleTransactionRollback(): void
+    {
+        if ($this->connection->isTransactionActive()) {
+            $this->connection->rollBack();
+        }
+    }
+
+    private function addEventImageToTemplate(FragmentTemplate $template, ModuleModel $model, CalendarEventsModel|null $event): void
+    {
+        if (null === $event || !$model->ceb_addImage || !$event->addImage) {
+            return;
         }
 
-        // Check if already confirmed (optIn === true)
-        if ($booking->optIn) {
-            $this->addCssClassToTemplate('info already-confirmed', $template);
-            $template->set('alreadyConfirmed', true);
+        $figure = $this->figureUtil->buildFigure($event->row());
 
-            throw new EventBookingOptInException('Booking already confirmed.', SeverityLevel::INFO, 'mod_opt_in.info.already_confirmed', [], self::TRANS_DOMAIN);
+        if (null !== $figure) {
+            $template->set('addImage', true);
+            $template->set('figure', $figure);
         }
+    }
 
-        // Check if opt-in is required
-        if (!$calendar->requireOptIn) {
-            $this->addCssClassToTemplate('info confirm-not-required', $template);
-            $template->set('confirmNotRequired', true);
-
-            throw new EventBookingOptInException('Opt-In not required.', SeverityLevel::INFO, 'mod_opt_in.info.opt_in_not_required', [], self::TRANS_DOMAIN);
-        }
-
-        // Check if booking has been expired
-        if ($booking->expired) {
-            $this->addCssClassToTemplate('error confirm-expired', $template);
-            $template->set('confirmExpired', true);
-
-            throw new EventBookingOptInException('Booking already expired.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_expired', [], self::TRANS_DOMAIN);
-        }
-
-        // Check if past event start date
-        if (!empty($calendarEvent->startDate) && time() > $calendarEvent->startDate) {
-            $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
-            $template->set('cannotConfirm', true);
-
-            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
-        }
-
-        // Check if past booking date
-        if (!empty($calendarEvent->bookingEndDate) && time() > $calendarEvent->bookingEndDate) {
-            $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
-            $template->set('cannotConfirm', true);
-
-            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
-        }
-
+    private function processConfirm(FragmentTemplate $template, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking, Request $request): bool
+    {
         $booking->optIn = true;
         $booking->temporaryReserved = false;
         $booking->save();
@@ -245,9 +184,76 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         return true;
     }
 
+    private function validateRelatedEntities(FragmentTemplate $template, CalendarEventsMemberModel|null $booking, CalendarEventsModel|null $event, CalendarModel|null $calendar): void
+    {
+        if (null === $booking) {
+            $this->addCssClassToTemplate('error booking-not-found', $template);
+
+            throw new EventBookingOptInException('Booking not found.', SeverityLevel::ERROR, 'mod_opt_in.error.booking_not_found', [], self::TRANS_DOMAIN);
+        }
+
+        if (null === $event) {
+            $this->addCssClassToTemplate('error event-not-found', $template);
+
+            throw new EventBookingOptInException('Event not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_event_not_found', [], self::TRANS_DOMAIN);
+        }
+
+        if (null === $calendar) {
+            $this->addCssClassToTemplate('error calendar-not-found', $template);
+
+            throw new EventBookingOptInException('Calendar not found.', SeverityLevel::ERROR, 'mod_opt_in.error.corresponding_calendar_not_found', [], self::TRANS_DOMAIN);
+        }
+    }
+
+    private function validateBookingState(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calendarEvent, CalendarEventsMemberModel $booking): void
+    {
+        if ($booking->canceled) {
+            $this->throwValidationException($template, 'error booking-canceled', 'alreadyCanceled', SeverityLevel::ERROR, 'mod_opt_in.error.booking_canceled', 'Booking canceled.');
+        }
+
+        if ($booking->optIn) {
+            $this->throwValidationException($template, 'info already-confirmed', 'alreadyConfirmed', SeverityLevel::INFO, 'mod_opt_in.info.already_confirmed', 'Booking already confirmed.');
+        }
+
+        if (!$calendar->requireOptIn) {
+            $this->throwValidationException($template, 'info confirm-not-required', 'confirmNotRequired', SeverityLevel::INFO, 'mod_opt_in.info.opt_in_not_required', 'Opt-In not required.');
+        }
+
+        if ($booking->expired) {
+            $this->throwValidationException($template, 'error confirm-expired', 'confirmExpired', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_expired', 'Booking already expired.');
+        }
+
+        if (!empty($calendarEvent->startDate) && time() > $calendarEvent->startDate) {
+            $this->throwValidationException($template, 'error confirm-no-more-possible', 'cannotConfirm', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', 'Confirm no more possible.');
+        }
+
+        if (!empty($calendarEvent->bookingEndDate) && time() > $calendarEvent->bookingEndDate) {
+            $this->throwValidationException($template, 'error confirm-no-more-possible', 'cannotConfirm', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', 'Confirm no more possible.');
+        }
+    }
+
+    private function throwValidationException(FragmentTemplate $template, string $cssClass, string $templateKey, SeverityLevel $severity, string $transKey, string $message): never
+    {
+        $this->addCssClassToTemplate($cssClass, $template);
+        $template->set($templateKey, true);
+
+        throw new EventBookingOptInException($message, $severity, $transKey, [], self::TRANS_DOMAIN);
+    }
+
     private function addCssClassToTemplate(string $cssClass, FragmentTemplate $template): void
     {
         $classes = $template->get('element_css_classes').' '.$cssClass;
         $template->set('element_css_classes', implode(' ', array_filter(explode(' ', $classes))));
+    }
+
+    private function loadBookingFromOptInModel(OptInModel $optInModel): CalendarEventsMemberModel|null
+    {
+        $arrRelated = $optInModel->getRelatedRecords();
+
+        if (empty($arrRelated[CalendarEventsMemberModel::getTable()][0])) {
+            return null;
+        }
+
+        return $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
     }
 }
