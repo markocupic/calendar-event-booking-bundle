@@ -108,8 +108,6 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
             $this->validateRelatedEntities($template, $booking, $event, $calendar);
 
-            // Will throw an exception if the booking... has been canceled, has been already
-            // confirmed, the calendar does not require opt-in the booking has expired, ...
             $this->validateBookingState($template, $calendar, $event, $booking);
 
             $optInToken = new OptInToken($optInModel, $this->framework);
