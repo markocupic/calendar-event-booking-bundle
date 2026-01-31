@@ -79,7 +79,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array|null $classes = null, PageModel|null $page = null): Response
     {
-        if (!$page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
+        if (!$page instanceof PageModel && !$this->scopeMatcher->isFrontendRequest($request)) {
             return parent::__invoke($request, $model, $section, $classes);
         }
 
