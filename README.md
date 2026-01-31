@@ -52,6 +52,8 @@ Abschnitt "Konfiguration" beachten!
 
 ## Einrichtung (Ablauf)
 
+<img src="docs/images/backend_settings.png" width="1600" alt="Backend-Einstellungen">
+
 ### 1. Kalender und Events anlegen.
 
 Auf Kalenderebene muss/müssen unter anderem
