@@ -161,6 +161,15 @@
       <trans-unit id="ERR.cebb_checkout_exception::registration_not_found">
         <source>We could not found your registration. Registration process aborted.</source>
       </trans-unit>
+      <trans-unit id="MSC.cebb_express_checkout">
+        <source>Express Checkout</source>
+      </trans-unit>
+      <trans-unit id="MSC.cebb_no_registrations">
+        <source>No registrations yet. Please add participants above.</source>
+      </trans-unit>
+      <trans-unit id="MSC.cebb_overview">
+        <source>Overview</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

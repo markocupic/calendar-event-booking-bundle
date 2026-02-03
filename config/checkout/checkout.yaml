@@ -11,3 +11,9 @@ markocupic_calendar_event_booking:
                     step: 'Markocupic\CalendarEventBookingBundle\Checkout\Step\FinalisationStep'
                     template: '@Contao_MarkocupicCalendarEventBookingBundle/checkout_step_finalisation.html.twig'
                     priority: 90
+        express:
+            steps:
+                express_checkout:
+                    step: 'Markocupic\CalendarEventBookingBundle\Checkout\Step\ExpressCheckoutStep'
+                    template: '@Contao_MarkocupicCalendarEventBookingBundle/checkout_step_express.html.twig'
+                    priority: 100

@@ -214,6 +214,22 @@
         <source>We could not found your registration. Registration process aborted.</source>
         <target>Ihre Registrierung konnte nicht gefunden werden. Der Registrierungsvorgang wurde abgebrochen.</target>
       </trans-unit>
+      <trans-unit id="MSC.cebb_express_checkout">
+        <source>Express Checkout</source>
+        <target>Express Checkout</target>
+      </trans-unit>
+      <trans-unit id="MSC.cebb_no_registrations">
+        <source>No registrations yet. Please add participants above.</source>
+        <target>Noch keine Registrierungen. Bitte fügen Sie oben Teilnehmer hinzu.</target>
+      </trans-unit>
+      <trans-unit id="MSC.cebb_overview">
+        <source>Overview</source>
+        <target>Übersicht</target>
+      </trans-unit>
+      <trans-unit id="MSC.express">
+        <source>Express</source>
+        <target>Express (1. Schritt)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

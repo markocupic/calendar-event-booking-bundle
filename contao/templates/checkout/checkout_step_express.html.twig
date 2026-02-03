@@ -1,0 +1,35 @@
+<h3>{{ 'MSC.cebb_express_checkout'|trans([],'contao_default') }}</h3>
+
+{% if messages|default %}
+    <div class="cebb_checkout__message-box">
+        {{ messages|raw }}
+    </div>
+{% endif %}
+
+{#
+Get the event model from request.
+#}
+{% set event = cebb_event_get_event() %}
+
+<div class="cebb_checkout__free-seats-indicator">
+    <div class="cebb_checkout__free-seats">{{ 'MSC.seats_available'|trans([], 'contao_default') }}: {{ cebb_event_get_number_free_seats(event.id, false) }}</div>
+    {% if cebb_event_get_number_free_seats(event.id, false) == 0 and cebb_event_get_number_free_seats_waiting_list(event.id, false) > 0 %}
+        <div class="cebb_checkout__free-seats-waiting-list">{{ 'MSC.seats_available_waiting_list'|trans([], 'contao_default') }}: {{ cebb_event_get_number_free_seats_waiting_list(event.id, false) }}</div>
+    {% endif %}
+</div>
+
+{% if bookingAvailabilityExplain|default %}
+    <div class="cebb_checkout__booking-availability-explain">
+        {{ bookingAvailabilityExplain }}
+    </div>
+{% endif %}
+
+{# Display booking form for adding participant and completing the booking #}
+{% if bookingForm|default %}
+    <div class="cebb_checkout__booking-form">
+        <p>{{ 'MSC.login'|trans([],'contao_default') }}</p>
+        {{ bookingForm|raw }}
+    </div>
+{% endif %}
+
+

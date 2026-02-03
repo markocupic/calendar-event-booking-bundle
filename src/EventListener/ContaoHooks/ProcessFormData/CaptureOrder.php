@@ -20,12 +20,15 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Form;
 use Contao\FrontendUser;
 use Contao\Message;
+use Contao\Model\Collection;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Checkout\Step\SubscriptionStep;
 use Markocupic\CalendarEventBookingBundle\Event\BookingFormSubmitEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PostBookingEvent;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingState;
 use Markocupic\CalendarEventBookingBundle\EventBooking\Booking\BookingType;
 use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHooks\AbstractHook;
+use Markocupic\CalendarEventBookingBundle\Model\CebbOrderModel;
 use Markocupic\CalendarEventBookingBundle\Model\CebbRegistrationModel;
 use Markocupic\CalendarEventBookingBundle\Util\CartUtil;
 use Markocupic\CalendarEventBookingBundle\Util\CheckoutUtil;
@@ -130,8 +133,9 @@ final class CaptureOrder extends AbstractHook
 
         try {
             foreach ($arrNew as $index => $dataCustomer) {
-                // Do temporary registration
-                $this->temporaryRegistration($arrNew[$index], $dataCustomer);
+                // Do temporary registration and store the saved model
+                $registration = $this->temporaryRegistration($arrNew[$index], $dataCustomer);
+                $arrNew[$index] = $registration->row();
             }
 
             $cart->registrations = serialize(array_merge($arrExisting, $arrNew));
@@ -149,7 +153,93 @@ final class CaptureOrder extends AbstractHook
             return;
         }
 
+        // For express checkout, finalize the booking immediately
+        $moduleModel = $this->checkoutUtil->getModuleModel($request);
+        $checkoutType = $moduleModel->cebb_checkoutType ?? 'default';
+        
+        if ('express' === $checkoutType) {
+            try {
+                $this->finalizeExpressCheckout($request, $arrNew);
+                // Contao 5.x automatically displays the success message and handles redirect
+                // based on the form's jumpTo setting
+            } catch (\Exception $e) {
+                // Silently ignore finalization errors - don't break the form
+            }
+        }
+
         $this->messageAdapter->addInfo($strMessageSuccess);
+    }
+
+    /**
+     * Finalize express checkout immediately after registration creation.
+     */
+    private function finalizeExpressCheckout($request, array $arrNewRegistrations): void
+    {
+        $cart = $this->cartUtil->getCart($request);
+        $eventConfig = $this->checkoutUtil->getEventConfig($request);
+        $regModels = [];
+
+        $this->connection->beginTransaction();
+
+        try {
+            // Create the order entity
+            $order = new CebbOrderModel();
+            $order->eventId = $eventConfig->get('id');
+            $order->dateAdded = time();
+            $order->tstamp = time();
+            $order->uuid = Uuid::uuid4()->toString();
+
+            $user = $this->security->getUser();
+            if ($user instanceof FrontendUser) {
+                $order->memberId = $user->id;
+            }
+
+            $order->save();
+
+            // Finalize each registration - find by ID from arrNewRegistrations
+            foreach ($arrNewRegistrations as $arrRegistration) {
+                if (empty($arrRegistration['id'])) {
+                    throw new \Exception('Registration has no ID');
+                }
+                
+                $registration = CebbRegistrationModel::findById($arrRegistration['id']);
+                if (null === $registration) {
+                    throw new \Exception('Could not find registration with ID: ' . $arrRegistration['id']);
+                }
+
+                $registration->checkoutCompleted = true;
+                $registration->orderUuid = $order->uuid;
+                $registration->tstamp = time();
+
+                // Set confirmed date if status is confirmed
+                if ('confirmed' === $registration->bookingState) {
+                    $registration->confirmedOn = time();
+                }
+
+                $registration->save();
+                $regModels[] = $registration;
+            }
+
+            // Mark cart as completed
+            $cart->checkoutCompleted = true;
+            $cart->tstamp = time();
+            $cart->save();
+
+            // Dispatch the PostBookingEvent (this sends confirmation emails, etc.)
+            $event = new PostBookingEvent(
+                $eventConfig,
+                $order,
+                $cart,
+                new Collection($regModels, CebbRegistrationModel::getTable()),
+                $request
+            );
+            $this->eventDispatcher->dispatch($event);
+
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        }
     }
 
     /**
