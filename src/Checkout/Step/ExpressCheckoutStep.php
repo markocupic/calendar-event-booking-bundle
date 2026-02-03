@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Checkout\Step;
 
-use Codefog\HasteBundle\UrlParser;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
@@ -42,6 +41,7 @@ use Markocupic\CalendarEventBookingBundle\EventBooking\EventRegistration\EventRe
 use Markocupic\CalendarEventBookingBundle\EventBooking\Validator\BookingValidator;
 use Markocupic\CalendarEventBookingBundle\Model\CebbCartModel;
 use Markocupic\CalendarEventBookingBundle\Model\CebbRegistrationModel;
+use Markocupic\CalendarEventBookingBundle\Storage\SessionStorage;
 use Markocupic\CalendarEventBookingBundle\Util\CartUtil;
 use Markocupic\CalendarEventBookingBundle\Util\CheckoutUtil;
 use Psr\Log\LoggerInterface;
@@ -100,8 +100,6 @@ class ExpressCheckoutStep implements CheckoutStepInterface, ValidationCheckoutSt
         private readonly EventRegistration $eventRegistration,
         private readonly Security $security,
         private readonly TranslatorInterface $translator,
-        private readonly UriSigner $uriSigner,
-        private readonly UrlParser $urlParser,
         private readonly LoggerInterface $logger,
     ) {
         $this->cebbRegistrationModelAdapter = $this->framework->getAdapter(CebbRegistrationModel::class);
@@ -213,6 +211,30 @@ class ExpressCheckoutStep implements CheckoutStepInterface, ValidationCheckoutSt
         }
 
         return true;
+    }
+
+    /**
+     * Commit the express checkout step.
+     *
+     * In express checkout mode, the booking is finalized automatically by the processFormData hook
+     * (CaptureOrder) which stores the ORDER_ID in the session.
+     *
+     * @param EventConfig $eventConfig The event configuration
+     * @param Request     $request     The HTTP request
+     *
+     * @return bool True if finalization has occurred and checkout is complete
+     */
+    public function commitStep(EventConfig $eventConfig, Request $request): bool
+    {
+        $sessionStorage = new SessionStorage($request);
+        $bag = $sessionStorage->getData();
+
+        // If an order was created (by the hook), we're done
+        if (!empty($bag[SessionStorage::ORDER_ID])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
