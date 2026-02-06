@@ -33,7 +33,7 @@ class RenameCalendarEventsColumns extends AbstractMigration
     {
         $doMigration = false;
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $migrationData = $this->getMigrationData();
 
@@ -58,7 +58,7 @@ class RenameCalendarEventsColumns extends AbstractMigration
     {
         $messages = [];
 
-        $schemaManager = $this->connection->getSchemaManager();
+        $schemaManager = $this->connection->createSchemaManager();
 
         $migrationData = $this->getMigrationData();
 
