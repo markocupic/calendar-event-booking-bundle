@@ -26,7 +26,7 @@
                         <input type="hidden" name="FORM_SUBMIT" value="{{ formId }}">
                         <input type="hidden" name="REQUEST_TOKEN" value="{{ requestToken }}">
                         <p class="unsubscribe-confirm">
-                            {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%title%': event.title})|raw }}
+                            {{ 'mod_unsubscribe.unsubscribe_confirm'|trans({'%firstname%': booking.firstname|default, '%lastname%': booking.lastname|default, '%title%': event.title})|raw }}
                         </p>
                         <div class="widget widget-submit unsubscribe-confirm-btn">
                             <button type="submit" class="submit">{{ 'mod_unsubscribe.unsubscribe_btn_label'|trans }}</button>

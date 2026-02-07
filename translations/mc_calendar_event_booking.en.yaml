@@ -26,7 +26,7 @@ mod_unsubscribe:
         unsubscribe_success: 'Your registration for event "%title%" has been successfully canceled.'
     stop_unsubscription_btn_label: 'Stop cancellation'
     unsubscribe_btn_label: 'Cancel booking'
-    unsubscribe_confirm: 'Would you like to cancel your booking for event "%title%"?'
+    unsubscribe_confirm: 'Dear <span class="event-member-name">%firstname% %lastname%</span>{{br}}Would you like to cancel your booking for event "%title%"?'
 
 mod_form:
     error:
