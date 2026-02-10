@@ -6,7 +6,7 @@
 
 ## Events buchen
 
-Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar.
+Mit dieser Erweiterung für Contao CMS werden Events über ein Anmeldeformular buchbar. Double-Opt-In, eine Warteliste und ein Bezahlcheckout sind möglich.
 Das Anmeldeformular kann im Contao Formulargenerator erstellt werden. Während des Installationsprozesses wird ein Sample Anmeldeformular generiert.
 Beim Absenden des Formulars werden die Werte in der Datenbank in der Tabelle tl_calendar_events_member abgelegt. Die Buchungen sind im Backend einsehbar und über eine CSV-Datei exportierbar.
 
@@ -20,23 +20,24 @@ Im Moment sind folgende **Zahlungsmethoden** vorhanden:
 
 ## Benachrichtigungen
 
-Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigt werden (Notification Center).
+Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigen (Notification Center).
 
 ## Warteliste
 
-Optional kann eine Warteliste aktiviert werden. Personen auf Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden.
+Optional kann eine Warteliste aktiviert werden. Personen auf der Warteliste rücken automatisch nach, wenn Plätze durch Stornierung frei werden.
 Nachrücken können nur Personen,
 
-- deren Anmeldung nicht storniert wurden
-- deren Anmeldung nicht temporär ist
+- deren Anmeldung nicht storniert wurde.
+- deren Anmeldung nicht temporär ist.
 - deren Reservierungsanfrage nicht abgelaufen ist.
-  Die Warteliste sollte nicht mit einem Bezahlungs-Checkout verbunden werden.
+  Die Warteliste sollte nicht mit einem Bezahlungs-Checkout kombiniert werden.
 
 ## Double-Opt-In
 
-Bei den Buchungseinstellungen kann optional eine Bestätigung der Buchungsanfrage aktiviert werden. Dabei wird mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) ein Link versandt. Dazu muss das Modul "Event Buchung: Benachrichtigung nach der
-Bestätigung der Buchung mit Link" erstellt werden.
-Wenn der Kunde/User seine Buchungsanfrage nicht bestätigt, wird nach einer konfigurierbaren Zeit seine Anfrage abgelehnt und sein Platz wieder für andere frei.
+Bei den Buchungseinstellungen kann optional eine Bestätigung der Buchungsanfrage aktiviert werden.
+Dabei wird mit der Benachrichtigung (Event Buchung: Benachrichtigung nach dem Absenden des Event-Buchungs-Formulars) ein Link versandt.
+Dazu muss das Modul "Event Buchung: Buchungsbestätigung (Double-Opt-In)" erstellt werden.
+Wenn der Kunde/User seine Buchungsanfrage nicht bestätigt, erlischt nach einer frei konfigurierbaren Zeit seine Anfrage und sein Platz wird für andere frei.
 Abschnitt "Konfiguration" beachten!
 
 ## Frontend-Module
@@ -71,7 +72,7 @@ Beim Aufrufen der Datenbankmigration wird **automatisch** ein Beispielformular m
 #### Einstellungen im Formular
 
 - **Im Formular muss die Checkbox "Aktiviere Event-Buchungsformular-Funktion" aktiviert sein!**
-- **Im Formular Weiterleitungsseite weglassen! Diese sollte in der Kalendereinstellung ausgewählt werden.**
+- **Im Formular sollte keine Weiterleitungsseite eingetragen werden! Die Weiterleitungsseitte sollte stattdessen in der Kalendereinstellung ausgewählt werden (Seite mit dem Checkout-Modul).**
 - **Es sollte keine Benachrichtigung ausgewählt werden. Diese wird in der Kalendereinstellung ausgewählt.**
 - **Übertragungsmethode: POST**
 
@@ -294,6 +295,3 @@ Um das Original-Template updatesicher zu überschreiben, muss das abgeänderte T
 Nicht vergessen die obligatorische dot-file `.twig-root` in `contao/templates/twig` anzulegen!
 Wenn z.B. das Checkout Template angepasst werden soll, kann das neue Template updatesicher unter `contao/templates/twig/frontend_module/event_booking_checkout/custom.html.twig` abgelegt werden.
 Nicht vergessen den Installer einmal durchlaufen zu lassen! `php composer install`
-
-
-
