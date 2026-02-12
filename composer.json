@@ -22,7 +22,7 @@
         "symfony/rate-limiter": "^6.4 || ^7.1"
     },
     "require-dev": {
-        "contao/easy-coding-standard": "^6.13",
+        "markocupic/easy-coding-standard": "^13.0",
         "contao/test-case": "^5.5",
         "phpstan/phpstan": "^2.1",
         "symfony/phpunit-bridge": "^6.0 || ^7.0",

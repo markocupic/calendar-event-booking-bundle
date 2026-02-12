@@ -1,6 +1,6 @@
 {
     "require": {
-        "contao/easy-coding-standard": "^6.13"
+        "markocupic/easy-coding-standard": "^13.0"
     },
     "config": {
         "allow-plugins": {
