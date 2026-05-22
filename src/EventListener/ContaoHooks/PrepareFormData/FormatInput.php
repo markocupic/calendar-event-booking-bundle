@@ -25,9 +25,8 @@ final class FormatInput
 {
     public const HOOK = 'calEvtBookingPrepareFormData';
 
-    public function __construct(
-        private readonly Formatter $formatter,
-    ) {
+    public function __construct(private readonly Formatter $formatter)
+    {
     }
 
     /**

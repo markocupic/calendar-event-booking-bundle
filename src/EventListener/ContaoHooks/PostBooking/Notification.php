@@ -23,9 +23,8 @@ final class Notification
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
-    public function __construct(
-        private readonly NotificationHelper $notificationHelper,
-    ) {
+    public function __construct(private readonly NotificationHelper $notificationHelper)
+    {
     }
 
     /**

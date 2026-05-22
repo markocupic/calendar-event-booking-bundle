@@ -27,9 +27,8 @@ final class ExportTable implements ListenerInterface
 
     public static bool $disableHook = false;
 
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
     public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $config)

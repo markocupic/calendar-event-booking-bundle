@@ -23,9 +23,8 @@ class EventUnsubscribeNotificationType implements NotificationTypeInterface
 {
     public const NAME = 'event-unsubscribe-notification';
 
-    public function __construct(
-        private readonly TokenDefinitionFactoryInterface $factory,
-    ) {
+    public function __construct(private readonly TokenDefinitionFactoryInterface $factory)
+    {
     }
 
     public function getName(): string

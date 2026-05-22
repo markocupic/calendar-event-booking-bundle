@@ -1,7 +1,7 @@
 {
     "name": "markocupic/calendar-event-booking-bundle",
     "type": "contao-bundle",
-    "description": "Contao 4 Calendar Event Booking Bundle",
+    "description": "Contao Calendar Event Booking Bundle",
     "license": "MIT",
     "authors": [
         {
@@ -20,7 +20,7 @@
         "doctrine/dbal": ">=3.1"
     },
     "require-dev": {
-        "contao/easy-coding-standard": "^6.13"
+        "markocupic/easy-coding-standard": "^13.0"
     },
     "autoload": {
         "psr-4": {

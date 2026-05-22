@@ -20,9 +20,8 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 
 class Module
 {
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
     #[AsCallback(table: 'tl_module', target: 'fields.calendarEventBookingMemberListPartialTemplate.options')]

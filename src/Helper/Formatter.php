@@ -20,9 +20,8 @@ use Contao\Date;
 
 class Formatter
 {
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
     /**

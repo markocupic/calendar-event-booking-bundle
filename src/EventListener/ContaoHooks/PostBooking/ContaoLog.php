@@ -26,9 +26,8 @@ final class ContaoLog
 {
     public const HOOK = 'calEvtBookingPostBooking';
 
-    public function __construct(
-        private readonly Logger|null $logger = null,
-    ) {
+    public function __construct(private readonly Logger|null $logger = null)
+    {
     }
 
     /**

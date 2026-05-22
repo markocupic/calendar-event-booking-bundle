@@ -20,9 +20,8 @@ use Contao\Template;
 
 class AddTemplateData
 {
-    public function __construct(
-        private readonly EventRegistration $eventRegistration,
-    ) {
+    public function __construct(private readonly EventRegistration $eventRegistration)
+    {
     }
 
     /**
