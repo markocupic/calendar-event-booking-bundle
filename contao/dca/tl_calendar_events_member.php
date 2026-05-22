@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
             'exclude'   => true,
             'inputType' => 'textarea',
             'search'    => true,
-            'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_MEDIUMTEXT, 'notnull' => false],
+            'sql'       => "mediumtext NOT NULL default ''",
         ],
         'firstname'    => [
             'eval'      => ['mandatory' => true, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'tl_class' => 'w50'],
