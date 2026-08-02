@@ -27,7 +27,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class AutogenerateBookingForm extends AbstractMigration
 {
-    private const MIGRATION_TEXT = 'Auto generated event booking form sample. Please check the form generator in the Contao backend.';
+    private const string MIGRATION_TEXT = 'Auto generated event booking form sample. Please check the form generator in the Contao backend.';
 
     public function __construct(
         private readonly ContaoFramework $framework,

@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
+use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerAwareTrait;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 

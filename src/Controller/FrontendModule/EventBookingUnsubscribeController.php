@@ -24,9 +24,9 @@ use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
 use Markocupic\CalendarEventBookingBundle\Domain\Unsubscribe\UnsubscribeValidator;
 use Markocupic\CalendarEventBookingBundle\Event\CancelBookingEvent;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
@@ -66,7 +66,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.unsubscribe')]
         private readonly MessageInterface $message,
         private readonly NotificationCenter $notificationCenter,
-        private readonly NotificationManager $notificationManager,
+        private readonly NotificationService $notificationService,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
         private readonly UrlParser $urlParser,
@@ -102,7 +102,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         $bookingToken = $request->query->get(self::QUERY_PARAM_BOOKING_TOKEN, '');
-        $booking = CalendarEventsMemberModel::findOneByBookingToken($bookingToken);
+        $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findOneByBookingToken($bookingToken);
 
         $unsubscribedFlag = 'true' === $request->query->get(self::QUERY_PARAM_UNSUBSCRIBED);
 
@@ -144,25 +144,42 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
     private function handleFormSubmission(CalendarEventsMemberModel $booking, CalendarEventsModel $calEvent, Request $request, string $bookingToken): Response|null
     {
-        $this->connection->beginTransaction();
         $lock = $this->lockFactory->createLock(base64_encode(self::class.$bookingToken));
         $lock->acquire(true);
 
         try {
+            // Reload the booking under the lock to stay idempotent against a concurrent
+            // double-submit of the same token. Both the booking and the validator were
+            // evaluated before the lock was acquired, so a parallel request may already
+            // have canceled this booking in the meantime. If it is already canceled
+            // (or gone), there is nothing left to do: redirect to the success page
+            // without saving, dispatching the event or sending the notification again.
+            $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findOneByBookingToken($bookingToken);
+
+            if (null === $booking || $booking->canceled) {
+                return new RedirectResponse($this->urlParser->addQueryString(self::QUERY_PARAM_UNSUBSCRIBED.'=true'));
+            }
+
+            // Only start the transaction once we know there is real work to do. Doing so
+            // inside the try keeps both the lock (released in finally) and the transaction
+            // (rolled back only when actually active) leak-free on any failure path.
+            $this->connection->beginTransaction();
+
             $booking->canceled = true;
             $booking->temporaryReserved = false;
             $booking->save();
-            $this->connection->commit();
 
             $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
 
             $this->contaoGeneralLogger?->info(\sprintf('Booking for event "%s" ID %d has been unsubscribed by link.', $calEvent->title, $booking->id));
 
+            $event = new CancelBookingEvent($booking, self::class, $request);
+            $this->eventDispatcher->dispatch($event);
+
             // Send notifications
             $this->notify($booking, $calEvent);
 
-            $event = new CancelBookingEvent($booking, self::class, $request);
-            $this->eventDispatcher->dispatch($event);
+            $this->connection->commit();
 
             if ($event->getResponse() instanceof Response) {
                 return $event->getResponse();
@@ -170,7 +187,9 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             return new RedirectResponse($this->urlParser->addQueryString(self::QUERY_PARAM_UNSUBSCRIBED.'=true'));
         } catch (\Throwable $e) {
-            $this->connection->rollBack();
+            if ($this->connection->isTransactionActive()) {
+                $this->connection->rollBack();
+            }
             $this->message->addError($this->translator->trans('mod_unsubscribe.error.unexpected_error', [], self::TRANS_DOMAIN));
             $this->contaoErrorLogger?->error($e->getMessage());
 
@@ -205,7 +224,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
             return;
         }
 
-        $tokens = $this->notificationManager->getNotificationTokens($booking);
+        $tokens = $this->notificationService->getNotificationTokens($booking);
         $this->notificationCenter->sendNotification($calendar->unsubscribeNotification, $tokens);
     }
 

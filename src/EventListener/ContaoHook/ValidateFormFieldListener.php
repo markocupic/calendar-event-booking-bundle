@@ -25,7 +25,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ValidateFormFieldListener
 {
-    public const HOOK = 'validateFormField';
+    public const string HOOK = 'validateFormField';
 
     public function __construct(
         private readonly Connection $connection,
@@ -66,11 +66,11 @@ class ValidateFormFieldListener
             return $widget;
         }
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         $count = $this->connection->fetchOne(
             'SELECT COUNT(id) FROM tl_calendar_events_member WHERE pid = ? AND email LIKE ?',
-            [$event->id, $widget->value],
+            [$calEvent->id, $widget->value],
         );
 
         // Check if user with submitted email has already booked
@@ -113,14 +113,14 @@ class ValidateFormFieldListener
         /** @var EventBookingFormController $bookingModuleInstance */
         $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         if (empty($widget->value) || $widget->value < 1) {
             $widget->value = 0;
         }
 
-        if ((int) $widget->value > (int) $event->maxEscortsPerBooking) {
-            $errorMsg = $this->translator->trans('ERR.max_escorts_per_booking', [$event->maxEscortsPerBooking], 'contao_default');
+        if ((int) $widget->value > (int) $calEvent->maxEscortsPerBooking) {
+            $errorMsg = $this->translator->trans('ERR.max_escorts_per_booking', [$calEvent->maxEscortsPerBooking], 'contao_default');
             $widget->addError($errorMsg);
         }
 
@@ -158,14 +158,14 @@ class ValidateFormFieldListener
         /** @var EventBookingFormController $bookingModuleInstance */
         $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         if (empty($widget->value) || $widget->value < 1) {
             $widget->value = 0;
         }
 
-        if ((int) $widget->value > (int) $event->maxTicketsPerBooking) {
-            $errorMsg = $this->translator->trans('ERR.max_tickets_per_booking', [$event->maxTicketsPerBooking], 'contao_default');
+        if ((int) $widget->value > (int) $calEvent->maxTicketsPerBooking) {
+            $errorMsg = $this->translator->trans('ERR.max_tickets_per_booking', [$calEvent->maxTicketsPerBooking], 'contao_default');
             $widget->addError($errorMsg);
         }
 

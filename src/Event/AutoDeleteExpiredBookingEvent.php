@@ -49,8 +49,8 @@ class AutoDeleteExpiredBookingEvent extends Event
         return $this->shouldDelete;
     }
 
-    public function setShouldDelete(bool $shouldDelete): bool
+    public function setShouldDelete(bool $shouldDelete): void
     {
-        return $this->shouldDelete = $shouldDelete;
+        $this->shouldDelete = $shouldDelete;
     }
 }

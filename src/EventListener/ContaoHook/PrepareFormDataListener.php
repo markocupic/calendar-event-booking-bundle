@@ -16,20 +16,18 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
-use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
-use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class PrepareFormDataListener
 {
-    public const HOOK = 'prepareFormData';
+    public const string HOOK = 'prepareFormData';
 
     public function __construct(
-        private readonly Connection $connection,
-        private readonly EventStatus $eventStatus,
+        private readonly BookingCapacity $bookingCapacity,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
     ) {
@@ -53,16 +51,13 @@ final class PrepareFormDataListener
             return;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
+        if (!$this->hasBookingFormModule()) {
             return;
         }
 
-        /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingFormModule();
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         $requestedTickets = 1;
 
@@ -70,20 +65,21 @@ final class PrepareFormDataListener
             $requestedTickets = (int) $submittedData['ticketAmount'];
         }
 
-        if ($this->eventStatus->canFulfillBookingRequest($event, $this->connection, $requestedTickets)) {
+        if ($this->bookingCapacity->canFulfillBookingRequest($calEvent, $requestedTickets)) {
             // Everything is fine, the requested tickets are available
             $bookingModuleInstance->waitingListOpen = false;
 
             return;
         }
 
-        if (!$event->enableWaitingList) {
+        if (!$calEvent->enableWaitingList) {
             // The event is fully booked, and the waiting list is disabled.
             if ($requestedTickets > 1) {
                 $errorMsg = $this->translator->trans('ERR.not_enough_spots_reduce_ticket_amount', [], 'contao_default');
             } else {
                 $errorMsg = $this->translator->trans('MSC.fully_booked', [], 'contao_default');
             }
+
             $form->addError($errorMsg);
 
             $bookingModuleInstance->waitingListOpen = false;
@@ -91,7 +87,7 @@ final class PrepareFormDataListener
             return;
         }
 
-        if (!empty($submittedData['waitingList']) && !$this->eventStatus->canFulfillBookingRequestWaitingList($event, $this->connection, $requestedTickets)) {
+        if (!empty($submittedData['waitingList']) && !$this->bookingCapacity->canFulfillBookingRequestWaitingList($calEvent, $requestedTickets)) {
             if ($requestedTickets > 1) {
                 // Event is fully booked, but the waiting list is not full. Reduce the ticket
                 // amount to the maximum available on the waiting list.
@@ -120,6 +116,7 @@ final class PrepareFormDataListener
                 // waiting list flag must be set.
                 $errorMsg = $this->translator->trans('MSC.booking_on_waiting_list_possible_set_the_waiting_list_flag_please', [], 'contao_default');
             }
+
             $bookingModuleInstance->waitingListOpen = true;
 
             $form->addError($errorMsg);
@@ -130,5 +127,31 @@ final class PrepareFormDataListener
         // Event is fully booked! But everything is fine, the requested tickets are
         // available on the waiting list.
         $bookingModuleInstance->waitingListOpen = true;
+    }
+
+    private function hasBookingFormModule(): bool
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return false;
+        }
+
+        return $request->attributes->get('_event_booking_form_module') instanceof EventBookingFormController;
+    }
+
+    private function getBookingFormModule(): EventBookingFormController|null
+    {
+        if (!$this->hasBookingFormModule()) {
+            return null;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return null;
+        }
+
+        return $request->attributes->get('_event_booking_form_module');
     }
 }

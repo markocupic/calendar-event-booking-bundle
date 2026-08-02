@@ -21,9 +21,8 @@ use Doctrine\DBAL\Exception;
 
 class RenameFrontendModuleType extends AbstractMigration
 {
-    public function __construct(
-        private readonly Connection $connection,
-    ) {
+    public function __construct(private readonly Connection $connection)
+    {
     }
 
     /**

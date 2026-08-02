@@ -18,20 +18,19 @@ use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\OptIn\OptInToken;
 use Contao\CoreBundle\OptIn\OptInTokenAlreadyConfirmedException;
 use Contao\CoreBundle\OptIn\OptInTokenNoLongerValidException;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\OptInModel;
 use Doctrine\DBAL\Connection;
+use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
 use Markocupic\CalendarEventBookingBundle\Event\BookingConfirmEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\AbstractTranslatableException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingOptInException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\OptIn\OptInTokenFactory;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
@@ -46,23 +45,23 @@ use Terminal42\NotificationCenterBundle\NotificationCenter;
 #[AsFrontendModule(EventBookingOptInController::TYPE, category: 'events')]
 class EventBookingOptInController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_booking_opt_in';
+    public const string TYPE = 'event_booking_opt_in';
 
-    public const ACTION = 'opt-in';
+    public const string ACTION = 'opt-in';
 
-    private const TRANS_DOMAIN = 'mc_calendar_event_booking';
+    private const string TRANS_DOMAIN = 'mc_calendar_event_booking';
 
     public function __construct(
         private readonly Connection $connection,
-        private readonly ContaoFramework $framework,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly FigureUtil $figureUtil,
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.opt_in')]
         private readonly MessageInterface $message,
         private readonly NotificationCenter $notificationCenter,
-        private readonly NotificationManager $notificationManager,
+        private readonly NotificationService $notificationService,
         private readonly TranslatorInterface $translator,
+        private readonly OptInTokenFactory $optInTokenFactory,
         private readonly LoggerInterface|null $contaoErrorLogger,
         private readonly LoggerInterface|null $contaoGeneralLogger,
     ) {
@@ -77,10 +76,16 @@ class EventBookingOptInController extends AbstractFrontendModuleController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        $optInModel = OptInModel::findOneByToken($token);
+        $optInModel = $this->getContaoAdapter(OptInModel::class)->findOneByToken($token);
 
         if (null === $optInModel) {
-            throw new EventBookingOptInException('Confirm no more possible.', SeverityLevel::ERROR, 'mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN);
+            $this->addCssClassToTemplate('error confirm-no-more-possible', $template);
+            $this->message->addError($this->translator->trans('mod_opt_in.error.confirm_no_more_possible', [], self::TRANS_DOMAIN));
+
+            $template->set('messagesUnwrapped', $this->message->renderUnwrapped(peek: true));
+            $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
+
+            return $template->getResponse();
         }
 
         $booking = $this->loadBookingFromOptInModel($optInModel);
@@ -111,21 +116,18 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
             $this->validateRelatedEntities($template, $booking, $calEvent, $calendar);
 
+            $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
+
             $this->validateBookingState($template, $calendar, $calEvent, $booking);
 
-            $optInToken = new OptInToken($optInModel, $this->framework);
+            $optInToken = $this->optInTokenFactory->create($optInModel);
 
             // Will throw an exception if the token is already confirmed or no longer valid.
             $optInToken->confirm();
 
-            if ($this->processConfirm($template, $calEvent, $booking, $request)) {
-                $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);
+            $this->processConfirm($template, $calEvent, $booking, $request);
 
-                if ($calendar->optInSuccessNotification) {
-                    $tokens = $this->notificationManager->getNotificationTokens($booking);
-                    $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
-                }
-            }
+            $this->sendOptInSuccessNotification($calendar, $booking);
 
             $this->connection->commit();
         } catch (OptInTokenAlreadyConfirmedException $e) {
@@ -167,7 +169,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         }
     }
 
-    private function processConfirm(FragmentTemplate $template, CalendarEventsModel $calEvent, CalendarEventsMemberModel $booking, Request $request): bool
+    private function processConfirm(FragmentTemplate $template, CalendarEventsModel $calEvent, CalendarEventsMemberModel $booking, Request $request): void
     {
         $booking->optIn = true;
         $booking->temporaryReserved = false;
@@ -181,8 +183,6 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         $this->eventDispatcher->dispatch($event);
 
         $this->contaoGeneralLogger?->info(\sprintf('Booking for "%s" ID: %d confirmed via link.', $calEvent->title, $booking->id));
-
-        return true;
     }
 
     private function validateRelatedEntities(FragmentTemplate $template, CalendarEventsMemberModel|null $booking, CalendarEventsModel|null $calEvent, CalendarModel|null $calendar): void
@@ -256,5 +256,13 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         }
 
         return $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($arrRelated[CalendarEventsMemberModel::getTable()][0]);
+    }
+
+    private function sendOptInSuccessNotification(CalendarModel $calendar, CalendarEventsMemberModel $booking): void
+    {
+        if ($calendar->optInSuccessNotification) {
+            $tokens = $this->notificationService->getNotificationTokens($booking);
+            $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
+        }
     }
 }

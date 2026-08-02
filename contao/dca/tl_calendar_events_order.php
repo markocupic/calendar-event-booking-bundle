@@ -15,7 +15,7 @@ declare(strict_types=1);
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\PriceRegexpListener;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\DecimalPriceRegexpListener;
 use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
@@ -151,7 +151,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'grossAmount'     => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -159,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
             'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'netAmount'       => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -167,7 +167,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
             'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'vatAmount'       => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,

@@ -16,22 +16,25 @@ namespace Markocupic\CalendarEventBookingBundle\LinkBuilder;
 
 use Codefog\HasteBundle\UrlParser;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\PageModel;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingUnsubscribeController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class UnsubscribeLinkBuilder
+readonly class UnsubscribeLinkBuilder
 {
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly UrlParser $urlParser,
+        private ContaoFramework $framework,
+        private ContentUrlGenerator $contentUrlGenerator,
+        private UrlParser $urlParser,
     ) {
     }
 
     public function build(CalendarEventsMemberModel $booking): string
     {
         if (null === ($event = $booking->getRelated('pid'))) {
-            return '';
+            throw new \Exception('Event not found.');
         }
 
         if (!$event->enableDeregistration) {
@@ -39,7 +42,7 @@ class UnsubscribeLinkBuilder
         }
 
         if (null === ($calendar = $event->getRelated('pid'))) {
-            return '';
+            throw new \Exception('Calendar not found.');
         }
 
         if (null === ($page = $this->framework->getAdapter(PageModel::class)->findById($calendar->eventUnsubscribePage))) {
@@ -48,6 +51,6 @@ class UnsubscribeLinkBuilder
 
         $params = \sprintf('action=%s&bookingToken=%s', EventBookingUnsubscribeController::ACTION, $booking->bookingToken);
 
-        return $this->urlParser->addQueryString($params, $page->getAbsoluteUrl());
+        return $this->urlParser->addQueryString($params, $this->contentUrlGenerator->generate($page, [], UrlGeneratorInterface::ABSOLUTE_URL));
     }
 }

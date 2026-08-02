@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\Event;
 
 use Contao\CalendarEventsModel;
 use Contao\Model\Collection;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerInterface;
+use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsOrderModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class PaymentEvent extends Event
         return $this->request;
     }
 
-    public function getCheckoutHandler(): CheckoutHandlerInterface
+    public function getCheckoutHandler(): CheckoutHandlerInterface|null
     {
         return $this->checkoutHandler;
     }

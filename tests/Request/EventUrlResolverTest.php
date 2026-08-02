@@ -1,0 +1,106 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the Calendar Event Booking Bundle.
+ *
+ * (c) Marko Cupic <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/calendar-event-booking-bundle
+ */
+
+namespace Markocupic\CalendarEventBookingBundle\Tests\Request;
+
+use Contao\CalendarEventsModel;
+use Contao\Input;
+use Contao\TestCase\ContaoTestCase;
+use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+
+class EventUrlResolverTest extends ContaoTestCase
+{
+    public function testResolvesEventFromEventsParameter(): void
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 42]);
+
+        $resolver = $this->resolver(
+            store: ['events' => 'my-event'],
+            request: new Request(),
+            findByIdOrAlias: ['my-event' => $event],
+        );
+
+        $this->assertSame($event, $resolver->resolve());
+    }
+
+    public function testFallsBackToAutoItemParameter(): void
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 7]);
+
+        $request = new Request();
+        $request->attributes->set('auto_item', 'auto-event');
+
+        $resolver = $this->resolver(
+            store: [],
+            request: $request,
+            findByIdOrAlias: ['auto-event' => $event],
+        );
+
+        $this->assertSame($event, $resolver->resolve());
+    }
+
+    public function testReturnsNullWhenNoEventGiven(): void
+    {
+        $resolver = $this->resolver(
+            store: [],
+            request: new Request(),
+            findByIdOrAlias: [],
+        );
+
+        $this->assertNull($resolver->resolve());
+    }
+
+    /**
+     * @param array<string, mixed>               $store
+     * @param array<string, CalendarEventsModel> $findByIdOrAlias
+     */
+    private function resolver(array $store, Request $request, array $findByIdOrAlias): EventUrlResolver
+    {
+        $inputAdapter = $this->mockAdapter(['get', 'setGet']);
+        $inputAdapter
+            ->method('get')
+            ->willReturnCallback(
+                static function (string $key) use (&$store) {
+                    return $store[$key] ?? null;
+                },
+            )
+        ;
+        $inputAdapter
+            ->method('setGet')
+            ->willReturnCallback(
+                static function (string $key, $value) use (&$store): void {
+                    $store[$key] = $value;
+                },
+            )
+        ;
+
+        $eventsAdapter = $this->mockAdapter(['findByIdOrAlias']);
+        $eventsAdapter
+            ->method('findByIdOrAlias')
+            ->willReturnCallback(static fn ($idOrAlias) => $findByIdOrAlias[$idOrAlias] ?? null)
+        ;
+
+        $framework = $this->mockContaoFramework([
+            Input::class => $inputAdapter,
+            CalendarEventsModel::class => $eventsAdapter,
+        ]);
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        return new EventUrlResolver($framework, $requestStack);
+    }
+}

@@ -23,25 +23,24 @@ use Markocupic\ExportTable\EventListener\ContaoHooks\ListenerInterface;
 #[AsHook(ExportTable::HOOK, priority: 1000)]
 final class ExportTable implements ListenerInterface
 {
-    public const HOOK = 'exportTable';
+    public const string HOOK = 'exportTable';
 
     public static bool $disableHook = false;
 
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
-    public function __invoke(string $strFieldName, $varValue, string $strTableName, array $arrDataRecord, array $arrDca, Config $config)
+    public function __invoke(string $columnName, $varValue, string $tableName, array $dataRecord, array $dca, Config $config)
     {
-        if (CalendarEventsModel::getTable() === $strTableName) {
+        if (CalendarEventsModel::getTable() === $tableName) {
             $calendarEventsModelAdapter = $this->framework->getAdapter(CalendarEventsModel::class);
 
-            if ('pid' === $strFieldName) {
-                $event = $calendarEventsModelAdapter->findById($varValue);
+            if ('pid' === $columnName) {
+                $calEvent = $calendarEventsModelAdapter->findById($varValue);
 
-                if (null !== $event) {
-                    $varValue = $event->title;
+                if (null !== $calEvent) {
+                    $varValue = $calEvent->title;
                 }
             }
         }

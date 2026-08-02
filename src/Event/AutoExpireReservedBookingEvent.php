@@ -49,8 +49,8 @@ class AutoExpireReservedBookingEvent extends Event
         return $this->shouldExpire;
     }
 
-    public function setShouldExpire(bool $shouldExpire): bool
+    public function setShouldExpire(bool $shouldExpire): void
     {
-        return $this->shouldExpire = $shouldExpire;
+        $this->shouldExpire = $shouldExpire;
     }
 }

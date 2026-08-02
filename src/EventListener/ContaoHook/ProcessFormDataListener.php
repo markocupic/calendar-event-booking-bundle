@@ -17,21 +17,21 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
-use Markocupic\CalendarEventBookingBundle\Helper\NotificationManager;
-use Markocupic\CalendarEventBookingBundle\Helper\SessionManager;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\Session\BookingFlashStorage;
+use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProcessFormDataListener
 {
-    public const HOOK = 'processFormData';
+    public const string HOOK = 'processFormData';
 
     public function __construct(
         private readonly LoggerInterface|null $contaoGeneralLogger,
-        private readonly NotificationManager $notificationManager,
+        private readonly NotificationService $notificationService,
         private readonly RequestStack $requestStack,
-        private readonly SessionManager $sessionManager,
+        private readonly BookingFlashStorage $bookingFlashStorage,
     ) {
     }
 
@@ -73,9 +73,9 @@ class ProcessFormDataListener
             return;
         }
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
-        $this->sessionManager->addToSession($event, $booking, $formData);
+        $this->bookingFlashStorage->addToSession($calEvent, $booking, $formData);
     }
 
     #[AsHook(self::HOOK, priority: 800)]
@@ -97,9 +97,9 @@ class ProcessFormDataListener
             return;
         }
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
-        $strText = \sprintf('New booking ID %s for event "%s".', $booking->id, $event->title);
+        $strText = \sprintf('New booking ID %s for event "%s".', $booking->id, $calEvent->title);
 
         $this->contaoGeneralLogger?->info($strText);
     }
@@ -118,23 +118,19 @@ class ProcessFormDataListener
 
         $booking = $this->getCurrentBookingFromRequest();
 
-        if (null === $booking) {
+        if (null === $booking || null === $calendar) {
             return;
         }
 
-        // Send the subscribing to the event notification.
-        if ($calendar?->subscribeNotification) {
-            // Add an extra layer. So we can implement the SendNotificationEvent.
-            $this->notificationManager->sendNotification($calendar->subscribeNotification, $this->notificationManager->getNotificationTokens($booking), $booking);
+        // Send the event-subscribe notification.
+        if ($calendar->subscribeNotification) {
+            $this->notificationService->sendNotification($calendar->subscribeNotification, $this->notificationService->getNotificationTokens($booking), $booking);
         }
 
         // Send the opt-in invitation notification.
-        if (!$calendar?->requireOptIn || !$calendar?->optInInvitationNotification) {
-            return;
+        if ($calendar->requireOptIn && $calendar->optInInvitationNotification) {
+            $this->notificationService->sendNotification($calendar->optInInvitationNotification, $this->notificationService->getNotificationTokens($booking), $booking);
         }
-
-        // Add an extra layer. So we can implement the SendNotificationEvent.
-        $this->notificationManager->sendNotification($calendar->optInInvitationNotification, $this->notificationManager->getNotificationTokens($booking), $booking);
     }
 
     private function isValidEventBookingRequest(Form $form): bool
@@ -170,13 +166,7 @@ class ProcessFormDataListener
             return null;
         }
 
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
-
-        if (!$bookingModuleInstance instanceof EventBookingFormController) {
-            return null;
-        }
-
-        return $bookingModuleInstance;
+        return $request->attributes->get('_event_booking_form_module');
     }
 
     private function getCurrentBookingFromRequest(): CalendarEventsMemberModel|null

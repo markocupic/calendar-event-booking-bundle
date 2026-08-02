@@ -15,7 +15,7 @@ declare(strict_types=1);
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\PriceRegexpListener;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\DecimalPriceRegexpListener;
 use Ramsey\Uuid\Uuid;
 
 $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
@@ -149,7 +149,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'sql'       => ['type' => 'boolean', 'default' => false],
         ],
         'grossAmount'       => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -157,7 +157,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'netAmountReceived' => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -165,7 +165,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'captureFee'        => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -198,7 +198,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'sql'       => ['type' => 'string', 'length' => 10, 'notnull' => true, 'default' => ''],
         ],
         'refundAmount'      => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,
@@ -206,7 +206,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'sql'       => 'DOUBLE PRECISION DEFAULT 0 NOT NULL default 0',
         ],
         'refundFee'         => [
-            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
             'exclude'   => true,
             'inputType' => 'text',
             'search'    => true,

@@ -22,9 +22,8 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 #[AsEventListener]
 class KernelRequestListener
 {
-    public function __construct(
-        private readonly UrlParser $urlParser,
-    ) {
+    public function __construct(private readonly UrlParser $urlParser)
+    {
     }
 
     public function __invoke(RequestEvent $event): void

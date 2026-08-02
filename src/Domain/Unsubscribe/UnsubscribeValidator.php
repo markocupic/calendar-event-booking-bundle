@@ -21,9 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class UnsubscribeValidator
 {
-    public function __construct(
-        private readonly TranslatorInterface $translator,
-    ) {
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
     }
 
     public function validate(CalendarEventsMemberModel|null $booking, bool $unsubscribedFlag, string $transDomain): ValidationResult

@@ -25,8 +25,9 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
+use Doctrine\DBAL\ParameterType;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,9 +35,14 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule(EventBookingMemberListController::TYPE, category: 'events')]
 class EventBookingMemberListController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_booking_member_list';
+    public const string TYPE = 'event_booking_member_list';
 
     private CalendarEventsModel|null $calEvent = null;
+
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private array $columnCache = [];
 
     public function __construct(
         private readonly Connection $connection,
@@ -122,9 +128,11 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
 
     protected function columnExists(string $table, string $column): bool
     {
-        $columnsAvailable = $this->connection->createSchemaManager()->listTableColumns($table);
+        if (!isset($this->columnCache[$table])) {
+            $this->columnCache[$table] = $this->connection->createSchemaManager()->listTableColumns($table);
+        }
 
-        return \array_key_exists(strtolower($column), $columnsAvailable);
+        return \array_key_exists(strtolower($column), $this->columnCache[$table]);
     }
 
     protected function getBookings(int $eventId, array $arrWhere, array $arrOrder): array
@@ -134,13 +142,16 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
             ->from($t, 't')
-            ->setParameter('pid', $eventId)
+            ->where('t.pid = :pid')
+            ->setParameter('pid', $eventId, ParameterType::INTEGER)
         ;
 
-        $hasWhere = false;
+        // Collect the (optional) booking status conditions, combine them with OR and
+        // AND the whole group onto the event restriction. This keeps the event scope
+        // intact even when a status filter is active (and when it is not).
+        $statusConditions = [];
 
         foreach ($arrWhere as $strWhere) {
-            $hasWhere = true;
             [$col, $value] = StringUtil::trimsplit('::', $strWhere);
 
             if (!$this->columnExists($t, $col)) {
@@ -150,19 +161,26 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
             $value = 'true' === $value ? 1 : $value;
             $value = 'false' === $value ? 0 : $value;
 
-            $qb->orWhere("t.$col = :$col AND t.pid = :pid")
-                ->setParameter($col, $value)
-            ;
+            $statusConditions[] = "t.$col = :$col";
+            $qb->setParameter($col, $value);
         }
 
-        if (!$hasWhere) {
-            $qb->setParameter('pid', $eventId);
+        if ($statusConditions) {
+            $qb->andWhere('('.implode(' OR ', $statusConditions).')');
         }
 
         foreach ($arrOrder as $strOrder) {
             [$col, $direction] = StringUtil::trimsplit('::', $strOrder);
 
-            $qb->orderBy("t.$col", $direction);
+            // Whitelist the column against the actual table schema and restrict the
+            // direction to ASC/DESC to prevent SQL injection via the module config.
+            if (!$this->columnExists($t, $col)) {
+                continue;
+            }
+
+            $direction = 'DESC' === strtoupper((string) $direction) ? 'DESC' : 'ASC';
+
+            $qb->addOrderBy("t.$col", $direction);
         }
 
         return $qb->fetchAllAssociative();

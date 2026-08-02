@@ -15,15 +15,14 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\EventListener\WaitingList;
 
 use Contao\CalendarEventsModel;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\WaitingListPromotionProcessor;
 use Markocupic\CalendarEventBookingBundle\Event\WaitingListPromotedEvent;
-use Markocupic\CalendarEventBookingBundle\Helper\WaitingListManager;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 readonly class WaitingListPromotedListener
 {
-    public function __construct(
-        private WaitingListManager $waitingListManager,
-    ) {
+    public function __construct(private WaitingListPromotionProcessor $waitingListPromotionProcessor)
+    {
     }
 
     #[AsEventListener]
@@ -42,6 +41,6 @@ readonly class WaitingListPromotedListener
             return;
         }
 
-        $this->waitingListManager->promoteBookingFromWaitingList($event->getBooking(), $calendarEvent->current(), $event->getContext());
+        $this->waitingListPromotionProcessor->promoteBookingFromWaitingList($event->getBooking(), $calendarEvent->current(), $event->getContext());
     }
 }

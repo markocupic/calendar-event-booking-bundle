@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class DeleteExpiredBookingsCronTest extends ContaoTestCase
 {
-    private const TABLE_NAME = 'tl_calendar_events_member';
+    private const string TABLE_NAME = 'tl_calendar_events_member';
 
     private Connection|MockObject $connection;
 

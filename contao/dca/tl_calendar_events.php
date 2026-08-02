@@ -15,7 +15,7 @@ declare(strict_types=1);
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\DataContainer;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\PriceRegexpListener;
+use Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook\DecimalPriceRegexpListener;
 
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['doNotCopyRecords'] = true;
@@ -92,7 +92,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['currencyCode'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['netPrice'] = [
-    'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+    'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
     'exclude'   => true,
     'inputType' => 'text',
     'search'    => true,
@@ -103,7 +103,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['netPrice'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['taxValue'] = [
-    'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => PriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
+    'eval'      => ['mandatory' => false, 'maxlength' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'rgxp' => DecimalPriceRegexpListener::REGEXP_NAME, 'tl_class' => 'w50'],
     'exclude'   => true,
     'inputType' => 'text',
     'search'    => true,

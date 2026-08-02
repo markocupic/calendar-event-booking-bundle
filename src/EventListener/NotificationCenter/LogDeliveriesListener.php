@@ -16,7 +16,7 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter
 
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsBookingNotificationModel;
-use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
+use Markocupic\CalendarEventBookingBundle\Notification\Parcel\Stamp\CalendarEventBookingStamp;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

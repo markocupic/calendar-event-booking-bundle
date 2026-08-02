@@ -17,8 +17,8 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Contao\FrontendUser;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\PaymentCheckoutHandlerInterface;
+use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerAwareTrait;
+use Markocupic\CalendarEventBookingBundle\Checkout\PaymentCheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
@@ -31,7 +31,7 @@ class StoreFormDataListener
 {
     use CheckoutHandlerAwareTrait;
 
-    public const HOOK = 'storeFormData';
+    public const string HOOK = 'storeFormData';
 
     public function __construct(
         private readonly RequestStack $requestStack,
@@ -56,9 +56,9 @@ class StoreFormDataListener
         /** @var EventBookingFormController $bookingModuleInstance */
         $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
-        if (null === $event) {
+        if (null === $calEvent) {
             throw new \Exception('Event not found.');
         }
 
@@ -80,7 +80,7 @@ class StoreFormDataListener
         $checkoutHandler = $this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);
 
         $data['formSubmit'] = json_encode($data);
-        $data['pid'] = $event->id;
+        $data['pid'] = $calEvent->id;
         $data['tstamp'] = time();
         $data['addedOn'] = time();
         $data['bookingToken'] = Uuid::uuid4()->toString();

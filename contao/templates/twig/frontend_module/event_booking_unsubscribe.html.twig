@@ -34,6 +34,28 @@
                         <p class="stop-unsubscription"><a href="{{ app.request.getSchemeAndHttpHost() }}">{{ 'mod_unsubscribe.stop_unsubscription_btn_label'|trans }}</a></p>
                     </div>
                 </form>
+                <script{{ attrs().setIfExists('nonce', csp_nonce('script-src')) }}>
+                    const form = document.currentScript.previousElementSibling;
+
+                    form?.addEventListener('submit', e => {
+                        console.log('form submit');
+
+                        if (form.dataset.submitted === "true") {
+                            e.preventDefault();
+                            alert('aaa');
+                            return;
+                        }
+
+                        form.dataset.submitted = "true";
+
+                        form.querySelectorAll('button, input[type=submit]').forEach(el => el.disabled = true);
+
+                        setTimeout(() => {
+                            form.dataset.submitted = "false";
+                            form.querySelectorAll('button, input[type=submit]').forEach(el => el.disabled = false);
+                        }, 30000);
+                    });
+                </script>
             </div>
         {% endif %}
     {% endblock %}

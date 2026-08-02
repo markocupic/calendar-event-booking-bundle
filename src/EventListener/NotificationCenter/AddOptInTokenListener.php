@@ -20,9 +20,9 @@ use Contao\CoreBundle\String\SimpleTokenParser;
 use Contao\StringUtil;
 use Markocupic\CalendarEventBookingBundle\LinkBuilder\OptInLinkBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingNotificationType;
-use Markocupic\CalendarEventBookingBundle\NotificationType\EventBookingOptInInvitationNotificationType;
-use Markocupic\CalendarEventBookingBundle\OptIn\OptIn;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingNotificationType;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingOptInInvitationNotificationType;
+use Markocupic\CalendarEventBookingBundle\OptIn\OptInTokenCreator;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -62,9 +62,7 @@ class AddOptInTokenListener
 
         // Adding the member_optInLink token to the HtmlTokenDefinition will make the
         // auto suggester break!
-        $event
-            ->addTokenDefinition($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink'))
-        ;
+        $event->addTokenDefinition($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink'));
     }
 
     /**
@@ -103,13 +101,13 @@ class AddOptInTokenListener
             return;
         }
 
-        $booking = CalendarEventsMemberModel::findOneBy('bookingToken', $uuid);
+        $booking = $this->framework->getAdapter(CalendarEventsMemberModel::class)->findOneBy('bookingToken', $uuid);
 
         if (null === $booking) {
             return;
         }
 
-        $optInToken = OptIn::generateToken();
+        $optInToken = OptInTokenCreator::generateToken();
         $optInLink = $this->optInLinkBuilder->build($booking, $optInToken);
         $event->getParcel()->getStamp(TokenCollectionStamp::class)->tokenCollection
             ->addToken($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
@@ -180,7 +178,7 @@ class AddOptInTokenListener
 
         $removeOn = time() + $this->autoExpireTimeLimit;
 
-        (new OptIn($this->framework))
+        (new OptInTokenCreator($this->framework))
             ->create($optIn['token'], $removeOn, $optIn['email'], $optIn['email_subject'], $optIn['email_text'], $related)
         ;
     }

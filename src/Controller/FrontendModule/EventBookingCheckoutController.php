@@ -21,7 +21,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
-use Markocupic\CalendarEventBookingBundle\CheckoutHandler\CheckoutHandlerAwareTrait;
+use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
@@ -38,7 +38,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 {
     use CheckoutHandlerAwareTrait;
 
-    public const TYPE = 'event_booking_checkout';
+    public const string TYPE = 'event_booking_checkout';
 
     private CalendarEventsModel|null $calEvent = null;
 
@@ -99,7 +99,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
 
         // Add messages to template
         $template->set('messagesUnwrapped', $this->message->renderUnwrapped(peek: true));
-        $template->set('messages', $this->message->getAll());
+        $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
 
         if ($model->ceb_addImage && $this->calEvent->addImage) {
             $figure = $this->figureUtil->buildFigure($this->calEvent->row());

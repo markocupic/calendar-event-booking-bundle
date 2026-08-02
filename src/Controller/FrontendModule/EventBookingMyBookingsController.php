@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule(EventBookingMyBookingsController::TYPE, category: 'events')]
 class EventBookingMyBookingsController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_booking_my_bookings';
+    public const string TYPE = 'event_booking_my_bookings';
 
     public function __construct(
         private readonly Security $security,
@@ -58,22 +58,31 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
 
     private function getRelatedSubscriptions(FrontendUser $user, ModuleModel $model): array
     {
-        $qb = $this->connection->createQueryBuilder();
-        $qb
+        // Restrict the sort direction to a fixed whitelist to prevent SQL injection
+        // via the module configuration.
+        $sorting = 'DESC' === strtoupper((string) $model->ceb_modMyBookings_sorting) ? 'DESC' : 'ASC';
+
+        $qb = $this->connection->createQueryBuilder()
             ->select('cem.*')
             ->from('tl_calendar_events_member', 'cem')
             ->join('cem', 'tl_calendar_events', 'ce', 'cem.pid = ce.id')
             ->where('cem.member = :memberId')
             ->setParameter('memberId', $user->id, Types::INTEGER)
-            ->orderBy('ce.startDate', $model->ceb_modMyBookings_sorting)
+            ->orderBy('ce.startDate', $sorting)
         ;
 
         if ('past' === $model->ceb_modMyBookings_startTimeFilter) {
-            $qb->andWhere('ce.startDate < '.strtotime('+ 1 day'));
+            $qb
+                ->andWhere('ce.startDate < :pastLimit')
+                ->setParameter('pastLimit', strtotime('+ 1 day'), Types::INTEGER)
+            ;
         }
 
         if ('upcoming' === $model->ceb_modMyBookings_startTimeFilter) {
-            $qb->andWhere('ce.startDate > '.strtotime('- 1 day'));
+            $qb
+                ->andWhere('ce.startDate > :upcomingLimit')
+                ->setParameter('upcomingLimit', strtotime('- 1 day'), Types::INTEGER)
+            ;
         }
 
         $bookings = $qb->fetchAllAssociative();
@@ -82,23 +91,35 @@ class EventBookingMyBookingsController extends AbstractFrontendModuleController
 
         foreach ($bookings as $rowBooking) {
             $booking = $this->getContaoAdapter(CalendarEventsMemberModel::class)->findById($rowBooking['id']);
+
+            if (null === $booking) {
+                continue;
+            }
+
             $calEvent = $booking->getRelated('pid');
-            $calendar = $calEvent?->getRelated('pid');
+
+            if (null === $calEvent) {
+                continue;
+            }
+
+            $calendar = $calEvent->getRelated('pid');
             $payments = $this->getContaoAdapter(CalendarEventsPaymentModel::class)->findByPid($rowBooking['id']);
+
+            // Reset the figure on every iteration, otherwise a booking without an image
+            // would inherit the figure of a previous booking.
+            $figure = null;
 
             if ($model->ceb_addImage && $calEvent->addImage) {
                 $figure = $this->figureUtil->buildFigure($calEvent->row());
             }
 
-            $row = [
+            $rows[] = [
                 'booking' => $booking,
                 'event' => $calEvent,
                 'calendar' => $calendar,
                 'payments' => $payments,
-                'figure' => $figure ?? null,
+                'figure' => $figure,
             ];
-
-            $rows[] = $row;
         }
 
         return $rows;

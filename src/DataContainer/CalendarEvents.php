@@ -23,7 +23,7 @@ use Contao\DataContainer;
 use Contao\Date;
 use Contao\Message;
 use Doctrine\DBAL\Connection;
-use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CalendarEvents
@@ -31,7 +31,7 @@ class CalendarEvents
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
-        private readonly EventStatus $eventStatus,
+        private readonly BookingCapacity $bookingCapacity,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -93,7 +93,7 @@ class CalendarEvents
             $counterMarkup = \sprintf(
                 ' <span class="label-info">[%s %sx]</span>',
                 $this->translator->trans('MSC.bookings', [], 'contao_default'),
-                $this->eventStatus->getBookingCount($event, $this->connection),
+                $this->bookingCapacity->getBookingCount($event),
             );
 
             $labels[0] .= $counterMarkup;

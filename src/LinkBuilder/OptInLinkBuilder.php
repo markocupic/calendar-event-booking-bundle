@@ -16,15 +16,18 @@ namespace Markocupic\CalendarEventBookingBundle\LinkBuilder;
 
 use Codefog\HasteBundle\UrlParser;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\PageModel;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingOptInController;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class OptInLinkBuilder
+readonly class OptInLinkBuilder
 {
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly UrlParser $urlParser,
+        private ContaoFramework $framework,
+        private ContentUrlGenerator $contentUrlGenerator,
+        private UrlParser $urlParser,
     ) {
     }
 
@@ -49,6 +52,6 @@ class OptInLinkBuilder
         // The token will be generated dynamically by the AddOptInTokenStampListener
         $params = \sprintf('action=%s&token=%s', EventBookingOptInController::ACTION, $token);
 
-        return $this->urlParser->addQueryString($params, $page->getAbsoluteUrl());
+        return $this->urlParser->addQueryString($params, $this->contentUrlGenerator->generate($page, [], UrlGeneratorInterface::ABSOLUTE_URL));
     }
 }

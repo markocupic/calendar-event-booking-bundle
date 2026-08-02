@@ -20,7 +20,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public const ROOT_KEY = 'markocupic_calendar_event_booking';
+    public const string ROOT_KEY = 'markocupic_calendar_event_booking';
 
     public function getConfigTreeBuilder(): TreeBuilder
     {

@@ -15,18 +15,17 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Cron;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
-use Markocupic\CalendarEventBookingBundle\Helper\WaitingListManager;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\WaitingListPromotionProcessor;
 
 #[AsCronJob('minutely')]
 class CheckWaitingListCron
 {
-    public function __construct(
-        private readonly WaitingListManager $waitingListManager,
-    ) {
+    public function __construct(private readonly WaitingListPromotionProcessor $waitingListPromotionProcessor)
+    {
     }
 
     public function __invoke(): void
     {
-        $this->waitingListManager->checkWaitingList();
+        $this->waitingListPromotionProcessor->checkWaitingList();
     }
 }

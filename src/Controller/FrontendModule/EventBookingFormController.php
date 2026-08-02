@@ -31,15 +31,16 @@ use Contao\PageModel;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
+use Markocupic\CalendarEventBookingBundle\Domain\Booking\EventStatusResolver;
 use Markocupic\CalendarEventBookingBundle\Event\FrontendModuleGetResponseEvent;
 use Markocupic\CalendarEventBookingBundle\Exception\AbstractTranslatableException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingException;
 use Markocupic\CalendarEventBookingBundle\Exception\EventBookingRedirectResponseException;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
-use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
-use Markocupic\CalendarEventBookingBundle\Helper\EventStatus;
-use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
+use Markocupic\CalendarEventBookingBundle\Template\TemplateDataProvider;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -53,9 +54,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[AsFrontendModule(EventBookingFormController::TYPE, category: 'events')]
 class EventBookingFormController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_booking_form';
+    public const string TYPE = 'event_booking_form';
 
-    private const TRANS_DOMAIN = 'mc_calendar_event_booking';
+    private const string TRANS_DOMAIN = 'mc_calendar_event_booking';
+
+    private const string REQUEST_ATTR_MODULE = '_event_booking_form_module';
+
+    private const string REQUEST_KEY_FORM_SUBMIT = 'FORM_SUBMIT';
+
+    private const string REQUEST_KEY_TICKET_AMOUNT = 'ticketAmount';
+
+    private const string FORM_FIELD_WAITING_LIST = 'waitingList';
+
+    private const string TEMPLATE_KEY_FORM_MARKUP = 'form_markup';
 
     public bool $waitingListOpen = false;
 
@@ -68,10 +79,11 @@ class EventBookingFormController extends AbstractFrontendModuleController
     private string|null $eventStatus = null;
 
     public function __construct(
-        private readonly AddTemplateData $addTemplateData,
+        private readonly TemplateDataProvider $templateDataProvider,
         private readonly Connection $connection,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly EventStatus $eventStatusHelper,
+        private readonly BookingCapacity $bookingCapacity,
+        private readonly EventStatusResolver $eventStatusResolver,
         private readonly EventUrlResolver $eventUrlResolver,
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.form')]
@@ -124,63 +136,95 @@ class EventBookingFormController extends AbstractFrontendModuleController
      */
     protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
-        // Attach the event booking form module instance to the request so that we can
-        // access it later in the Contao Hooks or event listeners.
-        $request->attributes->set('_event_booking_form_module', $this);
+        // Normally, if no event is set, the __invoke() method will return an empty response.
+        if (null === $this->calEvent && $this->scopeMatcher->isFrontendRequest($request)) {
+            throw new \LogicException('Event booking form module is not available due to missing event object.');
+        }
+
+        // Attach the module instance to the request so that Contao hooks and event
+        // listeners can access it later.
+        $request->attributes->set(self::REQUEST_ATTR_MODULE, $this);
 
         // Allow other modules to modify the form ID, the template variables or the response.
-        $event = new FrontendModuleGetResponseEvent($template, $model, $request, $this, ['formId' => $model->form]);
-        $this->eventDispatcher->dispatch($event);
+        $event = $this->dispatchGetResponseEvent($template, $model, $request);
 
         if ($event->hasResponse()) {
             return $event->getResponse();
         }
 
         $this->getContaoAdapter(System::class)->loadLanguageFile(CalendarEventsMemberModel::getTable());
-
-        $this->eventStatus = $this->eventStatusHelper->resolveEventStatus($this->calEvent, $request);
+        $this->eventStatus = $this->eventStatusResolver->resolveEventStatus($this->calEvent, $request);
 
         $formId = $event->getOptions()['formId'] ?? -1;
-
         $this->form = $this->getContaoAdapter(FormModel::class)->findById($formId);
 
-        if (!$this->eventStatusHelper->canRegister($this->calEvent, $request) && $this->getFormId($formId)) {
-            $this->addTemplateData($template, $request);
+        if (!$this->eventStatusResolver->canRegister($this->calEvent, $request)) {
+            $this->assertValidBookingForm($formId);
+
+            $this->applyTemplateData($template, $request);
 
             return $template->getResponse();
         }
 
-        if ($this->eventStatusHelper->isFullyBooked($this->calEvent, $this->connection) && !$this->eventStatusHelper->isWaitingListFull($this->calEvent, $this->connection)) {
-            $this->waitingListOpen = true;
-            // Show the waitingList checkbox if the waiting list is available
-            $this->setFormFieldVisibility($formId, 'waitingList', true);
+        $this->openWaitingListIfAvailable($formId);
+
+        $this->processBooking($template, $request, $formId);
+
+        $this->applyTemplateData($template, $request);
+
+        return $template->getResponse();
+    }
+
+    private function dispatchGetResponseEvent(FragmentTemplate $template, ModuleModel $model, Request $request): FrontendModuleGetResponseEvent
+    {
+        $event = new FrontendModuleGetResponseEvent($template, $model, $request, $this, ['formId' => $model->form]);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event;
+    }
+
+    private function openWaitingListIfAvailable(int $formId): void
+    {
+        if (!$this->isWaitingListAvailable()) {
+            return;
         }
 
-        $lock = $this->lockFactory->createLock(self::class);
+        $this->waitingListOpen = true;
+
+        // Show the waiting list checkbox now that the waiting list is available.
+        $this->setFormFieldVisibility($formId, self::FORM_FIELD_WAITING_LIST, true);
+    }
+
+    private function isWaitingListAvailable(): bool
+    {
+        return $this->bookingCapacity->isFullyBooked($this->calEvent)
+            && !$this->bookingCapacity->isWaitingListFull($this->calEvent);
+    }
+
+    /**
+     * Renders the booking form inside an event-specific lock and a database
+     * transaction so that concurrent bookings are serialized per event.
+     *
+     * @throws Exception
+     * @throws \Throwable
+     */
+    private function processBooking(FragmentTemplate $template, Request $request, int $formId): void
+    {
+        $lock = $this->lockFactory->createLock(self::class.'_'.($this->calEvent?->id ?? 0));
         $lock->acquire(true);
 
         $this->connection->beginTransaction();
 
         try {
-            if ($request->request->get('FORM_SUBMIT') === $this->getFormId($formId)) {
-                // Protect form against too many requests
-                $this->checkRateLimit($request);
-
-                // Get the ticket amount from POST (default: 1)
-                $requestedTicketAmount = (int) $request->request->get('ticketAmount', 1);
-
-                if (!$this->eventStatusHelper->canFulfillBookingRequest($this->calEvent, $this->connection, $requestedTicketAmount)) {
-                    if ($this->eventStatusHelper->canFulfillBookingRequestWaitingList($this->calEvent, $this->connection, $requestedTicketAmount)) {
-                        $this->waitingListOpen = true;
-                    }
-                }
+            if ($request->request->get(self::REQUEST_KEY_FORM_SUBMIT) === $this->getFormId($formId)) {
+                $this->handleBookingSubmission($request);
             }
 
             // Use Contao core hooks to customize the form processing. Throw an
-            // EventBookingException exception to stop the form processing. Throw an
+            // EventBookingException to stop the form processing. Throw an
             // EventBookingRedirectResponseException to roll back the transaction and
             // redirect to a new URL...
-            $template->set('form_markup', $this->getContaoAdapter(Controller::class)->getForm($formId));
+            $template->set(self::TEMPLATE_KEY_FORM_MARKUP, $this->getContaoAdapter(Controller::class)->getForm($formId));
 
             $this->connection->commit();
         } catch (RedirectResponseException $e) {
@@ -200,15 +244,27 @@ class EventBookingFormController extends AbstractFrontendModuleController
             $this->connection->rollBack();
             $this->message->addError($this->translator->trans('mod_form.error.unexpected_error', [], self::TRANS_DOMAIN));
             $this->contaoErrorLogger?->error($e->getMessage());
-
-            throw $e;
         } finally {
             $lock->release();
         }
+    }
 
-        $this->addTemplateData($template, $request);
+    private function handleBookingSubmission(Request $request): void
+    {
+        // Protect the form against too many requests.
+        $this->checkRateLimit($request);
 
-        return $template->getResponse();
+        $requestedTicketAmount = (int) $request->request->get(self::REQUEST_KEY_TICKET_AMOUNT, 1);
+
+        if ($this->shouldFallBackToWaitingList($requestedTicketAmount)) {
+            $this->waitingListOpen = true;
+        }
+    }
+
+    private function shouldFallBackToWaitingList(int $requestedTicketAmount): bool
+    {
+        return !$this->bookingCapacity->canFulfillBookingRequest($this->calEvent, $requestedTicketAmount)
+            && $this->bookingCapacity->canFulfillBookingRequestWaitingList($this->calEvent, $requestedTicketAmount);
     }
 
     private function setFormFieldVisibility(int $formId, string $name, bool $blnShow = true): void
@@ -225,9 +281,9 @@ class EventBookingFormController extends AbstractFrontendModuleController
     }
 
     /**
-     * We need the form id to target the submitted form (FORM_SUBMIT).
+     * Ensures a valid booking form is assigned to the module and returns it.
      */
-    private function getFormId(int $formId): string
+    private function assertValidBookingForm(int $formId): FormModel
     {
         $form = $this->getContaoAdapter(FormModel::class)->findById($formId);
 
@@ -239,22 +295,40 @@ class EventBookingFormController extends AbstractFrontendModuleController
             throw new \Exception('Invalid booking form ID '.$form->id.' attached to the event booking form module. Please enable the "isCalendarEventBookingForm" flag in the form settings in the Contao backend.');
         }
 
+        return $form;
+    }
+
+    /**
+     * We need the form id to target the submitted form (FORM_SUBMIT).
+     */
+    private function getFormId(int $formId): string
+    {
+        $form = $this->assertValidBookingForm($formId);
+
         return $form->formID ? 'auto_'.$form->formID : 'auto_form_'.$form->id;
     }
 
-    private function addTemplateData(FragmentTemplate $template, Request $request): void
+    private function applyTemplateData(FragmentTemplate $template, Request $request): void
     {
         $template->set('eventStatus', $this->eventStatus);
-
-        $template->set('eventStatusText', match ($this->eventStatus) {
-            EventStatus::NOT_YET_BOOKABLE => $this->translator->trans('MSC.'.$this->eventStatus, [$this->getContaoAdapter(Date::class)->parse($this->getContaoAdapter(Config::class)->get('datimFormat'), $this->calEvent->bookingStartDate)], 'contao_default'),
-            default => $this->translator->trans('MSC.'.$this->eventStatus, [], 'contao_default'),
-        });
-
+        $template->set('eventStatusText', $this->getEventStatusText());
         $template->set('waitingListOpen', $this->waitingListOpen);
         $template->set('messagesUnwrapped', $this->message->renderUnwrapped(peek: true));
         $template->set('messages', $this->message->hasMessages() ? $this->message->getAll() : null);
-        $this->addTemplateData->addTemplateData($template, $this->calEvent, $request);
+
+        $this->templateDataProvider->addData($template, $this->calEvent, $request);
+    }
+
+    private function getEventStatusText(): string
+    {
+        return match ($this->eventStatus) {
+            EventStatusResolver::NOT_YET_BOOKABLE => $this->translator->trans(
+                'MSC.'.$this->eventStatus,
+                [$this->getContaoAdapter(Date::class)->parse($this->getContaoAdapter(Config::class)->get('datimFormat'), $this->calEvent->bookingStartDate)],
+                'contao_default',
+            ),
+            default => $this->translator->trans('MSC.'.$this->eventStatus, [], 'contao_default'),
+        };
     }
 
     private function checkRateLimit(Request $request): void

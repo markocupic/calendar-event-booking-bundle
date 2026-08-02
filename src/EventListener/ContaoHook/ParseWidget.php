@@ -21,11 +21,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class ParseWidget
 {
-    public const HOOK = 'parseWidget';
+    public const string HOOK = 'parseWidget';
 
-    public function __construct(
-        private readonly RequestStack $requestStack,
-    ) {
+    public function __construct(private readonly RequestStack $requestStack)
+    {
     }
 
     #[AsHook(self::HOOK, priority: 1000)]
@@ -35,19 +34,16 @@ final class ParseWidget
             return $buffer;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
+        if (!$this->hasBookingFormModule()) {
             return $buffer;
         }
 
-        /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingFormModule();
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         // Skip input field "escorts" if escorts are not allowed
-        if ($event->maxEscortsPerBooking < 1) {
+        if ($calEvent->maxEscortsPerBooking < 1) {
             return '';
         }
 
@@ -61,19 +57,16 @@ final class ParseWidget
             return $buffer;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
+        if (!$this->hasBookingFormModule()) {
             return $buffer;
         }
 
-        /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingFormModule();
 
-        $event = $bookingModuleInstance->getEvent();
+        $calEvent = $bookingModuleInstance->getEvent();
 
         // Skip input field "escorts" if escorts are not allowed
-        if ($event->maxTicketsPerBooking < 2) {
+        if ($calEvent->maxTicketsPerBooking < 2) {
             return '';
         }
 
@@ -87,19 +80,42 @@ final class ParseWidget
             return $buffer;
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (!$request->attributes->has('_event_booking_form_module')) {
+        if (!$this->hasBookingFormModule()) {
             return $buffer;
         }
 
-        /** @var EventBookingFormController $bookingModuleInstance */
-        $bookingModuleInstance = $request->attributes->get('_event_booking_form_module');
+        $bookingModuleInstance = $this->getBookingFormModule();
 
         if (!$bookingModuleInstance->waitingListOpen) {
             return '';
         }
 
         return $buffer;
+    }
+
+    private function hasBookingFormModule(): bool
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return false;
+        }
+
+        return $request->attributes->get('_event_booking_form_module') instanceof EventBookingFormController;
+    }
+
+    private function getBookingFormModule(): EventBookingFormController|null
+    {
+        if (!$this->hasBookingFormModule()) {
+            return null;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (null === $request) {
+            return null;
+        }
+
+        return $request->attributes->get('_event_booking_form_module');
     }
 }

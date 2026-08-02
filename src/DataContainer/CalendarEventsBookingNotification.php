@@ -21,9 +21,8 @@ use Contao\Image;
 
 class CalendarEventsBookingNotification
 {
-    public function __construct(
-        private readonly ContaoFramework $framework,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
     #[AsCallback(table: 'tl_calendar_events_booking_notification', target: 'list.label.label')]

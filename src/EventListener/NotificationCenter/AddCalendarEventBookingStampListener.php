@@ -14,8 +14,9 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
-use Markocupic\CalendarEventBookingBundle\Parcel\Stamp\CalendarEventBookingStamp;
+use Markocupic\CalendarEventBookingBundle\Notification\Parcel\Stamp\CalendarEventBookingStamp;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -29,6 +30,7 @@ class AddCalendarEventBookingStampListener
     public function __construct(
         #[AutowireLocator('cebb.notification', defaultIndexMethod: 'getType')]
         private readonly ContainerInterface $notificationTypes,
+        private readonly ContaoFramework $framework,
     ) {
     }
 
@@ -53,14 +55,14 @@ class AddCalendarEventBookingStampListener
 
         $uuid = $this->getBookingTokenFromParcel($parcel);
 
-        $booking = CalendarEventsMemberModel::findOneBy('bookingToken', $uuid);
+        $booking = $this->framework->getAdapter(CalendarEventsMemberModel::class)->findOneBy('bookingToken', $uuid);
 
         if (null === $booking) {
             return;
         }
 
         // We will need to read this later in order to log the notifications for the bookings.
-        $calendarEventBookingStamp = new CalendarEventBookingStamp((string) $booking->id, $notificationConfigStamp->toArray()['type']);
+        $calendarEventBookingStamp = $this->framework->createInstance(CalendarEventBookingStamp::class, [(string) $booking->id, $notificationConfigStamp->toArray()['type']]);
         $parcel = $parcel->withStamp($calendarEventBookingStamp);
 
         $event->setParcel($parcel);

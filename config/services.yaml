@@ -17,14 +17,14 @@ services:
     Markocupic\CalendarEventBookingBundle\:
         resource: ../src/
         exclude:
-            - '../src/CheckoutHandler/CheckoutResult.php'
+            - '../src/Checkout/CheckoutResult.php'
             - '../src/Domain/Unsubscribe/ValidationResult.php'
             - '../src/DependencyInjection'
             - '../src/Event'
             - '../src/Exception'
             - '../src/Model'
-            - '../src/OptIn'
-            - '../src/Parcel/Stamp'
+            - '../src/OptIn/OptInTokenCreator.php'
+            - '../src/Notification/Parcel/Stamp'
 
     markocupic_calendar_event_booking.rate_limit.event_booking_factory:
         class: Symfony\Component\RateLimiter\RateLimiterFactory

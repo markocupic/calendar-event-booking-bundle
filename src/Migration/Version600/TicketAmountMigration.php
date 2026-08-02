@@ -21,9 +21,8 @@ use Doctrine\DBAL\Exception;
 
 class TicketAmountMigration extends AbstractMigration
 {
-    public function __construct(
-        private readonly Connection $connection,
-    ) {
+    public function __construct(private readonly Connection $connection)
+    {
     }
 
     /**

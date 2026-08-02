@@ -17,15 +17,14 @@ namespace Markocupic\CalendarEventBookingBundle\EventListener\ContaoHook;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 use Contao\Widget;
-use Markocupic\CalendarEventBookingBundle\Helper\EventUrlResolver;
+use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
 
 final class LoadFormField
 {
-    public const HOOK = 'loadFormField';
+    public const string HOOK = 'loadFormField';
 
-    public function __construct(
-        private readonly EventUrlResolver $eventUrlResolver,
-    ) {
+    public function __construct(private readonly EventUrlResolver $eventUrlResolver)
+    {
     }
 
     #[AsHook(self::HOOK, priority: 1000)]
@@ -41,13 +40,13 @@ final class LoadFormField
 
         $widget->type = 'hidden';
 
-        $event = $this->eventUrlResolver->resolve();
+        $calEvent = $this->eventUrlResolver->resolve();
 
-        if (null === $event) {
+        if (null === $calEvent) {
             return $widget;
         }
 
-        $maxTicketsPerBooking = $event->maxTicketsPerBooking;
+        $maxTicketsPerBooking = $calEvent->maxTicketsPerBooking;
 
         if ($maxTicketsPerBooking < 2) {
             // The input field will be hidden (parseWidget hook)
@@ -87,13 +86,13 @@ final class LoadFormField
             return $widget;
         }
 
-        $event = $this->eventUrlResolver->resolve();
+        $calEvent = $this->eventUrlResolver->resolve();
 
-        if (null === $event) {
+        if (null === $calEvent) {
             return $widget;
         }
 
-        $maxEscorts = $event->maxEscortsPerBooking;
+        $maxEscorts = $calEvent->maxEscortsPerBooking;
 
         if (0 === $maxEscorts) {
             // The input field will be hidden (parseWidget hook)

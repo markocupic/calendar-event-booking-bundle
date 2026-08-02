@@ -18,23 +18,23 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Template;
-use Markocupic\CalendarEventBookingBundle\Helper\AddTemplateData;
+use Markocupic\CalendarEventBookingBundle\Template\TemplateDataProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AsHook(ParseTemplate::HOOK, priority: 1000)]
 final class ParseTemplate
 {
-    public const HOOK = 'parseTemplate';
+    public const string HOOK = 'parseTemplate';
 
     public function __construct(
-        private readonly AddTemplateData $addTemplateData,
         private readonly ContaoFramework $framework,
         private readonly RequestStack $requestStack,
+        private readonly TemplateDataProvider $templateDataProvider,
     ) {
     }
 
     /**
-     * Add booking data to legacy calendar templates.
+     * Add booking data to legacy!!! calendar templates.
      */
     public function __invoke(Template $template): void
     {
@@ -44,9 +44,9 @@ final class ParseTemplate
             return;
         }
 
-        $event = $this->framework->getAdapter(CalendarEventsModel::class)->findById($template->id ?? 0);
+        $calEvent = $this->framework->getAdapter(CalendarEventsModel::class)->findById($template->id ?? 0);
 
-        if (null === $event) {
+        if (null === $calEvent) {
             return;
         }
 
@@ -56,7 +56,7 @@ final class ParseTemplate
             return;
         }
 
-        foreach ($this->addTemplateData->getData($event, $request) as $key => $value) {
+        foreach ($this->templateDataProvider->getData($calEvent, $request) as $key => $value) {
             $template->{$key} = $value;
         }
     }
