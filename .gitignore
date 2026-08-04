@@ -2,17 +2,14 @@
 /vendor/
 /tools/*/vendor/
 
-# Root lock file: a bundle/library should not commit its own composer.lock.
-# (The pinned tool locks under /tools/*/composer.lock stay tracked.)
-/composer.lock
-
-# Local Composer binary (copied into the bundle because it is not installed globally)
-/composer
-/composer.phar
+# Do not commit composer binary files or composer.lock files
+composer
+composer.lock
 
 # PHPUnit
 .phpunit.result.cache
 .phpunit.cache/
+
 
 # IDE
 /.idea/
