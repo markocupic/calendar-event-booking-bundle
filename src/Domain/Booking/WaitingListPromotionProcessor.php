@@ -127,9 +127,9 @@ class WaitingListPromotionProcessor
             return new Collection([$event], CalendarEventsMemberModel::getTable());
         }
 
-        $calendarIds = CalendarModel::findAll()?->fetchEach('id') ?? [];
+        $calendarIds = $this->framework->getAdapter(CalendarModel::class)->findAll()?->fetchEach('id') ?? [];
 
-        return CalendarEventsModel::findUpcomingByPids($calendarIds);
+        return $this->framework->getAdapter(CalendarEventsModel::class)->findUpcomingByPids($calendarIds);
     }
 
     private function processWaitingListForEvent(CalendarEventsModel $calendarEvent): void
@@ -181,6 +181,6 @@ class WaitingListPromotionProcessor
 
         $this->processedIds[] = $bookingID;
 
-        return CalendarEventsMemberModel::findById($bookingID);
+        return $this->framework->getAdapter(CalendarEventsMemberModel::class)->findById($bookingID);
     }
 }
