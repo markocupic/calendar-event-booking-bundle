@@ -11,8 +11,12 @@
     </php>
 
     <testsuites>
-        <testsuite name="MultipageForms Test Suite">
+        <testsuite name="unit">
             <directory>../../tests</directory>
+            <exclude>../../tests/Functional</exclude>
+        </testsuite>
+        <testsuite name="functional">
+            <directory>../../tests/Functional</directory>
         </testsuite>
     </testsuites>
 </phpunit>
