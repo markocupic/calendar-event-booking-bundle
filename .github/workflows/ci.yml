@@ -60,9 +60,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, sqlite3
+          coverage: none
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install phpunit
         run: cd tools/phpunit && composer update --no-interaction --no-suggest
@@ -72,3 +74,6 @@ jobs:
 
       - name: Run the unit tests
         run: composer unit-tests
+
+      - name: Run the functional tests
+        run: composer functional-tests
