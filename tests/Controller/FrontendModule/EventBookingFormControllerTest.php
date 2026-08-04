@@ -377,7 +377,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         return $controller;
     }
 
-    private function createController(bool $rateLimitEnable = false, RateLimiterFactory|null $rateLimiterFactory = null, BookingCapacity|null $bookingCapacity = null, Connection|null $connection = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, ScopeMatcher|null $scopeMatcher = null, EventStatusResolver|null $eventStatusResolver = null,): EventBookingFormController
+    private function createController(bool $rateLimitEnable = false, RateLimiterFactory|null $rateLimiterFactory = null, BookingCapacity|null $bookingCapacity = null, Connection|null $connection = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, ScopeMatcher|null $scopeMatcher = null, EventStatusResolver|null $eventStatusResolver = null): EventBookingFormController
     {
         return new EventBookingFormController(
             $this->createMock(TemplateDataProvider::class),
