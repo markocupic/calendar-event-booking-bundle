@@ -17,14 +17,11 @@ namespace Markocupic\CalendarEventBookingBundle\Request;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class EventUrlResolver
 {
-    public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly RequestStack $requestStack,
-    ) {
+    public function __construct(private readonly ContaoFramework $framework)
+    {
     }
 
     public function resolve(): CalendarEventsModel|null
@@ -45,13 +42,11 @@ class EventUrlResolver
 
     private function handleAutoItemParameter($inputAdapter): void
     {
-        $request = $this->requestStack->getCurrentRequest();
-
-        $hasNoEventsParameter = empty($inputAdapter->get('events'));
-        $hasAutoItemParameter = $request->attributes->has('auto_item');
+        $hasNoEventsParameter = '' === (string) $inputAdapter->get('events');
+        $hasAutoItemParameter = '' !== (string) $inputAdapter->get('auto_item');
 
         if ($hasNoEventsParameter && $hasAutoItemParameter) {
-            $inputAdapter->setGet('events', $request->attributes->get('auto_item'));
+            $inputAdapter->setGet('events', $inputAdapter->get('auto_item'));
         }
     }
 }

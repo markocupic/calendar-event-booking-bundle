@@ -18,8 +18,6 @@ use Contao\CalendarEventsModel;
 use Contao\Input;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class EventUrlResolverTest extends ContaoTestCase
 {
@@ -29,7 +27,6 @@ class EventUrlResolverTest extends ContaoTestCase
 
         $resolver = $this->resolver(
             store: ['events' => 'my-event'],
-            request: new Request(),
             findByIdOrAlias: ['my-event' => $event],
         );
 
@@ -40,13 +37,23 @@ class EventUrlResolverTest extends ContaoTestCase
     {
         $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 7]);
 
-        $request = new Request();
-        $request->attributes->set('auto_item', 'auto-event');
-
+        // No "events" parameter, but an "auto_item" is present in the input.
         $resolver = $this->resolver(
-            store: [],
-            request: $request,
+            store: ['auto_item' => 'auto-event'],
             findByIdOrAlias: ['auto-event' => $event],
+        );
+
+        $this->assertSame($event, $resolver->resolve());
+    }
+
+    public function testEventsParameterTakesPrecedenceOverAutoItem(): void
+    {
+        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 5]);
+
+        // "events" is set, so "auto_item" must be ignored.
+        $resolver = $this->resolver(
+            store: ['events' => 'real-event', 'auto_item' => 'auto-event'],
+            findByIdOrAlias: ['real-event' => $event],
         );
 
         $this->assertSame($event, $resolver->resolve());
@@ -56,7 +63,16 @@ class EventUrlResolverTest extends ContaoTestCase
     {
         $resolver = $this->resolver(
             store: [],
-            request: new Request(),
+            findByIdOrAlias: [],
+        );
+
+        $this->assertNull($resolver->resolve());
+    }
+
+    public function testReturnsNullWhenEventNotFound(): void
+    {
+        $resolver = $this->resolver(
+            store: ['events' => 'unknown'],
             findByIdOrAlias: [],
         );
 
@@ -67,7 +83,7 @@ class EventUrlResolverTest extends ContaoTestCase
      * @param array<string, mixed>               $store
      * @param array<string, CalendarEventsModel> $findByIdOrAlias
      */
-    private function resolver(array $store, Request $request, array $findByIdOrAlias): EventUrlResolver
+    private function resolver(array $store, array $findByIdOrAlias): EventUrlResolver
     {
         $inputAdapter = $this->mockAdapter(['get', 'setGet']);
         $inputAdapter
@@ -98,9 +114,6 @@ class EventUrlResolverTest extends ContaoTestCase
             CalendarEventsModel::class => $eventsAdapter,
         ]);
 
-        $requestStack = new RequestStack();
-        $requestStack->push($request);
-
-        return new EventUrlResolver($framework, $requestStack);
+        return new EventUrlResolver($framework);
     }
 }
