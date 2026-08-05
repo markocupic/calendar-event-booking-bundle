@@ -23,7 +23,7 @@ class SendNotificationEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new SendNotificationEvent(42, ['recipient_email' => 'a@example.com'], $booking, $request);
@@ -56,6 +56,6 @@ class SendNotificationEventTest extends ContaoTestCase
 
     private function createEvent(): SendNotificationEvent
     {
-        return new SendNotificationEvent(1, [], $this->mockClassWithProperties(CalendarEventsMemberModel::class), new Request());
+        return new SendNotificationEvent(1, [], $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), new Request());
     }
 }

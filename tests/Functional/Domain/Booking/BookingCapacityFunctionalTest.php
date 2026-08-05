@@ -173,7 +173,7 @@ class BookingCapacityFunctionalTest extends ContaoTestCase
      */
     private function event(int $id, array $overrides = []): CalendarEventsModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsModel::class, array_merge(['id' => $id], $overrides));
+        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, array_merge(['id' => $id], $overrides));
     }
 
     private function capacity(): BookingCapacity

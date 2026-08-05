@@ -25,7 +25,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcGrossAmountPerItem(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 100.0;
         $event->taxValue = 20.0;
 
@@ -49,7 +49,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testGetCurrencyCode(): void
     {
         // Create a mock CalendarEventsModel with a predefined currency code
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->currencyCode = 'USD';
 
         // Create an instance of PriceCalculator
@@ -68,7 +68,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testGetCurrencyCodeWhenNull(): void
     {
         // Create a mock CalendarEventsModel without a currency code
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->currencyCode = null;
 
         // Create an instance of PriceCalculator
@@ -84,12 +84,12 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcGrossTotalAmount(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 100.0;
         $event->taxValue = 20.0;
 
         // Create a mock CalendarEventsMemberModel with ticket amount
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking->ticketAmount = 3;
 
         // Create an instance of PriceCalculator
@@ -110,7 +110,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcNetAmountPerItem(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 200.0;
 
         // Create an instance of PriceCalculator
@@ -133,7 +133,7 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcNetAmountPerItemWithStringNetPrice(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = '150.00';
 
         $priceCalculator = new PriceCalculator();
@@ -147,7 +147,7 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcGrossAmountPerItemWithStringModelValues(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = '100.00';
         $event->taxValue = '20.00';
 
@@ -160,14 +160,14 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcNetTotalAmount(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 150.0;
 
         // Create a mock CalendarEventsMemberModel with ticket amounts
-        $booking1 = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking1 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking1->ticketAmount = 1;
 
-        $booking2 = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking2 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking2->ticketAmount = 5;
 
         // Create an instance of PriceCalculator
@@ -191,7 +191,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcVatAmountPerItem(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 100.0;
         $event->taxValue = 20.0;
 
@@ -214,7 +214,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testGetTaxValue(): void
     {
         // Create a mock CalendarEventsModel with a predefined tax value
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->taxValue = 15.0;
 
         // Create an instance of PriceCalculator
@@ -233,7 +233,7 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testGetTaxValueWhenNull(): void
     {
         // Create a mock CalendarEventsModel with a null tax value
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->taxValue = null;
 
         // Create an instance of PriceCalculator
@@ -252,15 +252,15 @@ class PriceCalculatorTest extends ContaoTestCase
     public function testCalcVatTotalAmount(): void
     {
         // Create a mock CalendarEventsModel with predefined values
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event->netPrice = 120.0;
         $event->taxValue = 15.0;
 
         // Create mock CalendarEventsMemberModels with ticket amounts
-        $booking1 = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking1 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking1->ticketAmount = 2;
 
-        $booking2 = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking2 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking2->ticketAmount = 5;
 
         // Create an instance of PriceCalculator

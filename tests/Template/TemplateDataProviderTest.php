@@ -31,16 +31,16 @@ class TemplateDataProviderTest extends ContaoTestCase
 {
     public function testGetDataAggregatesEventInformation(): void
     {
-        $page = $this->mockClassWithProperties(PageModel::class, ['id' => 9]);
+        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 9]);
         $user = $this->createMock(FrontendUser::class);
 
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['id' => 3]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3]);
         $calendar
             ->method('current')
             ->willReturnSelf()
         ;
 
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()
@@ -76,7 +76,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     public function testGetDataHandlesMissingCalendarAndGuestUser(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()
@@ -105,7 +105,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     public function testAddDataWritesAllKeysToTemplate(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()

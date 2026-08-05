@@ -23,7 +23,7 @@ class AutoDeleteExpiredBookingEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new AutoDeleteExpiredBookingEvent($booking, 'cron', $request);
@@ -35,7 +35,7 @@ class AutoDeleteExpiredBookingEventTest extends ContaoTestCase
 
     public function testShouldDeleteDefaultsToTrueAndCanBeToggled(): void
     {
-        $event = new AutoDeleteExpiredBookingEvent($this->mockClassWithProperties(CalendarEventsMemberModel::class), 'cron', null);
+        $event = new AutoDeleteExpiredBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'cron', null);
 
         $this->assertTrue($event->shouldDelete());
 

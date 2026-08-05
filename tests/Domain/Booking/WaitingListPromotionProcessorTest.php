@@ -56,9 +56,9 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteSendsNotificationAndLogsWhenRowAffected(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 7]);
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -106,9 +106,9 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteSkipsNotificationWhenCalendarHasNoneConfigured(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 7]);
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -144,8 +144,8 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteDoesNothingWhenNoRowAffected(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 7]);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
 
         $connection = $this->createMock(Connection::class);
         $connection

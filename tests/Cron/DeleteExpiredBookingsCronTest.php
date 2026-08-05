@@ -38,7 +38,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
 
     public function testProcessAutoDeleteDoesNothingWhenDisabled(): void
     {
-        $framework = $this->mockContaoFramework();
+        $framework = $this->createContaoFrameworkMock();
         $framework
             ->expects($this->never())
             ->method('initialize')
@@ -65,7 +65,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
             ->willReturnOnConsecutiveCalls($this->mockBookingModel(1), $this->mockBookingModel(2), $this->mockBookingModel(3))
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkMock([CalendarEventsMemberModel::class => $adapter]);
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -125,7 +125,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
             ->willReturnOnConsecutiveCalls($this->mockBookingModel(1), $this->mockBookingModel(2), $this->mockBookingModel(3))
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkMock([CalendarEventsMemberModel::class => $adapter]);
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -181,7 +181,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
 
     private function mockBookingModel(int $id): CalendarEventsMemberModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => $id]);
+        return $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => $id]);
     }
 
     private function mockQueryBuilder(array $ids): QueryBuilder&MockObject

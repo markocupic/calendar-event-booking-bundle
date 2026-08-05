@@ -142,7 +142,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         ;
 
         // Valid booking form so getFormId() (evaluated in the FORM_SUBMIT comparison) succeeds.
-        $form = $this->mockClassWithProperties(FormModel::class, ['id' => 3, 'isCalendarEventBookingForm' => true, 'formID' => '']);
+        $form = $this->createClassWithPropertiesMock(FormModel::class, ['id' => 3, 'isCalendarEventBookingForm' => true, 'formID' => '']);
         $formAdapter = $this->createAdapterMock(['findById']);
         $formAdapter
             ->method('findById')
@@ -167,7 +167,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
             lockFactory: $this->lockFactoryWithLock(),
             message: $message,
         );
-        $this->withFramework($controller, $this->mockContaoFramework([
+        $this->withFramework($controller, $this->createContaoFrameworkStub([
             FormModel::class => $formAdapter,
             Controller::class => $controllerAdapter,
         ]));
@@ -191,7 +191,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
 
     public function testGetFormIdThrowsWhenNotABookingForm(): void
     {
-        $form = $this->mockClassWithProperties(FormModel::class, ['id' => 3, 'isCalendarEventBookingForm' => false]);
+        $form = $this->createClassWithPropertiesMock(FormModel::class, ['id' => 3, 'isCalendarEventBookingForm' => false]);
         $controller = $this->createControllerWithForm($form);
 
         $this->expectException(\Exception::class);
@@ -201,7 +201,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
     #[DataProvider('formIdProvider')]
     public function testGetFormIdBuildsExpectedId(array $formProps, string $expected): void
     {
-        $form = $this->mockClassWithProperties(FormModel::class, array_merge(['isCalendarEventBookingForm' => true], $formProps));
+        $form = $this->createClassWithPropertiesMock(FormModel::class, array_merge(['isCalendarEventBookingForm' => true], $formProps));
         $controller = $this->createControllerWithForm($form);
 
         $this->assertSame($expected, $this->invokeGetFormId($controller, (int) ($formProps['id'] ?? 0)));
@@ -222,7 +222,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         ;
 
         $controller = $this->createController(false);
-        $this->withFramework($controller, $this->mockContaoFramework([FormFieldModel::class => $adapter]));
+        $this->withFramework($controller, $this->createContaoFrameworkStub([FormFieldModel::class => $adapter]));
 
         $this->expectException(\Exception::class);
         $this->invokeSetFormFieldVisibility($controller, 5, 'waitingList', true);
@@ -231,7 +231,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
     #[DataProvider('visibilityProvider')]
     public function testSetFormFieldVisibilityTogglesInvisibleFlag(bool $show, bool $expectedInvisible): void
     {
-        $formField = $this->mockClassWithProperties(FormFieldModel::class, ['invisible' => !$show]);
+        $formField = $this->createClassWithPropertiesMock(FormFieldModel::class, ['invisible' => !$show]);
         $formField
             ->expects($this->once())
             ->method('save')
@@ -244,7 +244,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         ;
 
         $controller = $this->createController(false);
-        $this->withFramework($controller, $this->mockContaoFramework([FormFieldModel::class => $adapter]));
+        $this->withFramework($controller, $this->createContaoFrameworkStub([FormFieldModel::class => $adapter]));
 
         $this->invokeSetFormFieldVisibility($controller, 5, 'waitingList', $show);
 
@@ -318,7 +318,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
     private function setCalEvent(EventBookingFormController $controller): void
     {
         $property = new \ReflectionProperty(EventBookingFormController::class, 'calEvent');
-        $property->setValue($controller, $this->mockClassWithProperties(CalendarEventsModel::class));
+        $property->setValue($controller, $this->createClassWithPropertiesMock(CalendarEventsModel::class));
     }
 
     private function invokeCheckRateLimit(EventBookingFormController $controller, Request $request): void
@@ -349,7 +349,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
 
     private function mockModule(array $overrides = []): ModuleModel&MockObject
     {
-        return $this->mockClassWithProperties(ModuleModel::class, array_merge(['form' => 0], $overrides));
+        return $this->createClassWithPropertiesMock(ModuleModel::class, array_merge(['form' => 0], $overrides));
     }
 
     private function lockFactoryWithLock(): LockFactory&MockObject
@@ -372,7 +372,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         ;
 
         $controller = $this->createController(false);
-        $this->withFramework($controller, $this->mockContaoFramework([FormModel::class => $adapter]));
+        $this->withFramework($controller, $this->createContaoFrameworkStub([FormModel::class => $adapter]));
 
         return $controller;
     }

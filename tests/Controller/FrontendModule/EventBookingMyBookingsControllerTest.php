@@ -43,8 +43,8 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
 
         $controller = $this->createController($connection);
 
-        $user = $this->mockClassWithProperties(FrontendUser::class, ['id' => 7]);
-        $model = $this->mockClassWithProperties(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => $configured,
             'ceb_modMyBookings_startTimeFilter' => '',
             'ceb_addImage' => false,
@@ -81,8 +81,8 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
 
         $controller = $this->createController($connection);
 
-        $user = $this->mockClassWithProperties(FrontendUser::class, ['id' => 7]);
-        $model = $this->mockClassWithProperties(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => 'asc',
             'ceb_modMyBookings_startTimeFilter' => 'past',
             'ceb_addImage' => false,
@@ -119,15 +119,15 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
             ->willReturn(null)
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $memberAdapter]);
+        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $memberAdapter]);
 
         $controller = $this->createController($connection);
         $container = $this->getContainerWithContaoConfiguration();
         $container->set('contao.framework', $framework);
         $controller->setContainer($container);
 
-        $user = $this->mockClassWithProperties(FrontendUser::class, ['id' => 7]);
-        $model = $this->mockClassWithProperties(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => 'asc',
             'ceb_modMyBookings_startTimeFilter' => '',
             'ceb_addImage' => false,

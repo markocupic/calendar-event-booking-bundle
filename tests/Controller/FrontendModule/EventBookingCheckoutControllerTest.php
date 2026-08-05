@@ -46,7 +46,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
     public function testGetBookingReturnsModelForKnownToken(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
         $controller = $this->createControllerWithBooking('abc', $booking);
 
         $method = new \ReflectionMethod(EventBookingCheckoutController::class, 'getBookingFromRequest');
@@ -56,7 +56,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
     public function testIsCheckoutReflectsBookingPresence(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
         $controller = $this->createControllerWithBooking('abc', $booking);
 
         $method = new \ReflectionMethod(EventBookingCheckoutController::class, 'isCheckout');
@@ -76,7 +76,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
         $controller = $this->createController();
         $container = new Container();
-        $container->set('contao.framework', $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]));
+        $container->set('contao.framework', $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]));
         $controller->setContainer($container);
 
         return $controller;

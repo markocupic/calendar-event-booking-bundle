@@ -73,7 +73,7 @@ class DeleteExpiredBookingsCronFunctionalTest extends ContaoTestCase
         $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->method('findById')
-            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => $id]))
+            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => $id]))
         ;
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
@@ -84,7 +84,7 @@ class DeleteExpiredBookingsCronFunctionalTest extends ContaoTestCase
 
         return new DeleteExpiredBookingsCron(
             $this->connection,
-            $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]),
+            $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]),
             $dispatcher,
             $this->createMock(RequestStack::class),
             $enabled,

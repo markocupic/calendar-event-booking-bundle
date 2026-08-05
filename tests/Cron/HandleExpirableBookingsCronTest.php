@@ -33,7 +33,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
-        $this->framework = $this->mockContaoFramework();
+        $this->framework = $this->createContaoFrameworkMock();
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->requestStack = $this->createMock(RequestStack::class);
         $this->logger = $this->createMock(LoggerInterface::class);
@@ -88,7 +88,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             ->willReturnOnConsecutiveCalls($this->mockBookingModel(1), $this->mockBookingModel(2), $this->mockBookingModel(3))
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkMock([CalendarEventsMemberModel::class => $adapter]);
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -172,7 +172,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             ->willReturnOnConsecutiveCalls($this->mockBookingModel(1), $this->mockBookingModel(2), $this->mockBookingModel(3))
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkMock([CalendarEventsMemberModel::class => $adapter]);
         $framework
             ->expects($this->once())
             ->method('initialize')
@@ -228,7 +228,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
 
     private function mockBookingModel(int $id): CalendarEventsMemberModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsMemberModel::class, [
+        return $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, [
             'id' => $id,
             'expired' => 1,
             'temporaryReserved' => 0,

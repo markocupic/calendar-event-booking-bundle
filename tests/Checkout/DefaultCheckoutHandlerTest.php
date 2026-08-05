@@ -34,9 +34,9 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
     public function testHandleRequestBuildsResult(): void
     {
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['id' => 3]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3]);
 
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 2]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 2]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -45,7 +45,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
         $booking = $this->mockBooking($event, ['id' => 1]);
 
-        $model = $this->mockClassWithProperties(ModuleModel::class);
+        $model = $this->createClassWithPropertiesMock(ModuleModel::class);
 
         $result = (new DefaultCheckoutHandler())->handleRequest($booking, $model, new Request());
 
@@ -66,12 +66,12 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event not found.');
 
-        (new DefaultCheckoutHandler())->handleRequest($booking, $this->mockClassWithProperties(ModuleModel::class), new Request());
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
     }
 
     public function testHandleRequestThrowsWhenCalendarMissing(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -83,7 +83,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
 
-        (new DefaultCheckoutHandler())->handleRequest($booking, $this->mockClassWithProperties(ModuleModel::class), new Request());
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
     }
 
     /**
@@ -91,7 +91,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
      */
     private function mockBooking(CalendarEventsModel|null $event, array $props = []): CalendarEventsMemberModel&MockObject
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, $props);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, $props);
         $booking
             ->method('getRelated')
             ->with('pid')

@@ -27,7 +27,7 @@ class FrontendModuleGetResponseEventTest extends ContaoTestCase
     public function testExposesConstructorArguments(): void
     {
         $template = $this->createTemplate();
-        $model = $this->mockClassWithProperties(ModuleModel::class);
+        $model = $this->createClassWithPropertiesMock(ModuleModel::class);
         $request = new Request();
         $controller = $this->createMock(AbstractFrontendModuleController::class);
 
@@ -67,7 +67,7 @@ class FrontendModuleGetResponseEventTest extends ContaoTestCase
     {
         return new FrontendModuleGetResponseEvent(
             $this->createTemplate(),
-            $this->mockClassWithProperties(ModuleModel::class),
+            $this->createClassWithPropertiesMock(ModuleModel::class),
             new Request(),
             $this->createMock(AbstractFrontendModuleController::class),
         );

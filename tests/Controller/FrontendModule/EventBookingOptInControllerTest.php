@@ -62,14 +62,14 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public function testLoadBookingReturnsNullWhenRelationEmpty(): void
     {
-        $optInModel = $this->mockClassWithProperties(OptInModel::class);
+        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class);
         $optInModel
             ->method('getRelatedRecords')
             ->willReturn([])
         ;
 
         $controller = $this->createController();
-        $this->withFramework($controller, $this->mockContaoFramework());
+        $this->withFramework($controller, $this->createContaoFrameworkStub());
 
         $method = new \ReflectionMethod(EventBookingOptInController::class, 'loadBookingFromOptInModel');
 
@@ -80,7 +80,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     {
         $booking = $this->mockBooking();
 
-        $optInModel = $this->mockClassWithProperties(OptInModel::class);
+        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class);
         $optInModel
             ->method('getRelatedRecords')
             ->willReturn([CalendarEventsMemberModel::getTable() => [42]])
@@ -95,7 +95,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
         ;
 
         $controller = $this->createController();
-        $this->withFramework($controller, $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]));
+        $this->withFramework($controller, $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]));
 
         $method = new \ReflectionMethod(EventBookingOptInController::class, 'loadBookingFromOptInModel');
 
@@ -151,7 +151,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
         ;
 
         $controller = $this->createController(message: $message);
-        $this->withFramework($controller, $this->mockContaoFramework([OptInModel::class => $adapter]));
+        $this->withFramework($controller, $this->createContaoFrameworkStub([OptInModel::class => $adapter]));
 
         $template = $this->createTemplate();
 
@@ -307,7 +307,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public function testProcessOptInConfirmationConfirmsValidBooking(): void
     {
-        $optInModel = $this->mockClassWithProperties(OptInModel::class, ['token' => 'cebb-1']);
+        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-1']);
 
         $token = $this->createMock(OptInTokenInterface::class);
         $token
@@ -410,7 +410,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function assertConfirmExceptionIsHandled(\Throwable $thrownByConfirm, string $expectedMessageKey): void
     {
-        $optInModel = $this->mockClassWithProperties(OptInModel::class, ['token' => 'cebb-1']);
+        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-1']);
 
         $token = $this->createMock(OptInTokenInterface::class);
         $token
@@ -529,7 +529,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function mockModule(array $overrides = []): ModuleModel&MockObject
     {
-        return $this->mockClassWithProperties(ModuleModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(ModuleModel::class, array_merge(
             ['ceb_addImage' => false],
             $overrides,
         ));
@@ -537,7 +537,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function mockBooking(array $overrides = []): CalendarEventsMemberModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsMemberModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, array_merge(
             ['id' => 5, 'bookingToken' => 'tok', 'canceled' => false, 'optIn' => false, 'expired' => false, 'temporaryReserved' => true],
             $overrides,
         ));
@@ -545,7 +545,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function mockEvent(array $overrides = []): CalendarEventsModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, array_merge(
             ['title' => 'My Event', 'startDate' => strtotime('+10 days'), 'bookingEndDate' => 0],
             $overrides,
         ));
@@ -553,7 +553,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function mockCalendar(array $overrides = []): CalendarModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarModel::class, array_merge(
             ['requireOptIn' => true, 'optInSuccessNotification' => 0],
             $overrides,
         ));

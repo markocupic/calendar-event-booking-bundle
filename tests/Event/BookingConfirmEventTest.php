@@ -23,7 +23,7 @@ class BookingConfirmEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new BookingConfirmEvent($booking, 'opt-in', $request);
@@ -35,7 +35,7 @@ class BookingConfirmEventTest extends ContaoTestCase
 
     public function testRequestMayBeNull(): void
     {
-        $event = new BookingConfirmEvent($this->mockClassWithProperties(CalendarEventsMemberModel::class), 'opt-in', null);
+        $event = new BookingConfirmEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'opt-in', null);
 
         $this->assertNull($event->getRequest());
     }

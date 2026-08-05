@@ -154,9 +154,9 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
 
     private function event(int $id, bool $requireOptIn): CalendarEventsModel
     {
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['requireOptIn' => $requireOptIn]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => $requireOptIn]);
 
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => $id]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -181,10 +181,10 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $memberAdapter = $this->createAdapterMock(['findById']);
         $memberAdapter
             ->method('findById')
-            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => $id]))
+            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => $id]))
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $memberAdapter]);
+        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $memberAdapter]);
 
         return new WaitingListPromotionProcessor(
             $this->connection,

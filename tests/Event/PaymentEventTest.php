@@ -27,9 +27,9 @@ class PaymentEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $calEvent = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 2]);
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
-        $order = $this->mockClassWithProperties(CalendarEventsOrderModel::class, ['id' => 3]);
+        $calEvent = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 2]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
+        $order = $this->createClassWithPropertiesMock(CalendarEventsOrderModel::class, ['id' => 3]);
         $payments = $this->createMock(Collection::class);
         $request = new Request();
         $handler = $this->createMock(CheckoutHandlerInterface::class);
@@ -47,9 +47,9 @@ class PaymentEventTest extends ContaoTestCase
     public function testCheckoutHandlerIsNullWhenNotProvided(): void
     {
         $event = new PaymentEvent(
-            $this->mockClassWithProperties(CalendarEventsModel::class),
-            $this->mockClassWithProperties(CalendarEventsMemberModel::class),
-            $this->mockClassWithProperties(CalendarEventsOrderModel::class),
+            $this->createClassWithPropertiesMock(CalendarEventsModel::class),
+            $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class),
+            $this->createClassWithPropertiesMock(CalendarEventsOrderModel::class),
             $this->createMock(Collection::class),
             new Request(),
         );

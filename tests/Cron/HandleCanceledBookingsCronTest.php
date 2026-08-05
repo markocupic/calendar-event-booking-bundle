@@ -52,7 +52,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
             ->willReturn($model)
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]);
 
         // Create an instance of HandleCanceledBookingsCron
         $handler = new HandleCanceledBookingsCron(
@@ -73,7 +73,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
 
     public function testProcessSingleCanceledBookingWithDeletionAllowed(): void
     {
-        $model = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1, 'canceled' => 1]);
+        $model = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1, 'canceled' => 1]);
         $model
             ->expects($this->once())
             ->method('delete')
@@ -87,7 +87,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
             ->willReturn($model)
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]);
 
         $this->eventDispatcher
             ->method('dispatch')
@@ -126,7 +126,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
 
     public function testProcessSingleCanceledBookingWithDeletionNotAllowed(): void
     {
-        $model = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1, 'canceled' => 1]);
+        $model = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1, 'canceled' => 1]);
         $model
             ->expects($this->never())
             ->method('delete')
@@ -139,7 +139,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
             ->willReturn($model)
         ;
 
-        $framework = $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]);
 
         $this->eventDispatcher
             ->method('dispatch')

@@ -121,7 +121,7 @@ class EventStatusResolverTest extends ContaoTestCase
      */
     private function assertStatus(string $expected, array $props): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, $props);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $props);
 
         $method = new \ReflectionMethod(EventStatusResolver::class, 'determineEventStatus');
 

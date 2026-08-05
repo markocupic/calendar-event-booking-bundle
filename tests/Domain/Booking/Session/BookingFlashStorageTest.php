@@ -41,8 +41,8 @@ class BookingFlashStorageTest extends ContaoTestCase
 
         $storage = new BookingFlashStorage($requestStack);
 
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'title' => 'My Event']);
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 7, 'firstname' => 'Jane']);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'title' => 'My Event']);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7, 'firstname' => 'Jane']);
         $formData = ['email' => 'jane@example.com'];
 
         $storage->addToSession($event, $booking, $formData);

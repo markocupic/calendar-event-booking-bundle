@@ -33,7 +33,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
         $booking = $this->mockBooking(null);
 
         $builder = new OptInLinkBuilder(
-            $this->mockContaoFramework(),
+            $this->createContaoFrameworkStub(),
             $this->createMock(ContentUrlGenerator::class),
             $this->createMock(UrlParser::class),
         );
@@ -49,7 +49,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
         $booking = $this->mockBooking($this->mockEvent(null));
 
         $builder = new OptInLinkBuilder(
-            $this->mockContaoFramework(),
+            $this->createContaoFrameworkStub(),
             $this->createMock(ContentUrlGenerator::class),
             $this->createMock(UrlParser::class),
         );
@@ -62,11 +62,11 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenOptInNotRequired(): void
     {
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['requireOptIn' => false]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => false]);
         $booking = $this->mockBooking($this->mockEvent($calendar));
 
         $builder = new OptInLinkBuilder(
-            $this->mockContaoFramework(),
+            $this->createContaoFrameworkStub(),
             $this->createMock(ContentUrlGenerator::class),
             $this->createMock(UrlParser::class),
         );
@@ -76,7 +76,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenPageIsMissing(): void
     {
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
         $booking = $this->mockBooking($this->mockEvent($calendar));
 
         $builder = new OptInLinkBuilder(
@@ -90,8 +90,8 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     public function testBuildsAbsoluteOptInUrl(): void
     {
-        $page = $this->mockClassWithProperties(PageModel::class, ['id' => 3]);
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
+        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 3]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
         $booking = $this->mockBooking($this->mockEvent($calendar));
 
         $urlGenerator = $this->createMock(ContentUrlGenerator::class);
@@ -118,7 +118,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     private function mockBooking(CalendarEventsModel|null $event): CalendarEventsMemberModel&MockObject
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking
             ->method('getRelated')
             ->with('pid')
@@ -130,7 +130,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     private function mockEvent(CalendarModel|null $calendar): CalendarEventsModel&MockObject
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -149,6 +149,6 @@ class OptInLinkBuilderTest extends ContaoTestCase
             ->willReturn($page)
         ;
 
-        return $this->mockContaoFramework([PageModel::class => $adapter]);
+        return $this->createContaoFrameworkStub([PageModel::class => $adapter]);
     }
 }

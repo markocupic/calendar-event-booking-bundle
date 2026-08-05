@@ -40,7 +40,7 @@ class OptInTokenCreatorTest extends ContaoTestCase
     {
         $related = [CalendarEventsMemberModel::getTable() => [7]];
 
-        $model = $this->mockClassWithProperties(OptInModel::class, ['token' => 'cebb-000000000000000']);
+        $model = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-000000000000000']);
         $model
             ->expects($this->once())
             ->method('save')

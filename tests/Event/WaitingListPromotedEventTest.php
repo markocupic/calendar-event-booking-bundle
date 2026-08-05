@@ -23,7 +23,7 @@ class WaitingListPromotedEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new WaitingListPromotedEvent($booking, 'cron', $request);
@@ -35,7 +35,7 @@ class WaitingListPromotedEventTest extends ContaoTestCase
 
     public function testAdvancementIsAllowedByDefaultAndCanBeToggled(): void
     {
-        $event = new WaitingListPromotedEvent($this->mockClassWithProperties(CalendarEventsMemberModel::class), 'cron', null);
+        $event = new WaitingListPromotedEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'cron', null);
 
         $this->assertTrue($event->isAdvancementAllowed());
 

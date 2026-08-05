@@ -168,7 +168,7 @@ class UnsubscribeValidatorTest extends ContaoTestCase
 
     private function mockBooking(bool $canceled, CalendarEventsModel|null $event): CalendarEventsMemberModel&MockObject
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['canceled' => $canceled]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['canceled' => $canceled]);
         $booking
             ->method('getRelated')
             ->with('pid')
@@ -199,6 +199,6 @@ class UnsubscribeValidatorTest extends ContaoTestCase
             $overrides,
         );
 
-        return $this->mockClassWithProperties(CalendarEventsModel::class, $props);
+        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, $props);
     }
 }

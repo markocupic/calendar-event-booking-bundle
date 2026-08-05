@@ -25,7 +25,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testGetBookingCount(): void
     {
         $capacity = $this->capacity(5);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
 
         $this->assertSame(5, $capacity->getBookingCount($event));
     }
@@ -35,7 +35,7 @@ class BookingCapacityTest extends ContaoTestCase
         // fetchOne returns the same value for both the booking and the waiting-list query,
         // so including the waiting list doubles the count.
         $capacity = $this->capacity(4);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
 
         $this->assertSame(8, $capacity->getBookingCount($event, true));
     }
@@ -43,7 +43,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testGetWaitingListCount(): void
     {
         $capacity = $this->capacity(3);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
 
         $this->assertSame(3, $capacity->getWaitingListCount($event));
     }
@@ -52,7 +52,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testIsFullyBooked(int $maxBookings, int $bookingCount, bool $expected): void
     {
         $capacity = $this->capacity($bookingCount);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
 
         $this->assertSame($expected, $capacity->isFullyBooked($event));
     }
@@ -69,7 +69,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testCanFulfillBookingRequest(int $maxBookings, int $bookingCount, int $requested, bool $expected): void
     {
         $capacity = $this->capacity($bookingCount);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
 
         $this->assertSame($expected, $capacity->canFulfillBookingRequest($event, $requested));
     }
@@ -84,7 +84,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testCanFulfillWaitingListReturnsFalseWhenDisabled(): void
     {
         $capacity = $this->capacity(0);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => false]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => false]);
 
         $this->assertFalse($capacity->canFulfillBookingRequestWaitingList($event, 1));
     }
@@ -92,7 +92,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testCanFulfillWaitingListReturnsTrueWhenUnlimited(): void
     {
         $capacity = $this->capacity(0);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => true, 'maxWaitingList' => 0]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => true, 'maxWaitingList' => 0]);
 
         $this->assertTrue($capacity->canFulfillBookingRequestWaitingList($event, 5));
     }
@@ -101,7 +101,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testCanFulfillWaitingListRespectsLimit(int $maxWaitingList, int $waitingCount, int $requested, bool $expected): void
     {
         $capacity = $this->capacity($waitingCount);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, [
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, [
             'id' => 1,
             'enableWaitingList' => true,
             'maxWaitingList' => $maxWaitingList,
@@ -119,7 +119,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testIsWaitingListFullWhenDisabled(): void
     {
         $capacity = $this->capacity(0);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => false]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'enableWaitingList' => false]);
 
         // No waiting list available -> considered full.
         $this->assertTrue($capacity->isWaitingListFull($event));
@@ -129,7 +129,7 @@ class BookingCapacityTest extends ContaoTestCase
     public function testGetFreeSpotsCount(int $maxBookings, int $bookingCount, int $expected): void
     {
         $capacity = $this->capacity($bookingCount);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
 
         $this->assertSame($expected, $capacity->getFreeSpotsCount($event));
     }

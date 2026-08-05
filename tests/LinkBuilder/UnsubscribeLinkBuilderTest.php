@@ -32,7 +32,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
     {
         $booking = $this->mockBooking(null);
 
-        $builder = $this->builder($this->mockContaoFramework(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event not found.');
@@ -42,17 +42,17 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenDeregistrationDisabled(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['enableDeregistration' => false]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => false]);
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->mockContaoFramework(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
 
         $this->assertSame('', $builder->build($booking));
     }
 
     public function testThrowsWhenCalendarIsMissing(): void
     {
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -60,7 +60,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         ;
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->mockContaoFramework(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
@@ -70,8 +70,8 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenPageIsMissing(): void
     {
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['eventUnsubscribePage' => 4]);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['eventUnsubscribePage' => 4]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -86,9 +86,9 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testBuildsAbsoluteUnsubscribeUrl(): void
     {
-        $page = $this->mockClassWithProperties(PageModel::class, ['id' => 4]);
-        $calendar = $this->mockClassWithProperties(CalendarModel::class, ['eventUnsubscribePage' => 4]);
-        $event = $this->mockClassWithProperties(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 4]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['eventUnsubscribePage' => 4]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -120,7 +120,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     private function mockBooking(CalendarEventsModel|null $event, string $bookingToken = ''): CalendarEventsMemberModel&MockObject
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['bookingToken' => $bookingToken]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => $bookingToken]);
         $booking
             ->method('getRelated')
             ->with('pid')
@@ -139,7 +139,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
             ->willReturn($page)
         ;
 
-        return $this->mockContaoFramework([PageModel::class => $adapter]);
+        return $this->createContaoFrameworkStub([PageModel::class => $adapter]);
     }
 
     private function builder(object $framework, ContentUrlGenerator $urlGenerator, UrlParser $urlParser): UnsubscribeLinkBuilder

@@ -48,11 +48,11 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
     {
         $controller = $this->createController(scopeMatcher: $this->scopeMatcher(false));
 
-        $page = $this->mockClassWithProperties(PageModel::class, ['noSearch' => 0]);
+        $page = $this->createClassWithPropertiesMock(PageModel::class, ['noSearch' => 0]);
 
         $response = $controller(
             new Request(),
-            $this->mockClassWithProperties(ModuleModel::class),
+            $this->createClassWithPropertiesMock(ModuleModel::class),
             'main',
             null,
             $page,
@@ -68,7 +68,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
         $response = $controller(
             new Request(['action' => EventBookingUnsubscribeController::ACTION]),
-            $this->mockClassWithProperties(ModuleModel::class),
+            $this->createClassWithPropertiesMock(ModuleModel::class),
             'main',
             null,
             null,
@@ -307,7 +307,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             ->willReturn($booking)
         ;
 
-        return $this->mockContaoFramework([CalendarEventsMemberModel::class => $adapter]);
+        return $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]);
     }
 
     private function withFramework(EventBookingUnsubscribeController $controller, object $framework): void
@@ -330,7 +330,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
     private function mockBooking(array $overrides = []): CalendarEventsMemberModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsMemberModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, array_merge(
             ['id' => 5, 'bookingToken' => 'tok', 'canceled' => false, 'temporaryReserved' => true],
             $overrides,
         ));
@@ -338,7 +338,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
     private function mockEvent(array $overrides = []): CalendarEventsModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarEventsModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, array_merge(
             ['id' => 1, 'title' => 'My Event'],
             $overrides,
         ));
@@ -346,7 +346,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
     private function mockCalendar(array $overrides = []): CalendarModel&MockObject
     {
-        return $this->mockClassWithProperties(CalendarModel::class, array_merge(
+        return $this->createClassWithPropertiesMock(CalendarModel::class, array_merge(
             ['unsubscribeNotification' => 0],
             $overrides,
         ));

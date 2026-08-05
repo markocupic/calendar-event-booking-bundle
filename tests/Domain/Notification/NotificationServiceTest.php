@@ -36,7 +36,7 @@ class NotificationServiceTest extends ContaoTestCase
 
         $controllerAdapter = $this->createAdapterMock(['loadLanguageFile']);
 
-        $organizerMock = $this->mockClassWithProperties(UserModel::class);
+        $organizerMock = $this->createClassWithPropertiesMock(UserModel::class);
         $organizerMock->id = (int) $this->getExpectedTokens()['organizer_id'];
         $organizerMock->name = $this->getExpectedTokens()['organizer_name'];
         $organizerMock->email = $this->getExpectedTokens()['organizer_email'];
@@ -53,7 +53,7 @@ class NotificationServiceTest extends ContaoTestCase
             UserModel::class => $userModelAdapter,
         ];
 
-        $frameworkMock = $this->mockContaoFramework($adapters);
+        $frameworkMock = $this->createContaoFrameworkStub($adapters);
         $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         $notificationCenterMock = $this->createMock(NotificationCenter::class);
         $requestStackMock = $this->createMock(RequestStack::class);
@@ -89,11 +89,11 @@ class NotificationServiceTest extends ContaoTestCase
 
     public function testGenerateNotificationTokens(): void
     {
-        $calendarMock = $this->mockClassWithProperties(CalendarModel::class);
+        $calendarMock = $this->createClassWithPropertiesMock(CalendarModel::class);
         $calendarMock->id = (int) $this->getExpectedTokens()['calendar_id'];
         $calendarMock->title = $this->getExpectedTokens()['calendar_title'];
 
-        $eventMock = $this->mockClassWithProperties(CalendarEventsModel::class);
+        $eventMock = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $eventMock->id = (int) $this->getExpectedTokens()['event_id'];
         $eventMock->pid = (int) $this->getExpectedTokens()['event_pid'];
         $eventMock->title = $this->getExpectedTokens()['event_title'];
@@ -105,7 +105,7 @@ class NotificationServiceTest extends ContaoTestCase
             ->willReturn($calendarMock)
         ;
 
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
         $booking->id = (int) $this->getExpectedTokens()['member_id'];
         $booking->pid = (int) $this->getExpectedTokens()['member_pid'];
         $booking->firstname = $this->getExpectedTokens()['member_firstname'];

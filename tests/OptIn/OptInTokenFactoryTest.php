@@ -23,8 +23,8 @@ class OptInTokenFactoryTest extends ContaoTestCase
 {
     public function testCreateReturnsOptInTokenForModel(): void
     {
-        $framework = $this->mockContaoFramework();
-        $model = $this->mockClassWithProperties(OptInModel::class, ['token' => 'cebb-abcdef']);
+        $framework = $this->createContaoFrameworkStub();
+        $model = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-abcdef']);
 
         $factory = new OptInTokenFactory($framework);
         $token = $factory->create($model);

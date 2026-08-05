@@ -24,7 +24,7 @@ class CancelBookingEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new CancelBookingEvent($booking, 'unsubscribe', $request);
@@ -36,7 +36,7 @@ class CancelBookingEventTest extends ContaoTestCase
 
     public function testResponseIsNullByDefaultAndPropagationRunning(): void
     {
-        $event = new CancelBookingEvent($this->mockClassWithProperties(CalendarEventsMemberModel::class), 'unsubscribe', null);
+        $event = new CancelBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'unsubscribe', null);
 
         $this->assertNull($event->getResponse());
         $this->assertFalse($event->isPropagationStopped());
@@ -44,7 +44,7 @@ class CancelBookingEventTest extends ContaoTestCase
 
     public function testSettingResponseStopsPropagation(): void
     {
-        $event = new CancelBookingEvent($this->mockClassWithProperties(CalendarEventsMemberModel::class), 'unsubscribe', null);
+        $event = new CancelBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'unsubscribe', null);
         $response = new Response();
 
         $event->setResponse($response);
