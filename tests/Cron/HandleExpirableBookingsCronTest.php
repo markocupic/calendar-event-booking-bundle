@@ -81,7 +81,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
 
     public function testProcessAutoExpireCallsFetchAndProcessesBookings(): void
     {
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->expects($this->exactly(3))
             ->method('findById')
@@ -165,7 +165,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
 
     public function testProcessAutoExpireSkipsProcessingWhenBookingDoesNotExpire(): void
     {
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->expects($this->exactly(3))
             ->method('findById')

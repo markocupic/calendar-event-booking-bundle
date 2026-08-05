@@ -178,7 +178,7 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         // The model re-fetch is stubbed via the framework adapter: findById($id)
         // returns a lightweight member model carrying that id, so the real SQLite
         // SELECT stays the single source of truth for which booking is chosen.
-        $memberAdapter = $this->mockAdapter(['findById']);
+        $memberAdapter = $this->createAdapterMock(['findById']);
         $memberAdapter
             ->method('findById')
             ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->mockClassWithProperties(CalendarEventsMemberModel::class, ['id' => $id]))

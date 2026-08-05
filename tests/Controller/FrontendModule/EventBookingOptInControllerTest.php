@@ -86,7 +86,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
             ->willReturn([CalendarEventsMemberModel::getTable() => [42]])
         ;
 
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->expects($this->once())
             ->method('findById')
@@ -120,7 +120,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     {
         // An unknown, tampered or already purged token must render a friendly message
         // instead of bubbling an (uncaught) exception up to the error page.
-        $adapter = $this->mockAdapter(['findOneByToken']);
+        $adapter = $this->createAdapterMock(['findOneByToken']);
         $adapter
             ->expects($this->once())
             ->method('findOneByToken')

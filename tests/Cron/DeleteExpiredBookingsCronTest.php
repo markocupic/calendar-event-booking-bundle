@@ -58,7 +58,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
     {
         $bookingIds = [1, 2, 3];
 
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->expects($this->exactly(3))
             ->method('findById')
@@ -118,7 +118,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
     {
         $bookingIds = [1, 2, 3];
 
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->expects($this->exactly(3))
             ->method('findById')

@@ -111,7 +111,7 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
             ->willReturn($this->recordingQueryBuilder($calls, [['id' => 99]]))
         ;
 
-        $memberAdapter = $this->mockAdapter(['findById']);
+        $memberAdapter = $this->createAdapterMock(['findById']);
         $memberAdapter
             ->expects($this->once())
             ->method('findById')

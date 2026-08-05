@@ -34,14 +34,14 @@ class NotificationServiceTest extends ContaoTestCase
     {
         parent::setUp();
 
-        $controllerAdapter = $this->mockAdapter(['loadLanguageFile']);
+        $controllerAdapter = $this->createAdapterMock(['loadLanguageFile']);
 
         $organizerMock = $this->mockClassWithProperties(UserModel::class);
         $organizerMock->id = (int) $this->getExpectedTokens()['organizer_id'];
         $organizerMock->name = $this->getExpectedTokens()['organizer_name'];
         $organizerMock->email = $this->getExpectedTokens()['organizer_email'];
 
-        $userModelAdapter = $this->mockAdapter(['findById']);
+        $userModelAdapter = $this->createAdapterMock(['findById']);
         $userModelAdapter
             ->method('findById')
             ->with(1)

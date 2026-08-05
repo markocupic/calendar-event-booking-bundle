@@ -132,7 +132,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     private function frameworkWithPage(int $pageId, PageModel|null $page): object
     {
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->method('findById')
             ->with($pageId)

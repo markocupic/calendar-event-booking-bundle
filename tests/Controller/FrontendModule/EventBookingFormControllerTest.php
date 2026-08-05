@@ -143,14 +143,14 @@ class EventBookingFormControllerTest extends ContaoTestCase
 
         // Valid booking form so getFormId() (evaluated in the FORM_SUBMIT comparison) succeeds.
         $form = $this->mockClassWithProperties(FormModel::class, ['id' => 3, 'isCalendarEventBookingForm' => true, 'formID' => '']);
-        $formAdapter = $this->mockAdapter(['findById']);
+        $formAdapter = $this->createAdapterMock(['findById']);
         $formAdapter
             ->method('findById')
             ->willReturn($form)
         ;
 
         // Contao's form processing throws an unexpected error.
-        $controllerAdapter = $this->mockAdapter(['getForm']);
+        $controllerAdapter = $this->createAdapterMock(['getForm']);
         $controllerAdapter
             ->method('getForm')
             ->willThrowException(new \RuntimeException('boom'))
@@ -215,7 +215,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
 
     public function testSetFormFieldVisibilityThrowsWhenFieldMissing(): void
     {
-        $adapter = $this->mockAdapter(['findOneBy']);
+        $adapter = $this->createAdapterMock(['findOneBy']);
         $adapter
             ->method('findOneBy')
             ->willReturn(null)
@@ -237,7 +237,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
             ->method('save')
         ;
 
-        $adapter = $this->mockAdapter(['findOneBy']);
+        $adapter = $this->createAdapterMock(['findOneBy']);
         $adapter
             ->method('findOneBy')
             ->willReturn($formField)
@@ -365,7 +365,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
 
     private function createControllerWithForm(FormModel|null $form): EventBookingFormController
     {
-        $adapter = $this->mockAdapter(['findById']);
+        $adapter = $this->createAdapterMock(['findById']);
         $adapter
             ->method('findById')
             ->willReturn($form)

@@ -85,7 +85,7 @@ class EventUrlResolverTest extends ContaoTestCase
      */
     private function resolver(array $store, array $findByIdOrAlias): EventUrlResolver
     {
-        $inputAdapter = $this->mockAdapter(['get', 'setGet']);
+        $inputAdapter = $this->createAdapterMock(['get', 'setGet']);
         $inputAdapter
             ->method('get')
             ->willReturnCallback(
@@ -103,7 +103,7 @@ class EventUrlResolverTest extends ContaoTestCase
             )
         ;
 
-        $eventsAdapter = $this->mockAdapter(['findByIdOrAlias']);
+        $eventsAdapter = $this->createAdapterMock(['findByIdOrAlias']);
         $eventsAdapter
             ->method('findByIdOrAlias')
             ->willReturnCallback(static fn ($idOrAlias) => $findByIdOrAlias[$idOrAlias] ?? null)

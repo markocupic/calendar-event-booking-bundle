@@ -301,7 +301,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
     private function frameworkWithBooking(CalendarEventsMemberModel|null $booking): object
     {
-        $adapter = $this->mockAdapter(['findOneByBookingToken']);
+        $adapter = $this->createAdapterMock(['findOneByBookingToken']);
         $adapter
             ->method('findOneByBookingToken')
             ->willReturn($booking)

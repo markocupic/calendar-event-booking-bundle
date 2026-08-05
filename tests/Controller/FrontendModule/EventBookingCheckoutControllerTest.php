@@ -67,7 +67,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
     private function createControllerWithBooking(string $token, CalendarEventsMemberModel|null $booking): EventBookingCheckoutController
     {
-        $adapter = $this->mockAdapter(['findOneByBookingToken']);
+        $adapter = $this->createAdapterMock(['findOneByBookingToken']);
         $adapter
             ->method('findOneByBookingToken')
             ->with($token)
