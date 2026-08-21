@@ -255,7 +255,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
         $queryBuilder
             ->expects($this->once())
             ->method('where')
-            ->with('t.temporaryReserved = 1 AND t.expired = 0 AND t.addedOn != ""')
+            ->with('t.temporaryReserved = 1 AND t.expired = 0 AND t.paid = 0 AND t.addedOn != ""')
             ->willReturnSelf()
         ;
 

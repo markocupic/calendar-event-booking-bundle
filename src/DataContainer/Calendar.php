@@ -21,6 +21,8 @@ use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingOptInInvitationNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingOptInSuccessNotificationType;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingPaymentFailedNotificationType;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingPaymentPendingNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingPaymentSuccessNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventUnsubscribeNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\WaitingListAdvancementNotificationType;
@@ -60,6 +62,26 @@ class Calendar
         return $this->connection->fetchAllKeyValue(
             'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
             [EventBookingPaymentSuccessNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.paymentPendingNotification.options')]
+    public function getPaymentPendingNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingPaymentPendingNotificationType::NAME],
+            [Types::STRING],
+        );
+    }
+
+    #[AsCallback(table: 'tl_calendar', target: 'fields.paymentFailedNotification.options')]
+    public function getPaymentFailedNotifications(): array
+    {
+        return $this->connection->fetchAllKeyValue(
+            'SELECT id,title FROM tl_nc_notification WHERE type = ? ORDER BY title',
+            [EventBookingPaymentFailedNotificationType::NAME],
             [Types::STRING],
         );
     }

@@ -28,22 +28,30 @@ class BookingCapacity
     }
 
     /**
+     * An event without a booking limit has unlimited capacity.
+     *
+     * maxBookings = 0 means "no limit", the same convention maxWaitingList uses.
+     *
+     * Careful: getFreeSpotsCount() returns 0 for such an event as well, because
+     * there is no meaningful number of remaining spots to report. Ask this method
+     * first before rendering a "x spots left" counter.
+     */
+    public function hasUnlimitedCapacity(CalendarEventsModel $event): bool
+    {
+        return $event->maxBookings < 1;
+    }
+
+    /**
      * Checks whether an event is fully booked by comparing the current booking count
      * with the maximum allowed bookings for the event.
      */
     public function isFullyBooked(CalendarEventsModel $event): bool
     {
-        $bookingCount = $this->getBookingCount($event);
-
-        if ($event->maxBookings < 1) {
+        if ($this->hasUnlimitedCapacity($event)) {
             return false;
         }
 
-        if ($bookingCount >= $event->maxBookings) {
-            return true;
-        }
-
-        return false;
+        return $this->getBookingCount($event) >= $event->maxBookings;
     }
 
     /**
@@ -82,12 +90,22 @@ class BookingCapacity
      */
     public function canFulfillBookingRequest(CalendarEventsModel $event, int $requestedTickets): bool
     {
+        if ($this->hasUnlimitedCapacity($event)) {
+            return true;
+        }
+
         $currentlyBookedTickets = $this->getBookingCount($event);
         $totalRequiredTickets = $currentlyBookedTickets + $requestedTickets;
 
         return $totalRequiredTickets <= $event->maxBookings;
     }
 
+    /**
+     * Number of spots still available.
+     *
+     * Returns 0 for an event with unlimited capacity too - see
+     * hasUnlimitedCapacity(), which you should check before showing this figure.
+     */
     public function getFreeSpotsCount(CalendarEventsModel $event): int
     {
         return max([$event->maxBookings - $this->getBookingCount($event), 0]);

@@ -56,6 +56,18 @@
       <trans-unit id="tl_calendar.paymentSuccessNotification.1">
         <source>Select a message (Notification Centre) to be sent on payment success.</source>
       </trans-unit>
+      <trans-unit id="tl_calendar.paymentPendingNotification.0">
+        <source>Notification for pending payments</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentPendingNotification.1">
+        <source>Select a message (Notification Centre) to be sent when a payment has been authorised but is not settled yet, e.g. with SEPA direct debit.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentFailedNotification.0">
+        <source>Notification for failed payments</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentFailedNotification.1">
+        <source>Select a message (Notification Centre) to be sent when an authorised payment is rejected afterwards, e.g. an unpaid SEPA direct debit.</source>
+      </trans-unit>
       <trans-unit id="tl_calendar.waitingListAdvancementNotification.0">
         <source>Advancement from waiting list notification</source>
       </trans-unit>

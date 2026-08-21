@@ -79,6 +79,23 @@ class BookingCapacityTest extends ContaoTestCase
         yield 'fits exactly' => [5, 2, 3, true];
         yield 'exceeds max' => [5, 2, 4, false];
         yield 'empty event' => [5, 0, 5, true];
+        yield 'unlimited (maxBookings < 1) always fits' => [0, 999, 10, true];
+    }
+
+    #[DataProvider('unlimitedCapacityProvider')]
+    public function testHasUnlimitedCapacity(int $maxBookings, bool $expected): void
+    {
+        $capacity = $this->capacity(0);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1, 'maxBookings' => $maxBookings]);
+
+        $this->assertSame($expected, $capacity->hasUnlimitedCapacity($event));
+    }
+
+    public static function unlimitedCapacityProvider(): iterable
+    {
+        yield 'zero means no limit' => [0, true];
+        yield 'a limit of one is a limit' => [1, false];
+        yield 'a real limit' => [50, false];
     }
 
     public function testCanFulfillWaitingListReturnsFalseWhenDisabled(): void
@@ -139,6 +156,8 @@ class BookingCapacityTest extends ContaoTestCase
         yield 'some free' => [5, 2, 3];
         yield 'overbooked clamps to zero' => [2, 5, 0];
         yield 'all free' => [5, 0, 5];
+        // Unlimited events report 0 here, callers must use hasUnlimitedCapacity().
+        yield 'unlimited reports zero' => [0, 3, 0];
     }
 
     private function capacity(int $fetchOne): BookingCapacity

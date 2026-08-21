@@ -20,7 +20,7 @@ PaletteManipulator::create()
     ->addLegend('event_booking_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('event_booking_notification_legend', 'event_booking_legend', PaletteManipulator::POSITION_AFTER)
     ->addField(['emailUnique', 'requireOptIn', 'eventBookingCheckoutPage', 'eventBookingCheckoutHandler', 'eventUnsubscribePage'], 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['subscribeNotification', 'unsubscribeNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField(['subscribeNotification', 'unsubscribeNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification', 'paymentPendingNotification', 'paymentFailedNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_calendar');
 
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'requireOptIn';
@@ -96,6 +96,26 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['subscribeNotification'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentSuccessNotification'] = [
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'select',
+    'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
+];
+
+// Sent when a payment has been authorised but is not settled yet, e.g. with
+// SEPA direct debit, where the bank confirms days later.
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentPendingNotification'] = [
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'select',
+    'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
+];
+
+// Sent when a payment that had already been authorised is rejected afterwards,
+// e.g. an unpaid SEPA direct debit.
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentFailedNotification'] = [
     'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,

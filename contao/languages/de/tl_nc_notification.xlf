@@ -26,6 +26,14 @@
         <source>Event booking: Notification on payment success</source>
         <target>Event Buchung: Benachrichtigung nach erfolgreicher Zahlung</target>
       </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-payment-pending-notification">
+        <source>Event booking: Notification on a pending payment</source>
+        <target>Event Buchung: Benachrichtigung bei ausstehender Zahlung</target>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-payment-failed-notification">
+        <source>Event booking: Notification on a failed payment</source>
+        <target>Event Buchung: Benachrichtigung bei fehlgeschlagener Zahlung</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

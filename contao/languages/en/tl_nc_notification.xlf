@@ -20,6 +20,12 @@
       <trans-unit id="tl_nc_notification.type.event-booking-payment-success-notification">
         <source>Event booking: Notification on payment success</source>
       </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-payment-pending-notification">
+        <source>Event booking: Notification on a pending payment</source>
+      </trans-unit>
+      <trans-unit id="tl_nc_notification.type.event-booking-payment-failed-notification">
+        <source>Event booking: Notification on a failed payment</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

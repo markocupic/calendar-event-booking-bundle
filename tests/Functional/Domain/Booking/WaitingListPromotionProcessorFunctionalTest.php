@@ -22,7 +22,6 @@ use Doctrine\DBAL\DriverManager;
 use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
 use Markocupic\CalendarEventBookingBundle\Domain\Booking\WaitingListPromotionProcessor;
 use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
-use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -30,10 +29,13 @@ use Symfony\Component\Lock\LockFactory;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 /**
- * Functional test that runs findNextEligibleBooking() against a real in-memory
+ * Functional test that runs findNextEligibleBookingId() against a real in-memory
  * SQLite database to verify the promotion order (earliest addedOn wins) and the
- * eligibility filters. No Contao kernel is booted: the model re-fetch goes through
- * the injected framework adapter, so it can be stubbed.
+ * eligibility filters.
+ *
+ * The method returns a raw id and takes the list of already handled bookings as an
+ * argument - that list lives in processWaitingListForEvent() and is threaded
+ * through here the same way, so these tests mirror one real run of the loop.
  */
 class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
 {
@@ -73,12 +75,9 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $this->seed(['id' => 23, 'pid' => 1, 'waitingList' => 1, 'temporaryReserved' => 1, 'addedOn' => 1]);
         $this->seed(['id' => 24, 'pid' => 2, 'waitingList' => 1, 'addedOn' => 1]); // other event
 
-        $processor = $this->createProcessor();
+        $bookingId = $this->findNext($this->createProcessor(), $this->event(1, false), 5);
 
-        $booking = $this->findNext($processor, $this->event(1, false), 5);
-
-        $this->assertNotNull($booking);
-        $this->assertSame(11, $booking->id);
+        $this->assertSame(11, $bookingId);
     }
 
     public function testAdvancesInOrderAcrossConsecutiveCalls(): void
@@ -90,11 +89,18 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $processor = $this->createProcessor();
         $event = $this->event(1, false);
 
-        // processedIds is instance state, so consecutive calls must walk the queue in order.
-        $this->assertSame(11, $this->findNext($processor, $event, 5)->id);
-        $this->assertSame(12, $this->findNext($processor, $event, 5)->id);
-        $this->assertSame(10, $this->findNext($processor, $event, 5)->id);
-        $this->assertNull($this->findNext($processor, $event, 5));
+        // What processWaitingListForEvent() does: carry the ids already handled
+        // forward, so consecutive calls walk the queue in order instead of
+        // returning the same booking over and over.
+        $processedIds = [0];
+        $picked = [];
+
+        while (null !== $bookingId = $this->findNext($processor, $event, 5, $processedIds)) {
+            $picked[] = $bookingId;
+            $processedIds[] = $bookingId;
+        }
+
+        $this->assertSame([11, 12, 10], $picked);
     }
 
     public function testRespectsAvailableSlotsForTicketAmount(): void
@@ -103,11 +109,23 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 1, 'ticketAmount' => 2, 'addedOn' => 100]);
         $this->seed(['id' => 11, 'pid' => 1, 'waitingList' => 1, 'ticketAmount' => 1, 'addedOn' => 200]);
 
-        $processor = $this->createProcessor();
+        $bookingId = $this->findNext($this->createProcessor(), $this->event(1, false), 1);
 
-        $booking = $this->findNext($processor, $this->event(1, false), 1);
+        $this->assertSame(11, $bookingId);
+    }
 
-        $this->assertSame(11, $booking->id);
+    /**
+     * An event without a booking limit passes PHP_INT_MAX as the number of
+     * available slots (see getAvailableSlots()), which must not overflow the
+     * ticketAmount comparison.
+     */
+    public function testUnlimitedSlotsPromoteEvenLargeTicketAmounts(): void
+    {
+        $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 1, 'ticketAmount' => 999, 'addedOn' => 100]);
+
+        $bookingId = $this->findNext($this->createProcessor(), $this->event(1, false), PHP_INT_MAX);
+
+        $this->assertSame(10, $bookingId);
     }
 
     public function testRequireOptInOnlyPromotesConfirmedBookings(): void
@@ -116,11 +134,9 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 1, 'optIn' => 0, 'addedOn' => 100]);
         $this->seed(['id' => 11, 'pid' => 1, 'waitingList' => 1, 'optIn' => 1, 'addedOn' => 200]);
 
-        $processor = $this->createProcessor();
+        $bookingId = $this->findNext($this->createProcessor(), $this->event(1, true), 5);
 
-        $booking = $this->findNext($processor, $this->event(1, true), 5);
-
-        $this->assertSame(11, $booking->id);
+        $this->assertSame(11, $bookingId);
     }
 
     public function testReturnsNullWhenNoEligibleBookingExists(): void
@@ -128,9 +144,7 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 0, 'addedOn' => 100]);
         $this->seed(['id' => 11, 'pid' => 1, 'waitingList' => 1, 'canceled' => 1, 'addedOn' => 200]);
 
-        $processor = $this->createProcessor();
-
-        $this->assertNull($this->findNext($processor, $this->event(1, false), 5));
+        $this->assertNull($this->findNext($this->createProcessor(), $this->event(1, false), 5));
     }
 
     /**
@@ -166,29 +180,24 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         return $event;
     }
 
-    private function findNext(WaitingListPromotionProcessor $processor, CalendarEventsModel $event, int $availableSlots): CalendarEventsMemberModel|null
+    /**
+     * @param array<int> $processedIds
+     */
+    private function findNext(WaitingListPromotionProcessor $processor, CalendarEventsModel $event, int $availableSlots, array $processedIds = [0]): int|null
     {
-        return (new \ReflectionMethod(WaitingListPromotionProcessor::class, 'findNextEligibleBooking'))
-            ->invoke($processor, $event, $availableSlots)
+        return (new \ReflectionMethod(WaitingListPromotionProcessor::class, 'findNextEligibleBookingId'))
+            ->invoke($processor, $event, $availableSlots, $processedIds)
         ;
     }
 
     private function createProcessor(): WaitingListPromotionProcessor
     {
-        // The model re-fetch is stubbed via the framework adapter: findById($id)
-        // returns a lightweight member model carrying that id, so the real SQLite
-        // SELECT stays the single source of truth for which booking is chosen.
-        $memberAdapter = $this->createAdapterMock(['findById']);
-        $memberAdapter
-            ->method('findById')
-            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => $id]))
-        ;
-
-        $framework = $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $memberAdapter]);
-
+        // findNextEligibleBookingId() only returns an id - the model re-fetch happens
+        // in processWaitingListForEvent(), so no framework adapter is needed here and
+        // the real SQLite SELECT stays the single source of truth.
         return new WaitingListPromotionProcessor(
             $this->connection,
-            $framework,
+            $this->createContaoFrameworkStub([]),
             $this->createMock(EventDispatcherInterface::class),
             $this->createMock(BookingCapacity::class),
             $this->createMock(LockFactory::class),

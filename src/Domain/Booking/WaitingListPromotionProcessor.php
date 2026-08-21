@@ -35,8 +35,6 @@ use Terminal42\NotificationCenterBundle\NotificationCenter;
  */
 class WaitingListPromotionProcessor
 {
-    private array $processedIds = [0];
-
     public function __construct(
         private readonly Connection $connection,
         private readonly ContaoFramework $framework,
@@ -134,11 +132,35 @@ class WaitingListPromotionProcessor
 
     private function processWaitingListForEvent(CalendarEventsModel $calendarEvent): void
     {
-        while (($availableSlots = $calendarEvent->maxBookings - $this->bookingCapacity->getBookingCount($calendarEvent)) > 0) {
-            $nextBooking = $this->findNextEligibleBooking($calendarEvent, $availableSlots);
+        // Bookings we have already offered to the listeners in this run.
+        //
+        // Do not "optimise" this away: it is not merely a filter, it is what makes
+        // the loop below terminate. Promoting is the listener's job and a listener
+        // is free to decline - the booking count then stays the same, the number of
+        // available slots stays the same, and the very same booking would be picked
+        // again forever. Only this growing list makes findNextEligibleBookingId()
+        // eventually return null.
+        //
+        // Local by design: a long running messenger worker would otherwise carry the
+        // ids of every past run around with it. The seed 0 must stay: DBAL cannot
+        // expand an empty array into a usable NOT IN clause.
+        $processedIds = [0];
+
+        while (($availableSlots = $this->getAvailableSlots($calendarEvent)) > 0) {
+            $bookingId = $this->findNextEligibleBookingId($calendarEvent, $availableSlots, $processedIds);
+
+            if (null === $bookingId) {
+                break;
+            }
+
+            // Mark it before loading the model, so a booking whose row exists but
+            // whose model cannot be instantiated cannot stall the loop either.
+            $processedIds[] = $bookingId;
+
+            $nextBooking = $this->framework->getAdapter(CalendarEventsMemberModel::class)->findById($bookingId);
 
             if (null === $nextBooking) {
-                break;
+                continue;
             }
 
             $event = new WaitingListPromotedEvent(
@@ -154,7 +176,26 @@ class WaitingListPromotionProcessor
         }
     }
 
-    private function findNextEligibleBooking(CalendarEventsModel $event, int $availableSlots): CalendarEventsMemberModel|null
+    /**
+     * Number of spots the waiting list may move into.
+     *
+     * An event without a booking limit (maxBookings = 0) has room for everyone,
+     * so nobody must be left waiting. Computing maxBookings - bookingCount would
+     * yield a negative number there and silently skip the whole event.
+     */
+    private function getAvailableSlots(CalendarEventsModel $event): int
+    {
+        if ($this->bookingCapacity->hasUnlimitedCapacity($event)) {
+            return PHP_INT_MAX;
+        }
+
+        return $this->bookingCapacity->getFreeSpotsCount($event);
+    }
+
+    /**
+     * @param array<int> $processedIds bookings already handled in this run, never empty
+     */
+    private function findNextEligibleBookingId(CalendarEventsModel $event, int $availableSlots, array $processedIds): int|null
     {
         $queryBuilder = $this->connection->createQueryBuilder();
 
@@ -165,7 +206,7 @@ class WaitingListPromotionProcessor
             ->andWhere($queryBuilder->expr()->notIn('t.id', ':processedIds'))
             ->setParameter('pid', $event->id)
             ->setParameter('availableSlots', $availableSlots)
-            ->setParameter('processedIds', $this->processedIds, ArrayParameterType::INTEGER)
+            ->setParameter('processedIds', $processedIds, ArrayParameterType::INTEGER)
             ->orderBy('t.addedOn', 'ASC')
         ;
 
@@ -173,14 +214,12 @@ class WaitingListPromotionProcessor
             $queryBuilder->andWhere('t.optIn = 1');
         }
 
-        $bookingID = $queryBuilder->fetchOne();
+        $bookingId = $queryBuilder->fetchOne();
 
-        if (false === $bookingID) {
+        if (false === $bookingId) {
             return null;
         }
 
-        $this->processedIds[] = $bookingID;
-
-        return $this->framework->getAdapter(CalendarEventsMemberModel::class)->findById($bookingID);
+        return (int) $bookingId;
     }
 }

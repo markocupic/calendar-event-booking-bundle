@@ -31,15 +31,30 @@ Beim Absenden des Formulars werden die Werte in der Datenbank in der Tabelle tl_
 
 ## Bezahl-Checkout
 
-Der Bezahl-Checkout ist zahlungspflichtig (Bitte den Autor der Extension per E-Mail kontaktieren: m.cupic@gmx.ch)
+Bezahl-Checkouts ist zahlungspflichtig (Bitte den Autor der Extension per E-Mail kontaktieren: m.cupic@gmx.ch)
 
-Im Moment sind folgende **Zahlungsmethoden** vorhanden:
+Im Moment sind folgende kostenpflichtige **Zahlungsmethoden** vorhanden:
 
 - PayPal
+- Stripe **(neu)**
+
+**Neu: Stripe.** Das kostenpflichtige Plugin `markocupic/calendar-event-booking-stripe` bindet Stripe
+Checkout ein. Welche Zahlungsarten der Teilnehmer auf der Bezahlseite sieht, wird im Stripe-Dashboard
+freigeschaltet – unter anderem Kredit- und Debitkarten, TWINT, Apple Pay, Google Pay, PayPal, Klarna und
+SEPA-Lastschrift.
+
+Verzögerte Zahlungsarten wie die SEPA-Lastschrift werden dabei vollständig unterstützt: Der Platz
+bleibt reserviert, bis die Bank die Zahlung bestätigt, und der Teilnehmer wird sowohl über den
+Zwischenstand als auch über eine geplatzte Lastschrift benachrichtigt (siehe
+[Benachrichtigung bei ausstehender Zahlung](#benachrichtigung-bei-ausstehender-zahlung)).
 
 ## Benachrichtigungen
 
 Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigen (Notification Center).
+Dazu gehören auch verzögerte Zahlungsarten: eine Zahlung kann ausgelöst, aber noch nicht bestätigt
+sein – siehe [Benachrichtigung bei ausstehender Zahlung](#benachrichtigung-bei-ausstehender-zahlung) –
+oder nachträglich scheitern – siehe
+[Benachrichtigung bei fehlgeschlagener Zahlung](#benachrichtigung-bei-fehlgeschlagener-zahlung).
 
 ## Warteliste
 
@@ -50,7 +65,7 @@ Nachrücken können nur Personen,
 - deren Anmeldung nicht temporär ist.
 - deren Reservierungsanfrage nicht abgelaufen ist.
 
-> **Hinweis:** Die Warteliste sollte nicht mit einem Bezahlungs-Checkout kombiniert werden.
+> **Hinweis:** Die Warteliste sollte nicht mit einem Bezahl-Checkout kombiniert werden.
 
 ## Double-Opt-In
 
@@ -166,6 +181,8 @@ So könnte ein funktionierender Seitenaufbau mit den zugehörenden Modulen ausse
 | Event Buchung: Benachrichtigung nach der Event-Stornierung                                                                                                           |
 | Event Buchung: Benachrichtigung nach dem Nachrücken von der Warteliste (Nur bei aktiviertem [Cronjob](https://docs.contao.org/5.x/dev/framework/cron/#command-line)) |
 | Event Buchung: Benachrichtigung nach erfolgreicher Zahlung                                                                                                           |
+| Event Buchung: Benachrichtigung bei ausstehender Zahlung (nur bei verzögerten Zahlungsarten, z.B. SEPA-Lastschrift)                                                  |
+| Event Buchung: Benachrichtigung bei fehlgeschlagener Zahlung (nur bei verzögerten Zahlungsarten, z.B. geplatzte SEPA-Lastschrift)                                    |
 
 Versenden Sie zu verschiedenen Zeitpunkten Benachrichtigungen und nutzen Sie dabei die **Simple Tokens**.
 
@@ -230,6 +247,107 @@ Bitte benutzen Sie folgenden Link, um sich wieder von der Veranstaltung abzumeld
 ##member_unsubscribeLink##
 Achtung! es können nur Stornierungen bis zum {{format_date::##event_unsubscribeLimitTstamp##::d.m.}} angenommen werden.
 {endif}
+
+Freundliche Grüsse
+
+##organizer_name##
+```
+
+#### Benachrichtigung bei ausstehender Zahlung
+
+Nicht jede Zahlungsart bestätigt sofort. SEPA-Lastschrift, Klarna, Bacs, OXXO, Boleto oder ACH
+schliessen den Checkout beim Zahlungsdienstleister zwar sofort ab, das Geld wird aber erst Tage
+später bestätigt – bei einer SEPA-Lastschrift können das bis zu 14 Tage sein.
+
+In dieser Zeit ist die Buchung **noch nicht bezahlt** (`tl_calendar_events_member.paid` = `0`),
+der Platz ist für den Teilnehmer aber bereits reserviert. Die *Benachrichtigung nach erfolgreicher
+Zahlung* wäre hier schlicht falsch, und gar keine Benachrichtigung sähe für den Teilnehmer so aus,
+als sei die Buchung nie angekommen. Deshalb gibt es dafür eine eigene Benachrichtigung.
+
+Ausgewählt wird sie in den Kalendereinstellungen unter **Benachrichtigung bei ausstehender Zahlung**.
+Versandt wird sie genau einmal, sobald die Zahlung ausgelöst, aber noch nicht abgeschlossen ist.
+Geht das Geld später ein, folgt zusätzlich die **Benachrichtigung nach erfolgreicher Zahlung**.
+
+Voraussetzung ist eine Zahlungsmethode, die verzögerte Zahlungsarten unterstützt und den Zustand
+an die Buchung zurückmeldet. Die Zahlungsmethode hinterlegt dazu in `tl_calendar_events_order`
+den Status `pending`, solange das Geld unterwegs ist.
+
+> **Hinweis:** Die Simple Tokens zur Zahlung (`##payment_*##`) sind in dieser Benachrichtigung noch
+> leer – es hat ja noch keine Zahlung stattgefunden. Die Tokens zur Order (`##order_*##`) sind
+> gefüllt, `##order_status##` enthält den Wert `pending`.
+
+Beispiel:
+
+```
+{if member_gender=='male'}
+Sehr geehrter Herr ##member_firstname## ##member_lastname##
+{elseif member_gender=='female'}
+Sehr geehrte Frau ##member_firstname## ##member_lastname##
+{else}
+Hallo ##member_firstname## ##member_lastname##
+{endif}
+
+Vielen Dank für Ihre Buchung der Veranstaltung "##event_title##"
+vom {{format_date::##event_startDate##::d.m.Y}}.
+
+Ihre Zahlung ist ausgelöst, aber noch nicht abgeschlossen. Bei der von Ihnen gewählten
+Zahlungsart dauert die Bestätigung durch die Bank einige Tage.
+
+Ihr Platz ist bis dahin für Sie reserviert. Sie müssen nichts weiter tun – sobald der Betrag
+bei uns eingegangen ist, erhalten Sie eine separate Bestätigung.
+
+Anzahl Tickets: ##member_ticketAmount##
+Betrag: ##order_grossAmount## ##order_currencyCode##
+Zahlungsdienstleister: ##order_provider##
+
+Freundliche Grüsse
+
+##organizer_name##
+```
+
+#### Benachrichtigung bei fehlgeschlagener Zahlung
+
+Das Gegenstück zur Benachrichtigung bei ausstehender Zahlung: Eine bereits ausgelöste Zahlung kann
+nachträglich noch scheitern – die klassische geplatzte Lastschrift, weil das Konto nicht gedeckt ist
+oder die Bankverbindung nicht stimmt.
+
+Das erfährt man erst Tage nach der Buchung, wenn der Teilnehmer längst nicht mehr auf der Website
+ist. Ohne diese Benachrichtigung würde er weiter davon ausgehen, dass alles erledigt ist. Sie ist
+damit der einzige Kanal, über den er von der Ablehnung erfährt.
+
+Ausgewählt wird sie in den Kalendereinstellungen unter **Benachrichtigung bei fehlgeschlagener
+Zahlung**. Die Buchung bleibt danach unbezahlt, in `tl_calendar_events_order` steht der Status
+`failed`. Der Teilnehmer kann den Bezahlvorgang auf der Checkout-Seite erneut starten, idealerweise
+mit einer anderen Zahlungsart.
+
+> **Hinweis:** Auch hier sind die `##payment_*##`-Tokens leer – eine Zahlung ist nie zustande
+> gekommen. Die `##order_*##`-Tokens sind gefüllt.
+>
+> Einen fertigen Link zurück zum Checkout gibt es nicht als Token. Bauen Sie ihn aus der URL Ihrer
+> Checkout-Seite und `##member_bookingToken##` zusammen, so wie im Beispiel unten. Verwenden Sie
+> dafür **nicht** `##member_unsubscribeLink##` – der storniert die Buchung.
+
+Beispiel:
+
+```
+{if member_gender=='male'}
+Sehr geehrter Herr ##member_firstname## ##member_lastname##
+{elseif member_gender=='female'}
+Sehr geehrte Frau ##member_firstname## ##member_lastname##
+{else}
+Hallo ##member_firstname## ##member_lastname##
+{endif}
+
+Leider konnte Ihre Zahlung für die Veranstaltung "##event_title##"
+vom {{format_date::##event_startDate##::d.m.Y}} nicht abgeschlossen werden.
+Die Bank hat die Belastung über ##order_grossAmount## ##order_currencyCode## abgelehnt.
+
+Ihre Buchung ist damit noch nicht bezahlt. Bitte starten Sie den Bezahlvorgang
+über den folgenden Link noch einmal – am besten mit einer anderen Zahlungsart:
+
+https://example.com/event-buchung-checkout?bookingToken=##member_bookingToken##
+
+Bei Fragen melden Sie sich gerne bei uns.
 
 Freundliche Grüsse
 

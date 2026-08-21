@@ -73,7 +73,8 @@ class HandleExpirableBookingsCron
 
         return $qb->select('id')
             ->from('tl_calendar_events_member', 't')
-            ->where('t.temporaryReserved = 1 AND t.expired = 0 AND t.addedOn != ""')
+            // A paid booking must never expire, whatever its reservation flags say.
+            ->where('t.temporaryReserved = 1 AND t.expired = 0 AND t.paid = 0 AND t.addedOn != ""')
             ->andWhere('t.addedOn < :timeCutoff')
             ->setParameter('timeCutoff', $timeCutoff, ParameterType::INTEGER)
             ->fetchFirstColumn()

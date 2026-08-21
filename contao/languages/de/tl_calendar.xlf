@@ -74,6 +74,22 @@
         <source>Select a message (Notification Centre) to be sent on payment success.</source>
         <target>Wählen Sie eine Benachrichtigung (Notification Center) aus, welche bei erfolgreicher Bezahlung versandt werden soll.</target>
       </trans-unit>
+      <trans-unit id="tl_calendar.paymentPendingNotification.0">
+        <source>Notification for pending payments</source>
+        <target>Benachrichtigung bei ausstehender Zahlung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentPendingNotification.1">
+        <source>Select a message (Notification Centre) to be sent when a payment has been authorised but is not settled yet, e.g. with SEPA direct debit.</source>
+        <target>Wählen Sie eine Benachrichtigung (Notification Center) aus, welche versandt werden soll, wenn eine Zahlung ausgelöst, aber noch nicht abgeschlossen ist, z. B. bei SEPA-Lastschrift.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentFailedNotification.0">
+        <source>Notification for failed payments</source>
+        <target>Benachrichtigung bei fehlgeschlagener Zahlung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar.paymentFailedNotification.1">
+        <source>Select a message (Notification Centre) to be sent when an authorised payment is rejected afterwards, e.g. an unpaid SEPA direct debit.</source>
+        <target>Wählen Sie eine Benachrichtigung (Notification Center) aus, welche versandt werden soll, wenn eine bereits ausgelöste Zahlung nachträglich abgelehnt wird, z. B. eine geplatzte SEPA-Lastschrift.</target>
+      </trans-unit>
       <trans-unit id="tl_calendar.waitingListAdvancementNotification.0">
         <source>Advancement from waiting list notification</source>
         <target>Benachrichtigung beim Nachrücken von Warteliste</target>

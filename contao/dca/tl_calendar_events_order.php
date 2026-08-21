@@ -26,8 +26,14 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
-                'id'  => 'primary',
-                'pid' => 'index',
+                'id'                       => 'primary',
+                'pid'                      => 'index',
+                // One order per checkout/order id of a payment provider. Belt and
+                // braces next to the row locking in the payment handlers: it makes
+                // a double booking impossible even under a race condition, e.g.
+                // when the return page and the provider webhook process the same
+                // transaction at the very same moment.
+                'provider,providerOrderId' => 'unique',
             ],
         ],
     ],

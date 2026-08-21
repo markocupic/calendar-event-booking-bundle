@@ -72,7 +72,7 @@
         <source>Maximum participants</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.maxBookings.1">
-        <source>Please set the maximum participant number.</source>
+        <source>Please set the maximum participant number. 0 for no limit.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events.eventBookingNotificationSender.0">
         <source>Booking notification sender</source>

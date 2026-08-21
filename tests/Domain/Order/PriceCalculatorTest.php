@@ -17,49 +17,45 @@ namespace Markocupic\CalendarEventBookingBundle\Tests\Domain\Order;
 use Contao\CalendarEventsModel;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\CalendarEventBookingBundle\Domain\Order\PriceCalculator;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateGrossAmountPerItemEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateGrossTotalAmountEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateNetAmountPerItemEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateNetTotalAmountEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateVatAmountPerItemEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\CalculateVatTotalAmountEvent;
+use Markocupic\CalendarEventBookingBundle\Event\PriceCalculator\GetTaxValueEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PriceCalculatorTest extends ContaoTestCase
 {
     public function testCalcGrossAmountPerItem(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 100.0;
-        $event->taxValue = 20.0;
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+        $booking = $this->booking();
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected calculations
         $expectedVat = 100.0 * 20.0 / 100.0;
         $expectedGrossAmount = 100.0 + $expectedVat;
 
-        // Execute the method
-        $grossAmount = $priceCalculator->calcGrossAmountPerItem($event);
-
-        // Verify the result
-        $this->assertSame(round($expectedGrossAmount, 2), $grossAmount);
+        $this->assertSame(
+            round($expectedGrossAmount, 2),
+            $this->calculator()->calcGrossAmountPerItem($calEvent, $booking),
+        );
     }
 
     /**
      * Test the getCurrencyCode method of the PriceCalculator class.
+     *
+     * Note: getCurrencyCode() is the one method that takes no booking and fires no
+     * event - the currency belongs to the calendar event alone.
      */
     public function testGetCurrencyCode(): void
     {
-        // Create a mock CalendarEventsModel with a predefined currency code
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->currencyCode = 'USD';
+        $calEvent = $this->calEvent(currencyCode: 'USD');
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Execute the method
-        $currencyCode = $priceCalculator->getCurrencyCode($event);
-
-        // Verify the result
-        $this->assertSame('USD', $currencyCode);
+        $this->assertSame('USD', $this->calculator()->getCurrencyCode($calEvent));
     }
 
     /**
@@ -67,63 +63,32 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testGetCurrencyCodeWhenNull(): void
     {
-        // Create a mock CalendarEventsModel without a currency code
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->currencyCode = null;
+        $calEvent = $this->calEvent(currencyCode: null);
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Execute the method
-        $currencyCode = $priceCalculator->getCurrencyCode($event);
-
-        // Verify the result
-        $this->assertSame('', $currencyCode);
+        $this->assertSame('', $this->calculator()->getCurrencyCode($calEvent));
     }
 
     public function testCalcGrossTotalAmount(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 100.0;
-        $event->taxValue = 20.0;
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+        $booking = $this->booking(3);
 
-        // Create a mock CalendarEventsMemberModel with ticket amount
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
-        $booking->ticketAmount = 3;
-
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected calculations
         $expectedVat = 100.0 * 20.0 / 100.0;
         $expectedGrossAmount = 100.0 + $expectedVat;
-        $expectedGrossTotalAmount = $booking->ticketAmount * $expectedGrossAmount;
+        $expectedGrossTotalAmount = 3 * $expectedGrossAmount;
 
-        // Execute the method
-        $grossTotalAmount = $priceCalculator->calcGrossTotalAmount($event, $booking);
-
-        // Verify the result
-        $this->assertSame(round($expectedGrossTotalAmount, 2), $grossTotalAmount);
+        $this->assertSame(
+            round($expectedGrossTotalAmount, 2),
+            $this->calculator()->calcGrossTotalAmount($calEvent, $booking),
+        );
     }
 
     public function testCalcNetAmountPerItem(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 200.0;
+        $calEvent = $this->calEvent(netPrice: 200.0);
+        $booking = $this->booking();
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected result
-        $expectedNetAmount = 200.0;
-
-        // Execute the method
-        $netAmount = $priceCalculator->calcNetAmountPerItem($event);
-
-        // Verify the result
-        $this->assertSame(round($expectedNetAmount, 2), $netAmount);
+        $this->assertSame(200.0, $this->calculator()->calcNetAmountPerItem($calEvent, $booking));
     }
 
     /**
@@ -133,12 +98,10 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcNetAmountPerItemWithStringNetPrice(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = '150.00';
+        $calEvent = $this->calEvent(netPrice: '150.00');
+        $booking = $this->booking();
 
-        $priceCalculator = new PriceCalculator();
-
-        $this->assertSame(150.0, $priceCalculator->calcNetAmountPerItem($event));
+        $this->assertSame(150.0, $this->calculator()->calcNetAmountPerItem($calEvent, $booking));
     }
 
     /**
@@ -147,42 +110,21 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcGrossAmountPerItemWithStringModelValues(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = '100.00';
-        $event->taxValue = '20.00';
+        $calEvent = $this->calEvent(netPrice: '100.00', taxValue: '20.00');
+        $booking = $this->booking();
+        $priceCalculator = $this->calculator();
 
-        $priceCalculator = new PriceCalculator();
-
-        $this->assertSame(20.0, $priceCalculator->calcVatAmountPerItem($event));
-        $this->assertSame(120.0, $priceCalculator->calcGrossAmountPerItem($event));
+        $this->assertSame(20.0, $priceCalculator->calcVatAmountPerItem($calEvent, $booking));
+        $this->assertSame(120.0, $priceCalculator->calcGrossAmountPerItem($calEvent, $booking));
     }
 
     public function testCalcNetTotalAmount(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 150.0;
+        $calEvent = $this->calEvent(netPrice: 150.0);
+        $priceCalculator = $this->calculator();
 
-        // Create a mock CalendarEventsMemberModel with ticket amounts
-        $booking1 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
-        $booking1->ticketAmount = 1;
-
-        $booking2 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
-        $booking2->ticketAmount = 5;
-
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected results
-        $expectedNetTotalAmount1 = $booking1->ticketAmount * $event->netPrice;
-        $expectedNetTotalAmount2 = $booking2->ticketAmount * $event->netPrice;
-
-        // Execute the method and verify results
-        $netTotalAmount1 = $priceCalculator->calcNetTotalAmount($event, $booking1);
-        $this->assertSame(round($expectedNetTotalAmount1, 2), $netTotalAmount1);
-
-        $netTotalAmount2 = $priceCalculator->calcNetTotalAmount($event, $booking2);
-        $this->assertSame(round($expectedNetTotalAmount2, 2), $netTotalAmount2);
+        $this->assertSame(150.0, $priceCalculator->calcNetTotalAmount($calEvent, $this->booking(1)));
+        $this->assertSame(750.0, $priceCalculator->calcNetTotalAmount($calEvent, $this->booking(5)));
     }
 
     /**
@@ -190,22 +132,10 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcVatAmountPerItem(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 100.0;
-        $event->taxValue = 20.0;
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+        $booking = $this->booking();
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected VAT calculation
-        $expectedVatAmount = 100.0 * 20.0 / 100.0;
-
-        // Execute the method
-        $vatAmount = $priceCalculator->calcVatAmountPerItem($event);
-
-        // Verify the result
-        $this->assertSame(round($expectedVatAmount, 2), $vatAmount);
+        $this->assertSame(20.0, $this->calculator()->calcVatAmountPerItem($calEvent, $booking));
     }
 
     /**
@@ -213,18 +143,10 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testGetTaxValue(): void
     {
-        // Create a mock CalendarEventsModel with a predefined tax value
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->taxValue = 15.0;
+        $calEvent = $this->calEvent(taxValue: 15.0);
+        $booking = $this->booking();
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Execute the method
-        $taxValue = $priceCalculator->getTaxValue($event);
-
-        // Verify the result
-        $this->assertSame(15.0, $taxValue);
+        $this->assertSame(15.0, $this->calculator()->getTaxValue($calEvent, $booking));
     }
 
     /**
@@ -232,18 +154,10 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testGetTaxValueWhenNull(): void
     {
-        // Create a mock CalendarEventsModel with a null tax value
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->taxValue = null;
+        $calEvent = $this->calEvent(taxValue: null);
+        $booking = $this->booking();
 
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Execute the method
-        $taxValue = $priceCalculator->getTaxValue($event);
-
-        // Verify the result
-        $this->assertSame(0.0, $taxValue);
+        $this->assertSame(0.0, $this->calculator()->getTaxValue($calEvent, $booking));
     }
 
     /**
@@ -251,45 +165,28 @@ class PriceCalculatorTest extends ContaoTestCase
      */
     public function testCalcVatTotalAmount(): void
     {
-        // Create a mock CalendarEventsModel with predefined values
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
-        $event->netPrice = 120.0;
-        $event->taxValue = 15.0;
+        $calEvent = $this->calEvent(netPrice: 120.0, taxValue: 15.0);
+        $priceCalculator = $this->calculator();
 
-        // Create mock CalendarEventsMemberModels with ticket amounts
-        $booking1 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
-        $booking1->ticketAmount = 2;
-
-        $booking2 = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
-        $booking2->ticketAmount = 5;
-
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Expected results
         $expectedVatPerItem = 120.0 * 15.0 / 100.0;
-        $expectedVatTotal1 = $expectedVatPerItem * $booking1->ticketAmount;
-        $expectedVatTotal2 = $expectedVatPerItem * $booking2->ticketAmount;
 
-        // Execute the method and verify results
-        $vatTotalAmount1 = $priceCalculator->calcVatTotalAmount($event, $booking1);
-        $this->assertSame(round($expectedVatTotal1, 2), $vatTotalAmount1);
+        $this->assertSame(
+            round($expectedVatPerItem * 2, 2),
+            $priceCalculator->calcVatTotalAmount($calEvent, $this->booking(2)),
+        );
 
-        $vatTotalAmount2 = $priceCalculator->calcVatTotalAmount($event, $booking2);
-        $this->assertSame(round($expectedVatTotal2, 2), $vatTotalAmount2);
+        $this->assertSame(
+            round($expectedVatPerItem * 5, 2),
+            $priceCalculator->calcVatTotalAmount($calEvent, $this->booking(5)),
+        );
     }
 
     #[DataProvider('formatPrice')]
     public function testFormatPrice(float $test, float $expected): void
     {
-        // Create an instance of PriceCalculator
-        $priceCalculator = new PriceCalculator();
-
-        // Execute the method
         $method = new \ReflectionMethod(PriceCalculator::class, 'formatPrice');
-        $result = $method->invokeArgs($priceCalculator, [$test]);
+        $result = $method->invokeArgs($this->calculator(), [$test]);
 
-        // Verify the result
         $this->assertSame($expected, $result);
     }
 
@@ -303,5 +200,201 @@ class PriceCalculatorTest extends ContaoTestCase
         yield [123.4567890123, 123.46];
         yield [123.4547890123, 123.45];
         yield [0.0, 0.0];
+    }
+
+    // -------------------------------------------------------------------------
+    // Events
+    // -------------------------------------------------------------------------
+
+    /**
+     * Every calculating method must hand both the calendar event and the booking
+     * to its event, otherwise a listener cannot tell whose price it is looking at.
+     *
+     * @param class-string $eventClass
+     */
+    #[DataProvider('dispatchedEventProvider')]
+    public function testEventCarriesTheCalendarEventAndTheBooking(string $eventClass, string $method): void
+    {
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+        $booking = $this->booking(2);
+
+        $received = [];
+
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(
+            $eventClass,
+            static function (object $event) use (&$received): void {
+                $received[] = $event;
+            },
+        );
+
+        $this->calculator($dispatcher)->$method($calEvent, $booking);
+
+        $this->assertNotEmpty($received, \sprintf('%s was never dispatched by %s().', $eventClass, $method));
+
+        foreach ($received as $event) {
+            $this->assertSame($calEvent, $event->getCalendarEvent());
+            $this->assertSame($booking, $event->getBooking());
+        }
+    }
+
+    public static function dispatchedEventProvider(): iterable
+    {
+        yield 'net per item' => [CalculateNetAmountPerItemEvent::class, 'calcNetAmountPerItem'];
+        yield 'net total' => [CalculateNetTotalAmountEvent::class, 'calcNetTotalAmount'];
+        yield 'tax value' => [GetTaxValueEvent::class, 'getTaxValue'];
+        yield 'vat per item' => [CalculateVatAmountPerItemEvent::class, 'calcVatAmountPerItem'];
+        yield 'vat total' => [CalculateVatTotalAmountEvent::class, 'calcVatTotalAmount'];
+        yield 'gross per item' => [CalculateGrossAmountPerItemEvent::class, 'calcGrossAmountPerItem'];
+        yield 'gross total' => [CalculateGrossTotalAmountEvent::class, 'calcGrossTotalAmount'];
+    }
+
+    /**
+     * A listener overriding the net amount must ripple through vat and gross,
+     * because those are derived from calcNetAmountPerItem().
+     */
+    public function testListenerOverridingTheNetAmountAffectsVatAndGross(): void
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(
+            CalculateNetAmountPerItemEvent::class,
+            static function (CalculateNetAmountPerItemEvent $event): void {
+                // 50 % discount for everyone.
+                $event->setNetAmountPerItem($event->getNetAmountPerItem() / 2);
+            },
+        );
+
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+        $booking = $this->booking(2);
+        $priceCalculator = $this->calculator($dispatcher);
+
+        $this->assertSame(50.0, $priceCalculator->calcNetAmountPerItem($calEvent, $booking));
+        $this->assertSame(10.0, $priceCalculator->calcVatAmountPerItem($calEvent, $booking));
+        $this->assertSame(60.0, $priceCalculator->calcGrossAmountPerItem($calEvent, $booking));
+        $this->assertSame(120.0, $priceCalculator->calcGrossTotalAmount($calEvent, $booking));
+    }
+
+    /**
+     * The tax rate is overridable too - a listener may for instance apply a
+     * reduced rate to a particular booking.
+     */
+    public function testListenerOverridingTheTaxValueAffectsTheVat(): void
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(
+            GetTaxValueEvent::class,
+            static function (GetTaxValueEvent $event): void {
+                $event->setTaxValue(2.5);
+            },
+        );
+
+        $calEvent = $this->calEvent(netPrice: 200.0, taxValue: 20.0);
+        $booking = $this->booking(2);
+        $priceCalculator = $this->calculator($dispatcher);
+
+        $this->assertSame(2.5, $priceCalculator->getTaxValue($calEvent, $booking));
+        $this->assertSame(5.0, $priceCalculator->calcVatAmountPerItem($calEvent, $booking));
+        $this->assertSame(10.0, $priceCalculator->calcVatTotalAmount($calEvent, $booking));
+        $this->assertSame(410.0, $priceCalculator->calcGrossTotalAmount($calEvent, $booking));
+    }
+
+    /**
+     * A listener writing back the total must win over the calculated value, and
+     * the result still goes through formatPrice().
+     */
+    public function testListenerOverridingTheGrossTotalWinsAndIsRounded(): void
+    {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(
+            CalculateGrossTotalAmountEvent::class,
+            static function (CalculateGrossTotalAmountEvent $event): void {
+                $event->setGrossTotalAmount(99.994999);
+            },
+        );
+
+        $calEvent = $this->calEvent(netPrice: 100.0, taxValue: 20.0);
+
+        $this->assertSame(
+            99.99,
+            $this->calculator($dispatcher)->calcGrossTotalAmount($calEvent, $this->booking(3)),
+        );
+    }
+
+    /**
+     * Documents how often each event fires during a single calcGrossTotalAmount()
+     * call. The per-item net event fires twice, because the gross amount adds the
+     * net amount to a vat amount that is itself derived from the net amount.
+     *
+     * Listeners must therefore be pure: doing anything with a side effect (writing
+     * to the database, sending mail, incrementing a counter) in one of these
+     * listeners will happen more often than the method name suggests.
+     */
+    public function testEventDispatchCounts(): void
+    {
+        $counts = [];
+
+        $dispatcher = new EventDispatcher();
+
+        foreach (array_keys(self::expectedDispatchCounts()) as $eventClass) {
+            $counts[$eventClass] = 0;
+
+            $dispatcher->addListener(
+                $eventClass,
+                static function () use (&$counts, $eventClass): void {
+                    ++$counts[$eventClass];
+                },
+            );
+        }
+
+        $this->calculator($dispatcher)->calcGrossTotalAmount(
+            $this->calEvent(netPrice: 100.0, taxValue: 20.0),
+            $this->booking(2),
+        );
+
+        $this->assertSame(self::expectedDispatchCounts(), $counts);
+    }
+
+    /**
+     * @return array<class-string, int>
+     */
+    private static function expectedDispatchCounts(): array
+    {
+        return [
+            // calcGrossAmountPerItem() -> once directly, once through calcVatAmountPerItem()
+            CalculateNetAmountPerItemEvent::class => 2,
+            GetTaxValueEvent::class => 1,
+            CalculateVatAmountPerItemEvent::class => 1,
+            CalculateGrossAmountPerItemEvent::class => 1,
+            CalculateGrossTotalAmountEvent::class => 1,
+            // Not part of the gross total chain at all.
+            CalculateNetTotalAmountEvent::class => 0,
+            CalculateVatTotalAmountEvent::class => 0,
+        ];
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private function calculator(EventDispatcherInterface|null $eventDispatcher = null): PriceCalculator
+    {
+        return new PriceCalculator($eventDispatcher ?? new EventDispatcher());
+    }
+
+    private function calEvent(float|string|null $netPrice = null, float|string|null $taxValue = null, string|null $currencyCode = null): CalendarEventsModel
+    {
+        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, [
+            'netPrice' => $netPrice,
+            'taxValue' => $taxValue,
+            'currencyCode' => $currencyCode,
+        ]);
+    }
+
+    private function booking(int $ticketAmount = 1): CalendarEventsMemberModel
+    {
+        return $this->createClassWithPropertiesMock(
+            CalendarEventsMemberModel::class,
+            ['ticketAmount' => $ticketAmount],
+        );
     }
 }

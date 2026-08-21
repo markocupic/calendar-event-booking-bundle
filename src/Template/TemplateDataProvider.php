@@ -48,6 +48,9 @@ class TemplateDataProvider
             'canRegister' => $this->eventStatusResolver->canRegister($event, $request),
             'isFullyBooked' => $this->bookingCapacity->isFullyBooked($event),
             'freeSpotsCount' => $this->bookingCapacity->getFreeSpotsCount($event),
+            // freeSpotsCount is 0 for an unlimited event as well, so templates
+            // need this flag to tell "no spots left" from "no limit".
+            'hasUnlimitedCapacity' => $this->bookingCapacity->hasUnlimitedCapacity($event),
             'bookingCount' => $this->bookingCapacity->getBookingCount($event),
             'hasLoggedInUser' => $this->frontendUserAccessor->hasLoggedInFrontendUser(),
             'loggedInUser' => $this->frontendUserAccessor->getLoggedInFrontendUser(),

@@ -41,6 +41,7 @@ class HandleExpirableBookingsCronFunctionalTest extends ContaoTestCase
                 id INTEGER PRIMARY KEY,
                 temporaryReserved INTEGER NOT NULL DEFAULT 0,
                 expired INTEGER NOT NULL DEFAULT 0,
+                paid INTEGER NOT NULL DEFAULT 0,
                 addedOn INTEGER NOT NULL DEFAULT 0
             )',
         );
@@ -60,6 +61,11 @@ class HandleExpirableBookingsCronFunctionalTest extends ContaoTestCase
         // Already expired.
         $this->seed(['id' => 4, 'temporaryReserved' => 1, 'expired' => 1, 'addedOn' => 100]);
 
+        // Paid: the seat has been bought. A payment provider may leave the booking
+        // flagged as temporarily reserved for a while (delayed payment methods), so
+        // without the paid guard the cron would expire a booking that is settled.
+        $this->seed(['id' => 5, 'temporaryReserved' => 1, 'expired' => 0, 'paid' => 1, 'addedOn' => 100]);
+
         $ids = (new \ReflectionMethod(HandleExpirableBookingsCron::class, 'fetchExpirableBookings'))
             ->invoke($this->createCron(), 1000)
         ;
@@ -72,7 +78,7 @@ class HandleExpirableBookingsCronFunctionalTest extends ContaoTestCase
      */
     private function seed(array $row): void
     {
-        $row += ['temporaryReserved' => 0, 'expired' => 0, 'addedOn' => 0];
+        $row += ['temporaryReserved' => 0, 'expired' => 0, 'paid' => 0, 'addedOn' => 0];
 
         $this->connection->insert('tl_calendar_events_member', $row);
     }
