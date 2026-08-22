@@ -5,6 +5,9 @@
       <trans-unit id="tl_calendar_events_payment.payment_legend">
         <source>Payment</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlement_legend">
+        <source>Settlement</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refund_legend">
         <source>Refund</source>
       </trans-unit>
@@ -96,7 +99,25 @@
         <source>Currency code</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.currencyCode.1">
-        <source>The ISO currency code of this payment (e.g. EUR).</source>
+        <source>The ISO currency code of the gross amount, i.e. the currency the customer paid in (e.g. EUR).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.exchangeRate.0">
+        <source>Exchange rate</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.exchangeRate.1">
+        <source>The rate the provider applied to convert the gross amount into the settlement currency. 1 when both currencies are the same.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementGrossAmount.0">
+        <source>Gross amount in settlement currency</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementGrossAmount.1">
+        <source>The gross amount converted into the settlement currency. Minus the provider fee this gives the net amount received.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementCurrencyCode.0">
+        <source>Settlement currency code</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementCurrencyCode.1">
+        <source>The ISO currency code the provider settled in. Applies to the net amount received and the provider fee. Empty means the provider did not report it.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.providerRefundId.0">
         <source>provider refund ID</source>
@@ -116,13 +137,25 @@
         <source>Refund amount</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundAmount.1">
-        <source>The refunded amount (usually negative for internal calculations).</source>
+        <source>The refunded amount, in the currency of the gross amount (usually negative for internal calculations).</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundExchangeRate.0">
+        <source>Refund exchange rate</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundExchangeRate.1">
+        <source>The rate the provider applied when the refund was issued. Not the rate of the original payment. 1 when both currencies are the same.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundSettlementAmount.0">
+        <source>Refund amount in settlement currency</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundSettlementAmount.1">
+        <source>The refunded amount converted into the settlement currency, before the refund fee. This is what the refund took off the account.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundFee.0">
         <source>Refund fee</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundFee.1">
-        <source>The fee charged by the payment provider for processing the refund.</source>
+        <source>The fee charged by the payment provider for processing the refund, in the settlement currency.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.details.0">
         <source>Details (raw payload)</source>

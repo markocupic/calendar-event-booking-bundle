@@ -69,6 +69,66 @@ Bei der Migration wurde der Inhalt von `tl_calendar_events_member.escorts` in `t
 
 ### Einführung der neuen Tabelle in `tl_calendar_events_payment`
 
+### Neue Spalte `tl_calendar_events_payment.settlementCurrencyCode`
+
+Eine Zahlung hat zwei Währungen, die nicht dieselbe sein müssen:
+
+- `currencyCode` ist die Währung des Bruttobetrags – die also, die der Kunde bezahlt hat.
+- `settlementCurrencyCode` ist die Währung, in der der Zahlungsanbieter abgerechnet hat – also die
+  Währung des Kontos, dem das Geld gutgeschrieben wird. Sie gilt für `netAmountReceived` und `captureFee`.
+
+Bei den allermeisten Installationen sind beide gleich. Sie sind es nicht, wenn das Anbieterkonto in
+einer anderen Währung geführt wird als die Preise im Event – Stripe meldet Gebühr und Nettobetrag
+dann in der Kontowährung, während der Bruttobetrag in der Belastungswährung bleibt.
+
+Ein leerer Wert bedeutet, dass der Anbieter die Abrechnungswährung nicht gemeldet hat. Er bedeutet
+**nicht**, dass sie mit `currencyCode` übereinstimmt.
+
+### Neue Spalten `tl_calendar_events_payment.exchangeRate` und `settlementGrossAmount`
+
+Sobald die beiden Währungen auseinanderfallen, geht eine Zahlungszeile ohne diese beiden Werte nicht
+auf: `netAmountReceived` plus `captureFee` ergibt dann nicht `grossAmount`, weil die Beträge in
+verschiedenen Währungen stehen.
+
+- `exchangeRate` ist der Kurs, den der Anbieter angewendet hat, in voller Genauigkeit. `1`, wenn beide
+  Währungen gleich sind.
+- `settlementGrossAmount` ist `grossAmount`, umgerechnet in die Abrechnungswährung.
+
+Damit gilt wieder eine einfache Regel:
+`settlementGrossAmount − captureFee = netAmountReceived`, alle drei in `settlementCurrencyCode`.
+
+Beispiel einer echten Zahlung – EUR-Preis, Schweizer Stripe-Konto:
+
+| Spalte | Wert |
+| --- | --- |
+| `grossAmount` / `currencyCode` | 217.18 EUR |
+| `exchangeRate` | 0.93564 |
+| `settlementGrossAmount` | 203.20 CHF |
+| `captureFee` | 10.96 CHF |
+| `netAmountReceived` | 192.24 CHF |
+| `settlementCurrencyCode` | CHF |
+
+Bestehende Zahlungen werden von der Migration `SettlementCurrencyCodeMigration` befüllt: für sie gilt
+Abrechnungswährung = Belastungswährung, Bruttobetrag = Bruttobetrag und Kurs = 1.
+
+### Neue Spalten `tl_calendar_events_payment.refundExchangeRate` und `refundSettlementAmount`
+
+Dasselbe Muster für die Rückerstattungen. Eine eigene Währungsspalte brauchen sie nicht – eine
+Rückerstattung erfolgt immer in der Währung der ursprünglichen Belastung (`currencyCode`), und ihre
+Gebühr fällt auf demselben Konto an wie die der Zahlung (`settlementCurrencyCode`).
+
+Was ihnen fehlte, war der **Kurs**: Der Anbieter erzeugt für die Rückerstattung eine eigene
+Umrechnung, zum Kurs des Tages, an dem sie ausgelöst wurde. Wird eine Zahlung Monate später
+rückerstattet, wird dem Konto ein anderer Betrag belastet, als ihm seinerzeit gutgeschrieben wurde –
+ein echter Kursverlust, der ohne diese Spalten nirgends erklärbar ist.
+
+- `refundExchangeRate` – der Kurs der Rückerstattung, **nicht** der der Zahlung.
+- `refundSettlementAmount` – `refundAmount`, umgerechnet in die Abrechnungswährung, vor Abzug von
+  `refundFee`.
+
+Ausserdem steht `providerRefundId` jetzt in der Palette. Das Feld war deklariert, aber im Backend
+nicht erreichbar.
+
 ### Neue Einträge in der Bundle Configuration -> `config.yaml`
 
 ```yaml

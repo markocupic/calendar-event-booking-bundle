@@ -69,7 +69,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
             'delete'  => [
                 'href'       => 'act=delete',
                 'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false" data-action="contao--scroll-offset#store"',
+                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false" data-action="contao--scroll-offset#store"',
             ],
             'show'    => [
                 'href' => 'act=show',

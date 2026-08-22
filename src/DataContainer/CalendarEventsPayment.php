@@ -20,9 +20,12 @@ use Contao\DataContainer;
 class CalendarEventsPayment
 {
     #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.grossAmount.load')]
-    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.netAmount.load')]
-    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.vatAmount.load')]
-    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.taxValue.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.settlementGrossAmount.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.netAmountReceived.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.captureFee.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.refundAmount.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.refundSettlementAmount.load')]
+    #[AsCallback(table: 'tl_calendar_events_payment', target: 'fields.refundFee.load')]
     public function loadAsDoublePrecision(float $value, DataContainer $dc): string
     {
         return number_format($value, 2, '.', '');

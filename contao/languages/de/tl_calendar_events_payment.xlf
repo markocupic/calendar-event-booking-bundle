@@ -6,6 +6,10 @@
         <source>Payment</source>
         <target>Zahlung</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlement_legend">
+        <source>Settlement</source>
+        <target>Abrechnung</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refund_legend">
         <source>Refund</source>
         <target>Rückerstattung</target>
@@ -112,11 +116,11 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.netAmountReceived.1">
         <source>The payout amount after provider fees have been deducted.</source>
-        <target>Der Auszahlungsbetrag nach Abzug der Anbietergebühren.</target>
+        <target>Der Auszahlungsbetrag nach Abzug der Zahlungsanbietergebühren.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.captureFee.0">
         <source>Provider fee</source>
-        <target>Anbietergebühr</target>
+        <target>Zahlungsanbietergebühr</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.captureFee.1">
         <source>The fee charged by the payment provider.</source>
@@ -127,8 +131,32 @@
         <target>Währungscode</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.currencyCode.1">
-        <source>The ISO currency code of this payment (e.g. EUR).</source>
-        <target>Der ISO-Währungscode dieser Zahlung (z.B. EUR).</target>
+        <source>The ISO currency code of the gross amount, i.e. the currency the customer paid in (e.g. EUR).</source>
+        <target>Der ISO-Währungscode des Bruttobetrags – also die Währung, die der Kunde bezahlt hat (z.B. EUR).</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.exchangeRate.0">
+        <source>Exchange rate</source>
+        <target>Umrechnungskurs</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.exchangeRate.1">
+        <source>The rate the provider applied to convert the gross amount into the settlement currency. 1 when both currencies are the same.</source>
+        <target>Der Kurs, mit dem der Anbieter den Bruttobetrag in die Abrechnungswährung umgerechnet hat. 1, wenn beide Währungen gleich sind.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementGrossAmount.0">
+        <source>Gross amount in settlement currency</source>
+        <target>Bruttobetrag in Abrechnungswährung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementGrossAmount.1">
+        <source>The gross amount converted into the settlement currency. Minus the provider fee this gives the net amount received.</source>
+        <target>Der Bruttobetrag, umgerechnet in die Abrechnungswährung. Abzüglich der Zahlungsanbietergebühr ergibt sich daraus der Auszahlungsbetrag.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementCurrencyCode.0">
+        <source>Settlement currency code</source>
+        <target>Währungscode der Abrechnung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.settlementCurrencyCode.1">
+        <source>The ISO currency code the provider settled in. Applies to the net amount received and the provider fee. Empty means the provider did not report it.</source>
+        <target>Der ISO-Währungscode, in dem der Anbieter abgerechnet hat. Gilt für Auszahlungsbetrag und Zahlungsanbietergebühr. Leer bedeutet, dass der Anbieter ihn nicht gemeldet hat.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.providerRefundId.0">
         <source>provider refund ID</source>
@@ -151,16 +179,32 @@
         <target>Rückerstattungs-Betrag</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundAmount.1">
-        <source>The refunded amount (usually negative for internal calculations).</source>
-        <target>Der rückerstattete Betrag (intern üblicherweise negativ gespeichert).</target>
+        <source>The refunded amount, in the currency of the gross amount (usually negative for internal calculations).</source>
+        <target>Der rückerstattete Betrag, in der Währung des Bruttobetrags (intern üblicherweise negativ gespeichert).</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundExchangeRate.0">
+        <source>Refund exchange rate</source>
+        <target>Umrechnungskurs der Rückerstattung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundExchangeRate.1">
+        <source>The rate the provider applied when the refund was issued. Not the rate of the original payment. 1 when both currencies are the same.</source>
+        <target>Der Kurs, den der Anbieter zum Zeitpunkt der Rückerstattung angewendet hat. Nicht der Kurs der ursprünglichen Zahlung. 1, wenn beide Währungen gleich sind.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundSettlementAmount.0">
+        <source>Refund amount in settlement currency</source>
+        <target>Rückerstattungs-Betrag in Abrechnungswährung</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.refundSettlementAmount.1">
+        <source>The refunded amount converted into the settlement currency, before the refund fee. This is what the refund took off the account.</source>
+        <target>Der rückerstattete Betrag, umgerechnet in die Abrechnungswährung, vor Abzug der Rückerstattungs-Gebühr. Das ist der Betrag, der dem Konto belastet wurde.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundFee.0">
         <source>Refund fee</source>
         <target>Rückerstattungs-Gebühr</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundFee.1">
-        <source>The fee charged by the payment provider for processing the refund.</source>
-        <target>Die vom Zahlungsanbieter berechnete Gebühr für die Rückerstattung.</target>
+        <source>The fee charged by the payment provider for processing the refund, in the settlement currency.</source>
+        <target>Die vom Zahlungsanbieter berechnete Gebühr für die Rückerstattung, in der Abrechnungswährung.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.details.0">
         <source>Details (raw payload)</source>
