@@ -122,7 +122,7 @@
         <source>Refund fee</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundFee.1">
-        <source>The fee charged by the provider for processing the refund.</source>
+        <source>The fee charged by the payment provider for processing the refund.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.details.0">
         <source>Details (raw payload)</source>
