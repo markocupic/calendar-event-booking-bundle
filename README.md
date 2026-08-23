@@ -33,10 +33,10 @@ Beim Absenden des Formulars werden die Werte in der Datenbank in der Tabelle tl_
 
 Bezahl-Checkouts ist zahlungspflichtig (Bitte den Autor der Extension per E-Mail kontaktieren: m.cupic@gmx.ch)
 
-Im Moment sind folgende kostenpflichtige **Zahlungsmethoden** vorhanden:
+Im Moment können folgende **Zahlungsanbieter** an die Extension angeschlossen werden:
 
-- PayPal
-- Stripe **(neu)**
+- <a href="https://stripe.com">Stripe</a> **(neu)**
+- <a href="https://www.paypal.com">PayPal</a>
 
 **Neu: Stripe.** Das kostenpflichtige Plugin `markocupic/calendar-event-booking-stripe` bindet Stripe
 Checkout ein. Welche Zahlungsarten der Teilnehmer auf der Bezahlseite sieht, wird im Stripe-Dashboard
