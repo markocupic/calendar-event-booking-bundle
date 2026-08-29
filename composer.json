@@ -22,12 +22,13 @@
         "symfony/rate-limiter": "^6.4 || ^7.1"
     },
     "require-dev": {
-        "markocupic/easy-coding-standard": "^13.0",
+        "contao/manager-plugin": "^2.12",
         "contao/test-case": "^5.5",
-        "phpunit/phpunit": "^12.4",
+        "dama/doctrine-test-bundle": "^v8.3",
+        "markocupic/easy-coding-standard": "^13.0",
         "phpstan/phpstan": "^2.1",
-        "symfony/phpunit-bridge": "^6.0 || ^7.0",
-        "dama/doctrine-test-bundle": "^v8.3"
+        "phpunit/phpunit": "^12.4",
+        "symfony/phpunit-bridge": "^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {
