@@ -34,14 +34,14 @@ class NotificationServiceTest extends ContaoTestCase
     {
         parent::setUp();
 
-        $controllerAdapter = $this->createAdapterMock(['loadLanguageFile']);
+        $controllerAdapter = $this->createAdapterStub(['loadLanguageFile']);
 
-        $organizerMock = $this->createClassWithPropertiesMock(UserModel::class);
+        $organizerMock = $this->createClassWithPropertiesStub(UserModel::class);
         $organizerMock->id = (int) $this->getExpectedTokens()['organizer_id'];
         $organizerMock->name = $this->getExpectedTokens()['organizer_name'];
         $organizerMock->email = $this->getExpectedTokens()['organizer_email'];
 
-        $userModelAdapter = $this->createAdapterMock(['findById']);
+        $userModelAdapter = $this->createAdapterStub(['findById']);
         $userModelAdapter
             ->method('findById')
             ->with(1)
@@ -54,10 +54,10 @@ class NotificationServiceTest extends ContaoTestCase
         ];
 
         $frameworkMock = $this->createContaoFrameworkStub($adapters);
-        $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
-        $notificationCenterMock = $this->createMock(NotificationCenter::class);
-        $requestStackMock = $this->createMock(RequestStack::class);
-        $unsubscribeLinkBuilderMock = $this->createMock(UnsubscribeLinkBuilder::class);
+        $eventDispatcherMock = $this->createStub(EventDispatcherInterface::class);
+        $notificationCenterMock = $this->createStub(NotificationCenter::class);
+        $requestStackMock = $this->createStub(RequestStack::class);
+        $unsubscribeLinkBuilderMock = $this->createStub(UnsubscribeLinkBuilder::class);
 
         $this->notificationService = new NotificationService(
             $frameworkMock,
@@ -89,11 +89,11 @@ class NotificationServiceTest extends ContaoTestCase
 
     public function testGenerateNotificationTokens(): void
     {
-        $calendarMock = $this->createClassWithPropertiesMock(CalendarModel::class);
+        $calendarMock = $this->createClassWithPropertiesStub(CalendarModel::class);
         $calendarMock->id = (int) $this->getExpectedTokens()['calendar_id'];
         $calendarMock->title = $this->getExpectedTokens()['calendar_title'];
 
-        $eventMock = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $eventMock = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $eventMock->id = (int) $this->getExpectedTokens()['event_id'];
         $eventMock->pid = (int) $this->getExpectedTokens()['event_pid'];
         $eventMock->title = $this->getExpectedTokens()['event_title'];
@@ -105,7 +105,7 @@ class NotificationServiceTest extends ContaoTestCase
             ->willReturn($calendarMock)
         ;
 
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class);
         $booking->id = (int) $this->getExpectedTokens()['member_id'];
         $booking->pid = (int) $this->getExpectedTokens()['member_pid'];
         $booking->firstname = $this->getExpectedTokens()['member_firstname'];

@@ -32,7 +32,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
     {
         $booking = $this->mockBooking(null);
 
-        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createStub(ContentUrlGenerator::class), $this->createStub(UrlParser::class));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event not found.');
@@ -42,17 +42,17 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenDeregistrationDisabled(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => false]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['enableDeregistration' => false]);
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createStub(ContentUrlGenerator::class), $this->createStub(UrlParser::class));
 
         $this->assertSame('', $builder->build($booking));
     }
 
     public function testThrowsWhenCalendarIsMissing(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -60,7 +60,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         ;
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createStub(ContentUrlGenerator::class), $this->createStub(UrlParser::class));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
@@ -70,8 +70,8 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testThrowsWhenEventBookingIsNotAllowedForCalendar(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => false]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -79,7 +79,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         ;
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createStub(ContentUrlGenerator::class), $this->createStub(UrlParser::class));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event booking not allowed for this calendar.');
@@ -89,8 +89,8 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     public function testReturnsEmptyStringWhenPageIsMissing(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -98,16 +98,16 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         ;
         $booking = $this->mockBooking($event);
 
-        $builder = $this->builder($this->frameworkWithPage(4, null), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+        $builder = $this->builder($this->frameworkWithPage(4, null), $this->createStub(ContentUrlGenerator::class), $this->createStub(UrlParser::class));
 
         $this->assertSame('', $builder->build($booking));
     }
 
     public function testBuildsAbsoluteUnsubscribeUrl(): void
     {
-        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 4]);
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $page = $this->createClassWithPropertiesStub(PageModel::class, ['id' => 4]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -115,7 +115,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         ;
         $booking = $this->mockBooking($event, 'TOK');
 
-        $urlGenerator = $this->createMock(ContentUrlGenerator::class);
+        $urlGenerator = $this->createStub(ContentUrlGenerator::class);
         $urlGenerator
             ->method('generate')
             ->with($page, [], UrlGeneratorInterface::ABSOLUTE_URL)
@@ -151,7 +151,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
 
     private function frameworkWithPage(int $pageId, PageModel|null $page): object
     {
-        $adapter = $this->createAdapterMock(['findById']);
+        $adapter = $this->createAdapterStub(['findById']);
         $adapter
             ->method('findById')
             ->with($pageId)

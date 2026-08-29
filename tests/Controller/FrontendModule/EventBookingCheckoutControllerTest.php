@@ -49,7 +49,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
     public function testGetBookingReturnsModelForKnownToken(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
         $controller = $this->createControllerWithBooking('abc', $booking);
 
         $method = new \ReflectionMethod(EventBookingCheckoutController::class, 'getBookingFromRequest');
@@ -125,16 +125,16 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
     {
         // The booking, event and calendar all resolve, but the calendar no longer
         // allows event booking -> initialize() must reject before wiring a handler.
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => false]);
 
-        $calEvent = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['published' => true]);
+        $calEvent = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['published' => true]);
         $calEvent
             ->method('getRelated')
             ->with('pid')
             ->willReturn($calendar)
         ;
 
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
         $booking
             ->method('getRelated')
             ->with('pid')
@@ -150,7 +150,7 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
     private function createControllerWithBooking(string $token, CalendarEventsMemberModel|null $booking, LoggerInterface|null $errorLogger = null, LoggerInterface|null $generalLogger = null): EventBookingCheckoutController
     {
-        $adapter = $this->createAdapterMock(['findOneByBookingToken']);
+        $adapter = $this->createAdapterStub(['findOneByBookingToken']);
         $adapter
             ->method('findOneByBookingToken')
             ->with($token)

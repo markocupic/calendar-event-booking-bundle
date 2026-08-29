@@ -35,7 +35,7 @@ class EventStatusResolverTest extends ContaoTestCase
         $this->bookingCapacity = $this->createMock(BookingCapacity::class);
         $this->resolver = new EventStatusResolver(
             $this->bookingCapacity,
-            $this->createMock(EventDispatcherInterface::class),
+            $this->createStub(EventDispatcherInterface::class),
         );
     }
 
@@ -121,7 +121,7 @@ class EventStatusResolverTest extends ContaoTestCase
     {
         // The related calendar is required up front; without it the status cannot be
         // determined and an exception is raised instead of guessing a status.
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 42]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 42]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -146,9 +146,9 @@ class EventStatusResolverTest extends ContaoTestCase
      */
     private function assertStatus(string $expected, array $props, array $calendarProps = ['allowEventBooking' => true]): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProps);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, $calendarProps);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $props);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, $props);
         $event
             ->method('getRelated')
             ->with('pid')

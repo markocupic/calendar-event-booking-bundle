@@ -23,7 +23,7 @@ class EventUrlResolverTest extends ContaoTestCase
 {
     public function testResolvesEventFromEventsParameter(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 42]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 42]);
 
         $resolver = $this->resolver(
             store: ['events' => 'my-event'],
@@ -35,7 +35,7 @@ class EventUrlResolverTest extends ContaoTestCase
 
     public function testFallsBackToAutoItemParameter(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 7]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 7]);
 
         // No "events" parameter, but an "auto_item" is present in the input.
         $resolver = $this->resolver(
@@ -48,7 +48,7 @@ class EventUrlResolverTest extends ContaoTestCase
 
     public function testEventsParameterTakesPrecedenceOverAutoItem(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 5]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 5]);
 
         // "events" is set, so "auto_item" must be ignored.
         $resolver = $this->resolver(
@@ -85,7 +85,7 @@ class EventUrlResolverTest extends ContaoTestCase
      */
     private function resolver(array $store, array $findByIdOrAlias): EventUrlResolver
     {
-        $inputAdapter = $this->createAdapterMock(['get', 'setGet']);
+        $inputAdapter = $this->createAdapterStub(['get', 'setGet']);
         $inputAdapter
             ->method('get')
             ->willReturnCallback(
@@ -103,7 +103,7 @@ class EventUrlResolverTest extends ContaoTestCase
             )
         ;
 
-        $eventsAdapter = $this->createAdapterMock(['findByIdOrAlias']);
+        $eventsAdapter = $this->createAdapterStub(['findByIdOrAlias']);
         $eventsAdapter
             ->method('findByIdOrAlias')
             ->willReturnCallback(static fn ($idOrAlias) => $findByIdOrAlias[$idOrAlias] ?? null)

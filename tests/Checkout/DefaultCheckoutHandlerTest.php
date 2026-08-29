@@ -34,9 +34,9 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
     public function testHandleRequestBuildsResult(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3, 'allowEventBooking' => true]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['id' => 3, 'allowEventBooking' => true]);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 2]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 2]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -45,7 +45,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
         $booking = $this->mockBooking($event, ['id' => 1]);
 
-        $model = $this->createClassWithPropertiesMock(ModuleModel::class);
+        $model = $this->createClassWithPropertiesStub(ModuleModel::class);
 
         $result = (new DefaultCheckoutHandler())->handleRequest($booking, $model, new Request());
 
@@ -66,12 +66,12 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event not found.');
 
-        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesStub(ModuleModel::class), new Request());
     }
 
     public function testHandleRequestThrowsWhenCalendarMissing(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -83,14 +83,14 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
 
-        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesStub(ModuleModel::class), new Request());
     }
 
     public function testHandleRequestThrowsWhenEventBookingNotAllowed(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => false]);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -102,7 +102,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event booking not allowed for this calendar.');
 
-        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesStub(ModuleModel::class), new Request());
     }
 
     /**

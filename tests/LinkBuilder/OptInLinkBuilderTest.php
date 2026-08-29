@@ -95,7 +95,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
             'eventBookingOptInPage' => 3,
         ]);
 
-        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 3]);
+        $page = $this->createClassWithPropertiesStub(PageModel::class, ['id' => 3]);
 
         $pageAdapter = $this->createAdapterMock(['findById']);
         $pageAdapter
@@ -112,7 +112,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
             ->willReturn('https://example.com/opt-in')
         ;
 
-        $urlParser = $this->createMock(UrlParser::class);
+        $urlParser = $this->createStub(UrlParser::class);
         $urlParser
             ->method('addQueryString')
             ->willReturnCallback(static fn (string $query, string $url): string => $url.'?'.$query)
@@ -170,8 +170,8 @@ class OptInLinkBuilderTest extends ContaoTestCase
     {
         return new OptInLinkBuilder(
             $framework ?? $this->createContaoFrameworkStub(),
-            $contentUrlGenerator ?? $this->createMock(ContentUrlGenerator::class),
-            $urlParser ?? $this->createMock(UrlParser::class),
+            $contentUrlGenerator ?? $this->createStub(ContentUrlGenerator::class),
+            $urlParser ?? $this->createStub(UrlParser::class),
         );
     }
 }

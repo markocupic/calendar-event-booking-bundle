@@ -140,7 +140,7 @@ class UnsubscribeValidatorTest extends ContaoTestCase
 
     private function validator(): UnsubscribeValidator
     {
-        $translator = $this->createMock(TranslatorInterface::class);
+        $translator = $this->createStub(TranslatorInterface::class);
         $translator
             ->method('trans')
             ->willReturnCallback(static fn (string $id): string => $id)

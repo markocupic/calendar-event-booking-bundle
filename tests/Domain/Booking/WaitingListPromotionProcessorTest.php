@@ -56,9 +56,9 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteSendsNotificationAndLogsWhenRowAffected(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7, 'log' => '']);
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7, 'log' => '']);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -80,7 +80,7 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             )
         ;
 
-        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService = $this->createStub(NotificationService::class);
         $notificationService
             ->method('getNotificationTokens')
             ->with($booking)
@@ -126,13 +126,13 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
      */
     public function testPromoteAppendsToAnExistingLog(): void
     {
-        $booking = $this->createClassWithPropertiesMock(
+        $booking = $this->createClassWithPropertiesStub(
             CalendarEventsMemberModel::class,
             ['id' => 7, 'log' => '2026-08-01 09:00 Opt-in confirmed by the participant via the confirmation link.'],
         );
 
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -165,9 +165,9 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteSkipsNotificationWhenCalendarHasNoneConfigured(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -203,8 +203,8 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteDoesNothingWhenNoRowAffected(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
 
         $connection = $this->createMock(Connection::class);
         $connection
@@ -236,14 +236,14 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
     private function createProcessor(Connection|null $connection = null, ContaoFramework|null $framework = null, EventDispatcherInterface|null $dispatcher = null, LockFactory|null $lockFactory = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, LoggerInterface|null $logger = null, bool $autoPromotion = true): WaitingListPromotionProcessor
     {
         return new WaitingListPromotionProcessor(
-            $connection ?? $this->createMock(Connection::class),
-            $framework ?? $this->createMock(ContaoFramework::class),
-            $dispatcher ?? $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(BookingCapacity::class),
-            $lockFactory ?? $this->createMock(LockFactory::class),
-            $notificationCenter ?? $this->createMock(NotificationCenter::class),
-            $notificationService ?? $this->createMock(NotificationService::class),
-            $this->createMock(RequestStack::class),
+            $connection ?? $this->createStub(Connection::class),
+            $framework ?? $this->createStub(ContaoFramework::class),
+            $dispatcher ?? $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(BookingCapacity::class),
+            $lockFactory ?? $this->createStub(LockFactory::class),
+            $notificationCenter ?? $this->createStub(NotificationCenter::class),
+            $notificationService ?? $this->createStub(NotificationService::class),
+            $this->createStub(RequestStack::class),
             $autoPromotion,
             $logger,
         );

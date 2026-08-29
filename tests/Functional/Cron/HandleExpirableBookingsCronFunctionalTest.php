@@ -87,12 +87,12 @@ class HandleExpirableBookingsCronFunctionalTest extends ContaoTestCase
     {
         return new HandleExpirableBookingsCron(
             $this->connection,
-            $this->createMock(ContaoFramework::class),
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(RequestStack::class),
+            $this->createStub(ContaoFramework::class),
+            $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(RequestStack::class),
             true,
             0,
-            $this->createMock(LoggerInterface::class),
+            $this->createStub(LoggerInterface::class),
         );
     }
 }

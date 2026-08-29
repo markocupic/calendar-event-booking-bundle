@@ -100,7 +100,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             ->willReturn($this->mockQueryBuilder([1, 2, 3]))
         ;
 
-        $request = $this->createMock(Request::class);
+        $request = $this->createStub(Request::class);
         $this->requestStack
             ->expects($this->once())
             ->method('getCurrentRequest')
@@ -189,7 +189,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             ->willReturn($this->mockQueryBuilder([1, 2, 3]))
         ;
 
-        $request = $this->createMock(Request::class);
+        $request = $this->createStub(Request::class);
         $this->requestStack
             ->expects($this->once())
             ->method('getCurrentRequest')

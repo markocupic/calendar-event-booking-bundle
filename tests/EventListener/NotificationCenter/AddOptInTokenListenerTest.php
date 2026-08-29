@@ -37,7 +37,7 @@ class AddOptInTokenListenerTest extends ContaoTestCase
 {
     public function testAddsOptInTokenDefinitionForMatchingNotificationType(): void
     {
-        $tokenDefinition = $this->createMock(TokenDefinitionInterface::class);
+        $tokenDefinition = $this->createStub(TokenDefinitionInterface::class);
 
         $factory = $this->createMock(TokenDefinitionFactoryInterface::class);
         $factory
@@ -86,7 +86,7 @@ class AddOptInTokenListenerTest extends ContaoTestCase
 
     private function mockNotificationType(string $name): NotificationTypeInterface
     {
-        $type = $this->createMock(NotificationTypeInterface::class);
+        $type = $this->createStub(NotificationTypeInterface::class);
         $type
             ->method('getName')
             ->willReturn($name)
@@ -98,11 +98,11 @@ class AddOptInTokenListenerTest extends ContaoTestCase
     private function listener(TokenDefinitionFactoryInterface $factory): AddOptInTokenListener
     {
         return new AddOptInTokenListener(
-            $this->createMock(ContaoFramework::class),
-            $this->createMock(InsertTagParser::class),
-            $this->createMock(OptInLinkBuilder::class),
-            $this->createMock(RequestStack::class),
-            $this->createMock(SimpleTokenParser::class),
+            $this->createStub(ContaoFramework::class),
+            $this->createStub(InsertTagParser::class),
+            $this->createStub(OptInLinkBuilder::class),
+            $this->createStub(RequestStack::class),
+            $this->createStub(SimpleTokenParser::class),
             $factory,
             86400,
         );

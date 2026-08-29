@@ -35,7 +35,7 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
     public function testSortDirectionIsWhitelisted(string $configured, string $expected): void
     {
         $calls = [];
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createStub(Connection::class);
         $connection
             ->method('createQueryBuilder')
             ->willReturn($this->recordingQueryBuilder($calls))
@@ -43,8 +43,8 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
 
         $controller = $this->createController($connection);
 
-        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
-        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesStub(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesStub(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => $configured,
             'ceb_modMyBookings_startTimeFilter' => '',
             'ceb_addImage' => false,
@@ -73,7 +73,7 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
     public function testStartTimeFilterUsesBoundParameter(): void
     {
         $calls = [];
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createStub(Connection::class);
         $connection
             ->method('createQueryBuilder')
             ->willReturn($this->recordingQueryBuilder($calls))
@@ -81,8 +81,8 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
 
         $controller = $this->createController($connection);
 
-        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
-        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesStub(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesStub(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => 'asc',
             'ceb_modMyBookings_startTimeFilter' => 'past',
             'ceb_addImage' => false,
@@ -105,7 +105,7 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
     public function testBookingsWithMissingModelAreSkipped(): void
     {
         $calls = [];
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createStub(Connection::class);
         $connection
             ->method('createQueryBuilder')
             ->willReturn($this->recordingQueryBuilder($calls, [['id' => 99]]))
@@ -126,8 +126,8 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
         $container->set('contao.framework', $framework);
         $controller->setContainer($container);
 
-        $user = $this->createClassWithPropertiesMock(FrontendUser::class, ['id' => 7]);
-        $model = $this->createClassWithPropertiesMock(ModuleModel::class, [
+        $user = $this->createClassWithPropertiesStub(FrontendUser::class, ['id' => 7]);
+        $model = $this->createClassWithPropertiesStub(ModuleModel::class, [
             'ceb_modMyBookings_sorting' => 'asc',
             'ceb_modMyBookings_startTimeFilter' => '',
             'ceb_addImage' => false,
@@ -141,9 +141,9 @@ class EventBookingMyBookingsControllerTest extends ContaoTestCase
     private function createController(Connection $connection): EventBookingMyBookingsController
     {
         return new EventBookingMyBookingsController(
-            $this->createMock(Security::class),
+            $this->createStub(Security::class),
             $connection,
-            $this->createMock(FigureUtil::class),
+            $this->createStub(FigureUtil::class),
         );
     }
 

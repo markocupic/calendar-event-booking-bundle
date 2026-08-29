@@ -48,11 +48,11 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
     {
         $controller = $this->createController(scopeMatcher: $this->scopeMatcher(false));
 
-        $page = $this->createClassWithPropertiesMock(PageModel::class, ['noSearch' => 0]);
+        $page = $this->createClassWithPropertiesStub(PageModel::class, ['noSearch' => 0]);
 
         $response = $controller(
             new Request(),
-            $this->createClassWithPropertiesMock(ModuleModel::class),
+            $this->createClassWithPropertiesStub(ModuleModel::class),
             'main',
             null,
             $page,
@@ -68,7 +68,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
         $response = $controller(
             new Request(['action' => EventBookingUnsubscribeController::ACTION]),
-            $this->createClassWithPropertiesMock(ModuleModel::class),
+            $this->createClassWithPropertiesStub(ModuleModel::class),
             'main',
             null,
             null,
@@ -106,7 +106,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             ->method('rollBack')
         ;
 
-        $urlParser = $this->createMock(UrlParser::class);
+        $urlParser = $this->createStub(UrlParser::class);
         $urlParser
             ->method('addQueryString')
             ->with('hasUnsubscribed=true')
@@ -245,7 +245,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             ->method('sendNotification')
         ;
 
-        $urlParser = $this->createMock(UrlParser::class);
+        $urlParser = $this->createStub(UrlParser::class);
         $urlParser
             ->method('addQueryString')
             ->with('hasUnsubscribed=true')
@@ -301,7 +301,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 
     private function frameworkWithBooking(CalendarEventsMemberModel|null $booking): object
     {
-        $adapter = $this->createAdapterMock(['findOneByBookingToken']);
+        $adapter = $this->createAdapterStub(['findOneByBookingToken']);
         $adapter
             ->method('findOneByBookingToken')
             ->willReturn($booking)
@@ -355,18 +355,18 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
     private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, ScopeMatcher|null $scopeMatcher = null, UrlParser|null $urlParser = null): EventBookingUnsubscribeController
     {
         return new EventBookingUnsubscribeController(
-            $connection ?? $this->createMock(Connection::class),
-            $this->createMock(ContaoCsrfTokenManager::class),
-            $eventDispatcher ?? $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(FigureUtil::class),
-            $lockFactory ?? $this->createMock(LockFactory::class),
-            $message ?? $this->createMock(MessageInterface::class),
-            $notificationCenter ?? $this->createMock(NotificationCenter::class),
-            $notificationService ?? $this->createMock(NotificationService::class),
-            $scopeMatcher ?? $this->createMock(ScopeMatcher::class),
-            $this->createMock(TranslatorInterface::class),
-            $urlParser ?? $this->createMock(UrlParser::class),
-            new UnsubscribeValidator($this->createMock(TranslatorInterface::class)),
+            $connection ?? $this->createStub(Connection::class),
+            $this->createStub(ContaoCsrfTokenManager::class),
+            $eventDispatcher ?? $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(FigureUtil::class),
+            $lockFactory ?? $this->createStub(LockFactory::class),
+            $message ?? $this->createStub(MessageInterface::class),
+            $notificationCenter ?? $this->createStub(NotificationCenter::class),
+            $notificationService ?? $this->createStub(NotificationService::class),
+            $scopeMatcher ?? $this->createStub(ScopeMatcher::class),
+            $this->createStub(TranslatorInterface::class),
+            $urlParser ?? $this->createStub(UrlParser::class),
+            new UnsubscribeValidator($this->createStub(TranslatorInterface::class)),
             null,
             null,
         );

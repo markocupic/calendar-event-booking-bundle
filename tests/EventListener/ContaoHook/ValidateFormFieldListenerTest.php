@@ -64,8 +64,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, ['emailUnique' => false]),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, ['emailUnique' => false]),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 1]),
         );
 
         $listener = $this->listener($controller, duplicateCount: 1);
@@ -85,8 +85,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, ['emailUnique' => true]),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, ['emailUnique' => true]),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 1]),
         );
 
         $listener = $this->listener($controller, duplicateCount: 5);
@@ -103,8 +103,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, []),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['maxEscortsPerBooking' => 3]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, []),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['maxEscortsPerBooking' => 3]),
         );
 
         $listener = $this->listener($controller);
@@ -121,8 +121,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, []),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['maxEscortsPerBooking' => 2]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, []),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['maxEscortsPerBooking' => 2]),
         );
 
         $listener = $this->listener($controller);
@@ -139,8 +139,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, []),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['maxEscortsPerBooking' => 3]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, []),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['maxEscortsPerBooking' => 3]),
         );
 
         $listener = $this->listener($controller);
@@ -157,8 +157,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, []),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['maxTicketsPerBooking' => 2]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, []),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['maxTicketsPerBooking' => 2]),
         );
 
         $listener = $this->listener($controller);
@@ -175,8 +175,8 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         ;
 
         $controller = $this->mockController(
-            calendar: $this->createClassWithPropertiesMock(CalendarModel::class, []),
-            event: $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['maxTicketsPerBooking' => 4]),
+            calendar: $this->createClassWithPropertiesStub(CalendarModel::class, []),
+            event: $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['maxTicketsPerBooking' => 4]),
         );
 
         $listener = $this->listener($controller);
@@ -191,7 +191,7 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
 
     private function mockForm(bool $isBookingForm): Form
     {
-        return $this->createClassWithPropertiesMock(Form::class, ['isCalendarEventBookingForm' => $isBookingForm]);
+        return $this->createClassWithPropertiesStub(Form::class, ['isCalendarEventBookingForm' => $isBookingForm]);
     }
 
     private function mockController(CalendarModel $calendar, CalendarEventsModel $event): EventBookingFormController&MockObject
@@ -212,7 +212,7 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
 
     private function listener(EventBookingFormController|null $controller = null, int $duplicateCount = 0): ValidateFormFieldListener
     {
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createStub(Connection::class);
         $connection
             ->method('fetchOne')
             ->willReturn($duplicateCount)
@@ -227,7 +227,7 @@ class ValidateFormFieldListenerTest extends ContaoTestCase
         $requestStack = new RequestStack();
         $requestStack->push($request);
 
-        $translator = $this->createMock(TranslatorInterface::class);
+        $translator = $this->createStub(TranslatorInterface::class);
         $translator
             ->method('trans')
             ->willReturn('error')

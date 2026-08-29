@@ -84,7 +84,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
             ->willReturn(1)
         ;
 
-        $request = $this->createMock(Request::class);
+        $request = $this->createStub(Request::class);
         $this->requestStack
             ->expects($this->once())
             ->method('getCurrentRequest')
@@ -142,7 +142,7 @@ class DeleteExpiredBookingsCronTest extends ContaoTestCase
             ->method('delete')
         ;
 
-        $request = $this->createMock(Request::class);
+        $request = $this->createStub(Request::class);
         $this->requestStack
             ->expects($this->once())
             ->method('getCurrentRequest')

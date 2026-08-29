@@ -70,13 +70,13 @@ class DeleteExpiredBookingsCronFunctionalTest extends ContaoTestCase
     {
         // findById returns a lightweight non-null model so the cron proceeds to delete;
         // the AutoDeleteExpiredBookingEvent keeps its default shouldDelete = true.
-        $adapter = $this->createAdapterMock(['findById']);
+        $adapter = $this->createAdapterStub(['findById']);
         $adapter
             ->method('findById')
-            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => $id]))
+            ->willReturnCallback(fn (int $id): CalendarEventsMemberModel => $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => $id]))
         ;
 
-        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher = $this->createStub(EventDispatcherInterface::class);
         $dispatcher
             ->method('dispatch')
             ->willReturnArgument(0)
@@ -86,9 +86,9 @@ class DeleteExpiredBookingsCronFunctionalTest extends ContaoTestCase
             $this->connection,
             $this->createContaoFrameworkStub([CalendarEventsMemberModel::class => $adapter]),
             $dispatcher,
-            $this->createMock(RequestStack::class),
+            $this->createStub(RequestStack::class),
             $enabled,
-            $this->createMock(LoggerInterface::class),
+            $this->createStub(LoggerInterface::class),
         );
     }
 }

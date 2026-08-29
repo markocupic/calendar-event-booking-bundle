@@ -62,7 +62,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public function testLoadBookingReturnsNullWhenRelationEmpty(): void
     {
-        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class);
+        $optInModel = $this->createClassWithPropertiesStub(OptInModel::class);
         $optInModel
             ->method('getRelatedRecords')
             ->willReturn([])
@@ -80,7 +80,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     {
         $booking = $this->mockBooking();
 
-        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class);
+        $optInModel = $this->createClassWithPropertiesStub(OptInModel::class);
         $optInModel
             ->method('getRelatedRecords')
             ->willReturn([CalendarEventsMemberModel::getTable() => [42]])
@@ -270,7 +270,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     {
         $booking = $this->mockBooking();
 
-        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService = $this->createStub(NotificationService::class);
         $notificationService
             ->method('getNotificationTokens')
             ->with($booking)
@@ -309,7 +309,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public function testProcessOptInConfirmationConfirmsValidBooking(): void
     {
-        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-1']);
+        $optInModel = $this->createClassWithPropertiesStub(OptInModel::class, ['token' => 'cebb-1']);
 
         $token = $this->createMock(OptInTokenInterface::class);
         $token
@@ -317,7 +317,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
             ->method('confirm')
         ;
 
-        $factory = $this->createMock(OptInTokenFactory::class);
+        $factory = $this->createStub(OptInTokenFactory::class);
         $factory
             ->method('create')
             ->with($optInModel)
@@ -412,7 +412,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     private function assertConfirmExceptionIsHandled(\Throwable $thrownByConfirm, string $expectedMessageKey): void
     {
-        $optInModel = $this->createClassWithPropertiesMock(OptInModel::class, ['token' => 'cebb-1']);
+        $optInModel = $this->createClassWithPropertiesStub(OptInModel::class, ['token' => 'cebb-1']);
 
         $token = $this->createMock(OptInTokenInterface::class);
         $token
@@ -420,7 +420,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
             ->willThrowException($thrownByConfirm)
         ;
 
-        $factory = $this->createMock(OptInTokenFactory::class);
+        $factory = $this->createStub(OptInTokenFactory::class);
         $factory
             ->method('create')
             ->willReturn($token)
@@ -497,15 +497,15 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, OptInTokenFactory|null $optInTokenFactory = null): EventBookingOptInController
     {
         return new EventBookingOptInController(
-            $connection ?? $this->createMock(Connection::class),
-            $eventDispatcher ?? $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(FigureUtil::class),
-            $lockFactory ?? $this->createMock(LockFactory::class),
-            $message ?? $this->createMock(Message::class),
-            $notificationCenter ?? $this->createMock(NotificationCenter::class),
-            $notificationService ?? $this->createMock(NotificationService::class),
+            $connection ?? $this->createStub(Connection::class),
+            $eventDispatcher ?? $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(FigureUtil::class),
+            $lockFactory ?? $this->createStub(LockFactory::class),
+            $message ?? $this->createStub(Message::class),
+            $notificationCenter ?? $this->createStub(NotificationCenter::class),
+            $notificationService ?? $this->createStub(NotificationService::class),
             $this->translator,
-            $optInTokenFactory ?? $this->createMock(OptInTokenFactory::class),
+            $optInTokenFactory ?? $this->createStub(OptInTokenFactory::class),
             null,
             null,
         );

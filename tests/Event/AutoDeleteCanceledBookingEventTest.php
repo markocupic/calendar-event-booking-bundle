@@ -23,7 +23,7 @@ class AutoDeleteCanceledBookingEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new AutoDeleteCanceledBookingEvent($booking, 'cron', $request);
@@ -35,14 +35,14 @@ class AutoDeleteCanceledBookingEventTest extends ContaoTestCase
 
     public function testRequestMayBeNull(): void
     {
-        $event = new AutoDeleteCanceledBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'cron', null);
+        $event = new AutoDeleteCanceledBookingEvent($this->createClassWithPropertiesStub(CalendarEventsMemberModel::class), 'cron', null);
 
         $this->assertNull($event->getRequest());
     }
 
     public function testShouldDeleteDefaultsToTrueAndCanBeToggled(): void
     {
-        $event = new AutoDeleteCanceledBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'cron', null);
+        $event = new AutoDeleteCanceledBookingEvent($this->createClassWithPropertiesStub(CalendarEventsMemberModel::class), 'cron', null);
 
         $this->assertTrue($event->shouldDelete());
 

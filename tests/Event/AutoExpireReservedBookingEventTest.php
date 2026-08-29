@@ -23,7 +23,7 @@ class AutoExpireReservedBookingEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 1]);
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 1]);
         $request = new Request();
 
         $event = new AutoExpireReservedBookingEvent($booking, 'cron', $request);
@@ -35,7 +35,7 @@ class AutoExpireReservedBookingEventTest extends ContaoTestCase
 
     public function testShouldExpireDefaultsToTrueAndCanBeToggled(): void
     {
-        $event = new AutoExpireReservedBookingEvent($this->createClassWithPropertiesMock(CalendarEventsMemberModel::class), 'cron', null);
+        $event = new AutoExpireReservedBookingEvent($this->createClassWithPropertiesStub(CalendarEventsMemberModel::class), 'cron', null);
 
         $this->assertTrue($event->shouldExpire());
 

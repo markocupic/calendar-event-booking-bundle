@@ -383,7 +383,7 @@ class PriceCalculatorTest extends ContaoTestCase
 
     private function calEvent(float|string|null $netPrice = null, float|string|null $taxValue = null, string|null $currencyCode = null): CalendarEventsModel
     {
-        return $this->createClassWithPropertiesMock(CalendarEventsModel::class, [
+        return $this->createClassWithPropertiesStub(CalendarEventsModel::class, [
             'netPrice' => $netPrice,
             'taxValue' => $taxValue,
             'currencyCode' => $currencyCode,
@@ -392,7 +392,7 @@ class PriceCalculatorTest extends ContaoTestCase
 
     private function booking(int $ticketAmount = 1): CalendarEventsMemberModel
     {
-        return $this->createClassWithPropertiesMock(
+        return $this->createClassWithPropertiesStub(
             CalendarEventsMemberModel::class,
             ['ticketAmount' => $ticketAmount],
         );

@@ -128,9 +128,9 @@ class EventBookingMemberListControllerFunctionalTest extends ContaoTestCase
     {
         return new EventBookingMemberListController(
             $this->connection,
-            $this->createMock(FigureUtil::class),
-            $this->createMock(EventUrlResolver::class),
-            $this->createMock(ScopeMatcher::class),
+            $this->createStub(FigureUtil::class),
+            $this->createStub(EventUrlResolver::class),
+            $this->createStub(ScopeMatcher::class),
         );
     }
 }

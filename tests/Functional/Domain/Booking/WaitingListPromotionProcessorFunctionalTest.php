@@ -185,9 +185,9 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
 
     private function event(int $id, bool $requireOptIn): CalendarEventsModel
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'requireOptIn' => $requireOptIn]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => true, 'requireOptIn' => $requireOptIn]);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => true]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => true]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -199,9 +199,9 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
 
     private function eventWithFlags(int $id, bool $allowEventBooking, bool $enableBookingForm): CalendarEventsModel
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => $allowEventBooking, 'requireOptIn' => false]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['allowEventBooking' => $allowEventBooking, 'requireOptIn' => false]);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => $enableBookingForm]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => $enableBookingForm]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -229,14 +229,14 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         return new WaitingListPromotionProcessor(
             $this->connection,
             $this->createContaoFrameworkStub([]),
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(BookingCapacity::class),
-            $this->createMock(LockFactory::class),
-            $this->createMock(NotificationCenter::class),
-            $this->createMock(NotificationService::class),
-            $this->createMock(RequestStack::class),
+            $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(BookingCapacity::class),
+            $this->createStub(LockFactory::class),
+            $this->createStub(NotificationCenter::class),
+            $this->createStub(NotificationService::class),
+            $this->createStub(RequestStack::class),
             true,
-            $this->createMock(LoggerInterface::class),
+            $this->createStub(LoggerInterface::class),
         );
     }
 }

@@ -30,7 +30,7 @@ class CheckoutHandlerAwareTraitTest extends ContaoTestCase
     public function testSetAndGetCheckoutHandler(): void
     {
         $sut = $this->createSut();
-        $handler = $this->createMock(CheckoutHandlerInterface::class);
+        $handler = $this->createStub(CheckoutHandlerInterface::class);
 
         $sut->setCheckoutHandler($handler);
 
@@ -39,9 +39,9 @@ class CheckoutHandlerAwareTraitTest extends ContaoTestCase
 
     public function testResolveCheckoutHandlerReturnsRegisteredHandler(): void
     {
-        $handler = $this->createMock(CheckoutHandlerInterface::class);
+        $handler = $this->createStub(CheckoutHandlerInterface::class);
 
-        $container = $this->createMock(ContainerInterface::class);
+        $container = $this->createStub(ContainerInterface::class);
         $container
             ->method('has')
             ->with('default')
@@ -59,7 +59,7 @@ class CheckoutHandlerAwareTraitTest extends ContaoTestCase
 
     public function testResolveCheckoutHandlerThrowsForUnknownType(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        $container = $this->createStub(ContainerInterface::class);
         $container
             ->method('has')
             ->with('missing')
@@ -74,7 +74,7 @@ class CheckoutHandlerAwareTraitTest extends ContaoTestCase
 
     public function testGetTypesReturnsProvidedServiceKeys(): void
     {
-        $provider = $this->createMock(ServiceProviderInterface::class);
+        $provider = $this->createStub(ServiceProviderInterface::class);
         $provider
             ->method('getProvidedServices')
             ->willReturn(['default' => CheckoutHandlerInterface::class, 'payment' => CheckoutHandlerInterface::class])

@@ -37,16 +37,16 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
     {
         parent::setUp();
 
-        $this->connection = $this->createMock(Connection::class);
-        $this->requestStack = $this->createMock(RequestStack::class);
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->connection = $this->createStub(Connection::class);
+        $this->requestStack = $this->createStub(RequestStack::class);
+        $this->eventDispatcher = $this->createStub(EventDispatcherInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 
     public function testProcessSingleCanceledBookingWithNullModel(): void
     {
         $model = null;
-        $adapter = $this->createAdapterMock(['findById']);
+        $adapter = $this->createAdapterStub(['findById']);
         $adapter
             ->method('findById')
             ->willReturn($model)
@@ -80,7 +80,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
             ->willReturn(1)
         ;
 
-        $adapter = $this->createAdapterMock(['findById']);
+        $adapter = $this->createAdapterStub(['findById']);
         $adapter
             ->method('findById')
             ->with(1)
@@ -132,7 +132,7 @@ class HandleCanceledBookingsCronTest extends ContaoTestCase
             ->method('delete')
         ;
 
-        $adapter = $this->createAdapterMock(['findById']);
+        $adapter = $this->createAdapterStub(['findById']);
         $adapter
             ->method('findById')
             ->with(1)

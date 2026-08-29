@@ -36,7 +36,7 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
     #[DataProvider('rowClassProvider')]
     public function testGetRowClass(int $i, int $total, string $expected): void
     {
-        $controller = $this->createController($this->createMock(Connection::class));
+        $controller = $this->createController($this->createStub(Connection::class));
 
         $method = new \ReflectionMethod(EventBookingMemberListController::class, 'getRowClass');
 
@@ -153,7 +153,7 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
      */
     public function testColumnExistsCachesSchemaLookup(): void
     {
-        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager = $this->createStub(AbstractSchemaManager::class);
         $schemaManager
             ->method('listTableColumns')
             ->willReturn(['dateadded' => null])
@@ -182,21 +182,21 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
     #[DataProvider('notBookableProvider')]
     public function testInvokeReturnsNoContentWhenEventIsNotBookable(array $calendarProps, array $eventProps): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProps);
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $eventProps);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, $calendarProps);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, $eventProps);
         $event
             ->method('getRelated')
             ->with('pid')
             ->willReturn($calendar)
         ;
 
-        $resolver = $this->createMock(EventUrlResolver::class);
+        $resolver = $this->createStub(EventUrlResolver::class);
         $resolver
             ->method('resolve')
             ->willReturn($event)
         ;
 
-        $scopeMatcher = $this->createMock(ScopeMatcher::class);
+        $scopeMatcher = $this->createStub(ScopeMatcher::class);
         $scopeMatcher
             ->method('isFrontendRequest')
             ->willReturn(true)
@@ -206,10 +206,10 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
 
         $response = $controller(
             new Request(),
-            $this->createClassWithPropertiesMock(ModuleModel::class),
+            $this->createClassWithPropertiesStub(ModuleModel::class),
             'main',
             null,
-            $this->createClassWithPropertiesMock(PageModel::class),
+            $this->createClassWithPropertiesStub(PageModel::class),
         );
 
         $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
@@ -225,10 +225,10 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
     private function createController(Connection|null $connection = null, EventUrlResolver|null $eventUrlResolver = null, ScopeMatcher|null $scopeMatcher = null): EventBookingMemberListController
     {
         return new EventBookingMemberListController(
-            $connection ?? $this->createMock(Connection::class),
-            $this->createMock(FigureUtil::class),
-            $eventUrlResolver ?? $this->createMock(EventUrlResolver::class),
-            $scopeMatcher ?? $this->createMock(ScopeMatcher::class),
+            $connection ?? $this->createStub(Connection::class),
+            $this->createStub(FigureUtil::class),
+            $eventUrlResolver ?? $this->createStub(EventUrlResolver::class),
+            $scopeMatcher ?? $this->createStub(ScopeMatcher::class),
         );
     }
 

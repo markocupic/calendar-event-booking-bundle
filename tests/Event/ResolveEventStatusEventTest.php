@@ -23,7 +23,7 @@ class ResolveEventStatusEventTest extends ContaoTestCase
 {
     public function testExposesConstructorArguments(): void
     {
-        $calEvent = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 2]);
+        $calEvent = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 2]);
         $request = new Request();
 
         $event = new ResolveEventStatusEvent($calEvent, $request, 'bookable');
@@ -35,7 +35,7 @@ class ResolveEventStatusEventTest extends ContaoTestCase
 
     public function testEventStatusCanBeChanged(): void
     {
-        $event = new ResolveEventStatusEvent($this->createClassWithPropertiesMock(CalendarEventsModel::class), new Request(), 'bookable');
+        $event = new ResolveEventStatusEvent($this->createClassWithPropertiesStub(CalendarEventsModel::class), new Request(), 'bookable');
 
         $event->setEventStatus('fullyBooked');
 

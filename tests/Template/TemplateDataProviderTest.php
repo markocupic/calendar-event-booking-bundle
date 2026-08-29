@@ -31,16 +31,16 @@ class TemplateDataProviderTest extends ContaoTestCase
 {
     public function testGetDataAggregatesEventInformation(): void
     {
-        $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 9]);
-        $user = $this->createMock(FrontendUser::class);
+        $page = $this->createClassWithPropertiesStub(PageModel::class, ['id' => 9]);
+        $user = $this->createStub(FrontendUser::class);
 
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['id' => 3]);
         $calendar
             ->method('current')
             ->willReturnSelf()
         ;
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()
@@ -76,7 +76,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     public function testGetDataHandlesMissingCalendarAndGuestUser(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()
@@ -105,7 +105,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     public function testAddDataWritesAllKeysToTemplate(): void
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 1]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class, ['id' => 1]);
         $event
             ->method('current')
             ->willReturnSelf()
@@ -140,7 +140,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     private function frontendUserAccessor(bool $hasUser, FrontendUser|null $user): FrontendUserAccessor
     {
-        $accessor = $this->createMock(FrontendUserAccessor::class);
+        $accessor = $this->createStub(FrontendUserAccessor::class);
         $accessor
             ->method('hasLoggedInFrontendUser')
             ->willReturn($hasUser)
@@ -156,7 +156,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     private function bookingCapacity(bool $isFullyBooked, int $freeSpots, int $bookingCount): BookingCapacity
     {
-        $capacity = $this->createMock(BookingCapacity::class);
+        $capacity = $this->createStub(BookingCapacity::class);
         $capacity
             ->method('isFullyBooked')
             ->willReturn($isFullyBooked)
@@ -177,7 +177,7 @@ class TemplateDataProviderTest extends ContaoTestCase
 
     private function eventStatusResolver(bool $canRegister): EventStatusResolver
     {
-        $resolver = $this->createMock(EventStatusResolver::class);
+        $resolver = $this->createStub(EventStatusResolver::class);
         $resolver
             ->method('canRegister')
             ->willReturn($canRegister)
