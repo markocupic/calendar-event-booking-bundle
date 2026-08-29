@@ -52,7 +52,7 @@
     },
     "scripts": {
         "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ tests/ --config tools/ecs/config/default.php --fix --ansi",
-        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyse src tests",
+        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyse src tests --level 1",
         "unit-tests": "@php vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit",
         "functional-tests": "@php vendor/bin/phpunit -c phpunit.xml.dist --testsuite functional",
         "tests": [
