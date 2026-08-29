@@ -15,12 +15,14 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Tests\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\Controller;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\FormFieldModel;
 use Contao\FormModel;
 use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
@@ -315,6 +317,53 @@ class EventBookingFormControllerTest extends ContaoTestCase
         yield 'full, waiting list full -> unavailable' => [true, true, false];
     }
 
+    /**
+     * A frontend request whose resolved event is not bookable must short-circuit to
+     * an empty 204 response instead of rendering the booking form.
+     */
+    #[DataProvider('notBookableProvider')]
+    public function testInvokeReturnsNoContentWhenEventIsNotBookable(array $eventProps, array $calendarProps): void
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProps);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $eventProps);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        $resolver = $this->createMock(EventUrlResolver::class);
+        $resolver
+            ->method('resolve')
+            ->willReturn($event)
+        ;
+
+        $scopeMatcher = $this->createMock(ScopeMatcher::class);
+        $scopeMatcher
+            ->method('isFrontendRequest')
+            ->willReturn(true)
+        ;
+
+        $controller = $this->createController(scopeMatcher: $scopeMatcher, eventUrlResolver: $resolver);
+
+        $response = $controller(
+            new Request(),
+            $this->mockModule(),
+            'main',
+            null,
+            $this->createClassWithPropertiesMock(PageModel::class),
+        );
+
+        $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
+    public static function notBookableProvider(): iterable
+    {
+        yield 'event not published' => [['published' => false, 'enableBookingForm' => true], ['allowEventBooking' => true]];
+        yield 'booking form disabled on event' => [['published' => true, 'enableBookingForm' => false], ['allowEventBooking' => true]];
+        yield 'event booking disabled on calendar' => [['published' => true, 'enableBookingForm' => true], ['allowEventBooking' => false]];
+    }
+
     private function setCalEvent(EventBookingFormController $controller): void
     {
         $property = new \ReflectionProperty(EventBookingFormController::class, 'calEvent');
@@ -377,7 +426,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
         return $controller;
     }
 
-    private function createController(bool $rateLimitEnable = false, RateLimiterFactory|null $rateLimiterFactory = null, BookingCapacity|null $bookingCapacity = null, Connection|null $connection = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, ScopeMatcher|null $scopeMatcher = null, EventStatusResolver|null $eventStatusResolver = null): EventBookingFormController
+    private function createController(bool $rateLimitEnable = false, RateLimiterFactory|null $rateLimiterFactory = null, BookingCapacity|null $bookingCapacity = null, Connection|null $connection = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, ScopeMatcher|null $scopeMatcher = null, EventStatusResolver|null $eventStatusResolver = null, EventUrlResolver|null $eventUrlResolver = null): EventBookingFormController
     {
         return new EventBookingFormController(
             $this->createMock(TemplateDataProvider::class),
@@ -385,7 +434,7 @@ class EventBookingFormControllerTest extends ContaoTestCase
             $this->createMock(EventDispatcherInterface::class),
             $bookingCapacity ?? $this->createMock(BookingCapacity::class),
             $eventStatusResolver ?? $this->createMock(EventStatusResolver::class),
-            $this->createMock(EventUrlResolver::class),
+            $eventUrlResolver ?? $this->createMock(EventUrlResolver::class),
             $lockFactory ?? $this->createMock(LockFactory::class),
             $message ?? $this->createMock(MessageInterface::class),
             $rateLimiterFactory ?? $this->rateLimiterFactory(),

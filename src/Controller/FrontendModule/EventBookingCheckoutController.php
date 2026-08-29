@@ -145,7 +145,7 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         $this->calEvent = $this->booking?->getRelated('pid');
         $this->calendar = $this->calEvent?->getRelated('pid');
 
-        if (null === $this->booking || null === $this->calEvent || !$this->calEvent->published || null === $this->calendar) {
+        if (null === $this->booking || null === $this->calEvent || !$this->calEvent->published || null === $this->calendar || !$this->calendar->allowEventBooking) {
             return false;
         }
 

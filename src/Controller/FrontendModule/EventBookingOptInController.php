@@ -208,6 +208,10 @@ class EventBookingOptInController extends AbstractFrontendModuleController
 
     private function validateBookingState(FragmentTemplate $template, CalendarModel $calendar, CalendarEventsModel $calEvent, CalendarEventsMemberModel $booking): void
     {
+        if (!$calendar->allowEventBooking || !$calEvent->enableBookingForm) {
+            $this->throwValidationException($template, 'error event-not-bookable', 'eventNotBookable', SeverityLevel::ERROR, 'mod_opt_in.error.event_not_bookable', 'Event is not bookable.');
+        }
+
         if ($booking->canceled) {
             $this->throwValidationException($template, 'error booking-canceled', 'alreadyCanceled', SeverityLevel::ERROR, 'mod_opt_in.error.booking_canceled', 'Booking canceled.');
         }

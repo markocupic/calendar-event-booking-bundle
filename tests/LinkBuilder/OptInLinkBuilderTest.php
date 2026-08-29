@@ -28,97 +28,123 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class OptInLinkBuilderTest extends ContaoTestCase
 {
-    public function testThrowsWhenEventIsMissing(): void
+    public function testThrowsWhenEventNotFound(): void
     {
         $booking = $this->mockBooking(null);
-
-        $builder = new OptInLinkBuilder(
-            $this->createContaoFrameworkStub(),
-            $this->createMock(ContentUrlGenerator::class),
-            $this->createMock(UrlParser::class),
-        );
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Event not found.');
 
-        $builder->build($booking, 'TOK');
+        $this->createLinkBuilder()->build($booking, 'tok');
     }
 
-    public function testThrowsWhenCalendarIsMissing(): void
+    public function testThrowsWhenCalendarNotFound(): void
     {
-        $booking = $this->mockBooking($this->mockEvent(null));
-
-        $builder = new OptInLinkBuilder(
-            $this->createContaoFrameworkStub(),
-            $this->createMock(ContentUrlGenerator::class),
-            $this->createMock(UrlParser::class),
-        );
+        $event = $this->mockEvent(null);
+        $booking = $this->mockBooking($event);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
 
-        $builder->build($booking, 'TOK');
+        $this->createLinkBuilder()->build($booking, 'tok');
     }
 
-    public function testReturnsEmptyStringWhenOptInNotRequired(): void
+    public function testReturnsEmptyStringWhenEventBookingIsNotAllowed(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => false]);
-        $booking = $this->mockBooking($this->mockEvent($calendar));
+        $booking = $this->mockBookingChain(['allowEventBooking' => false, 'requireOptIn' => true]);
 
-        $builder = new OptInLinkBuilder(
-            $this->createContaoFrameworkStub(),
-            $this->createMock(ContentUrlGenerator::class),
-            $this->createMock(UrlParser::class),
+        $this->assertSame('', $this->createLinkBuilder()->build($booking, 'tok'));
+    }
+
+    public function testReturnsEmptyStringWhenOptInIsNotRequired(): void
+    {
+        $booking = $this->mockBookingChain(['allowEventBooking' => true, 'requireOptIn' => false]);
+
+        $this->assertSame('', $this->createLinkBuilder()->build($booking, 'tok'));
+    }
+
+    public function testReturnsEmptyStringWhenOptInPageIsMissing(): void
+    {
+        $booking = $this->mockBookingChain([
+            'allowEventBooking' => true,
+            'requireOptIn' => true,
+            'eventBookingOptInPage' => 3,
+        ]);
+
+        // The configured opt-in page cannot be resolved -> no link.
+        $pageAdapter = $this->createAdapterMock(['findById']);
+        $pageAdapter
+            ->expects($this->once())
+            ->method('findById')
+            ->with(3)
+            ->willReturn(null)
+        ;
+
+        $linkBuilder = $this->createLinkBuilder(
+            framework: $this->createContaoFrameworkStub([PageModel::class => $pageAdapter]),
         );
 
-        $this->assertSame('', $builder->build($booking, 'TOK'));
+        $this->assertSame('', $linkBuilder->build($booking, 'tok'));
     }
 
-    public function testReturnsEmptyStringWhenPageIsMissing(): void
+    public function testBuildsAbsoluteOptInUrlWithActionAndToken(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
-        $booking = $this->mockBooking($this->mockEvent($calendar));
+        $booking = $this->mockBookingChain([
+            'allowEventBooking' => true,
+            'requireOptIn' => true,
+            'eventBookingOptInPage' => 3,
+        ]);
 
-        $builder = new OptInLinkBuilder(
-            $this->frameworkWithPage(3, null),
-            $this->createMock(ContentUrlGenerator::class),
-            $this->createMock(UrlParser::class),
-        );
-
-        $this->assertSame('', $builder->build($booking, 'TOK'));
-    }
-
-    public function testBuildsAbsoluteOptInUrl(): void
-    {
         $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 3]);
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => true, 'eventBookingOptInPage' => 3]);
-        $booking = $this->mockBooking($this->mockEvent($calendar));
 
-        $urlGenerator = $this->createMock(ContentUrlGenerator::class);
-        $urlGenerator
+        $pageAdapter = $this->createAdapterMock(['findById']);
+        $pageAdapter
+            ->method('findById')
+            ->with(3)
+            ->willReturn($page)
+        ;
+
+        $contentUrlGenerator = $this->createMock(ContentUrlGenerator::class);
+        $contentUrlGenerator
+            ->expects($this->once())
             ->method('generate')
             ->with($page, [], UrlGeneratorInterface::ABSOLUTE_URL)
             ->willReturn('https://example.com/opt-in')
         ;
 
-        $expectedParams = \sprintf('action=%s&token=%s', EventBookingOptInController::ACTION, 'TOK');
-
         $urlParser = $this->createMock(UrlParser::class);
         $urlParser
-            ->expects($this->once())
             ->method('addQueryString')
-            ->with($expectedParams, 'https://example.com/opt-in')
-            ->willReturn('https://example.com/opt-in?'.$expectedParams)
+            ->willReturnCallback(static fn (string $query, string $url): string => $url.'?'.$query)
         ;
 
-        $builder = new OptInLinkBuilder($this->frameworkWithPage(3, $page), $urlGenerator, $urlParser);
+        $linkBuilder = $this->createLinkBuilder(
+            framework: $this->createContaoFrameworkStub([PageModel::class => $pageAdapter]),
+            contentUrlGenerator: $contentUrlGenerator,
+            urlParser: $urlParser,
+        );
 
-        $this->assertSame('https://example.com/opt-in?'.$expectedParams, $builder->build($booking, 'TOK'));
+        $expectedQuery = \sprintf('action=%s&token=%s', EventBookingOptInController::ACTION, 'my-token');
+
+        $this->assertSame(
+            'https://example.com/opt-in?'.$expectedQuery,
+            $linkBuilder->build($booking, 'my-token'),
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $calendarProperties
+     */
+    private function mockBookingChain(array $calendarProperties): CalendarEventsMemberModel&MockObject
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProperties);
+
+        return $this->mockBooking($this->mockEvent($calendar));
     }
 
     private function mockBooking(CalendarEventsModel|null $event): CalendarEventsMemberModel&MockObject
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 5]);
         $booking
             ->method('getRelated')
             ->with('pid')
@@ -130,7 +156,7 @@ class OptInLinkBuilderTest extends ContaoTestCase
 
     private function mockEvent(CalendarModel|null $calendar): CalendarEventsModel&MockObject
     {
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 10]);
         $event
             ->method('getRelated')
             ->with('pid')
@@ -140,15 +166,12 @@ class OptInLinkBuilderTest extends ContaoTestCase
         return $event;
     }
 
-    private function frameworkWithPage(int $pageId, PageModel|null $page): object
+    private function createLinkBuilder(object|null $framework = null, ContentUrlGenerator|null $contentUrlGenerator = null, UrlParser|null $urlParser = null): OptInLinkBuilder
     {
-        $adapter = $this->createAdapterMock(['findById']);
-        $adapter
-            ->method('findById')
-            ->with($pageId)
-            ->willReturn($page)
-        ;
-
-        return $this->createContaoFrameworkStub([PageModel::class => $adapter]);
+        return new OptInLinkBuilder(
+            $framework ?? $this->createContaoFrameworkStub(),
+            $contentUrlGenerator ?? $this->createMock(ContentUrlGenerator::class),
+            $urlParser ?? $this->createMock(UrlParser::class),
+        );
     }
 }

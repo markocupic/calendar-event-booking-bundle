@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Tests\Domain\Booking;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
 use Markocupic\CalendarEventBookingBundle\Domain\Booking\EventStatusResolver;
@@ -116,12 +117,43 @@ class EventStatusResolverTest extends ContaoTestCase
         $this->assertStatus(EventStatusResolver::BOOKING_OPEN, $this->bookableEventProps());
     }
 
+    public function testThrowsWhenCalendarIsNotFound(): void
+    {
+        // The related calendar is required up front; without it the status cannot be
+        // determined and an exception is raised instead of guessing a status.
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 42]);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn(null)
+        ;
+
+        $method = new \ReflectionMethod(EventStatusResolver::class, 'determineEventStatus');
+
+        $this->expectException(\Exception::class);
+        $method->invoke($this->resolver, $event);
+    }
+
+    public function testReturnsNotBookableWhenCalendarDisallowsEventBooking(): void
+    {
+        // Even a fully bookable event counts as not bookable when its calendar forbids booking.
+        $this->assertStatus(EventStatusResolver::NOT_BOOKABLE, $this->bookableEventProps(), ['allowEventBooking' => false]);
+    }
+
     /**
      * @param array<string, mixed> $props
+     * @param array<string, mixed> $calendarProps
      */
-    private function assertStatus(string $expected, array $props): void
+    private function assertStatus(string $expected, array $props, array $calendarProps = ['allowEventBooking' => true]): void
     {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProps);
+
         $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $props);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
 
         $method = new \ReflectionMethod(EventStatusResolver::class, 'determineEventStatus');
 

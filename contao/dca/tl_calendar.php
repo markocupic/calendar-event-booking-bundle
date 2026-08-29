@@ -15,119 +15,127 @@ declare(strict_types=1);
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 
-// Palettes
-PaletteManipulator::create()
-    ->addLegend('event_booking_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
-    ->addLegend('event_booking_notification_legend', 'event_booking_legend', PaletteManipulator::POSITION_AFTER)
-    ->addField(['emailUnique', 'requireOptIn', 'eventBookingCheckoutPage', 'eventBookingCheckoutHandler', 'eventUnsubscribePage'], 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
-    ->addField(['subscribeNotification', 'unsubscribeNotification', 'waitingListAdvancementNotification', 'paymentSuccessNotification', 'paymentPendingNotification', 'paymentFailedNotification'], 'event_booking_notification_legend', PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_calendar');
-
+// Selectors
+$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'allowEventBooking';
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'requireOptIn';
 
 // Subpalettes
 $GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['requireOptIn'] = 'eventBookingOptInPage,optInInvitationNotification,optInSuccessNotification';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['allowEventBooking'] = 'emailUnique,requireOptIn,eventBookingCheckoutPage,eventBookingCheckoutHandler,eventUnsubscribePage,subscribeNotification,unsubscribeNotification,waitingListAdvancementNotification,paymentSuccessNotification,paymentPendingNotification,paymentFailedNotification';
+
+
+PaletteManipulator::create()
+    ->addLegend('event_booking_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('allowEventBooking', 'event_booking_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_calendar');
 
 // Fields
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['emailUnique'] = [
-    'eval'      => ['tl_class' => 'w50 cbx m12'],
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['allowEventBooking'] = [
     'exclude'   => true,
-    'filter'    => true,
     'inputType' => 'checkbox',
-    'sql'       => ['type' => 'boolean', 'default' => false],
+    'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 cbx m12'],
+    'sql'       => ['type' => 'boolean', 'default' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['requireOptIn'] = [
-    'inputType' => 'checkbox',
     'exclude'   => true,
+    'inputType' => 'checkbox',
     'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 cbx m12'],
+    'sql'       => ['type' => 'boolean', 'default' => false],
+];
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['emailUnique'] = [
+    'exclude'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'eval'      => ['tl_class' => 'clr w50 cbx m12'],
     'sql'       => ['type' => 'boolean', 'default' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventUnsubscribePage'] = [
     'exclude'    => true,
-    'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
-    'eval'       => ['mandatory' => false, 'fieldType' => 'radio', 'tl_class' => 'clr m12'],
-    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
+    'inputType'  => 'pageTree',
+    'eval'       => ['fieldType' => 'radio', 'tl_class' => 'clr m12'],
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventBookingOptInPage'] = [
     'exclude'    => false,
-    'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
+    'inputType'  => 'pageTree',
     'eval'       => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr m12'],
-    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventBookingCheckoutPage'] = [
     'exclude'    => false,
-    'inputType'  => 'pageTree',
     'foreignKey' => 'tl_page.title',
+    'inputType'  => 'pageTree',
     'eval'       => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr m12'],
-    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
     'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+    'sql'        => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'notnull' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['eventBookingCheckoutHandler'] = [
-    'eval'      => ['mandatory' => true, 'includeBlankOption' => false, 'tl_class' => 'w50'],
     'exclude'   => true,
     'inputType' => 'select',
     'search'    => true,
+    'eval'      => ['mandatory' => true, 'includeBlankOption' => false, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'string', 'length' => MySQLPlatform::LENGTH_LIMIT_TINYTEXT, 'notnull' => true, 'default' => 'default'],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['waitingListAdvancementNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['subscribeNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentSuccessNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
-// Sent when a payment has been authorised but is not settled yet, e.g. with
+// Sent when a payment has been authorized but is not settled yet, e.g., with
 // SEPA direct debit, where the bank confirms days later.
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentPendingNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
-// Sent when a payment that had already been authorised is rejected afterwards,
-// e.g. an unpaid SEPA direct debit.
+// Sent when a payment that had already been authorized is rejected afterwards,
+// e.g., an unpaid SEPA direct debit.
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['paymentFailedNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['unsubscribeNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];
 
@@ -140,9 +148,9 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['optInInvitationNotification'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['optInSuccessNotification'] = [
-    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'exclude'   => true,
     'filter'    => true,
     'inputType' => 'select',
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => 'w50'],
     'sql'       => ['type' => 'integer', 'default' => 0, 'unsigned' => true],
 ];

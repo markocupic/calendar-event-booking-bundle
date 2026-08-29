@@ -73,8 +73,8 @@ class StoreFormDataListener
             $form->getModel()->jumpTo = $calendar->eventBookingCheckoutPage;
         }
 
-        if (null === $calendar->eventBookingCheckoutPage) {
-            throw new \Exception('Event booking checkout handler not found.');
+        if (!$calendar->eventBookingCheckoutPage) {
+            throw new \Exception('No checkout page defined. Event subscriptions require a checkout page to be set in the calendar settings.');
         }
 
         $checkoutHandler = $this->resolveCheckoutHandler($this->checkoutHandlers, $calendar->eventBookingCheckoutHandler);

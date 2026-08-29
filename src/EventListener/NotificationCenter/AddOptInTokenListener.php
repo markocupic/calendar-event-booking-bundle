@@ -142,7 +142,7 @@ class AddOptInTokenListener
     {
         $calendar = $booking->getRelated('pid')?->getRelated('pid');
 
-        if (empty($calendar->requireOptIn)) {
+        if (null === $calendar || !$calendar->allowEventBooking || !$calendar->requireOptIn) {
             return;
         }
 

@@ -59,10 +59,10 @@ class EventBookingMemberListController extends AbstractFrontendModuleController
 
             $this->calEvent = $this->eventUrlResolver->resolve();
 
-            // Get the current event && return empty string
-            // if enableBookingForm isn't set, or the event is not published
-            if (null !== $this->calEvent) {
-                if ($this->calEvent->enableBookingForm && $this->calEvent->published) {
+            $calendar = $this->calEvent?->getRelated('pid');
+
+            if (null !== $calendar && null !== $this->calEvent) {
+                if ($calendar->allowEventBooking && $this->calEvent->enableBookingForm && $this->calEvent->published) {
                     $showEmpty = false;
                 }
             }

@@ -42,6 +42,10 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
             throw new \Exception('Calendar not found.');
         }
 
+        if (!$calendar->allowEventBooking) {
+            throw new \Exception('Event booking not allowed for this calendar.');
+        }
+
         $data = [];
         $data['booking'] = $booking->row();
         $data['event'] = $event->row();

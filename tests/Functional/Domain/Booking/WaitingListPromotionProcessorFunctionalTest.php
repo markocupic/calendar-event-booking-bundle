@@ -147,6 +147,23 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
         $this->assertNull($this->findNext($this->createProcessor(), $this->event(1, false), 5));
     }
 
+    public function testReturnsNullWhenCalendarDisallowsEventBooking(): void
+    {
+        // A perfectly eligible booking exists, but the calendar no longer allows
+        // event booking -> the whole event is skipped before any SELECT runs.
+        $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 1, 'addedOn' => 100]);
+
+        $this->assertNull($this->findNext($this->createProcessor(), $this->eventWithFlags(1, allowEventBooking: false, enableBookingForm: true), 5));
+    }
+
+    public function testReturnsNullWhenEventBookingFormIsDisabled(): void
+    {
+        // Same, but this time the event itself has its booking form disabled.
+        $this->seed(['id' => 10, 'pid' => 1, 'waitingList' => 1, 'addedOn' => 100]);
+
+        $this->assertNull($this->findNext($this->createProcessor(), $this->eventWithFlags(1, allowEventBooking: true, enableBookingForm: false), 5));
+    }
+
     /**
      * @param array<string, int> $row
      */
@@ -168,9 +185,23 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
 
     private function event(int $id, bool $requireOptIn): CalendarEventsModel
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['requireOptIn' => $requireOptIn]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'requireOptIn' => $requireOptIn]);
 
-        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => true]);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        return $event;
+    }
+
+    private function eventWithFlags(int $id, bool $allowEventBooking, bool $enableBookingForm): CalendarEventsModel
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => $allowEventBooking, 'requireOptIn' => false]);
+
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => $id, 'enableBookingForm' => $enableBookingForm]);
         $event
             ->method('getRelated')
             ->with('pid')

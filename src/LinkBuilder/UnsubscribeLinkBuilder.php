@@ -45,6 +45,10 @@ readonly class UnsubscribeLinkBuilder
             throw new \Exception('Calendar not found.');
         }
 
+        if (!$calendar->allowEventBooking) {
+            throw new \Exception('Event booking not allowed for this calendar.');
+        }
+
         if (null === ($page = $this->framework->getAdapter(PageModel::class)->findById($calendar->eventUnsubscribePage))) {
             return '';
         }

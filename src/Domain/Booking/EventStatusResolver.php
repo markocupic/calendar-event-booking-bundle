@@ -74,6 +74,16 @@ class EventStatusResolver
 
     protected function determineEventStatus(CalendarEventsModel $calEvent): string
     {
+        $calendar = $calEvent->getRelated('pid');
+
+        if (null === $calendar) {
+            throw new \Exception(\sprintf('Calendar for event ID %s not found.', $calEvent->id));
+        }
+
+        if (!$calendar->allowEventBooking) {
+            return self::NOT_BOOKABLE;
+        }
+
         if (!$calEvent->published) {
             return self::DRAFT;
         }

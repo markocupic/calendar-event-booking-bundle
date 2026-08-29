@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Domain\Booking;
 
 use Contao\CalendarEventsModel;
-use Contao\CalendarModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use Doctrine\DBAL\ArrayParameterType;
@@ -71,7 +70,7 @@ class WaitingListPromotionProcessor
                 /** @var CalendarEventsModel $currentEvent */
                 $currentEvent = $events->current();
 
-                if (!$currentEvent->enableWaitingList) {
+                if (!$currentEvent->enableBookingForm || !$currentEvent->enableWaitingList) {
                     continue;
                 }
 
@@ -121,11 +120,15 @@ class WaitingListPromotionProcessor
 
     private function getEventsToProcess(CalendarEventsModel|null $event): Collection|null
     {
-        if ($event) {
-            return new Collection([$event], CalendarEventsMemberModel::getTable());
+        if (null !== $event) {
+            if (!$event->enableBookingForm || !$event->getRelated('pid')?->allowEventBooking) {
+                return null;
+            }
+
+            return new Collection([$event], CalendarEventsModel::getTable());
         }
 
-        $calendarIds = $this->framework->getAdapter(CalendarModel::class)->findAll()?->fetchEach('id') ?? [];
+        $calendarIds = $this->connection->fetchFirstColumn('SELECT id FROM tl_calendar WHERE allowEventBooking = ?', [1]);
 
         return $this->framework->getAdapter(CalendarEventsModel::class)->findUpcomingByPids($calendarIds);
     }
@@ -197,6 +200,12 @@ class WaitingListPromotionProcessor
      */
     private function findNextEligibleBookingId(CalendarEventsModel $event, int $availableSlots, array $processedIds): int|null
     {
+        $parentCalendar = $event->getRelated('pid');
+
+        if (null === $parentCalendar || !$parentCalendar->allowEventBooking || !$event->enableBookingForm) {
+            return null;
+        }
+
         $queryBuilder = $this->connection->createQueryBuilder();
 
         $queryBuilder->select('id')

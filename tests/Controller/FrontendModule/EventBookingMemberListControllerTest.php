@@ -14,7 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Tests\Controller\FrontendModule;
 
+use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -24,6 +28,8 @@ use Markocupic\CalendarEventBookingBundle\Request\EventUrlResolver;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EventBookingMemberListControllerTest extends ContaoTestCase
 {
@@ -169,13 +175,60 @@ class EventBookingMemberListControllerTest extends ContaoTestCase
         $this->assertFalse($method->invoke($controller, 'tl_calendar_events_member', 'doesNotExist'));
     }
 
-    private function createController(Connection $connection): EventBookingMemberListController
+    /**
+     * A frontend request whose resolved event is not bookable must short-circuit to
+     * an empty 204 response instead of rendering the member list.
+     */
+    #[DataProvider('notBookableProvider')]
+    public function testInvokeReturnsNoContentWhenEventIsNotBookable(array $calendarProps, array $eventProps): void
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, $calendarProps);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, $eventProps);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        $resolver = $this->createMock(EventUrlResolver::class);
+        $resolver
+            ->method('resolve')
+            ->willReturn($event)
+        ;
+
+        $scopeMatcher = $this->createMock(ScopeMatcher::class);
+        $scopeMatcher
+            ->method('isFrontendRequest')
+            ->willReturn(true)
+        ;
+
+        $controller = $this->createController(eventUrlResolver: $resolver, scopeMatcher: $scopeMatcher);
+
+        $response = $controller(
+            new Request(),
+            $this->createClassWithPropertiesMock(ModuleModel::class),
+            'main',
+            null,
+            $this->createClassWithPropertiesMock(PageModel::class),
+        );
+
+        $this->assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
+    public static function notBookableProvider(): iterable
+    {
+        yield 'event booking disabled on calendar' => [['allowEventBooking' => false], ['enableBookingForm' => true, 'published' => true]];
+        yield 'booking form disabled on event' => [['allowEventBooking' => true], ['enableBookingForm' => false, 'published' => true]];
+        yield 'event not published' => [['allowEventBooking' => true], ['enableBookingForm' => true, 'published' => false]];
+    }
+
+    private function createController(Connection|null $connection = null, EventUrlResolver|null $eventUrlResolver = null, ScopeMatcher|null $scopeMatcher = null): EventBookingMemberListController
     {
         return new EventBookingMemberListController(
-            $connection,
+            $connection ?? $this->createMock(Connection::class),
             $this->createMock(FigureUtil::class),
-            $this->createMock(EventUrlResolver::class),
-            $this->createMock(ScopeMatcher::class),
+            $eventUrlResolver ?? $this->createMock(EventUrlResolver::class),
+            $scopeMatcher ?? $this->createMock(ScopeMatcher::class),
         );
     }
 

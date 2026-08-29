@@ -68,9 +68,28 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
         $builder->build($booking);
     }
 
+    public function testThrowsWhenEventBookingIsNotAllowedForCalendar(): void
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+        $booking = $this->mockBooking($event);
+
+        $builder = $this->builder($this->createContaoFrameworkStub(), $this->createMock(ContentUrlGenerator::class), $this->createMock(UrlParser::class));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Event booking not allowed for this calendar.');
+
+        $builder->build($booking);
+    }
+
     public function testReturnsEmptyStringWhenPageIsMissing(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['eventUnsubscribePage' => 4]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
         $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')
@@ -87,7 +106,7 @@ class UnsubscribeLinkBuilderTest extends ContaoTestCase
     public function testBuildsAbsoluteUnsubscribeUrl(): void
     {
         $page = $this->createClassWithPropertiesMock(PageModel::class, ['id' => 4]);
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['eventUnsubscribePage' => 4]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => true, 'eventUnsubscribePage' => 4]);
         $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['enableDeregistration' => true]);
         $event
             ->method('getRelated')

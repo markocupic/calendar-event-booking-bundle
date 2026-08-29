@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\CalendarEventBookingBundle\Domain\Unsubscribe;
 
 use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -42,6 +43,24 @@ final class UnsubscribeValidator
                 $this->translator->trans('mod_unsubscribe.error.event_not_found', [], $transDomain),
                 SeverityLevel::ERROR->value,
                 'error event-not-found',
+            );
+        }
+
+        $calendar = $calEvent->getRelated('pid');
+
+        if (!$calendar instanceof CalendarModel) {
+            return ValidationResult::fail(
+                $this->translator->trans('mod_unsubscribe.error.calendar_not_found', [], $transDomain),
+                SeverityLevel::ERROR->value,
+                'error calendar-not-found',
+            );
+        }
+
+        if (!$calendar->allowEventBooking) {
+            return ValidationResult::fail(
+                $this->translator->trans('mod_unsubscribe.error.booking_not_allowed_for_this_calendar', [], $transDomain),
+                SeverityLevel::ERROR->value,
+                'error booking-not-allowed-for-this-calednar',
             );
         }
 

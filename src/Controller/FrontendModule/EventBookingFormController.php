@@ -101,7 +101,9 @@ class EventBookingFormController extends AbstractFrontendModuleController
         if ($page instanceof PageModel && $this->scopeMatcher->isFrontendRequest($request)) {
             $this->calEvent = $this->eventUrlResolver->resolve();
 
-            if (null === $this->calEvent || !$this->calEvent->published || !$this->calEvent->enableBookingForm || null === ($this->calendar = $this->calEvent->getRelated('pid'))) {
+            $this->calendar = $this->calEvent?->getRelated('pid');
+
+            if (null === $this->calEvent || !$this->calEvent->published || !$this->calEvent->enableBookingForm || null === $this->calendar || !$this->calendar->allowEventBooking) {
                 return new Response('', Response::HTTP_NO_CONTENT);
             }
         }

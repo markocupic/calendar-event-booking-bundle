@@ -41,7 +41,7 @@ readonly class OptInLinkBuilder
             throw new \Exception('Calendar not found.');
         }
 
-        if (!$calendar->requireOptIn) {
+        if (!$calendar->allowEventBooking || !$calendar->requireOptIn) {
             return '';
         }
 

@@ -1,5 +1,6 @@
 mod_opt_in:
     error:
+        event_not_bookable: 'Event is not bookable.'
         token_no_longer_valid: 'Confirmation not possible! Your opt-in token has expired or is no longer valid.'
         booking_not_found: 'Confirmation unfortunately not possible! Your booking could not be found. This may be due to exceeding the allowed time frame for confirming the booking.'
         corresponding_event_not_found: 'Confirmation unfortunately not possible! No event matching the booking was found.'
@@ -16,6 +17,8 @@ mod_opt_in:
 
 mod_unsubscribe:
     error:
+        calendar_not_found: 'Calendar not found for this event.'
+        booking_not_allowed_for_this_calendar: 'Event booking is not allowed for this calendar.'
         invalid_uuid: 'Cancellation not possible! Booking not found. This may be due to exceeding the allowed time frame for confirming the booking.'
         event_not_found: 'Cancellation not possible! No event was found for your booking.'
         unsubscription_not_allowed: 'Cancellation for the event "%title%" is not possible!'

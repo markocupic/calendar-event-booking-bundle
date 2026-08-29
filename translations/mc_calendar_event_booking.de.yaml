@@ -1,5 +1,6 @@
 mod_opt_in:
     error:
+        event_not_bookable: 'Event ist nicht buchbar.'
         token_no_longer_valid: 'Bestätigung leider nicht möglich! Ihr Opt-in-Token ist abgelaufen oder nicht mehr gültig.'
         booking_not_found: 'Bestätigung leider nicht möglich! Ihre Buchung konnte leider nicht gefunden werden. Es kann damit zusammenhängen, dass Se die erlaubte zeitliche Frist zum Bestätigen der Buchung überschritten haben.'
         corresponding_event_not_found: 'Bestätigung leider nicht möglich! Es wurde kein zur Buchung passender Event gefunden.'
@@ -16,6 +17,8 @@ mod_opt_in:
 
 mod_unsubscribe:
     error:
+        calendar_not_found: 'Der übergeordnete Kalender konnte nicht gefunden werden.'
+        booking_not_allowed_for_this_calendar: 'Event-Buchung ist für Events dieses Kalenders nicht erlaubt.'
         invalid_uuid: 'Stornierung nicht möglich! Buchung nicht gefunden. Es kann damit zusammenhängen, dass Se die erlaubte zeitliche Frist zum Bestätigen der Buchung überschritten haben.'
         event_not_found: 'Stornierung nicht möglich! Zu Ihrer Buchung wurde kein Event gefunden.'
         unsubscription_not_allowed: 'Stornierung beim Event "%title%" nicht möglich!'

@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\Tests\Controller\FrontendModule;
 
+use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingCheckoutController;
@@ -63,6 +65,33 @@ class EventBookingCheckoutControllerTest extends ContaoTestCase
 
         $this->assertTrue($method->invoke($controller, new Request(['bookingToken' => 'abc'])));
         $this->assertFalse($method->invoke($this->createController(), new Request()));
+    }
+
+    public function testInitializeReturnsFalseWhenEventBookingIsNotAllowedForCalendar(): void
+    {
+        // The booking, event and calendar all resolve, but the calendar no longer
+        // allows event booking -> initialize() must reject before wiring a handler.
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
+
+        $calEvent = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['published' => true]);
+        $calEvent
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['bookingToken' => 'abc']);
+        $booking
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calEvent)
+        ;
+
+        $controller = $this->createControllerWithBooking('abc', $booking);
+
+        $method = new \ReflectionMethod(EventBookingCheckoutController::class, 'initialize');
+
+        $this->assertFalse($method->invoke($controller, new Request(['bookingToken' => 'abc'])));
     }
 
     private function createControllerWithBooking(string $token, CalendarEventsMemberModel|null $booking): EventBookingCheckoutController

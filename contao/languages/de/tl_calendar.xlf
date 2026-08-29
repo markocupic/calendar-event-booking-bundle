@@ -6,13 +6,17 @@
         <source>Event booking settings</source>
         <target>Einstellungen für Event-Buchungen</target>
       </trans-unit>
-      <trans-unit id="tl_calendar.event_booking_notification_legend">
-        <source>Event booking notifications</source>
-        <target>Event-Buchungs-Benachrichtigungen</target>
+      <trans-unit id="tl_calendar.allowEventBooking.0">
+        <source>Allow event booking</source>
+        <target>Event Buchung erlauben</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar.allowEventBooking.1">
+        <source>Here you can enable event booking for this calendar.</source>
+        <target>Hier können Sie die Buchung von Events dieses Kalenders aktivieren.</target>
       </trans-unit>
       <trans-unit id="tl_calendar.emailUnique.0">
         <source>Enable multiple bookings with same email address</source>
-        <target>Mehrfachbuchung mit gleicher E-Mailadresse ermöglichen</target>
+        <target>Mehrfachbuchung mit gleicher E-Mail-Adresse ermöglichen</target>
       </trans-unit>
       <trans-unit id="tl_calendar.emailUnique.1">
         <source>Please choose if multiple bookings with same email address should be allowed.</source>

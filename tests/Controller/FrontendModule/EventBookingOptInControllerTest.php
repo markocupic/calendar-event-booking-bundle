@@ -205,6 +205,8 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public static function invalidBookingStateProvider(): iterable
     {
+        yield 'event booking disabled on calendar' => [[], ['allowEventBooking' => false], [], 'mod_opt_in.error.event_not_bookable', SeverityLevel::ERROR];
+        yield 'booking form disabled on event' => [[], [], ['enableBookingForm' => false], 'mod_opt_in.error.event_not_bookable', SeverityLevel::ERROR];
         yield 'canceled booking' => [['canceled' => true], [], [], 'mod_opt_in.error.booking_canceled', SeverityLevel::ERROR];
         yield 'already confirmed' => [['optIn' => true], [], [], 'mod_opt_in.info.already_confirmed', SeverityLevel::INFO];
         yield 'opt-in not required' => [[], ['requireOptIn' => false], [], 'mod_opt_in.info.opt_in_not_required', SeverityLevel::INFO];
@@ -546,7 +548,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     private function mockEvent(array $overrides = []): CalendarEventsModel&MockObject
     {
         return $this->createClassWithPropertiesMock(CalendarEventsModel::class, array_merge(
-            ['title' => 'My Event', 'startDate' => strtotime('+10 days'), 'bookingEndDate' => 0],
+            ['title' => 'My Event', 'enableBookingForm' => true, 'startDate' => strtotime('+10 days'), 'bookingEndDate' => 0],
             $overrides,
         ));
     }
@@ -554,7 +556,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     private function mockCalendar(array $overrides = []): CalendarModel&MockObject
     {
         return $this->createClassWithPropertiesMock(CalendarModel::class, array_merge(
-            ['requireOptIn' => true, 'optInSuccessNotification' => 0],
+            ['allowEventBooking' => true, 'requireOptIn' => true, 'optInSuccessNotification' => 0],
             $overrides,
         ));
     }

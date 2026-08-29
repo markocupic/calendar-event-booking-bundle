@@ -34,7 +34,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
     public function testHandleRequestBuildsResult(): void
     {
-        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3]);
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['id' => 3, 'allowEventBooking' => true]);
 
         $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class, ['id' => 2]);
         $event
@@ -55,7 +55,7 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
         $data = $result->getData();
         $this->assertSame(['id' => 1], $data['booking']);
         $this->assertSame(['id' => 2], $data['event']);
-        $this->assertSame(['id' => 3], $data['calendar']);
+        $this->assertSame(['id' => 3, 'allowEventBooking' => true], $data['calendar']);
         $this->assertSame($model, $data['module']);
     }
 
@@ -82,6 +82,25 @@ class DefaultCheckoutHandlerTest extends ContaoTestCase
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Calendar not found.');
+
+        (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
+    }
+
+    public function testHandleRequestThrowsWhenEventBookingNotAllowed(): void
+    {
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['allowEventBooking' => false]);
+
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        $booking = $this->mockBooking($event);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Event booking not allowed for this calendar.');
 
         (new DefaultCheckoutHandler())->handleRequest($booking, $this->createClassWithPropertiesMock(ModuleModel::class), new Request());
     }

@@ -128,7 +128,7 @@ class ProcessFormDataListener
         }
 
         // Send the opt-in invitation notification.
-        if ($calendar->requireOptIn && $calendar->optInInvitationNotification) {
+        if ($calendar->allowEventBooking && $calendar->requireOptIn && $calendar->optInInvitationNotification) {
             $this->notificationService->sendNotification($calendar->optInInvitationNotification, $this->notificationService->getNotificationTokens($booking), $booking);
         }
     }
