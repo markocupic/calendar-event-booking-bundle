@@ -24,6 +24,7 @@
     "require-dev": {
         "markocupic/easy-coding-standard": "^13.0",
         "contao/test-case": "^5.5",
+        "phpunit/phpunit": "^12.4",
         "phpstan/phpstan": "^2.1",
         "symfony/phpunit-bridge": "^6.0 || ^7.0",
         "dama/doctrine-test-bundle": "^v8.3"
@@ -52,8 +53,8 @@
     "scripts": {
         "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ tests/ --config tools/ecs/config/default.php --fix --ansi",
         "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyse src tests",
-        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist --testsuite unit",
-        "functional-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist --testsuite functional",
+        "unit-tests": "@php vendor/bin/phpunit -c phpunit.xml.dist --testsuite unit",
+        "functional-tests": "@php vendor/bin/phpunit -c phpunit.xml.dist --testsuite functional",
         "tests": [
             "@unit-tests",
             "@functional-tests"

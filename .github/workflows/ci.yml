@@ -17,10 +17,10 @@ jobs:
         uses: shivammathur/setup-php@v2
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install ecs
-        run: cd tools/ecs && composer update --no-interaction --no-suggest
+        run: cd tools/ecs && composer update --no-interaction
 
       - name: Run the CS fixer
         run: composer cs-fixer
@@ -39,12 +39,12 @@ jobs:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install the dependencies
         run: |
           composer update --no-interaction --no-progress
-          cd tools/phpstan && composer update --no-interaction --no-suggest
+          cd tools/phpstan && composer update --no-interaction
       - name: Run PHPStan
         run: composer phpstan
 
@@ -66,11 +66,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install phpunit
-        run: cd tools/phpunit && composer update --no-interaction --no-suggest
 
       - name: Install the dependencies
-        run: composer update --no-interaction --no-suggest
+        run: composer update --no-interaction
 
       - name: Run the unit tests
         run: composer unit-tests
