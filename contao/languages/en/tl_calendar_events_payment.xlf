@@ -8,11 +8,11 @@
       <trans-unit id="tl_calendar_events_payment.settlement_legend">
         <source>Settlement</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log_legend">
+        <source>Log</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refund_legend">
         <source>Refund</source>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events_payment.details_legend">
-        <source>Details</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.notes_legend">
         <source>Notes</source>
@@ -120,12 +120,10 @@
         <source>The ISO currency code the provider settled in. Applies to the net amount received and the provider fee. Empty means the provider did not report it.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.providerRefundId.0">
-        <source>provider refund ID</source>
-        <target>Rückerstattungs-ID des Zahlungsanbieters</target>
+        <source>Provider refund ID</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.providerRefundId.1">
         <source>The unique identification number under which the payment provider processed the refund.</source>
-        <target>Die eindeutige Identifikationsnummer, unter der der Zahlungsanbieter die Rückerstattung verarbeitet hat.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refundTime.0">
         <source>Refund time</source>
@@ -168,6 +166,12 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.notes.1">
         <source>Internal notes for this payment entry.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log.0">
+        <source>Log</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log.1">
+        <source>Please enter the log text.</source>
       </trans-unit>
     </body>
   </file>

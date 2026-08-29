@@ -18,8 +18,12 @@
         <env name="SYMFONY_PATCH_TYPE_DECLARATIONS" value="deprecations=0"/>
     </php>
     <testsuites>
-        <testsuite name="calendar-event-booking-bundle">
+        <testsuite name="unit">
             <directory>./tests</directory>
+            <exclude>./tests/Functional</exclude>
+        </testsuite>
+        <testsuite name="functional">
+            <directory>./tests/Functional</directory>
         </testsuite>
     </testsuites>
     <source>

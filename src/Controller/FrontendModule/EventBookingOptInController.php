@@ -32,6 +32,7 @@ use Markocupic\CalendarEventBookingBundle\Exception\SeverityLevel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptInTokenFactory;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -173,6 +174,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
     {
         $booking->optIn = true;
         $booking->temporaryReserved = false;
+        $booking->log = LogBuilder::append((string) $booking->log, 'Opt-in confirmed by the participant via the confirmation link.');
         $booking->save();
 
         $this->addCssClassToTemplate('confirm-success', $template);

@@ -25,6 +25,7 @@ services:
             - '../src/Model'
             - '../src/OptIn/OptInTokenCreator.php'
             - '../src/Notification/Parcel/Stamp'
+            - '../src/Util/LogBuilder.php'
 
     markocupic_calendar_event_booking.rate_limit.event_booking_factory:
         class: Symfony\Component\RateLimiter\RateLimiterFactory

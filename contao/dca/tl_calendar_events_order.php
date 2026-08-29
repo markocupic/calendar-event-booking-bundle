@@ -78,7 +78,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{order_legend},uuid,bookingUuid,provider,providerOrderId,createTime,status,payerId,payerEmail,grossAmount,netAmount,vatAmount,currencyCode,details,notes',
+        'default' => '{order_legend},uuid,bookingUuid,provider,providerOrderId,createTime,status,payerId,payerEmail,grossAmount,netAmount,vatAmount,currencyCode,notes;{log_legend},details,log',
     ],
     'fields'   => [
         'id'              => [
@@ -203,6 +203,13 @@ $GLOBALS['TL_DCA']['tl_calendar_events_order'] = [
             'inputType' => 'textarea',
             'search'    => true,
             'sql'       => "mediumtext NOT NULL default ''",
+        ],
+        'log'             => [
+            'eval'      => ['readonly' => true, 'tl_class' => 'clr w50', 'mandatory' => false],
+            'exclude'   => true,
+            'inputType' => 'textarea',
+            'search'    => true,
+            'sql'       => 'mediumtext NULL',
         ],
     ],
 ];

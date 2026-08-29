@@ -10,13 +10,13 @@
         <source>Settlement</source>
         <target>Abrechnung</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log_legend">
+        <source>Log</source>
+        <target>Log</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_payment.refund_legend">
         <source>Refund</source>
         <target>Rückerstattung</target>
-      </trans-unit>
-      <trans-unit id="tl_calendar_events_payment.details_legend">
-        <source>Details</source>
-        <target>Details</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_payment.notes_legend">
         <source>Notes</source>
@@ -221,6 +221,14 @@
       <trans-unit id="tl_calendar_events_payment.notes.1">
         <source>Internal notes for this payment entry.</source>
         <target>Interne Notizen zu diesem Zahlungseintrag.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log.0">
+        <source>Log</source>
+        <target>Log</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_payment.log.1">
+        <source>Please enter the log text.</source>
+        <target>Geben Sie den Log-Text ein.</target>
       </trans-unit>
     </body>
   </file>

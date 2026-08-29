@@ -21,6 +21,7 @@ use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\CalendarEventBookingBundle\Event\AutoExpireReservedBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,7 +95,13 @@ class HandleExpirableBookingsCron
 
         $affected = $this->connection->update(
             'tl_calendar_events_member',
-            ['expired' => 1, 'temporaryReserved' => 0],
+            [
+                'expired' => 1,
+                'temporaryReserved' => 0,
+                // The positional types array above covers the first column only, so
+                // appending here changes nothing about how the two flags are bound.
+                'log' => LogBuilder::append((string) ($model?->log ?? ''), 'The temporary reservation expired automatically because the booking was not confirmed in time.'),
+            ],
             ['id' => $bookingId],
             [Types::INTEGER],
         );

@@ -6,6 +6,10 @@
         <source>Order data</source>
         <target>Auftragsdaten</target>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log_legend">
+        <source>Log</source>
+        <target>Log</target>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_order.payment.0">
         <source>Payments</source>
         <target>Zahlungen</target>
@@ -125,6 +129,14 @@
       <trans-unit id="tl_calendar_events_order.notes.1">
         <source>Optional internal notes related to this order.</source>
         <target>Optionale interne Notizen zu dieser Bestellung.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log.0">
+        <source>Log</source>
+        <target>Log</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log.1">
+        <source>Please enter the log text.</source>
+        <target>Geben Sie den Log-Text ein.</target>
       </trans-unit>
     </body>
   </file>

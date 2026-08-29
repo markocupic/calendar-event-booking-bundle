@@ -26,6 +26,7 @@ use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +56,8 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         private readonly RequestStack $requestStack,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface|null $contaoErrorLogger,
+        private readonly LoggerInterface|null $contaoGeneralLogger,
     ) {
     }
 
@@ -126,26 +129,66 @@ class EventBookingCheckoutController extends AbstractFrontendModuleController
         return $booking;
     }
 
-    private function isCheckout(Request $request): bool
-    {
-        if (null !== $this->getBookingFromRequest($request)) {
-            return true;
-        }
-
-        return false;
-    }
-
+    /**
+     * Resolves the booking, its event and its calendar, or says why it cannot.
+     *
+     * Every reason ends in the same sentence for the visitor - "booking not
+     * found" - which is right for them and useless for whoever has to explain it
+     * afterwards. So each reason is written to the log with the booking token,
+     * which is the only thing there is to look anything up by.
+     *
+     * Two channels, because the reasons are not of one kind. A booking without an
+     * event, or an event without a calendar, means the data no longer hangs
+     * together: that is an error. An expired link, an unpublished event, a
+     * calendar whose booking was switched off - those are ordinary and belong in
+     * the general log, where they do not bury the ones worth chasing.
+     *
+     * A request without a token at all is not logged. It is not a failed checkout
+     * but no checkout, and this module sits on a page that search engines and
+     * link checkers visit like any other. Logging that would fill the log with
+     * page views.
+     */
     private function initialize(Request $request): bool
     {
-        if (!$this->isCheckout($request)) {
+        $bookingToken = (string) $request->query->get('bookingToken', '');
+
+        if ('' === $bookingToken) {
             return false;
         }
 
         $this->booking = $this->getBookingFromRequest($request);
-        $this->calEvent = $this->booking?->getRelated('pid');
-        $this->calendar = $this->calEvent?->getRelated('pid');
 
-        if (null === $this->booking || null === $this->calEvent || !$this->calEvent->published || null === $this->calendar || !$this->calendar->allowEventBooking) {
+        if (null === $this->booking) {
+            $this->contaoGeneralLogger?->info(\sprintf('The event booking checkout was opened with the booking token "%s", but no booking carries that token. It may have been removed by the auto delete cron.', $bookingToken));
+
+            return false;
+        }
+
+        $this->calEvent = $this->booking->getRelated('pid');
+
+        if (null === $this->calEvent) {
+            $this->contaoErrorLogger?->error(\sprintf('The event booking checkout could not resolve the event of booking ID %s (token "%s").', $this->booking->id, $bookingToken));
+
+            return false;
+        }
+
+        if (!$this->calEvent->published) {
+            $this->contaoGeneralLogger?->info(\sprintf('The event booking checkout was opened for booking ID %s, but event ID %s is not published.', $this->booking->id, $this->calEvent->id));
+
+            return false;
+        }
+
+        $this->calendar = $this->calEvent->getRelated('pid');
+
+        if (null === $this->calendar) {
+            $this->contaoErrorLogger?->error(\sprintf('The event booking checkout could not resolve the calendar of event ID %s (booking ID %s).', $this->calEvent->id, $this->booking->id));
+
+            return false;
+        }
+
+        if (!$this->calendar->allowEventBooking) {
+            $this->contaoGeneralLogger?->info(\sprintf('The event booking checkout was opened for booking ID %s, but event booking is switched off on calendar ID %s.', $this->booking->id, $this->calendar->id));
+
             return false;
         }
 

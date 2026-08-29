@@ -1,0 +1,28 @@
+# The CI already runs "composer phpstan". Without this file phpstan analyses at
+# level 0, which checks little more than whether classes and methods exist - the
+# job is green and finds nothing.
+#
+# Level 5 is where the checks start that would have caught the mistakes actually
+# made in this code base: a nullable property dereferenced without a guard, an
+# argument of the wrong type, a method called on a union that does not have it.
+#
+# The existing findings are not fixed but frozen. Generate the baseline once:
+#
+#     composer phpstan -- --generate-baseline
+#
+# From then on the job reports what is added, which is the part worth acting on.
+# Work the baseline off when there is time; it is a list, not a verdict.
+parameters:
+    level: 5
+
+    paths:
+        - src
+        - tests
+
+    # Contao's models answer for columns that exist only in the DCA, so phpstan
+    # cannot know them. Without this every $model->someField is an error.
+    universalObjectCratesClasses:
+        - Contao\Model
+
+includes:
+    - phpstan-baseline.neon

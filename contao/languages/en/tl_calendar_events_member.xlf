@@ -77,8 +77,8 @@
       <trans-unit id="tl_calendar_events_member.escort_legend">
         <source>Escort</source>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_member.form_legend">
-        <source>Form</source>
+      <trans-unit id="tl_calendar_events_member.log_legend">
+        <source>Log</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.addedOn.0">
         <source>Booking date</source>
@@ -133,6 +133,12 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.notes.1">
         <source>Please enter the notes.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.log.0">
+        <source>Log</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.log.1">
+        <source>Please enter the log text.</source>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.firstname.0">
         <source>Firstname</source>

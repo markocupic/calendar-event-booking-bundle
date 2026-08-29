@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{payment_legend},bookingUuid,orderUuid,type,provider,providerOrderId,providerCaptureId,captureTime,status,isFinal,grossAmount,currencyCode;{settlement_legend},exchangeRate,settlementGrossAmount,settlementCurrencyCode,captureFee,netAmountReceived;{refund_legend},providerRefundId,refundTime,refundAmount,refundExchangeRate,refundSettlementAmount,refundFee;{details_legend},details;{notes_legend},notes',
+        'default' => '{payment_legend},bookingUuid,orderUuid,type,provider,providerOrderId,providerCaptureId,captureTime,status,isFinal,grossAmount,currencyCode;{settlement_legend},exchangeRate,settlementGrossAmount,settlementCurrencyCode,captureFee,netAmountReceived;{refund_legend},providerRefundId,refundTime,refundAmount,refundExchangeRate,refundSettlementAmount,refundFee;{notes_legend},notes;{log_legend},details,log',
     ],
     'fields'   => [
         'id'                     => [
@@ -318,6 +318,13 @@ $GLOBALS['TL_DCA']['tl_calendar_events_payment'] = [
             'inputType' => 'textarea',
             'search'    => true,
             'sql'       => "mediumtext NOT NULL default ''",
+        ],
+        'log'                    => [
+            'eval'      => ['readonly' => true, 'tl_class' => 'clr w50', 'mandatory' => false],
+            'exclude'   => true,
+            'inputType' => 'textarea',
+            'search'    => true,
+            'sql'       => 'mediumtext NULL',
         ],
     ],
 ];

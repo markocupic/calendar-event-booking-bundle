@@ -80,7 +80,7 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         {personal_legend},firstname,lastname,gender,dateOfBirth;
         {address_legend:hide},street,postal,city;
         {contact_legend},phone,email;
-        {form_legend:hide},form,formSubmit;
+        {log_legend:hide},form,formSubmit,log;
         ',
     ],
     'fields'   => [
@@ -274,6 +274,13 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member'] = [
         ],
         'notes'             => [
             'eval'      => ['tl_class' => 'w50', 'mandatory' => false],
+            'exclude'   => true,
+            'inputType' => 'textarea',
+            'search'    => true,
+            'sql'       => 'mediumtext NULL',
+        ],
+        'log'               => [
+            'eval'      => ['readonly' => true, 'tl_class' => 'clr w50', 'mandatory' => false],
             'exclude'   => true,
             'inputType' => 'textarea',
             'search'    => true,

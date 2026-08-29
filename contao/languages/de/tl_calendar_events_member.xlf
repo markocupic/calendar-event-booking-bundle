@@ -102,9 +102,9 @@
         <source>Escort</source>
         <target>Begleitpersonen</target>
       </trans-unit>
-      <trans-unit id="tl_calendar_events_member.form_legend">
-        <source>Form</source>
-        <target>Formulareinstellungen</target>
+      <trans-unit id="tl_calendar_events_member.log_legend">
+        <source>Log</source>
+        <target>Log</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.addedOn.0">
         <source>Booking date</source>
@@ -177,6 +177,14 @@
       <trans-unit id="tl_calendar_events_member.notes.1">
         <source>Please enter the notes.</source>
         <target>Geben Sie Bemerkungen ein.</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.log.0">
+        <source>Log</source>
+        <target>Log</target>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_member.log.1">
+        <source>Please enter the log text.</source>
+        <target>Geben Sie den Log-Text ein.</target>
       </trans-unit>
       <trans-unit id="tl_calendar_events_member.firstname.0">
         <source>Firstname</source>

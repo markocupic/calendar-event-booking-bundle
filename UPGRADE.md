@@ -129,6 +129,77 @@ ein echter Kursverlust, der ohne diese Spalten nirgends erklärbar ist.
 Ausserdem steht `providerRefundId` jetzt in der Palette. Das Feld war deklariert, aber im Backend
 nicht erreichbar.
 
+### Neue Spalte `log` – und `notes` gehört ab jetzt dem Backend-Benutzer
+
+`tl_calendar_events_member`, `tl_calendar_events_order` und `tl_calendar_events_payment` haben eine
+zweite Textspalte bekommen, und die Trennung dazwischen ist der Punkt:
+
+- **`notes`** gehört dem Backend-Benutzer. Dort steht „am 22.8. von Hand zurückerstattet, siehe
+  Mail". Weder die Grunderweiterung noch die Zahlungs-Plugins schreiben dort noch hinein.
+- **`log`** gehört dem System und ist im Backend read-only. Dort landen die Zeilen, die früher in
+  `notes` standen — dass eine Gebühr noch nicht gemeldet wurde, dass sie nachgetragen wurde, dass
+  PayPal keine Capture zurückgegeben hat.
+
+Damit teilt sich niemand mehr ein Feld mit einem Cronjob, und kein Cronjob muss auf einen Satz
+Rücksicht nehmen, den gerade jemand tippt.
+
+Geschrieben wird ins `log` ausschliesslich über die neue Klasse `Util\LogBuilder` – ein String rein,
+ein String raus, ohne `save()`, damit der Aufrufer bestimmt, wann geschrieben wird:
+
+```php
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
+
+$payment->log = LogBuilder::append($payment->log, 'Refunded manually, see ticket #4711.');
+```
+
+Ergebnis – eine Zeile pro Ereignis, Zeitstempel vorn, neue Zeilen unten:
+
+```
+2026-08-29 21:10 Stripe has not reported a balance transaction for this charge yet, …
+2026-08-29 21:15 Stripe reported the balance transaction: 217.18 EUR converted at 0.93564 to …
+```
+
+Drei Regeln gehören dazu, sonst trägt die Konstruktion nicht:
+
+- **Nur anhängen, nie löschen, nie überschreiben.** Die Abfolge der Zeilen ist die Geschichte der
+  Zahlung; ein Feld, in dem immer nur der letzte Satz steht, ist ein Statusfeld — und davon gibt es
+  in der Zeile bereits eines.
+- **Englisch, immer, ohne Translator.** Das Feld ist gespeicherter Text, kein Label: es wird einmal
+  geschrieben und danach unverändert angezeigt, lässt sich also nicht in der Sprache des Lesers neu
+  rendern. Über die aktive Locale zu gehen entschiede die Sprache per Zufall — die erste Zeile
+  entsteht im Frontend-Request (Seitensprache), die zweite im Cron, der weder Seite noch Sprachbaum
+  kennt.
+- **Nie zurücklesen.** Kein Vergleich, kein Regex, kein „steht unser Satz noch drin". Was Code
+  entscheiden muss, entscheidet er an den typisierten Spalten daneben.
+
+Und: nur bei einem Zustandswechsel schreiben. Ein minütlicher Job, der „immer noch nichts"
+protokolliert, füllt den Datensatz einer hängenden Zahlung mit Tausenden Zeilen.
+
+**Altbestand:** Zahlungen aus früheren Versionen haben ihren Satz in `notes` stehen. Er bleibt dort,
+wo er ist — es gibt keine Migration, die Text zwischen den Spalten verschiebt oder ihm einen
+Zeitstempel erfindet. Neue Zeilen kommen ins `log`.
+
+**Was eine Zeile bekommt.** Nur echte Zustandswechsel, und nur solche, die der Datensatz überlebt:
+
+| Datensatz | Ereignis | geschrieben in |
+| --- | --- | --- |
+| Buchung | Anlage über das Buchungsformular | `StoreFormDataListener` |
+| Buchung | Opt-in über den Bestätigungslink | `EventBookingOptInController` |
+| Buchung | Abmeldung über das Abmeldeformular | `EventBookingUnsubscribeController` |
+| Buchung | Nachrücken von der Warteliste | `WaitingListPromotionProcessor` |
+| Buchung | Ablauf der temporären Reservation | `HandleExpirableBookingsCron` |
+| Order | Capture ohne Capture-Objekt (PayPal) | `CapturePaymentStep` |
+| Zahlung | Gebühr noch nicht gemeldet / nachgetragen | Capture-Mapper, `CompleteSettlementDataCron` |
+
+Eine im Backend von Hand angelegte Buchung durchläuft den Hook nicht und hat deshalb **gar keine**
+Zeile. Das ist kein Versehen: ein leeres Log ist später das Einzige, woran sich die beiden
+unterscheiden lassen.
+
+Zwei naheliegende Kandidaten sind bewusst **nicht** dabei: `HandleCanceledBookingsCron` und
+`DeleteExpiredBookingsCron` löschen den Datensatz. Eine Zeile in das Log einer Zeile zu schreiben,
+die im selben Durchgang verschwindet, hilft niemandem — solche Vorgänge gehören ins `tl_log`, wo sie
+auch stehen.
+
 ### Neue Einträge in der Bundle Configuration -> `config.yaml`
 
 ```yaml

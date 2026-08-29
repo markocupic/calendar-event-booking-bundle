@@ -29,6 +29,7 @@ use Markocupic\CalendarEventBookingBundle\Domain\Unsubscribe\UnsubscribeValidato
 use Markocupic\CalendarEventBookingBundle\Event\CancelBookingEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Util\FigureUtil;
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
 use Markocupic\ContaoFlashMessage\FlashMessage\MessageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -167,6 +168,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
 
             $booking->canceled = true;
             $booking->temporaryReserved = false;
+            $booking->log = LogBuilder::append((string) $booking->log, 'Unsubscribed by the participant via the unsubscribe form.');
             $booking->save();
 
             $request->attributes->set('_calendar_event_booking_token', $booking->bookingToken);

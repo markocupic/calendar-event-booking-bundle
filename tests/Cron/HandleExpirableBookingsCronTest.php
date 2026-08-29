@@ -124,7 +124,12 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             ->method('update')
             ->with(
                 $this->equalTo('tl_calendar_events_member'),
-                $this->equalTo(['expired' => 1, 'temporaryReserved' => 0]),
+                $this->callback(
+                    static fn ($data) => 1 === $data['expired']
+                        && 0 === $data['temporaryReserved']
+                        // The expiry is written into the booking's own log too.
+                        && str_contains($data['log'], 'The temporary reservation expired automatically'),
+                ),
                 $this->callback(
                     static function ($criteria) use (&$callCount) {
                         ++$callCount;
@@ -232,6 +237,7 @@ class HandleExpirableBookingsCronTest extends ContaoTestCase
             'id' => $id,
             'expired' => 1,
             'temporaryReserved' => 0,
+            'log' => '',
         ]);
     }
 

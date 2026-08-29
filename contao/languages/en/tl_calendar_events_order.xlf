@@ -5,6 +5,9 @@
       <trans-unit id="tl_calendar_events_order.order_legend">
         <source>Order data</source>
       </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log_legend">
+        <source>Log</source>
+      </trans-unit>
       <trans-unit id="tl_calendar_events_order.payment.0">
         <source>Payments</source>
       </trans-unit>
@@ -94,6 +97,12 @@
       </trans-unit>
       <trans-unit id="tl_calendar_events_order.notes.1">
         <source>Optional internal notes related to this order.</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log.0">
+        <source>Log</source>
+      </trans-unit>
+      <trans-unit id="tl_calendar_events_order.log.1">
+        <source>Please enter the log text.</source>
       </trans-unit>
     </body>
   </file>

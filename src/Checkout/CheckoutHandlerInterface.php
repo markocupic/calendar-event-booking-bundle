@@ -22,5 +22,5 @@ interface CheckoutHandlerInterface
 {
     public static function getType(): string;
 
-    public function handleRequest(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutResult;
+    public function handleRequest(CalendarEventsMemberModel $bookingModel, ModuleModel $moduleModel, Request $request): CheckoutResult;
 }

@@ -1,0 +1,6 @@
+# Empty on purpose, so that the include in phpstan.neon resolves before the
+# baseline has ever been generated. Fill it once with:
+#
+#     composer phpstan -- --generate-baseline
+parameters:
+    ignoreErrors: []

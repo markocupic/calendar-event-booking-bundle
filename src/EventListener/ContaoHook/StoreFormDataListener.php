@@ -20,6 +20,7 @@ use Contao\FrontendUser;
 use Markocupic\CalendarEventBookingBundle\Checkout\CheckoutHandlerAwareTrait;
 use Markocupic\CalendarEventBookingBundle\Checkout\PaymentCheckoutHandlerInterface;
 use Markocupic\CalendarEventBookingBundle\Controller\FrontendModule\EventBookingFormController;
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
@@ -91,6 +92,12 @@ class StoreFormDataListener
         $data['escorts'] = (int) ($data['escorts'] ?? 0);
         $data['temporaryReserved'] = $calendar->requireOptIn ? 1 : 0;
         $data['checkoutHandler'] = $checkoutHandler->getType();
+
+        $data['log'] = LogBuilder::append('', \sprintf(
+            'Booking created via the booking form, checkout handler "%s".%s',
+            $checkoutHandler->getType(),
+            $data['waitingList'] ? ' Placed on the waiting list.' : '',
+        ));
 
         if ($checkoutHandler instanceof PaymentCheckoutHandlerInterface) {
             $data['temporaryReserved'] = 1;

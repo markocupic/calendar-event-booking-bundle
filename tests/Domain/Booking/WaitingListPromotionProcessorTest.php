@@ -56,7 +56,7 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
     public function testPromoteSendsNotificationAndLogsWhenRowAffected(): void
     {
-        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7]);
+        $booking = $this->createClassWithPropertiesMock(CalendarEventsMemberModel::class, ['id' => 7, 'log' => '']);
         $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
         $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
         $event
@@ -65,12 +65,19 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             ->willReturn($calendar)
         ;
 
+        $update = null;
+
         $connection = $this->createMock(Connection::class);
         $connection
             ->expects($this->once())
             ->method('update')
-            ->with('tl_calendar_events_member', ['waitingList' => 0], ['id' => 7])
-            ->willReturn(1)
+            ->willReturnCallback(
+                static function (string $table, array $data, array $criteria) use (&$update): int {
+                    $update = ['table' => $table, 'data' => $data, 'criteria' => $criteria];
+
+                    return 1;
+                },
+            )
         ;
 
         $notificationService = $this->createMock(NotificationService::class);
@@ -102,6 +109,58 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
         );
 
         $processor->promoteBookingFromWaitingList($booking, $event, 'cron');
+
+        $this->assertSame('tl_calendar_events_member', $update['table']);
+        $this->assertSame(['id' => 7], $update['criteria']);
+        $this->assertSame(0, $update['data']['waitingList']);
+
+        // The promotion is written into the booking's own log as well, because
+        // tl_log is rotated away long before anyone asks why this person moved up.
+        $this->assertStringStartsWith(date('Y-m-d H:i').' Moved from the waiting list', $update['data']['log']);
+        $this->assertStringContainsString('Context: cron.', $update['data']['log']);
+    }
+
+    /**
+     * Whatever the booking's log already holds is kept - the new line goes
+     * underneath it. See Util\LogBuilder.
+     */
+    public function testPromoteAppendsToAnExistingLog(): void
+    {
+        $booking = $this->createClassWithPropertiesMock(
+            CalendarEventsMemberModel::class,
+            ['id' => 7, 'log' => '2026-08-01 09:00 Opt-in confirmed by the participant via the confirmation link.'],
+        );
+
+        $calendar = $this->createClassWithPropertiesMock(CalendarModel::class, ['waitingListAdvancementNotification' => 0]);
+        $event = $this->createClassWithPropertiesMock(CalendarEventsModel::class);
+        $event
+            ->method('getRelated')
+            ->with('pid')
+            ->willReturn($calendar)
+        ;
+
+        $update = null;
+
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->method('update')
+            ->willReturnCallback(
+                static function (string $table, array $data) use (&$update): int {
+                    $update = $data;
+
+                    return 1;
+                },
+            )
+        ;
+
+        $this->createProcessor(connection: $connection)
+            ->promoteBookingFromWaitingList($booking, $event, 'cron')
+        ;
+
+        $lines = explode("\n", $update['log']);
+
+        $this->assertCount(2, $lines);
+        $this->assertSame('2026-08-01 09:00 Opt-in confirmed by the participant via the confirmation link.', $lines[0]);
     }
 
     public function testPromoteSkipsNotificationWhenCalendarHasNoneConfigured(): void

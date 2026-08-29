@@ -29,9 +29,9 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         return self::NAME;
     }
 
-    public function handleRequest(CalendarEventsMemberModel $booking, ModuleModel $model, Request $request): CheckoutResult
+    public function handleRequest(CalendarEventsMemberModel $bookingModel, ModuleModel $moduleModel, Request $request): CheckoutResult
     {
-        $event = $booking->getRelated('pid');
+        $event = $bookingModel->getRelated('pid');
         $calendar = $event?->getRelated('pid');
 
         if (null === $event) {
@@ -47,10 +47,10 @@ class DefaultCheckoutHandler implements CheckoutHandlerInterface
         }
 
         $data = [];
-        $data['booking'] = $booking->row();
+        $data['booking'] = $bookingModel->row();
         $data['event'] = $event->row();
         $data['calendar'] = $calendar->row();
-        $data['module'] = $model;
+        $data['module'] = $moduleModel;
 
         return new CheckoutResult($this->getType(), $data);
     }

@@ -22,6 +22,7 @@ use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
 use Markocupic\CalendarEventBookingBundle\Event\WaitingListPromotedEvent;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Util\LogBuilder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -85,7 +86,13 @@ class WaitingListPromotionProcessor
     {
         $affected = $this->connection->update(
             'tl_calendar_events_member',
-            ['waitingList' => 0],
+            [
+                'waitingList' => 0,
+                'log' => LogBuilder::append((string) $booking->log, \sprintf(
+                    'Moved from the waiting list to the regular list of bookings. Context: %s.',
+                    $context,
+                )),
+            ],
             ['id' => $booking->id],
         );
 
