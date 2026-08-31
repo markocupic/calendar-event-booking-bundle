@@ -33,9 +33,8 @@ class OptInTokenCreator
         $optIn->tstamp = time();
         $optIn->token = $optInToken;
         $optIn->createdOn = time();
-
-        // The token is required to remove unconfirmed subscriptions after 24 hours, so
-        // keep it for 3 days to make sure it is not purged before the subscription
+        // The token is required to invalidate/expire unconfirmed subscriptions after a configurable period
+        // -> markocupic_calendar_event_booking.auto_expire_time_limit
         $optIn->removeOn = $removeOn;
         $optIn->email = $email;
         $optIn->emailSubject = $emailSubject;
