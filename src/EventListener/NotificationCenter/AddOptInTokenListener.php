@@ -22,6 +22,7 @@ use Markocupic\CalendarEventBookingBundle\LinkBuilder\OptInLinkBuilder;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingOptInInvitationNotificationType;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingPaymentSuccessNotificationType;
 use Markocupic\CalendarEventBookingBundle\OptIn\OptInTokenCreator;
 use Soundasleep\Html2Text;
 use Soundasleep\Html2TextException;
@@ -34,7 +35,6 @@ use Terminal42\NotificationCenterBundle\Parcel\Stamp\LanguageConfigStamp;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\NotificationConfigStamp;
 use Terminal42\NotificationCenterBundle\Parcel\Stamp\TokenCollectionStamp;
 use Terminal42\NotificationCenterBundle\Token\Definition\Factory\TokenDefinitionFactoryInterface;
-use Terminal42\NotificationCenterBundle\Token\Definition\HtmlTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TextTokenDefinition;
 use Terminal42\NotificationCenterBundle\Token\Definition\TokenDefinitionInterface;
 use Terminal42\NotificationCenterBundle\Token\TokenCollection;
@@ -42,6 +42,12 @@ use Terminal42\NotificationCenterBundle\Util\Email;
 
 class AddOptInTokenListener
 {
+    private const array SUPPORTED_NOTIFICATION_TYPES = [
+        EventBookingNotificationType::NAME,
+        EventBookingOptInInvitationNotificationType::NAME,
+        EventBookingPaymentSuccessNotificationType::NAME,
+    ];
+
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly InsertTagParser $insertTagParser,
@@ -56,7 +62,7 @@ class AddOptInTokenListener
     #[AsEventListener]
     public function onGetTokenDefinitions(GetTokenDefinitionsForNotificationTypeEvent $event): void
     {
-        if (EventBookingOptInInvitationNotificationType::NAME !== $event->getNotificationType()->getName()) {
+        if (!\in_array($event->getNotificationType()->getName(), self::SUPPORTED_NOTIFICATION_TYPES, true)) {
             return;
         }
 
@@ -66,26 +72,29 @@ class AddOptInTokenListener
     }
 
     /**
-     * Set the opt-in link in the opt-in invitation notification.
+     * Set the opt-in link in the supported notifications.
      *
-     * @todo The goal would be to use a different token for each message in the opt-in link
-     * when there are multiple messages in the same notification. Unfortunately, this does
-     * not work yet. See: https://contao.slack.com/archives/CK4J0KNDB/p1754637673245409
+     * Every message of a notification gets its own opt-in token.
+     *
+     * Beware: All parcels of a notification share the very same TokenCollectionStamp
+     * instance, because NotificationCenter::createParcelsForNotification() passes the
+     * same StampCollection to every message and Parcel::withStamp() clones the parcel
+     * but not the stamp. Mutating $stamp->tokenCollection directly would therefore
+     * overwrite the token of all the other messages as well. That is why we work on a
+     * clone of the token collection and put it back onto the parcel using a new stamp.
      */
     #[AsEventListener]
     public function onCreatParcel(CreateParcelEvent $event): void
     {
         $parcel = $event->getParcel();
 
-        $notificationConfig = $parcel->getStamp(NotificationConfigStamp::class);
+        $notificationConfigStamp = $parcel->getStamp(NotificationConfigStamp::class);
 
-        if (!$notificationConfig instanceof NotificationConfigStamp) {
+        if (!$notificationConfigStamp instanceof NotificationConfigStamp) {
             return;
         }
 
-        $allowed = [EventBookingOptInInvitationNotificationType::NAME, EventBookingNotificationType::NAME];
-
-        if (!\in_array($notificationConfig->toArray()['type'], $allowed, true)) {
+        if (!\in_array($notificationConfigStamp->notificationConfig->getType(), self::SUPPORTED_NOTIFICATION_TYPES, true)) {
             return;
         }
 
@@ -107,14 +116,25 @@ class AddOptInTokenListener
             return;
         }
 
+        // The goal is to use a different opt-in token for each message,
+        // so we can determine who has confirmed the booking.
         $optInToken = OptInTokenCreator::generateToken();
         $optInLink = $this->optInLinkBuilder->build($booking, $optInToken);
-        $event->getParcel()->getStamp(TokenCollectionStamp::class)->tokenCollection
-            ->addToken($this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
-            ->addToken($this->getTokenDefinition(HtmlTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink))
-        ;
 
-        // Create the opt-in entries in tl_opt_in
+        // Work on a clone, see the note in the doc block above.
+        $tokenCollection = clone $tokenCollectionStamp->tokenCollection;
+
+        $tokenCollection->replaceToken(
+            $this->getTokenDefinition(TextTokenDefinition::class, 'member_optInLink')->createToken('member_optInLink', $optInLink),
+        );
+
+        $parcel = $parcel->withStamp(new TokenCollectionStamp($tokenCollection));
+
+        $event->setParcel($parcel);
+
+        // Create the opt-in entries in tl_opt_in.
+        // Beware: This has to run on the updated parcel, otherwise the ##member_optInLink##
+        // token would remain unreplaced in the email text stored in tl_opt_in.
         $this->addOptInIfRequired($parcel, $booking, $optInToken);
     }
 
@@ -147,7 +167,18 @@ class AddOptInTokenListener
         }
 
         $languageConfig = $parcel->getStamp(LanguageConfigStamp::class);
+
+        // There is no language configuration for this message and locale,
+        // thus the message will not be sent at all.
+        if (!$languageConfig instanceof LanguageConfigStamp) {
+            return;
+        }
+
         $tokenCollection = $parcel->getStamp(TokenCollectionStamp::class);
+
+        if (!$tokenCollection instanceof TokenCollectionStamp) {
+            return;
+        }
 
         $optIn = [];
         $optIn['token'] = $optInToken;

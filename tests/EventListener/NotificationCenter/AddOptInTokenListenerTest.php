@@ -20,7 +20,9 @@ use Contao\CoreBundle\String\SimpleTokenParser;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\CalendarEventBookingBundle\EventListener\NotificationCenter\AddOptInTokenListener;
 use Markocupic\CalendarEventBookingBundle\LinkBuilder\OptInLinkBuilder;
+use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingNotificationType;
 use Markocupic\CalendarEventBookingBundle\Notification\NotificationType\EventBookingOptInInvitationNotificationType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\NotificationCenterBundle\Event\GetTokenDefinitionsForNotificationTypeEvent;
 use Terminal42\NotificationCenterBundle\NotificationType\NotificationTypeInterface;
@@ -35,7 +37,8 @@ use Terminal42\NotificationCenterBundle\Token\Definition\TokenDefinitionInterfac
  */
 class AddOptInTokenListenerTest extends ContaoTestCase
 {
-    public function testAddsOptInTokenDefinitionForMatchingNotificationType(): void
+    #[DataProvider('supportedNotificationTypesProvider')]
+    public function testAddsOptInTokenDefinitionForSupportedNotificationType(string $notificationType): void
     {
         $tokenDefinition = $this->createStub(TokenDefinitionInterface::class);
 
@@ -50,7 +53,7 @@ class AddOptInTokenListenerTest extends ContaoTestCase
         $event = $this->createMock(GetTokenDefinitionsForNotificationTypeEvent::class);
         $event
             ->method('getNotificationType')
-            ->willReturn($this->mockNotificationType(EventBookingOptInInvitationNotificationType::NAME))
+            ->willReturn($this->mockNotificationType($notificationType))
         ;
 
         $event
@@ -82,6 +85,19 @@ class AddOptInTokenListenerTest extends ContaoTestCase
         ;
 
         $this->listener($factory)->onGetTokenDefinitions($event);
+    }
+
+    /**
+     * The supported types are listed explicitly and not read from
+     * AddOptInTokenListener::SUPPORTED_NOTIFICATION_TYPES on purpose: A test should not
+     * verify a constant against itself, otherwise the accidental removal of a
+     * notification type would go unnoticed.
+     */
+    public static function supportedNotificationTypesProvider(): iterable
+    {
+        yield EventBookingNotificationType::NAME => [EventBookingNotificationType::NAME];
+
+        yield EventBookingOptInInvitationNotificationType::NAME => [EventBookingOptInInvitationNotificationType::NAME];
     }
 
     private function mockNotificationType(string $name): NotificationTypeInterface
