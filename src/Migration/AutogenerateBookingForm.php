@@ -22,6 +22,7 @@ use Contao\FormModel;
 use Contao\Input;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
+use Markocupic\CalendarEventBookingBundle\Util\ContaoVersion;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -252,6 +253,11 @@ class AutogenerateBookingForm extends AbstractMigration
 
     private function encodeInput(string $varValue): string
     {
+        // Contao 6 no longer encodes input, values are stored raw
+        if (ContaoVersion::storesRawInput()) {
+            return trim(strip_tags(html_entity_decode($varValue, ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        }
+
         $varValue = Input::decodeEntities($varValue);
         $varValue = Input::xssClean($varValue, true);
         $varValue = Input::stripTags($varValue);

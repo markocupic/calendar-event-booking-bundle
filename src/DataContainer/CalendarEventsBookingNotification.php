@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 
+use Contao\CoreBundle\DataContainer\RecordLabel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
+use Contao\StringUtil;
 
 class CalendarEventsBookingNotification
 {
@@ -33,7 +35,7 @@ class CalendarEventsBookingNotification
      * @param string $label
      * @param array  $args
      *
-     * @return array
+     * @return array|\Stringable RecordLabel on Contao 6
      */
     public function addIcon($row, $label, DataContainer $dc, $args)
     {
@@ -51,8 +53,14 @@ class CalendarEventsBookingNotification
         $args[0] = \sprintf(
             '<div class="list_icon_delivered" data-delivered="%s"><img src="%s" style="width:16px"/></div>',
             $status,
-            $this->framework->getAdapter(Image::class)->getUrl($icon),
+            StringUtil::specialcharsAttribute($this->framework->getAdapter(Image::class)->getUrl($icon)),
         );
+
+        // Contao 6 HTML-encodes plain label callback return values. Pass the columns
+        // as RecordLabel, otherwise the icon markup would be displayed as text.
+        if (class_exists(RecordLabel::class)) {
+            return RecordLabel::fromHtml(array_values($args));
+        }
 
         return $args;
     }
