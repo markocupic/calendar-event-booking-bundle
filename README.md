@@ -6,8 +6,8 @@
 
 ## Voraussetzungen
 
-- PHP `^8.3`
-- Contao `^5.3`
+- PHP `^8.3` (Contao 6 setzt PHP `^8.4` voraus)
+- Contao `^5.3` oder `^6.0`
 
 ## Installation
 

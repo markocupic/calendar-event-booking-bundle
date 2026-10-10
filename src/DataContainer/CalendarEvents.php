@@ -17,11 +17,13 @@ namespace Markocupic\CalendarEventBookingBundle\DataContainer;
 use Contao\Calendar;
 use Contao\CalendarEventsModel;
 use Contao\Config;
+use Contao\CoreBundle\DataContainer\RecordLabel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\Message;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Markocupic\CalendarEventBookingBundle\Domain\Booking\BookingCapacity;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -66,7 +68,7 @@ class CalendarEvents
      * Replace the default label callback with a custom one.
      */
     #[AsCallback(table: 'tl_calendar_events', target: 'list.label.label')]
-    public function appendBookingsToLabel(array $arrRow, string $label, DataContainer $dc, array $labels): array
+    public function appendBookingsToLabel(array $arrRow, string $label, DataContainer $dc, array $labels): array|\Stringable
     {
         // ----- This snippet was taken from the original list.label.label callback ----
         // ----- See: tl_calendar_events::listEvents()
@@ -81,22 +83,24 @@ class CalendarEvents
         }
         // ----- End! -----
 
-        $labels[0] .= ' <span class="label-info">['.$date.']</span>';
+        $labels[0] .= ' <span class="label-info">['.StringUtil::specialchars($date).']</span>';
 
         if ($arrRow['enableBookingForm']) {
             $event = $this->framework->getAdapter(CalendarEventsModel::class)?->findById($arrRow['id']);
 
-            if (null === $event) {
-                return $labels;
+            if (null !== $event) {
+                $labels[0] .= \sprintf(
+                    ' <span class="label-info">[%s %sx]</span>',
+                    StringUtil::specialchars($this->translator->trans('MSC.bookings', [], 'contao_default')),
+                    $this->bookingCapacity->getBookingCount($event),
+                );
             }
+        }
 
-            $counterMarkup = \sprintf(
-                ' <span class="label-info">[%s %sx]</span>',
-                $this->translator->trans('MSC.bookings', [], 'contao_default'),
-                $this->bookingCapacity->getBookingCount($event),
-            );
-
-            $labels[0] .= $counterMarkup;
+        // Contao 6 HTML-encodes plain label callback return values. Pass the markup as
+        // RecordLabel, otherwise the <span> elements would be displayed as text.
+        if (class_exists(RecordLabel::class)) {
+            return RecordLabel::fromHtml($labels[0]);
         }
 
         return $labels;
