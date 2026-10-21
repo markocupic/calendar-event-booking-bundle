@@ -19,6 +19,7 @@
         "codefog/contao-haste": "^5.0",
         "terminal42/notification_center": "^2.0",
         "symfony/lock": "^6.4 || ^7.1",
+        "symfony/messenger": "^6.4 || ^7.1",
         "symfony/rate-limiter": "^6.4 || ^7.1"
     },
     "require-dev": {

@@ -48,6 +48,22 @@ bleibt reserviert, bis die Bank die Zahlung bestätigt, und der Teilnehmer wird 
 Zwischenstand als auch über eine geplatzte Lastschrift benachrichtigt (siehe
 [Benachrichtigung bei ausstehender Zahlung](#benachrichtigung-bei-ausstehender-zahlung)).
 
+### Status der Order
+
+Die Zahlungsmethode hält in `tl_calendar_events_order.status` fest, wie es um das Geld steht. Der
+Wert steht auch im Simple Token `##order_status##` zur Verfügung:
+
+| Status     | Bedeutung                                                                                   | Buchung bezahlt |
+|------------|---------------------------------------------------------------------------------------------|-----------------|
+| `pending`  | Die Zahlung ist ausgelöst, das Geld aber noch nicht bestätigt (z. B. SEPA-Lastschrift).    | nein            |
+| `paid`     | Das Geld ist eingegangen. Auch nach einer **teilweisen** Rückerstattung.                    | ja              |
+| `failed`   | Die Zahlung wurde abgelehnt oder ist geplatzt.                                              | nein            |
+| `refunded` | Das Geld wurde dem Teilnehmer vollständig zurückerstattet.                                  | nein            |
+| `reversed` | Der Zahlungsdienstleister hat das Geld zurückgeholt, z. B. nach einem Käuferkonflikt.     | nein            |
+
+Eine Rückerstattung storniert die Buchung **nicht**. Ob der Platz frei wird, entscheidet der
+Veranstalter. Welche Status eine Zahlungsmethode tatsächlich schreibt, steht in deren README.
+
 ## Benachrichtigungen
 
 Event-Organisator und Teilnehmer lassen sich bei jedem Prozess automatisch benachrichtigen (Notification Center).
@@ -55,6 +71,37 @@ Dazu gehören auch verzögerte Zahlungsarten: eine Zahlung kann ausgelöst, aber
 sein – siehe [Benachrichtigung bei ausstehender Zahlung](#benachrichtigung-bei-ausstehender-zahlung) –
 oder nachträglich scheitern – siehe
 [Benachrichtigung bei fehlgeschlagener Zahlung](#benachrichtigung-bei-fehlgeschlagener-zahlung).
+
+### Versand über die Messenger-Queue
+
+Benachrichtigungen, die einen Zustandswechsel der Buchung begleiten – das Nachrücken von der
+Warteliste und, bei den Zahlungsmethoden, die Zahlungsbestätigungen –, werden nicht sofort verschickt,
+sondern in die Messenger-Queue von Contao gestellt (`tl_message_queue`, Transport `contao_prio_high`).
+Das geschieht in derselben Datenbank-Transaktion wie der Zustandswechsel selbst: Entweder rückt der
+Teilnehmer nach und erfährt davon, oder keines von beidem passiert. Eine Mail, die nach einer
+erfolgreichen Statusänderung verloren geht, gibt es damit nicht mehr.
+
+Abgearbeitet wird die Queue von Contao:
+
+- **Mit Cronjob** (empfohlen): Ein Cronjob, der jede Minute `contao:cron` aufruft, startet die
+  Messenger-Worker. Die Mail geht innerhalb von Sekunden raus.
+
+  ```
+  * * * * * /usr/bin/php /pfad/zum/projekt/vendor/bin/contao-console contao:cron
+  ```
+
+- **Ohne Cronjob** arbeitet Contao die Queue am Ende eines Seitenaufrufs ab. Das funktioniert, hängt
+  aber von Besuchern ab: Auf einer wenig besuchten Website laufen dann auch die Cronjobs der
+  Erweiterung – etwa das Nachrücken von der Warteliste – und der Mailversand erst mit dem nächsten
+  Seitenaufruf.
+
+Benachrichtigungen, die ein Besucher direkt auslöst (Anmeldung, Double-Opt-In, Abmeldung), werden
+weiterhin sofort verschickt.
+
+> Läuft der Messenger-Worker per Cronjob auf der Kommandozeile, gibt es keinen Request, aus dem die
+> Domain stammen könnte. Links in den Mails (etwa `##member_unsubscribeLink##`) stimmen trotzdem, wenn
+> im Startpunkt der Website eine Domain eingetragen ist. Sonst sollte `framework.router.default_uri`
+> gesetzt sein, zum Beispiel `https://example.com`.
 
 ## Warteliste
 

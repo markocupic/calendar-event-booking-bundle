@@ -41,7 +41,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 #[AsFrontendModule(EventBookingOptInController::TYPE, category: 'events')]
 class EventBookingOptInController extends AbstractFrontendModuleController
@@ -59,7 +58,6 @@ class EventBookingOptInController extends AbstractFrontendModuleController
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.opt_in')]
         private readonly MessageInterface $message,
-        private readonly NotificationCenter $notificationCenter,
         private readonly NotificationService $notificationService,
         private readonly TranslatorInterface $translator,
         private readonly OptInTokenFactory $optInTokenFactory,
@@ -268,7 +266,7 @@ class EventBookingOptInController extends AbstractFrontendModuleController
     {
         if ($calendar->optInSuccessNotification) {
             $tokens = $this->notificationService->getNotificationTokens($booking);
-            $this->notificationCenter->sendNotification($calendar->optInSuccessNotification, $tokens);
+            $this->notificationService->sendNotification((int) $calendar->optInSuccessNotification, $tokens, $booking);
         }
     }
 }

@@ -21,11 +21,14 @@ use Contao\StringUtil;
 use Contao\UserModel;
 use Markocupic\CalendarEventBookingBundle\Event\SendNotificationEvent;
 use Markocupic\CalendarEventBookingBundle\LinkBuilder\UnsubscribeLinkBuilder;
+use Markocupic\CalendarEventBookingBundle\Messenger\Message\SendBookingNotificationMessage;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsOrderModel;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsPaymentModel;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 use Terminal42\NotificationCenterBundle\Receipt\ReceiptCollection;
 
@@ -49,10 +52,49 @@ class NotificationService
         private readonly NotificationCenter $notificationCenter,
         private readonly RequestStack $requestStack,
         private readonly UnsubscribeLinkBuilder $unsubscribeLinkBuilder,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
-    public function sendNotification(int $notificationId, array $tokens, CalendarEventsMemberModel $booking): ReceiptCollection|null
+    /**
+     * Sends the notification later, from a messenger worker, instead of now.
+     *
+     * Call it INSIDE the transaction that changes the booking - that is what it is for.
+     * The message goes into tl_message_queue over the same database connection, so it
+     * is committed with the change or rolled back with it. sendNotification() after
+     * the commit cannot promise that: if it fails, the change is in and the
+     * notification is lost, and nothing will ever try again.
+     *
+     * Use it where a state change must not go unannounced and nobody is waiting for
+     * the answer: a payment, a promotion from the waiting list. Notifications a
+     * visitor triggers and waits for - registration, opt-in, unsubscribe - stay with
+     * sendNotification(); the e-mail itself goes through the queue there anyway.
+     *
+     * The tokens are built when the message is handled, from the records as they are
+     * then. The language is that of the current request; outside a request the
+     * notification center falls back to the notification's own default.
+     *
+     * Without a messenger transport for the message (Contao's managed edition routes
+     * it to contao_prio_high) it is handled right away, within the transaction.
+     */
+    public function queueNotification(int $notificationId, CalendarEventsMemberModel $booking, CalendarEventsOrderModel|null $order = null, CalendarEventsPaymentModel|null $payment = null, string|null $locale = null): void
+    {
+        $this->messageBus->dispatch(new SendBookingNotificationMessage(
+            Uuid::uuid4()->toString(),
+            $notificationId,
+            (int) $booking->id,
+            null !== $order ? (int) $order->id : null,
+            null !== $payment ? (int) $payment->id : null,
+            $locale ?? $this->requestStack->getCurrentRequest()?->getLocale(),
+        ));
+    }
+
+    /**
+     * @param string|null $locale the language of the notification; null lets the
+     *                            notification center decide, which in a request means
+     *                            the language of the current page
+     */
+    public function sendNotification(int $notificationId, array $tokens, CalendarEventsMemberModel $booking, string|null $locale = null): ReceiptCollection|null
     {
         $event = new SendNotificationEvent($notificationId, $tokens, $booking, $this->requestStack->getCurrentRequest());
 
@@ -62,7 +104,7 @@ class NotificationService
             return null;
         }
 
-        return $this->notificationCenter->sendNotification($event->getNotificationId(), $event->getTokens());
+        return $this->notificationCenter->sendNotification($event->getNotificationId(), $event->getTokens(), $locale);
     }
 
     public function getNotificationTokens(CalendarEventsMemberModel $booking, CalendarEventsOrderModel|null $order = null, CalendarEventsPaymentModel|null $payment = null): array

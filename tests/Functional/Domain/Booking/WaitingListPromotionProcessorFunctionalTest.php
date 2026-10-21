@@ -26,7 +26,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Lock\LockFactory;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 /**
  * Functional test that runs findNextEligibleBookingId() against a real in-memory
@@ -232,7 +231,6 @@ class WaitingListPromotionProcessorFunctionalTest extends ContaoTestCase
             $this->createStub(EventDispatcherInterface::class),
             $this->createStub(BookingCapacity::class),
             $this->createStub(LockFactory::class),
-            $this->createStub(NotificationCenter::class),
             $this->createStub(NotificationService::class),
             $this->createStub(RequestStack::class),
             true,

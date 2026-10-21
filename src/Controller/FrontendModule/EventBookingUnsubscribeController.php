@@ -39,7 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 #[AsFrontendModule(EventBookingUnsubscribeController::TYPE, category: 'events')]
 class EventBookingUnsubscribeController extends AbstractFrontendModuleController
@@ -66,7 +65,6 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         private readonly LockFactory $lockFactory,
         #[Autowire(service: 'markocupic_calendar_event_booking.flash_message.unsubscribe')]
         private readonly MessageInterface $message,
-        private readonly NotificationCenter $notificationCenter,
         private readonly NotificationService $notificationService,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
@@ -227,7 +225,7 @@ class EventBookingUnsubscribeController extends AbstractFrontendModuleController
         }
 
         $tokens = $this->notificationService->getNotificationTokens($booking);
-        $this->notificationCenter->sendNotification($calendar->unsubscribeNotification, $tokens);
+        $this->notificationService->sendNotification((int) $calendar->unsubscribeNotification, $tokens, $booking);
     }
 
     private function addCssClassToTemplate(string $cssClass, FragmentTemplate $template): void

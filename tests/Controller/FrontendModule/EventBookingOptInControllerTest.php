@@ -43,7 +43,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\SharedLockInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 class EventBookingOptInControllerTest extends ContaoTestCase
 {
@@ -270,24 +269,22 @@ class EventBookingOptInControllerTest extends ContaoTestCase
     {
         $booking = $this->mockBooking();
 
-        $notificationService = $this->createStub(NotificationService::class);
+        $notificationService = $this->createMock(NotificationService::class);
         $notificationService
             ->method('getNotificationTokens')
             ->with($booking)
             ->willReturn(['token' => 'value'])
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        // Through the service rather than the notification center directly, so that
+        // SendNotificationEvent is dispatched for this notification like for every other.
+        $notificationService
             ->expects($this->once())
             ->method('sendNotification')
-            ->with(7, ['token' => 'value'])
+            ->with(7, ['token' => 'value'], $booking)
         ;
 
-        $controller = $this->createController(
-            notificationCenter: $notificationCenter,
-            notificationService: $notificationService,
-        );
+        $controller = $this->createController(notificationService: $notificationService);
 
         $method = new \ReflectionMethod(EventBookingOptInController::class, 'sendOptInSuccessNotification');
         $method->invoke($controller, $this->mockCalendar(['optInSuccessNotification' => 7]), $booking);
@@ -295,13 +292,13 @@ class EventBookingOptInControllerTest extends ContaoTestCase
 
     public function testSendOptInSuccessNotificationSkipsWhenNotConfigured(): void
     {
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService
             ->expects($this->never())
             ->method('sendNotification')
         ;
 
-        $controller = $this->createController(notificationCenter: $notificationCenter);
+        $controller = $this->createController(notificationService: $notificationService);
 
         $method = new \ReflectionMethod(EventBookingOptInController::class, 'sendOptInSuccessNotification');
         $method->invoke($controller, $this->mockCalendar(['optInSuccessNotification' => 0]), $this->mockBooking());
@@ -494,7 +491,7 @@ class EventBookingOptInControllerTest extends ContaoTestCase
         return $lockFactory;
     }
 
-    private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, OptInTokenFactory|null $optInTokenFactory = null): EventBookingOptInController
+    private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationService|null $notificationService = null, OptInTokenFactory|null $optInTokenFactory = null): EventBookingOptInController
     {
         return new EventBookingOptInController(
             $connection ?? $this->createStub(Connection::class),
@@ -502,7 +499,6 @@ class EventBookingOptInControllerTest extends ContaoTestCase
             $this->createStub(FigureUtil::class),
             $lockFactory ?? $this->createStub(LockFactory::class),
             $message ?? $this->createStub(Message::class),
-            $notificationCenter ?? $this->createStub(NotificationCenter::class),
             $notificationService ?? $this->createStub(NotificationService::class),
             $this->translator,
             $optInTokenFactory ?? $this->createStub(OptInTokenFactory::class),

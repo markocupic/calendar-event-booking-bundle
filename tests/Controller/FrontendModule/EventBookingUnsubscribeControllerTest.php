@@ -40,7 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\SharedLockInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 class EventBookingUnsubscribeControllerTest extends ContaoTestCase
 {
@@ -176,8 +175,8 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             ->method('commit')
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $notificationService = $this->createStub(NotificationService::class);
+        $notificationService
             ->method('sendNotification')
             ->willThrowException(new \RuntimeException('SMTP down'))
         ;
@@ -194,7 +193,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             connection: $connection,
             lockFactory: $this->lockFactoryWithLock(),
             message: $message,
-            notificationCenter: $notificationCenter,
+            notificationService: $notificationService,
         );
         $this->withFramework($controller, $this->frameworkWithBooking($booking));
 
@@ -239,8 +238,8 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             ->method('dispatch')
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService
             ->expects($this->never())
             ->method('sendNotification')
         ;
@@ -263,7 +262,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             connection: $connection,
             eventDispatcher: $dispatcher,
             lockFactory: $this->lockFactoryWithLock(),
-            notificationCenter: $notificationCenter,
+            notificationService: $notificationService,
             urlParser: $urlParser,
         );
         $this->withFramework($controller, $this->frameworkWithBooking($alreadyCancelled));
@@ -352,7 +351,7 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
         ));
     }
 
-    private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, ScopeMatcher|null $scopeMatcher = null, UrlParser|null $urlParser = null): EventBookingUnsubscribeController
+    private function createController(Connection|null $connection = null, EventDispatcherInterface|null $eventDispatcher = null, LockFactory|null $lockFactory = null, MessageInterface|null $message = null, NotificationService|null $notificationService = null, ScopeMatcher|null $scopeMatcher = null, UrlParser|null $urlParser = null): EventBookingUnsubscribeController
     {
         return new EventBookingUnsubscribeController(
             $connection ?? $this->createStub(Connection::class),
@@ -361,7 +360,6 @@ class EventBookingUnsubscribeControllerTest extends ContaoTestCase
             $this->createStub(FigureUtil::class),
             $lockFactory ?? $this->createStub(LockFactory::class),
             $message ?? $this->createStub(MessageInterface::class),
-            $notificationCenter ?? $this->createStub(NotificationCenter::class),
             $notificationService ?? $this->createStub(NotificationService::class),
             $scopeMatcher ?? $this->createStub(ScopeMatcher::class),
             $this->createStub(TranslatorInterface::class),

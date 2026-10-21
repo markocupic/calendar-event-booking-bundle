@@ -26,11 +26,16 @@ class SendNotificationEvent extends Event
         private readonly int $notificationId,
         private array $tokens,
         private readonly CalendarEventsMemberModel $booking,
-        private readonly Request $request,
+        private readonly Request|null $request,
     ) {
     }
 
-    public function getRequest(): Request
+    /**
+     * Null when the notification is sent outside of a request - from a cron job or a
+     * messenger worker, see NotificationService::queueNotification(). Like every
+     * other event of this bundle that carries the request.
+     */
+    public function getRequest(): Request|null
     {
         return $this->request;
     }

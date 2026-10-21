@@ -21,10 +21,17 @@ use Contao\TestCase\ContaoTestCase;
 use Contao\UserModel;
 use Markocupic\CalendarEventBookingBundle\Domain\Notification\NotificationService;
 use Markocupic\CalendarEventBookingBundle\LinkBuilder\UnsubscribeLinkBuilder;
+use Markocupic\CalendarEventBookingBundle\Messenger\Message\SendBookingNotificationMessage;
 use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsMemberModel;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsOrderModel;
+use Markocupic\CalendarEventBookingBundle\Model\CalendarEventsPaymentModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
+use Terminal42\NotificationCenterBundle\Receipt\ReceiptCollection;
 
 class NotificationServiceTest extends ContaoTestCase
 {
@@ -44,7 +51,6 @@ class NotificationServiceTest extends ContaoTestCase
         $userModelAdapter = $this->createAdapterStub(['findById']);
         $userModelAdapter
             ->method('findById')
-            ->with(1)
             ->willReturn($organizerMock)
         ;
 
@@ -65,6 +71,7 @@ class NotificationServiceTest extends ContaoTestCase
             $notificationCenterMock,
             $requestStackMock,
             $unsubscribeLinkBuilderMock,
+            $this->createStub(MessageBusInterface::class),
         );
     }
 
@@ -126,5 +133,111 @@ class NotificationServiceTest extends ContaoTestCase
 
         $this->assertArrayNotHasKey('organizer_password', $tokens);
         $this->assertArrayNotHasKey('organizer_session', $tokens);
+    }
+
+    /**
+     * Only ids go into the message: it is serialised, and the handler loads the
+     * records as they are when it runs. The language is the one of the request that
+     * queued it, because the worker has none.
+     */
+    public function testQueueNotificationDispatchesIdsAndTheLanguageOfTheRequest(): void
+    {
+        $request = new Request();
+        $request->setLocale('de_CH');
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        $dispatched = [];
+
+        $service = $this->serviceWith($this->recordingBus($dispatched), $requestStack);
+        $service->queueNotification(
+            5,
+            $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]),
+            $this->createClassWithPropertiesStub(CalendarEventsOrderModel::class, ['id' => 11]),
+            $this->createClassWithPropertiesStub(CalendarEventsPaymentModel::class, ['id' => 13]),
+        );
+
+        $this->assertCount(1, $dispatched);
+        $this->assertInstanceOf(SendBookingNotificationMessage::class, $dispatched[0]);
+        $this->assertSame([5, 7, 11, 13, 'de_CH'], [$dispatched[0]->notificationId, $dispatched[0]->bookingId, $dispatched[0]->orderId, $dispatched[0]->paymentId, $dispatched[0]->locale]);
+    }
+
+    /**
+     * The handler remembers sent messages by their id. Two notifications for the same
+     * booking are two messages, and both have to go out.
+     */
+    public function testEveryQueuedNotificationGetsItsOwnId(): void
+    {
+        $dispatched = [];
+
+        $service = $this->serviceWith($this->recordingBus($dispatched), new RequestStack());
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]);
+
+        $service->queueNotification(5, $booking);
+        $service->queueNotification(5, $booking);
+
+        $this->assertNotSame($dispatched[0]->messageId, $dispatched[1]->messageId);
+        $this->assertNull($dispatched[0]->orderId);
+        $this->assertNull($dispatched[0]->locale);
+    }
+
+    /**
+     * From a cron job or a messenger worker there is no request. SendNotificationEvent
+     * used to insist on one, which made sendNotification() unusable there - the
+     * reason the waiting list went around this service.
+     */
+    public function testSendNotificationWorksWithoutARequestAndPassesTheLanguageOn(): void
+    {
+        $notificationCenter = $this->createMock(NotificationCenter::class);
+        $notificationCenter
+            ->expects($this->once())
+            ->method('sendNotification')
+            ->with(5, ['member_firstname' => 'Anna'], 'de_CH')
+            ->willReturn(new ReceiptCollection())
+        ;
+
+        $service = new NotificationService(
+            $this->createContaoFrameworkStub([]),
+            $this->createStub(EventDispatcherInterface::class),
+            $notificationCenter,
+            new RequestStack(),
+            $this->createStub(UnsubscribeLinkBuilder::class),
+            $this->createStub(MessageBusInterface::class),
+        );
+
+        $service->sendNotification(5, ['member_firstname' => 'Anna'], $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]), 'de_CH');
+    }
+
+    private function serviceWith(MessageBusInterface $bus, RequestStack $requestStack): NotificationService
+    {
+        return new NotificationService(
+            $this->createContaoFrameworkStub([]),
+            $this->createStub(EventDispatcherInterface::class),
+            $this->createStub(NotificationCenter::class),
+            $requestStack,
+            $this->createStub(UnsubscribeLinkBuilder::class),
+            $bus,
+        );
+    }
+
+    /**
+     * @param array<int, object> $dispatched
+     */
+    private function recordingBus(array &$dispatched): MessageBusInterface
+    {
+        $bus = $this->createStub(MessageBusInterface::class);
+        $bus
+            ->method('dispatch')
+            ->willReturnCallback(
+                static function (object $message) use (&$dispatched): Envelope {
+                    $dispatched[] = $message;
+
+                    return new Envelope($message);
+                },
+            )
+        ;
+
+        return $bus;
     }
 }

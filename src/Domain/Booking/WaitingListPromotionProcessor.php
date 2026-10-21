@@ -27,7 +27,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Lock\LockFactory;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 /**
  * This class is used to fill free spots with bookings on the waiting list. Early
@@ -41,7 +40,6 @@ class WaitingListPromotionProcessor
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly BookingCapacity $bookingCapacity,
         private readonly LockFactory $lockFactory,
-        private readonly NotificationCenter $notificationCenter,
         private readonly NotificationService $notificationService,
         private readonly RequestStack $requestStack,
         private readonly bool $autoWaitingListPromotion,
@@ -82,35 +80,62 @@ class WaitingListPromotionProcessor
         }
     }
 
+    /**
+     * Moves a booking from the waiting list to the regular list and tells the
+     * participant.
+     *
+     * Both happen in one transaction. The notification used to be sent after the
+     * update: if sending failed, the booking had moved up and nobody knew - and no
+     * later run would try again, because a booking that is no longer on the waiting
+     * list is never picked again. Now the notification is queued, which writes it into
+     * the same database in the same commit (see NotificationService::queueNotification()).
+     * Either the participant moves up and is told so, or neither happens.
+     *
+     * Called from a listener while the cron, a cancellation or the backend may already
+     * hold a transaction open. DBAL nests transactions as savepoints, so this one then
+     * simply becomes part of the outer one.
+     */
     public function promoteBookingFromWaitingList(CalendarEventsMemberModel $booking, CalendarEventsModel $event, string $context): void
     {
-        $affected = $this->connection->update(
-            'tl_calendar_events_member',
-            [
-                'waitingList' => 0,
-                'log' => LogBuilder::append((string) $booking->log, \sprintf(
-                    'Moved from the waiting list to the regular list of bookings. Context: %s.',
-                    $context,
-                )),
-            ],
-            ['id' => $booking->id],
-        );
+        $this->connection->beginTransaction();
+
+        try {
+            $affected = $this->connection->update(
+                'tl_calendar_events_member',
+                [
+                    'waitingList' => 0,
+                    'log' => LogBuilder::append((string) $booking->log, \sprintf(
+                        'Moved from the waiting list to the regular list of bookings. Context: %s.',
+                        $context,
+                    )),
+                ],
+                ['id' => $booking->id],
+            );
+
+            if ($affected) {
+                $this->queuePromotionNotification($booking, $event);
+            }
+
+            $this->connection->commit();
+        } catch (\Throwable $e) {
+            if ($this->connection->isTransactionActive()) {
+                $this->connection->rollBack();
+            }
+
+            throw $e;
+        }
 
         if ($affected) {
-            $this->sendPromotionNotification($booking, $event);
             $this->logPromotion($booking, $context);
         }
     }
 
-    private function sendPromotionNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
+    private function queuePromotionNotification(CalendarEventsMemberModel $booking, CalendarEventsModel $event): void
     {
         $calendar = $event->getRelated('pid');
 
         if ($calendar?->waitingListAdvancementNotification) {
-            $this->notificationCenter->sendNotification(
-                $calendar->waitingListAdvancementNotification,
-                $this->notificationService->getNotificationTokens($booking),
-            );
+            $this->notificationService->queueNotification((int) $calendar->waitingListAdvancementNotification, $booking);
         }
     }
 

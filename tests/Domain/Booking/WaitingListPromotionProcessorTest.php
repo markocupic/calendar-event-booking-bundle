@@ -27,7 +27,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Lock\LockFactory;
-use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 class WaitingListPromotionProcessorTest extends ContaoTestCase
 {
@@ -80,18 +79,28 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             )
         ;
 
-        $notificationService = $this->createStub(NotificationService::class);
-        $notificationService
-            ->method('getNotificationTokens')
-            ->with($booking)
-            ->willReturn(['recipient_email' => 'x@example.com'])
+        // The update and the queued notification share one transaction.
+        $connection
+            ->expects($this->once())
+            ->method('beginTransaction')
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $connection
             ->expects($this->once())
+            ->method('commit')
+        ;
+
+        // Queued, not sent: the tokens are built by the handler, when it runs.
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService
+            ->expects($this->once())
+            ->method('queueNotification')
+            ->with(5, $booking)
+        ;
+
+        $notificationService
+            ->expects($this->never())
             ->method('sendNotification')
-            ->with(5, ['recipient_email' => 'x@example.com'])
         ;
 
         $logger = $this->createMock(LoggerInterface::class);
@@ -103,7 +112,6 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
         $processor = $this->createProcessor(
             connection: $connection,
-            notificationCenter: $notificationCenter,
             notificationService: $notificationService,
             logger: $logger,
         );
@@ -180,10 +188,10 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             ->willReturn(1)
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService
             ->expects($this->never())
-            ->method('sendNotification')
+            ->method('queueNotification')
         ;
 
         $logger = $this->createMock(LoggerInterface::class);
@@ -194,7 +202,7 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
         $processor = $this->createProcessor(
             connection: $connection,
-            notificationCenter: $notificationCenter,
+            notificationService: $notificationService,
             logger: $logger,
         );
 
@@ -212,10 +220,10 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             ->willReturn(0)
         ;
 
-        $notificationCenter = $this->createMock(NotificationCenter::class);
-        $notificationCenter
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService
             ->expects($this->never())
-            ->method('sendNotification')
+            ->method('queueNotification')
         ;
 
         $logger = $this->createMock(LoggerInterface::class);
@@ -226,14 +234,75 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
 
         $processor = $this->createProcessor(
             connection: $connection,
-            notificationCenter: $notificationCenter,
+            notificationService: $notificationService,
             logger: $logger,
         );
 
         $processor->promoteBookingFromWaitingList($booking, $event, 'cron');
     }
 
-    private function createProcessor(Connection|null $connection = null, ContaoFramework|null $framework = null, EventDispatcherInterface|null $dispatcher = null, LockFactory|null $lockFactory = null, NotificationCenter|null $notificationCenter = null, NotificationService|null $notificationService = null, LoggerInterface|null $logger = null, bool $autoPromotion = true): WaitingListPromotionProcessor
+    /**
+     * The point of the transaction: a promotion that cannot be announced does not
+     * happen. Before, the booking moved up and the participant was never told - and
+     * no later run would try again, because it is no longer on the waiting list.
+     */
+    public function testAPromotionThatCannotBeAnnouncedIsRolledBack(): void
+    {
+        $booking = $this->createClassWithPropertiesStub(CalendarEventsMemberModel::class, ['id' => 7]);
+        $calendar = $this->createClassWithPropertiesStub(CalendarModel::class, ['waitingListAdvancementNotification' => 5]);
+        $event = $this->createClassWithPropertiesStub(CalendarEventsModel::class);
+        $event
+            ->method('getRelated')
+            ->willReturn($calendar)
+        ;
+
+        $connection = $this->createMock(Connection::class);
+        $connection
+            ->method('update')
+            ->willReturn(1)
+        ;
+
+        $connection
+            ->method('isTransactionActive')
+            ->willReturn(true)
+        ;
+
+        $connection
+            ->expects($this->once())
+            ->method('rollBack')
+        ;
+
+        $connection
+            ->expects($this->never())
+            ->method('commit')
+        ;
+
+        $notificationService = $this->createStub(NotificationService::class);
+        $notificationService
+            ->method('queueNotification')
+            ->willThrowException(new \RuntimeException('Queue table missing'))
+        ;
+
+        // Nothing moved, so nothing is logged as moved.
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger
+            ->expects($this->never())
+            ->method('info')
+        ;
+
+        $processor = $this->createProcessor(
+            connection: $connection,
+            notificationService: $notificationService,
+            logger: $logger,
+        );
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Queue table missing');
+
+        $processor->promoteBookingFromWaitingList($booking, $event, 'cron');
+    }
+
+    private function createProcessor(Connection|null $connection = null, ContaoFramework|null $framework = null, EventDispatcherInterface|null $dispatcher = null, LockFactory|null $lockFactory = null, NotificationService|null $notificationService = null, LoggerInterface|null $logger = null, bool $autoPromotion = true): WaitingListPromotionProcessor
     {
         return new WaitingListPromotionProcessor(
             $connection ?? $this->createStub(Connection::class),
@@ -241,7 +310,6 @@ class WaitingListPromotionProcessorTest extends ContaoTestCase
             $dispatcher ?? $this->createStub(EventDispatcherInterface::class),
             $this->createStub(BookingCapacity::class),
             $lockFactory ?? $this->createStub(LockFactory::class),
-            $notificationCenter ?? $this->createStub(NotificationCenter::class),
             $notificationService ?? $this->createStub(NotificationService::class),
             $this->createStub(RequestStack::class),
             $autoPromotion,

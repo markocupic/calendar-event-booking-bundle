@@ -22,6 +22,7 @@ services:
             - '../src/DependencyInjection'
             - '../src/Event'
             - '../src/Exception'
+            - '../src/Messenger/Message'
             - '../src/Model'
             - '../src/OptIn/OptInTokenCreator.php'
             - '../src/Notification/Parcel/Stamp'
