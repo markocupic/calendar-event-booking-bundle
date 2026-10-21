@@ -33,8 +33,16 @@ services:
         public: true
         arguments:
             - { id: markocupic_calendar_event_booking.event_booking, policy: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.policy%', limit: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.limit%', interval: '%markocupic_calendar_event_booking.rate_limit.event_booking_form.interval%' }
-            - '@contao.rate_limit.member_password_storage'
+            - '@markocupic_calendar_event_booking.rate_limit.storage'
             - '@?lock_factory'
+
+    # Our own storage instead of Contao's contao.rate_limit.member_password_storage:
+    # that one is internal and does not exist in Contao 5.3. cache.app is there in every
+    # installation; the limiter prefixes its keys with its id.
+    markocupic_calendar_event_booking.rate_limit.storage:
+        class: Symfony\Component\RateLimiter\Storage\CacheStorage
+        arguments:
+            - '@cache.app'
 
     markocupic_calendar_event_booking.flash_message.checkout:
         class: Markocupic\ContaoFlashMessage\FlashMessage\Message
